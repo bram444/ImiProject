@@ -35,6 +35,36 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                           GameId=Guid.Parse("00000000-0000-0000-0000-000000000003"),
                           GenreId=Guid.Parse("00000000-0000-0000-0000-000000000003")
                      },
+                     new GameGenre
+                     {
+                          GameId=Guid.Parse("00000000-0000-0000-0000-000000000004"),
+                          GenreId=Guid.Parse("00000000-0000-0000-0000-000000000007")
+                     },
+                     new GameGenre
+                     {
+                          GameId=Guid.Parse("00000000-0000-0000-0000-000000000004"),
+                          GenreId=Guid.Parse("00000000-0000-0000-0000-000000000008")
+                     },
+                     new GameGenre
+                     {
+                          GameId=Guid.Parse("00000000-0000-0000-0000-000000000010"),
+                          GenreId=Guid.Parse("00000000-0000-0000-0000-000000000009")
+                     },
+                     new GameGenre
+                     {
+                          GameId=Guid.Parse("00000000-0000-0000-0000-000000000010"),
+                          GenreId=Guid.Parse("00000000-0000-0000-0000-000000000010")
+                     },
+                     new GameGenre
+                     {
+                          GameId=Guid.Parse("00000000-0000-0000-0000-000000000006"),
+                          GenreId=Guid.Parse("00000000-0000-0000-0000-000000000002")
+                     },
+                     new GameGenre
+                     {
+                          GameId=Guid.Parse("00000000-0000-0000-0000-000000000007"),
+                          GenreId=Guid.Parse("00000000-0000-0000-0000-000000000002")
+                     },
                 }
                 );
         }
