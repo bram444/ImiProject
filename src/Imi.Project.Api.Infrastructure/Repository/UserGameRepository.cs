@@ -1,5 +1,6 @@
 ﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Repository.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,39 +11,50 @@ namespace Imi.Project.Api.Infrastructure.Repository
 {
     public class UserGameRepository : IUserGameRepository
     {
-        public Task<UserGame> AddAsync(UserGame entity)
+        protected readonly ApplicationDbContext _dbContext;
+        public UserGameRepository(ApplicationDbContext dbContext)
         {
-            throw new NotImplementedException();
+            _dbContext = dbContext;
         }
 
-        public Task<UserGame> DeleteAsync(UserGame entity)
+        public virtual IQueryable<UserGame> GetAll()
         {
-            throw new NotImplementedException();
+            return _dbContext.Set<UserGame>().AsQueryable();
+        }
+        public virtual async Task<IEnumerable<UserGame>> ListAllAsync()
+        {
+            return await _dbContext.Set<UserGame>().ToListAsync();
         }
 
-        public IQueryable<UserGame> GetAll()
+        public virtual async Task<UserGame> GetByGameIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Set<UserGame>().SingleOrDefaultAsync(t => t.GameId.Equals(id));
         }
 
-        public Task<UserGame> GetByGameIdAsync(Guid id)
+        public virtual async Task<UserGame> GetByUserIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Set<UserGame>().SingleOrDefaultAsync(t => t.UserId.Equals(id));
         }
 
-        public Task<UserGame> GetByUserIdAsync(Guid id)
+        public async Task<UserGame> AddAsync(UserGame entity)
         {
-            throw new NotImplementedException();
+            _dbContext.Set<UserGame>().Add(entity);
+            await _dbContext.SaveChangesAsync();
+            return entity;
         }
 
-        public Task<IEnumerable<UserGame>> ListAllAsync()
+        public async Task<UserGame> DeleteAsync(UserGame entity)
         {
-            throw new NotImplementedException();
+            _dbContext.Set<UserGame>().Remove(entity);
+            await _dbContext.SaveChangesAsync();
+            return entity;
         }
 
-        public Task<UserGame> UpdateAsync(UserGame entity)
+        public async Task<UserGame> UpdateAsync(UserGame entity)
         {
-            throw new NotImplementedException();
+            _dbContext.Set<UserGame>().Update(entity);
+            await _dbContext.SaveChangesAsync();
+            return entity;
         }
     }
 }

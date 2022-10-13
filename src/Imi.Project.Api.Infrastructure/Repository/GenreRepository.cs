@@ -1,5 +1,6 @@
 ﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Repository.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +16,13 @@ namespace Imi.Project.Api.Infrastructure.Repository
 
         }
 
-        public Task<IEnumerable<Genre>> SearchAsync(string search)
+        public virtual async Task<IEnumerable<Genre>> SearchAsync(string search)
         {
-            throw new NotImplementedException();
+            var genre = await GetAll()
+                .Where(g => g.Name.Contains(search.Trim().ToUpper()))
+                .ToListAsync();
+
+            return genre;
         }
     }
 }

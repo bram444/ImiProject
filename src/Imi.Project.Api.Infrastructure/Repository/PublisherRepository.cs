@@ -1,5 +1,6 @@
 ﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Repository.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,14 +15,22 @@ namespace Imi.Project.Api.Infrastructure.Repository
         {
         }
 
-        public Task<IEnumerable<Publisher>> SearchAsync(string search)
+        public virtual async Task<IEnumerable<Publisher>> SearchAsync(string search)
         {
-            throw new NotImplementedException();
+            var publisher = await GetAll()
+                .Where(p => p.Name.Contains(search.Trim().ToUpper()))
+                .ToListAsync();
+
+            return publisher;
         }
 
-        public Task<IEnumerable<Publisher>> SearchByCountryAsync(string country)
+        public virtual async Task<IEnumerable<Publisher>> SearchByCountryAsync(string country)
         {
-            throw new NotImplementedException();
+            var publisher = await GetAll()
+                .Where(p => p.Country.Contains(country.Trim().ToUpper()))
+                .ToListAsync();
+
+            return publisher;
         }
     }
 }

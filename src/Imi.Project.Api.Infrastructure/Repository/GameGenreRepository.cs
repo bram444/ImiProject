@@ -1,48 +1,61 @@
 ﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Repository.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Imi.Project.Api.Infrastructure.Repository
 {
     public class GameGenreRepository : IGameGenreRepository
     {
-        public Task<GameGenre> AddAsync(GameGenre entity)
+
+        protected readonly ApplicationDbContext _dbContext;
+        public GameGenreRepository(ApplicationDbContext dbContext)
         {
-            throw new NotImplementedException();
+            _dbContext = dbContext;
         }
 
-        public Task<GameGenre> DeleteAsync(GameGenre entity)
+        public virtual IQueryable<GameGenre> GetAll()
         {
-            throw new NotImplementedException();
+            return _dbContext.Set<GameGenre>().AsQueryable();
+        }
+        public virtual async Task<IEnumerable<GameGenre>> ListAllAsync()
+        {
+            return await _dbContext.Set<GameGenre>().ToListAsync();
+        }
+        public virtual async Task<GameGenre> GetByGameIdAsync(Guid id)
+        {
+            return await _dbContext.Set<GameGenre>().SingleOrDefaultAsync(t => t.GameId.Equals(id));
         }
 
-        public IQueryable<GameGenre> GetAll()
+        public virtual async Task<GameGenre> GetByGenreIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Set<GameGenre>().SingleOrDefaultAsync(t => t.GenreId.Equals(id));
         }
 
-        public Task<GameGenre> GetByGameIdAsync(Guid id)
+        public async Task<GameGenre> AddAsync(GameGenre entity)
         {
-            throw new NotImplementedException();
+            _dbContext.Set<GameGenre>().Add(entity);
+            await _dbContext.SaveChangesAsync();
+            return entity;
         }
 
-        public Task<GameGenre> GetByGenreIdAsync(Guid id)
+        public async Task<GameGenre> UpdateAsync(GameGenre entity)
         {
-            throw new NotImplementedException();
+            _dbContext.Set<GameGenre>().Update(entity);
+            await _dbContext.SaveChangesAsync();
+            return entity;
         }
 
-        public Task<IEnumerable<GameGenre>> ListAllAsync()
+        public async Task<GameGenre> DeleteAsync(GameGenre entity)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<GameGenre> UpdateAsync(GameGenre entity)
-        {
-            throw new NotImplementedException();
+            _dbContext.Set<GameGenre>().Remove(entity);
+            await _dbContext.SaveChangesAsync();
+            return entity;
         }
     }
 }

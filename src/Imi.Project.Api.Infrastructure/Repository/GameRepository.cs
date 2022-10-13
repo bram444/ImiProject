@@ -1,5 +1,6 @@
 ﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Repository.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,19 +11,25 @@ namespace Imi.Project.Api.Infrastructure.Repository
 {
     public class GameRepository : BaseRepository<Game>, IGameRepository
     {
+
         public GameRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
 
         }
 
-        public Task<IEnumerable<Game>> GetByPublisherIdAsync(Guid id)
+        public async Task<IEnumerable<Game>> GetByPublisherIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var game = await GetAll().Where(p => p.PublisherId.Equals(id)).ToListAsync();
+            return game;
         }
 
-        public Task<IEnumerable<Game>> SearchAsync(string search)
+        public virtual async Task<IEnumerable<Game>> SearchAsync(string search)
         {
-            throw new NotImplementedException();
+            var games = await GetAll()
+                .Where(g => g.Name.Contains(search.Trim().ToUpper()))
+                .ToListAsync();
+
+            return games;
         }
     }
 }

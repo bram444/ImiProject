@@ -1,5 +1,6 @@
 ﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Repository.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,34 +17,46 @@ namespace Imi.Project.Api.Infrastructure.Repository
             _dbContext = dbContext;
         }
 
-        public IQueryable<T> GetAll()
+        public virtual IQueryable<T> GetAll()
         {
-            throw new NotImplementedException();
+            return _dbContext.Set<T>().AsQueryable();
         }
 
-        public Task<IEnumerable<T>> ListAllAsync()
+        public virtual async Task<IEnumerable<T>> ListAllAsync()
         {
-            throw new NotImplementedException();
+            return await _dbContext.Set<T>().ToListAsync();
         }
 
-        public Task<T> GetByIdAsync(Guid id)
+        public virtual async Task<T> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Set<T>().SingleOrDefaultAsync(t => t.Id.Equals(id));
         }
 
-        public Task<T> UpdateAsync(T entity)
+        public async Task<T> AddAsync(T entity)
         {
-            throw new NotImplementedException();
+            entity.CreatedOn = DateTime.UtcNow;
+            entity.LastEditedOn = DateTime.UtcNow;
+
+            _dbContext.Set<T>().Add(entity);
+            await _dbContext.SaveChangesAsync();
+            return entity;
         }
 
-        public Task<T> AddAsync(T entity)
+        public async Task<T> UpdateAsync(T entity)
         {
-            throw new NotImplementedException();
+            entity.LastEditedOn = DateTime.UtcNow;
+
+            _dbContext.Set<T>().Update(entity);
+            await _dbContext.SaveChangesAsync();
+            return entity;
         }
 
-        public Task<T> DeleteAsync(T entity)
+
+        public async Task<T> DeleteAsync(T entity)
         {
-            throw new NotImplementedException();
+            _dbContext.Set<T>().Remove(entity);
+            await _dbContext.SaveChangesAsync();
+            return entity;
         }
     }
 }
