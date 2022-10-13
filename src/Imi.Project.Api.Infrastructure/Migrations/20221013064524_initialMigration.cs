@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Imi.Project.Api.Infrastructure.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class initialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -131,9 +131,9 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                 columns: new[] { "Id", "CreatedOn", "Description", "LastEditedOn", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("00000000-0000-0000-0000-000000000001"), new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(224), "Fist person shooter", new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(222), "FPS" },
-                    { new Guid("00000000-0000-0000-0000-000000000002"), new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(228), "Fist person shooter but in the third person", new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(227), "Third person shooter" },
-                    { new Guid("00000000-0000-0000-0000-000000000003"), new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(232), null, new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(231), "Simulation" }
+                    { new Guid("00000000-0000-0000-0000-000000000001"), new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8871), "Fist person shooter", new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8869), "FPS" },
+                    { new Guid("00000000-0000-0000-0000-000000000002"), new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8875), "Fist person shooter but in the third person", new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8874), "Third person shooter" },
+                    { new Guid("00000000-0000-0000-0000-000000000003"), new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8879), null, new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8877), "Simulation" }
                 });
 
             migrationBuilder.InsertData(
@@ -141,8 +141,8 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                 columns: new[] { "Id", "Country", "CreatedOn", "LastEditedOn", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("00000000-0000-0000-0000-000000000001"), "America", new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(245), new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(247), "Bethesda" },
-                    { new Guid("00000000-0000-0000-0000-000000000002"), "Japan", new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(250), new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(251), "Nintendo" }
+                    { new Guid("00000000-0000-0000-0000-000000000001"), "America", new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8892), new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8893), "Bethesda" },
+                    { new Guid("00000000-0000-0000-0000-000000000002"), "Japan", new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8896), new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8898), "Nintendo" }
                 });
 
             migrationBuilder.InsertData(
@@ -150,24 +150,24 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                 columns: new[] { "Id", "CreatedOn", "Email", "FirstName", "LastEditedOn", "LastName", "UserName" },
                 values: new object[,]
                 {
-                    { new Guid("00000000-0000-0000-0000-000000000001"), new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(282), "FirstUser@gmail.com", "First", new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(280), "User", "FirstUser" },
-                    { new Guid("00000000-0000-0000-0000-000000000002"), new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(286), "SecondUser@gmail.com", "Second", new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(285), "User", "TimTheDestroyerXx400" }
+                    { new Guid("00000000-0000-0000-0000-000000000001"), new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8973), "FirstUser@gmail.com", "First", new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8971), "User", "FirstUser" },
+                    { new Guid("00000000-0000-0000-0000-000000000002"), new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8978), "SecondUser@gmail.com", "Second", new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8976), "User", "TimTheDestroyerXx400" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Games",
                 columns: new[] { "Id", "CreatedOn", "LastEditedOn", "Name", "Price", "PublisherId" },
-                values: new object[] { new Guid("00000000-0000-0000-0000-000000000001"), new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(166), new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(196), "Fallout New Vegas", 14.99f, new Guid("00000000-0000-0000-0000-000000000001") });
+                values: new object[] { new Guid("00000000-0000-0000-0000-000000000001"), new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8811), new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8844), "Fallout New Vegas", 14.99f, new Guid("00000000-0000-0000-0000-000000000001") });
 
             migrationBuilder.InsertData(
                 table: "Games",
                 columns: new[] { "Id", "CreatedOn", "LastEditedOn", "Name", "Price", "PublisherId" },
-                values: new object[] { new Guid("00000000-0000-0000-0000-000000000002"), new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(200), new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(202), "Splatoon 3", 59.99f, new Guid("00000000-0000-0000-0000-000000000002") });
+                values: new object[] { new Guid("00000000-0000-0000-0000-000000000002"), new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8848), new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8850), "Splatoon 3", 59.99f, new Guid("00000000-0000-0000-0000-000000000002") });
 
             migrationBuilder.InsertData(
                 table: "Games",
                 columns: new[] { "Id", "CreatedOn", "LastEditedOn", "Name", "Price", "PublisherId" },
-                values: new object[] { new Guid("00000000-0000-0000-0000-000000000003"), new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(204), new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(206), "Animal Crossing", 59.99f, new Guid("00000000-0000-0000-0000-000000000002") });
+                values: new object[] { new Guid("00000000-0000-0000-0000-000000000003"), new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8853), new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8855), "Animal Crossing", 59.99f, new Guid("00000000-0000-0000-0000-000000000002") });
 
             migrationBuilder.InsertData(
                 table: "GamesGenre",

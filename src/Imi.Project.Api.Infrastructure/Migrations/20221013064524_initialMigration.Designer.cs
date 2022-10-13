@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Imi.Project.Api.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221006094416_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20221013064524_initialMigration")]
+    partial class initialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -56,8 +56,8 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedOn = new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(166),
-                            LastEditedOn = new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(196),
+                            CreatedOn = new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8811),
+                            LastEditedOn = new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8844),
                             Name = "Fallout New Vegas",
                             Price = 14.99f,
                             PublisherId = new Guid("00000000-0000-0000-0000-000000000001")
@@ -65,8 +65,8 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000002"),
-                            CreatedOn = new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(200),
-                            LastEditedOn = new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(202),
+                            CreatedOn = new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8848),
+                            LastEditedOn = new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8850),
                             Name = "Splatoon 3",
                             Price = 59.99f,
                             PublisherId = new Guid("00000000-0000-0000-0000-000000000002")
@@ -74,8 +74,8 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000003"),
-                            CreatedOn = new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(204),
-                            LastEditedOn = new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(206),
+                            CreatedOn = new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8853),
+                            LastEditedOn = new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8855),
                             Name = "Animal Crossing",
                             Price = 59.99f,
                             PublisherId = new Guid("00000000-0000-0000-0000-000000000002")
@@ -146,24 +146,24 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedOn = new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(224),
+                            CreatedOn = new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8871),
                             Description = "Fist person shooter",
-                            LastEditedOn = new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(222),
+                            LastEditedOn = new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8869),
                             Name = "FPS"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000002"),
-                            CreatedOn = new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(228),
+                            CreatedOn = new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8875),
                             Description = "Fist person shooter but in the third person",
-                            LastEditedOn = new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(227),
+                            LastEditedOn = new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8874),
                             Name = "Third person shooter"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000003"),
-                            CreatedOn = new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(232),
-                            LastEditedOn = new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(231),
+                            CreatedOn = new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8879),
+                            LastEditedOn = new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8877),
                             Name = "Simulation"
                         });
                 });
@@ -196,16 +196,16 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000001"),
                             Country = "America",
-                            CreatedOn = new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(245),
-                            LastEditedOn = new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(247),
+                            CreatedOn = new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8892),
+                            LastEditedOn = new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8893),
                             Name = "Bethesda"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000002"),
                             Country = "Japan",
-                            CreatedOn = new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(250),
-                            LastEditedOn = new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(251),
+                            CreatedOn = new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8896),
+                            LastEditedOn = new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8898),
                             Name = "Nintendo"
                         });
                 });
@@ -246,20 +246,20 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedOn = new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(282),
+                            CreatedOn = new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8973),
                             Email = "FirstUser@gmail.com",
                             FirstName = "First",
-                            LastEditedOn = new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(280),
+                            LastEditedOn = new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8971),
                             LastName = "User",
                             UserName = "FirstUser"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000002"),
-                            CreatedOn = new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(286),
+                            CreatedOn = new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8978),
                             Email = "SecondUser@gmail.com",
                             FirstName = "Second",
-                            LastEditedOn = new DateTime(2022, 10, 6, 11, 44, 16, 522, DateTimeKind.Local).AddTicks(285),
+                            LastEditedOn = new DateTime(2022, 10, 13, 8, 45, 24, 0, DateTimeKind.Local).AddTicks(8976),
                             LastName = "User",
                             UserName = "TimTheDestroyerXx400"
                         });
