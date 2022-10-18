@@ -14,6 +14,6 @@ namespace Imi.Project.Api.Core.Dto.Game
 
         public float Price { get; set; }
 
-        //public PublisherResponseDto Publisher { get; set; }
+        public Guid PublisherId { get; set; }
     }
 }
