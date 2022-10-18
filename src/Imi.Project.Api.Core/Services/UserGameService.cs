@@ -32,14 +32,40 @@ namespace Imi.Project.Api.Core.Services
             };
             return gameGenre;
         }
-        public async Task<UserGame> AddAsync(UserGameResponseDto entity)
+        public async Task<ServiceResult<UserGame>> AddAsync(UserGameResponseDto entity)
         {
-            return await _userGameRepository.AddAsync(CreateEntity(entity));
+            var serviceResponse = new ServiceResult<UserGame>();
+            var userGameEntity = CreateEntity(entity);
+
+            try
+            {
+                await _userGameRepository.AddAsync(userGameEntity);
+                serviceResponse.Result = userGameEntity;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.HasErrors = true;
+                serviceResponse.ErrorMessages.Add(ex.Message);
+            }
+            return serviceResponse;
         }
 
-        public async Task<UserGame> DeleteAsync(UserGameResponseDto entity)
+        public async Task<ServiceResult<UserGame>> DeleteAsync(UserGameResponseDto entity)
         {
-            return await _userGameRepository.DeleteAsync(CreateEntity(entity));
+            var serviceResponse = new ServiceResult<UserGame>();
+            var userGameEntity = CreateEntity(entity);
+
+            try
+            {
+                await _userGameRepository.DeleteAsync(userGameEntity);
+                serviceResponse.Result = userGameEntity;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.HasErrors = true;
+                serviceResponse.ErrorMessages.Add(ex.Message);
+            }
+            return serviceResponse;
         }
 
         public IQueryable<UserGame> GetAll()
@@ -63,11 +89,22 @@ namespace Imi.Project.Api.Core.Services
             return await _userGameRepository.ListAllAsync();
         }
 
-        public async Task<UserGame> UpdateAsync(UserGameResponseDto entity)
+        public async Task<ServiceResult<UserGame>> UpdateAsync(UserGameResponseDto entity)
         {
+            var serviceResponse = new ServiceResult<UserGame>();
+            var userGameEntity = CreateEntity(entity);
 
-            return await _userGameRepository.UpdateAsync(CreateEntity(entity));
-
+            try
+            {
+                await _userGameRepository.UpdateAsync(userGameEntity);
+                serviceResponse.Result = userGameEntity;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.HasErrors = true;
+                serviceResponse.ErrorMessages.Add(ex.Message);
+            }
+            return serviceResponse;
         }
     }
 }

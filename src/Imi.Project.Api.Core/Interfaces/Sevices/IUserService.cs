@@ -1,6 +1,7 @@
 ﻿using Imi.Project.Api.Core.Dto.Publisher;
 using Imi.Project.Api.Core.Dto.User;
 using Imi.Project.Api.Core.Entities;
+using Imi.Project.Api.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,8 +19,8 @@ namespace Imi.Project.Api.Core.Interfaces.Sevices
         IQueryable<User> GetAll();
         Task<IEnumerable<User>> ListAllAsync();
         Task<User> GetByIdAsync(Guid id);
-        Task<User> UpdateAsync(UserResponseDto entity);
-        Task<User> AddAsync(UserResponseDto entity);
-        Task<User> DeleteAsync(UserResponseDto entity);
+        Task<ServiceResult<User>> UpdateAsync(UserResponseDto entity);
+        Task<ServiceResult<User>> AddAsync(UserResponseDto entity);
+        Task<ServiceResult<User>> DeleteAsync(UserResponseDto entity);
     }
 }

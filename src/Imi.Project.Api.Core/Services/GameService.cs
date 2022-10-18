@@ -33,9 +33,23 @@ namespace Imi.Project.Api.Core.Services
 
         }
 
-        public async Task<Game> AddAsync(GameResponseDto entity)
+        public async Task<ServiceResult<Game>> AddAsync(GameResponseDto entity)
         {
-            return await _gameRepository.AddAsync(CreateEntity(entity));
+            var serviceResponse = new ServiceResult<Game>();
+            var gameEntity = CreateEntity(entity);
+
+            try
+            {
+                await _gameRepository.AddAsync(gameEntity);
+                serviceResponse.Result = gameEntity;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.HasErrors = true;
+                serviceResponse.ErrorMessages.Add(ex.Message);
+            }
+            return serviceResponse;
+
         }
 
         public async Task<IEnumerable<Game>> GetByPublisherIdAsync(Guid id)
@@ -63,14 +77,41 @@ namespace Imi.Project.Api.Core.Services
             return await _gameRepository.GetByIdAsync(id);
         }
 
-        public async Task<Game> UpdateAsync(GameResponseDto entity)
+        public async Task<ServiceResult<Game>> UpdateAsync(GameResponseDto entity)
         {
-            return await _gameRepository.UpdateAsync(CreateEntity(entity));
+            var serviceResponse = new ServiceResult<Game>();
+            var gameEntity = CreateEntity(entity);
+
+            try
+            {
+                await _gameRepository.UpdateAsync(gameEntity);
+                serviceResponse.Result = gameEntity;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.HasErrors = true;
+                serviceResponse.ErrorMessages.Add(ex.Message);
+            }
+            return serviceResponse;
+
         }
 
-        public async Task<Game> DeleteAsync(GameResponseDto entity)
+        public async Task<ServiceResult<Game>> DeleteAsync(GameResponseDto entity)
         {
-            return await _gameRepository.DeleteAsync(CreateEntity(entity));
+            var serviceResponse = new ServiceResult<Game>();
+            var gameEntity = CreateEntity(entity);
+
+            try
+            {
+                await _gameRepository.DeleteAsync(gameEntity);
+                serviceResponse.Result = gameEntity;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.HasErrors = true;
+                serviceResponse.ErrorMessages.Add(ex.Message);
+            }
+            return serviceResponse;
         }
     }
 }

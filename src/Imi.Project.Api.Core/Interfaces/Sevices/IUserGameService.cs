@@ -1,5 +1,6 @@
 ﻿using Imi.Project.Api.Core.Dto.UserGame;
 using Imi.Project.Api.Core.Entities;
+using Imi.Project.Api.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,8 +16,8 @@ namespace Imi.Project.Api.Core.Interfaces.Sevices
         Task<UserGame> GetByGameIdAsync(Guid id);
         Task<UserGame> GetByUserIdAsync(Guid id);
 
-        Task<UserGame> UpdateAsync(UserGameResponseDto entity);
-        Task<UserGame> AddAsync(UserGameResponseDto entity);
-        Task<UserGame> DeleteAsync(UserGameResponseDto entity);
+        Task<ServiceResult< UserGame>> UpdateAsync(UserGameResponseDto entity);
+        Task<ServiceResult<UserGame>> AddAsync(UserGameResponseDto entity);
+        Task<ServiceResult<UserGame>> DeleteAsync(UserGameResponseDto entity);
     }
 }

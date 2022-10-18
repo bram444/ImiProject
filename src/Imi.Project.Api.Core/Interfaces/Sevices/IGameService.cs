@@ -1,5 +1,6 @@
 ﻿using Imi.Project.Api.Core.Dto.Game;
 using Imi.Project.Api.Core.Entities;
+using Imi.Project.Api.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,8 +17,8 @@ namespace Imi.Project.Api.Core.Interfaces.Sevices
         IQueryable<Game> GetAll();
         Task<IEnumerable<Game>> ListAllAsync();
         Task<Game> GetByIdAsync(Guid id);
-        Task<Game> UpdateAsync(GameResponseDto entity);
-        Task<Game> AddAsync(GameResponseDto entity);
-        Task<Game> DeleteAsync(GameResponseDto entity);
+        Task<ServiceResult<Game>> UpdateAsync(GameResponseDto entity);
+        Task<ServiceResult<Game>> AddAsync(GameResponseDto entity);
+        Task<ServiceResult<Game>> DeleteAsync(GameResponseDto entity);
     }
 }

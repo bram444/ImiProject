@@ -29,17 +29,41 @@ namespace Imi.Project.Api.Core.Services
             _gameGenreRepository = gameGenreRepository;
         }
 
-        public async Task<GameGenre> AddAsync(GameGenreResponseDto entity)
+        public async Task<ServiceResult<GameGenre>> AddAsync(GameGenreResponseDto entity)
         {
+            var serviceResponse =new ServiceResult<GameGenre>();
+            var gameGenreEntity = CreateEntity(entity);
 
-            return await _gameGenreRepository.AddAsync(CreateEntity(entity));
-
+            try
+            {
+                await _gameGenreRepository.AddAsync(gameGenreEntity);
+                serviceResponse.Result = gameGenreEntity;
+            }
+            catch(Exception ex)
+            {
+                serviceResponse.HasErrors = true;
+                serviceResponse.ErrorMessages.Add(ex.Message);
+            }
+            return serviceResponse;
         }
 
-        public async Task<GameGenre> DeleteAsync(GameGenreResponseDto entity)
+        public async Task<ServiceResult<GameGenre>> DeleteAsync(GameGenreResponseDto entity)
         {
+            var serviceResponse = new ServiceResult<GameGenre>();
+            var gameGenreEntity = CreateEntity(entity);
 
-            return await _gameGenreRepository.DeleteAsync(CreateEntity(entity));
+            try
+            {
+                await _gameGenreRepository.DeleteAsync(gameGenreEntity);
+                serviceResponse.Result = gameGenreEntity;
+            }
+            catch(Exception ex)
+            {
+                serviceResponse.HasErrors = true;
+                serviceResponse.ErrorMessages.Add(ex.Message);
+            }
+
+                return serviceResponse;
 
         }
 
@@ -61,15 +85,32 @@ namespace Imi.Project.Api.Core.Services
 
         }
 
-        public async Task<IEnumerable<GameGenre>> ListAllAsync()
+        public async Task<IEnumerable< GameGenre>> ListAllAsync()
         {
+
+
             return await _gameGenreRepository.ListAllAsync();
         }
 
-        public async Task<GameGenre> UpdateAsync(GameGenreResponseDto entity)
+        public async Task<ServiceResult<GameGenre>> UpdateAsync(GameGenreResponseDto entity)
         {
 
-            return await _gameGenreRepository.UpdateAsync(CreateEntity(entity));
+            var serviceResponse = new ServiceResult<GameGenre>();
+            var gameGenreEntity = CreateEntity(entity);
+
+            try
+            {
+                await _gameGenreRepository.UpdateAsync(gameGenreEntity);
+                serviceResponse.Result = gameGenreEntity;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.HasErrors = true;
+                serviceResponse.ErrorMessages.Add(ex.Message);
+            }
+
+            return serviceResponse;
+
 
         }
     }

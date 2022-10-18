@@ -1,4 +1,5 @@
 ﻿using Imi.Project.Api.Core.Dto.User;
+using Imi.Project.Api.Core.Dto.UserGame;
 using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Repository;
 using Imi.Project.Api.Core.Interfaces.Sevices;
@@ -18,40 +19,78 @@ namespace Imi.Project.Api.Core.Services
             _userRepository = userRepository;
         }
 
-        public Task<User> AddAsync(UserResponseDto entity)
+        private User CreateEntity(UserResponseDto userResponseDto)
         {
-            throw new NotImplementedException();
+            User user = new User
+            {
+                Id = userResponseDto.Id,
+                Email = userResponseDto.Email,
+                FirstName = userResponseDto.FirstName,
+             LastName= userResponseDto.LastName,
+             UserName=userResponseDto.UserName,
+            };
+            return user;
         }
 
-        public Task<User> DeleteAsync(UserResponseDto entity)
+        public async Task<ServiceResult<User>> AddAsync(UserResponseDto entity)
         {
-            throw new NotImplementedException();
+            var serviceResponse = new ServiceResult<User>();
+            var userGameEntity = CreateEntity(entity);
+
+            try
+            {
+                await _userRepository.AddAsync(userGameEntity);
+                serviceResponse.Result = userGameEntity;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.HasErrors = true;
+                serviceResponse.ErrorMessages.Add(ex.Message);
+            }
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResult<User>> DeleteAsync(UserResponseDto entity)
+        {
+            var serviceResponse = new ServiceResult<User>();
+            var userEntity = CreateEntity(entity);
+
+            try
+            {
+                await _userRepository.DeleteAsync(userEntity);
+                serviceResponse.Result = userEntity;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.HasErrors = true;
+                serviceResponse.ErrorMessages.Add(ex.Message);
+            }
+            return serviceResponse;
         }
 
         public IQueryable<User> GetAll()
         {
-            throw new NotImplementedException();
+            return _userRepository.GetAll();
         }
 
-        public Task<User> GetByIdAsync(Guid id)
+        public async Task<User> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await _userRepository.GetByIdAsync(id);
         }
 
-        public Task<IEnumerable<User>> ListAllAsync()
+        public async Task<IEnumerable<User>> ListAllAsync()
         {
-            throw new NotImplementedException();
+            return await _userRepository.ListAllAsync();
         }
 
         public async Task<IEnumerable<User>> SearchFirstNameAsync(string search)
         {
             return await _userRepository.SearchFirstNameAsync(search);
-        }
 
+        }
         public async Task<IEnumerable<User>> SearchLastNameAsync(string search)
         {
             return await _userRepository.SearchLastNameAsync(search);
-
         }
 
         public async Task<IEnumerable<User>> SearchUserNameAsync(string search)
@@ -59,9 +98,22 @@ namespace Imi.Project.Api.Core.Services
             return await _userRepository.SearchUserNameAsync(search);
         }
 
-        public Task<User> UpdateAsync(UserResponseDto entity)
+        public async Task<ServiceResult<User>> UpdateAsync(UserResponseDto entity)
         {
-            throw new NotImplementedException();
+            var serviceResponse = new ServiceResult<User>();
+            var userEntity = CreateEntity(entity);
+
+            try
+            {
+                await _userRepository.UpdateAsync(userEntity);
+                serviceResponse.Result = userEntity;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.HasErrors = true;
+                serviceResponse.ErrorMessages.Add(ex.Message);
+            }
+            return serviceResponse;
         }
     }
 }

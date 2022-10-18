@@ -1,4 +1,4 @@
-using Imi.Project.Api.Core.Repository.Interfaces;
+using Imi.Project.Api.Core.Interfaces.Repository;
 using Imi.Project.Api.Infrastructure;
 using Imi.Project.Api.Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +16,8 @@ builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
 builder.Services.AddScoped<IUserGameRepository, UserGameRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+builder.Services.AddCors();
 
 var app = builder.Build();
 

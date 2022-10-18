@@ -1,6 +1,7 @@
 ﻿using Imi.Project.Api.Core.Dto.Genre;
 using Imi.Project.Api.Core.Dto.Publisher;
 using Imi.Project.Api.Core.Entities;
+using Imi.Project.Api.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +17,9 @@ namespace Imi.Project.Api.Core.Interfaces.Sevices
 
         IQueryable<Publisher> GetAll();
         Task<IEnumerable<Publisher>> ListAllAsync();
-        Task<Publisher> GetByIdAsync(Guid id);
-        Task<Publisher> UpdateAsync(PublisherResponseDto entity);
-        Task<Publisher> AddAsync(PublisherResponseDto entity);
-        Task<Publisher> DeleteAsync(PublisherResponseDto entity);
+        Task< Publisher> GetByIdAsync(Guid id);
+        Task<ServiceResult<Publisher>> UpdateAsync(PublisherResponseDto entity);
+        Task<ServiceResult<Publisher>> AddAsync(PublisherResponseDto entity);
+        Task<ServiceResult<Publisher>> DeleteAsync(PublisherResponseDto entity);
     }
 }

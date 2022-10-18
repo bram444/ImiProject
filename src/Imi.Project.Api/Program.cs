@@ -1,4 +1,9 @@
+using Imi.Project.Api.Core.Entities;
+using Imi.Project.Api.Core.Interfaces.Repository;
+using Imi.Project.Api.Core.Interfaces.Sevices;
+using Imi.Project.Api.Core.Services;
 using Imi.Project.Api.Infrastructure;
+using Imi.Project.Api.Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,10 +12,21 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultDatabase")));
 
-builder.Services.AddCors();
+builder.Services.AddScoped<IGameGenreRepository, GameGenreRepository>();
+builder.Services.AddScoped<IGameRepository, GameRepository>();
+builder.Services.AddScoped<IGenreRepository, GenreRepository>();
+builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
+builder.Services.AddScoped<IUserGameRepository, UserGameRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-//builder.Services.AddScoped<IProductRepository, ProductRepository>();
-//builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IGameGenreService, GameGenreService>();
+builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<IGenreService, GenreService>();
+builder.Services.AddScoped<IPublisherService, PublisherService>();
+builder.Services.AddScoped<IUserGameService, UserGameService>();
+builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddCors();
 
 
 builder.Services.AddControllers();

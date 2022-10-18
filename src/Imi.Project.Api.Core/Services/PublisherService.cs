@@ -32,14 +32,40 @@ namespace Imi.Project.Api.Core.Services
             return genre;
         }
 
-        public async Task<Publisher> AddAsync(PublisherResponseDto entity)
+        public async Task<ServiceResult<Publisher>> AddAsync(PublisherResponseDto entity)
         {
-            return await _publisherRespository.AddAsync(CreateEntity(entity));
+            var serviceResponse = new ServiceResult<Publisher>();
+            var publisherEntity = CreateEntity(entity);
+
+            try
+            {
+                await _publisherRespository.AddAsync(publisherEntity);
+                serviceResponse.Result = publisherEntity;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.HasErrors = true;
+                serviceResponse.ErrorMessages.Add(ex.Message);
+            }
+            return serviceResponse;
         }
 
-        public async Task<Publisher> DeleteAsync(PublisherResponseDto entity)
+        public async Task<ServiceResult<Publisher>> DeleteAsync(PublisherResponseDto entity)
         {
-            return await _publisherRespository.DeleteAsync(CreateEntity(entity));
+            var serviceResponse = new ServiceResult<Publisher>();
+            var publisherEntity = CreateEntity(entity);
+
+            try
+            {
+                await _publisherRespository.DeleteAsync(publisherEntity);
+                serviceResponse.Result = publisherEntity;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.HasErrors = true;
+                serviceResponse.ErrorMessages.Add(ex.Message);
+            }
+            return serviceResponse;
         }
 
         public IQueryable<Publisher> GetAll()
@@ -69,9 +95,22 @@ namespace Imi.Project.Api.Core.Services
 
         }
 
-        public async Task<Publisher> UpdateAsync(PublisherResponseDto entity)
+        public async Task<ServiceResult<Publisher>> UpdateAsync(PublisherResponseDto entity)
         {
-            return await _publisherRespository.UpdateAsync(CreateEntity(entity));
+            var serviceResponse = new ServiceResult<Publisher>();
+            var publisherEntity = CreateEntity(entity);
+
+            try
+            {
+                await _publisherRespository.UpdateAsync(publisherEntity);
+                serviceResponse.Result = publisherEntity;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.HasErrors = true;
+                serviceResponse.ErrorMessages.Add(ex.Message);
+            }
+            return serviceResponse;
         }
     }
 }

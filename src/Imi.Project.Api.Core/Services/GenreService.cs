@@ -33,14 +33,41 @@ namespace Imi.Project.Api.Core.Services
             return genre;
         }
 
-        public async Task<Genre> AddAsync(GenreResponseDto entity)
+        public async Task<ServiceResult<Genre>> AddAsync(GenreResponseDto entity)
         {
-            return await _genreRepository.AddAsync(CreateEntity(entity));
+            var serviceResponse = new ServiceResult<Genre>();
+            var genreEntity = CreateEntity(entity);
+
+            try
+            {
+                await _genreRepository.AddAsync(genreEntity);
+                serviceResponse.Result = genreEntity;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.HasErrors = true;
+                serviceResponse.ErrorMessages.Add(ex.Message);
+            }
+            return serviceResponse;
+
         }
 
-        public async Task<Genre> DeleteAsync(GenreResponseDto entity)
+        public async Task<ServiceResult<Genre>> DeleteAsync(GenreResponseDto entity)
         {
-            return await _genreRepository.DeleteAsync(CreateEntity(entity));
+            var serviceResponse = new ServiceResult<Genre>();
+            var genreEntity = CreateEntity(entity);
+
+            try
+            {
+                await _genreRepository.DeleteAsync(genreEntity);
+                serviceResponse.Result = genreEntity;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.HasErrors = true;
+                serviceResponse.ErrorMessages.Add(ex.Message);
+            }
+            return serviceResponse;
         }
 
         public IQueryable<Genre> GetAll()
@@ -63,9 +90,22 @@ namespace Imi.Project.Api.Core.Services
             return await _genreRepository.SearchAsync(search);
         }
 
-        public async Task<Genre> UpdateAsync(GenreResponseDto entity)
+        public async Task<ServiceResult<Genre>> UpdateAsync(GenreResponseDto entity)
         {
-            return await _genreRepository.UpdateAsync(CreateEntity(entity));
+            var serviceResponse = new ServiceResult<Genre>();
+            var genreEntity = CreateEntity(entity);
+
+            try
+            {
+                await _genreRepository.UpdateAsync(genreEntity);
+                serviceResponse.Result = genreEntity;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.HasErrors = true;
+                serviceResponse.ErrorMessages.Add(ex.Message);
+            }
+            return serviceResponse;
         }
     }
 }
