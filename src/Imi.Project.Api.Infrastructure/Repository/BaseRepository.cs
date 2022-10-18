@@ -1,5 +1,5 @@
 ﻿using Imi.Project.Api.Core.Entities;
-using Imi.Project.Api.Core.Repository.Interfaces;
+using Imi.Project.Api.Core.Interfaces.Repository;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -36,7 +36,7 @@ namespace Imi.Project.Api.Infrastructure.Repository
         {
             entity.CreatedOn = DateTime.UtcNow;
             entity.LastEditedOn = DateTime.UtcNow;
-
+            entity.Id= Guid.NewGuid();
             _dbContext.Set<T>().Add(entity);
             await _dbContext.SaveChangesAsync();
             return entity;

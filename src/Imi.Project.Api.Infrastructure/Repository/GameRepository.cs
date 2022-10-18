@@ -1,5 +1,5 @@
 ﻿using Imi.Project.Api.Core.Entities;
-using Imi.Project.Api.Core.Repository.Interfaces;
+using Imi.Project.Api.Core.Interfaces.Repository;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -14,7 +14,6 @@ namespace Imi.Project.Api.Infrastructure.Repository
 
         public GameRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
-
         }
 
         public async Task<IEnumerable<Game>> GetByPublisherIdAsync(Guid id)

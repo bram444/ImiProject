@@ -1,5 +1,6 @@
-﻿using Imi.Project.Api.Core.Entities;
-using Imi.Project.Api.Core.Repository.Interfaces;
+﻿using Imi.Project.Api.Core.Dto.UserGame;
+using Imi.Project.Api.Core.Entities;
+using Imi.Project.Api.Core.Interfaces.Repository;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
