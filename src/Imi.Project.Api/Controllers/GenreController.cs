@@ -1,5 +1,10 @@
-﻿using Imi.Project.Api.Core.Dto.Genre;
-using Imi.Project.Api.Core.Repository.Interfaces;
+﻿using Imi.Project.Api.Core.Dto.Game;
+using Imi.Project.Api.Core.Dto.GameGenre;
+using Imi.Project.Api.Core.Dto.Genre;
+using Imi.Project.Api.Core.Entities;
+using Imi.Project.Api.Core.Interfaces.Repository;
+using Imi.Project.Api.Core.Interfaces.Sevices;
+using Imi.Project.Api.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Imi.Project.Api.Controllers
@@ -8,24 +13,60 @@ namespace Imi.Project.Api.Controllers
     [ApiController]
     public class GenreController : ControllerBase
     {
-        protected readonly IGenreRepository _genreRepository;
+        protected readonly IGenreService _genreService;
+        protected readonly IGameGenreService _gameGenreService;
 
-        public GenreController(IGenreRepository genreRepository)
+
+        public GenreController(IGenreService genreService, IGameGenreService gameGenreService)
         {
-            _genreRepository = genreRepository;
+            _genreService = genreService;
+            _gameGenreService=gameGenreService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var genres = await _genreRepository.ListAllAsync();
-            var genreDto = genres.Select(g => new GenreResponseDto
-            {
-                Id = g.Id,
-                Description = g.Description,
-                Name = g.Name,
-            });
-            return Ok(genreDto);
+            return Ok(await _genreService.ListAllAsync());
         }
+
+        [HttpGet("{search}/genre")]
+        public async Task<IActionResult> GetByName(string search)
+        {
+            return Ok(await _genreService.SearchAsync(search));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post(GenreResponseDto genreResponseDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(await _genreService.AddAsync(genreResponseDto));
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Put(GenreResponseDto genreResponseDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(await _genreService.UpdateAsync(genreResponseDto));
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            foreach (GameGenreResponseDto gg in await _gameGenreService.GetByGenreIdAsync(id))
+            {
+                await _gameGenreService.DeleteAsync(gg);
+            }
+
+            return Ok(await _genreService.DeleteAsync(id));
+        }
+
     }
 }
