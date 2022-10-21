@@ -26,28 +26,23 @@ namespace Imi.Project.Api.Infrastructure.Repository
         }
         public virtual async Task<IEnumerable<GameGenre>> ListAllAsync()
         {
-            return await _dbContext.Set<GameGenre>().ToListAsync();
+            return await _dbContext.Set<GameGenre>().AsNoTracking().ToListAsync();
         }
-        public virtual async Task<GameGenre> GetByGameIdAsync(Guid id)
+        public virtual async Task<IEnumerable<GameGenre>> GetByGameIdAsync(Guid id)
         {
-            return await _dbContext.Set<GameGenre>().SingleOrDefaultAsync(t => t.GameId.Equals(id));
+            var gameGenre = await ListAllAsync();
+            return gameGenre.Where(gg => gg.GameId == id);
         }
 
-        public virtual async Task<GameGenre> GetByGenreIdAsync(Guid id)
+        public virtual async Task<IEnumerable< GameGenre>> GetByGenreIdAsync(Guid id)
         {
-            return await _dbContext.Set<GameGenre>().SingleOrDefaultAsync(t => t.GenreId.Equals(id));
+            var gameGenre = await ListAllAsync();
+            return gameGenre.Where(gg => gg.GameId == id);
         }
 
         public async Task<GameGenre> AddAsync(GameGenre entity)
         {
             _dbContext.Set<GameGenre>().Add(entity);
-            await _dbContext.SaveChangesAsync();
-            return entity;
-        }
-
-        public async Task<GameGenre> UpdateAsync(GameGenre entity)
-        {
-            _dbContext.Set<GameGenre>().Update(entity);
             await _dbContext.SaveChangesAsync();
             return entity;
         }

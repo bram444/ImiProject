@@ -24,20 +24,21 @@ namespace Imi.Project.Api.Infrastructure.Repository
 
         public virtual async Task<IEnumerable<T>> ListAllAsync()
         {
-            return await _dbContext.Set<T>().ToListAsync();
+            return await _dbContext.Set<T>().AsNoTracking().ToListAsync();
         }
 
         public virtual async Task<T> GetByIdAsync(Guid id)
         {
-            return await _dbContext.Set<T>().SingleOrDefaultAsync(t => t.Id.Equals(id));
+            return await _dbContext.Set<T>().SingleOrDefaultAsync(t => t.Id == id);
         }
 
         public async Task<T> AddAsync(T entity)
         {
             entity.CreatedOn = DateTime.UtcNow;
             entity.LastEditedOn = DateTime.UtcNow;
-            entity.Id= Guid.NewGuid();
+            //entity.Id = Guid.NewGuid();
             _dbContext.Set<T>().Add(entity);
+            _dbContext.Entry(entity).State = EntityState.Added;
             await _dbContext.SaveChangesAsync();
             return entity;
         }
@@ -51,10 +52,11 @@ namespace Imi.Project.Api.Infrastructure.Repository
             return entity;
         }
 
-
         public async Task<T> DeleteAsync(T entity)
         {
             _dbContext.Set<T>().Remove(entity);
+            _dbContext.Entry(entity).State = EntityState.Deleted;
+
             await _dbContext.SaveChangesAsync();
             return entity;
         }
