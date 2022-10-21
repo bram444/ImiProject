@@ -13,10 +13,9 @@ namespace Imi.Project.Api.Core.Interfaces.Repository
     {
         IQueryable<UserGame> GetAll();
         Task<IEnumerable<UserGame>> ListAllAsync();
-        Task<UserGame> GetByGameIdAsync(Guid id);
-        Task<UserGame> GetByUserIdAsync(Guid id);
+        Task<IEnumerable<UserGame>> GetByGameIdAsync(Guid id);
+        Task<IEnumerable<UserGame>> GetByUserIdAsync(Guid id);
 
-        Task<UserGame> UpdateAsync(UserGame entity);
         Task<UserGame> AddAsync(UserGame entity);
         Task<UserGame> DeleteAsync(UserGame entity);
     }
