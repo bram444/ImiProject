@@ -32,15 +32,23 @@ namespace Imi.Project.Api.Core.Services
             };
             return gameGenre;
         }
-        public async Task<ServiceResult<UserGame>> AddAsync(UserGameResponseDto entity)
+
+        private UserGameResponseDto CreateDto(UserGame userGame)
         {
-            var serviceResponse = new ServiceResult<UserGame>();
-            var userGameEntity = CreateEntity(entity);
+            UserGameResponseDto userGameResponseDto = new UserGameResponseDto
+            {
+                GameId = userGame.GameId,
+                UserId = userGame.UserId,
+            };
+            return userGameResponseDto;
+        }
+        public async Task<ServiceResult<UserGameResponseDto>> AddAsync(UserGameResponseDto response)
+        {
+            var serviceResponse = new ServiceResult<UserGameResponseDto>();
 
             try
             {
-                await _userGameRepository.AddAsync(userGameEntity);
-                serviceResponse.Result = userGameEntity;
+                serviceResponse.Result = CreateDto(await _userGameRepository.AddAsync(CreateEntity(response)));
             }
             catch (Exception ex)
             {
@@ -50,15 +58,22 @@ namespace Imi.Project.Api.Core.Services
             return serviceResponse;
         }
 
-        public async Task<ServiceResult<UserGame>> DeleteAsync(UserGameResponseDto entity)
+        public async Task<ServiceResult<UserGameResponseDto>> DeleteAsync(UserGameResponseDto response)
         {
-            var serviceResponse = new ServiceResult<UserGame>();
-            var userGameEntity = CreateEntity(entity);
+            var serviceResponse = new ServiceResult<UserGameResponseDto>();
+
+            if (_userGameRepository.ListAllAsync().Result.Where(gg => gg.UserId == response.UserId && gg.GameId == response.GameId).Count() == 0)
+            {
+                serviceResponse.HasErrors = true;
+                serviceResponse.ErrorMessages.Add($"Many to many relationship does not exist");
+
+                return serviceResponse;
+            }
 
             try
             {
-                await _userGameRepository.DeleteAsync(userGameEntity);
-                serviceResponse.Result = userGameEntity;
+                await _userGameRepository.DeleteAsync(CreateEntity(response));
+                serviceResponse.Result = response;
             }
             catch (Exception ex)
             {
@@ -68,43 +83,49 @@ namespace Imi.Project.Api.Core.Services
             return serviceResponse;
         }
 
-        public IQueryable<UserGame> GetAll()
+        public IQueryable<UserGameResponseDto> GetAll()
         {
-            return  _userGameRepository.GetAll();
-        }
-
-        public async Task<UserGame> GetByGameIdAsync(Guid id)
-        {
-            return await _userGameRepository.GetByGameIdAsync(id);
-        }
-
-        public async Task<UserGame> GetByUserIdAsync(Guid id)
-        {
-            return await _userGameRepository.GetByUserIdAsync(id);
-
-        }
-
-        public async Task<IEnumerable<UserGame>> ListAllAsync()
-        {
-            return await _userGameRepository.ListAllAsync();
-        }
-
-        public async Task<ServiceResult<UserGame>> UpdateAsync(UserGameResponseDto entity)
-        {
-            var serviceResponse = new ServiceResult<UserGame>();
-            var userGameEntity = CreateEntity(entity);
-
-            try
+            List<UserGameResponseDto> userGameResponseDtos = new List<UserGameResponseDto>();
+            foreach (UserGame entity in _userGameRepository.GetAll())
             {
-                await _userGameRepository.UpdateAsync(userGameEntity);
-                serviceResponse.Result = userGameEntity;
+                userGameResponseDtos.Add(CreateDto(entity));
             }
-            catch (Exception ex)
+
+            return userGameResponseDtos.AsQueryable();
+        }
+
+        public async Task<IEnumerable<UserGameResponseDto>> GetByGameIdAsync(Guid id)
+        {
+            List<UserGameResponseDto> userGameResponseDtos = new List<UserGameResponseDto>();
+
+            foreach (UserGame entity in await _userGameRepository.GetByGameIdAsync(id))
             {
-                serviceResponse.HasErrors = true;
-                serviceResponse.ErrorMessages.Add(ex.Message);
+                userGameResponseDtos.Add(CreateDto(entity));
             }
-            return serviceResponse;
+
+            return userGameResponseDtos;
+        }
+
+        public async Task<IEnumerable<UserGameResponseDto>> GetByUserIdAsync(Guid id)
+        {
+            List<UserGameResponseDto> userGameResponseDtos = new List<UserGameResponseDto>();
+            foreach (UserGame entity in await _userGameRepository.GetByUserIdAsync(id))
+            {
+                userGameResponseDtos.Add(CreateDto(entity));
+            }
+
+            return userGameResponseDtos;
+        }
+
+        public async Task<IEnumerable<UserGameResponseDto>> ListAllAsync()
+        {
+            List<UserGameResponseDto> userResponseDtos = new List<UserGameResponseDto>();
+            foreach (UserGame entity in await _userGameRepository.ListAllAsync())
+            {
+                userResponseDtos.Add(CreateDto(entity));
+            }
+
+            return userResponseDtos;
         }
     }
 }

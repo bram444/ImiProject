@@ -26,21 +26,32 @@ namespace Imi.Project.Api.Core.Services
                 Id = userResponseDto.Id,
                 Email = userResponseDto.Email,
                 FirstName = userResponseDto.FirstName,
-             LastName= userResponseDto.LastName,
-             UserName=userResponseDto.UserName,
+                LastName = userResponseDto.LastName,
+                UserName = userResponseDto.UserName,
             };
             return user;
         }
 
-        public async Task<ServiceResult<User>> AddAsync(UserResponseDto entity)
+        private UserResponseDto CreateDto(User user)
         {
-            var serviceResponse = new ServiceResult<User>();
-            var userGameEntity = CreateEntity(entity);
+            UserResponseDto userResponseDto = new UserResponseDto
+            {
+                Id = user.Id,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                UserName = user.UserName,
+            };
+            return userResponseDto;
+        }
+
+        public async Task<ServiceResult<UserResponseDto>> AddAsync(UserResponseDto response)
+        {
+            var serviceResponse = new ServiceResult<UserResponseDto>();
 
             try
             {
-                await _userRepository.AddAsync(userGameEntity);
-                serviceResponse.Result = userGameEntity;
+                serviceResponse.Result = CreateDto(await _userRepository.AddAsync(CreateEntity(response)));
             }
             catch (Exception ex)
             {
@@ -50,15 +61,13 @@ namespace Imi.Project.Api.Core.Services
             return serviceResponse;
         }
 
-        public async Task<ServiceResult<User>> DeleteAsync(UserResponseDto entity)
+        public async Task<ServiceResult<UserResponseDto>> DeleteAsync(Guid id)
         {
-            var serviceResponse = new ServiceResult<User>();
-            var userEntity = CreateEntity(entity);
+            var serviceResponse = new ServiceResult<UserResponseDto>();
 
             try
             {
-                await _userRepository.DeleteAsync(userEntity);
-                serviceResponse.Result = userEntity;
+                serviceResponse.Result = CreateDto(await _userRepository.DeleteAsync(await _userRepository.GetByIdAsync(id)));
             }
             catch (Exception ex)
             {
@@ -66,47 +75,76 @@ namespace Imi.Project.Api.Core.Services
                 serviceResponse.ErrorMessages.Add(ex.Message);
             }
             return serviceResponse;
-        }
-
-        public IQueryable<User> GetAll()
-        {
-            return _userRepository.GetAll();
-        }
-
-        public async Task<User> GetByIdAsync(Guid id)
-        {
-            return await _userRepository.GetByIdAsync(id);
-        }
-
-        public async Task<IEnumerable<User>> ListAllAsync()
-        {
-            return await _userRepository.ListAllAsync();
-        }
-
-        public async Task<IEnumerable<User>> SearchFirstNameAsync(string search)
-        {
-            return await _userRepository.SearchFirstNameAsync(search);
 
         }
-        public async Task<IEnumerable<User>> SearchLastNameAsync(string search)
+
+        public IQueryable<UserResponseDto> GetAll()
         {
-            return await _userRepository.SearchLastNameAsync(search);
+            List<UserResponseDto> userResponseDtos = new List<UserResponseDto>();
+            foreach(User entity in _userRepository.GetAll())
+            {
+                userResponseDtos.Add(CreateDto(entity));
+            }
+
+            return userResponseDtos.AsQueryable();
         }
 
-        public async Task<IEnumerable<User>> SearchUserNameAsync(string search)
+        public async Task<UserResponseDto> GetByIdAsync(Guid id)
         {
-            return await _userRepository.SearchUserNameAsync(search);
+            return CreateDto(await _userRepository.GetByIdAsync(id));
         }
 
-        public async Task<ServiceResult<User>> UpdateAsync(UserResponseDto entity)
+        public async Task<IEnumerable<UserResponseDto>> ListAllAsync()
         {
-            var serviceResponse = new ServiceResult<User>();
-            var userEntity = CreateEntity(entity);
+            List<UserResponseDto> userResponseDtos = new List<UserResponseDto>();
+            foreach (User entity in await _userRepository.ListAllAsync())
+            {
+                userResponseDtos.Add(CreateDto(entity));
+            }
+
+            return userResponseDtos;
+        }
+
+        public async Task<IEnumerable<UserResponseDto>> SearchFirstNameAsync(string search)
+        {
+            List<UserResponseDto> userResponseList = new List<UserResponseDto>(); 
+            foreach(User user in await _userRepository.SearchFirstNameAsync(search))
+            {
+                userResponseList.Add(CreateDto(user));
+            }
+
+            return userResponseList;
+
+        }
+        public async Task<IEnumerable<UserResponseDto>> SearchLastNameAsync(string search)
+        {
+            List<UserResponseDto> userResponseList = new List<UserResponseDto>();
+            foreach (User user in await _userRepository.SearchLastNameAsync(search))
+            {
+                userResponseList.Add(CreateDto(user));
+            }
+
+            return userResponseList;
+        }
+
+        public async Task<IEnumerable<UserResponseDto>> SearchUserNameAsync(string search)
+        {
+            List<UserResponseDto> userResponseList = new List<UserResponseDto>();
+            foreach (User user in await _userRepository.SearchUserNameAsync(search))
+            {
+                userResponseList.Add(CreateDto(user));
+            }
+
+            return userResponseList;
+        }
+
+        public async Task<ServiceResult<UserResponseDto>> UpdateAsync(UserResponseDto response)
+        {
+            var serviceResponse = new ServiceResult<UserResponseDto>();
 
             try
             {
-                await _userRepository.UpdateAsync(userEntity);
-                serviceResponse.Result = userEntity;
+                serviceResponse.Result = CreateDto( await _userRepository.UpdateAsync(CreateEntity(response)));
             }
             catch (Exception ex)
             {

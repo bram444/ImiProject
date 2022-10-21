@@ -1,5 +1,6 @@
 ﻿using Imi.Project.Api.Core.Dto.Game;
 using Imi.Project.Api.Core.Dto.Genre;
+using Imi.Project.Api.Core.Dto.Publisher;
 using Imi.Project.Api.Core.Dto.User;
 using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Repository;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Services
 {
-    public class GenreService :IGenreService
+    public class GenreService : IGenreService
     {
         private readonly IGenreRepository _genreRepository;
 
@@ -22,26 +23,35 @@ namespace Imi.Project.Api.Core.Services
             _genreRepository = genreRepository;
 
         }
-        private Genre CreateEntity(GenreResponseDto  genreResponseDto)
+        private Genre CreateEntity(GenreResponseDto genreResponseDto)
         {
             Genre genre = new Genre
             {
-                 Id= genreResponseDto.Id,
-                 Name= genreResponseDto.Name,
-                 Description= genreResponseDto.Description,
+                Id = genreResponseDto.Id,
+                Name = genreResponseDto.Name,
+                Description = genreResponseDto.Description,
             };
             return genre;
         }
 
-        public async Task<ServiceResult<Genre>> AddAsync(GenreResponseDto entity)
+        private GenreResponseDto CreateDto(Genre genre)
         {
-            var serviceResponse = new ServiceResult<Genre>();
-            var genreEntity = CreateEntity(entity);
+            GenreResponseDto genreDto = new GenreResponseDto
+            {
+                Id = genre.Id,
+                Name = genre.Name,
+                Description = genre.Description,
+            };
+            return genreDto;
+        }
+
+        public async Task<ServiceResult<GenreResponseDto>> AddAsync(GenreResponseDto response)
+        {
+            var serviceResponse = new ServiceResult<GenreResponseDto>();
 
             try
             {
-                await _genreRepository.AddAsync(genreEntity);
-                serviceResponse.Result = genreEntity;
+                serviceResponse.Result = CreateDto(await _genreRepository.AddAsync(CreateEntity(response)));
             }
             catch (Exception ex)
             {
@@ -52,15 +62,22 @@ namespace Imi.Project.Api.Core.Services
 
         }
 
-        public async Task<ServiceResult<Genre>> DeleteAsync(GenreResponseDto entity)
+        public async Task<ServiceResult<GenreResponseDto>> DeleteAsync(Guid id)
         {
-            var serviceResponse = new ServiceResult<Genre>();
-            var genreEntity = CreateEntity(entity);
+            var serviceResponse = new ServiceResult<GenreResponseDto>();
+
+            if (await _genreRepository.GetByIdAsync(id) == null)
+            {
+                serviceResponse.HasErrors = true;
+                serviceResponse.ErrorMessages.Add("Genre does not exist");
+                return serviceResponse;
+            }
 
             try
             {
-                await _genreRepository.DeleteAsync(genreEntity);
-                serviceResponse.Result = genreEntity;
+                
+
+                serviceResponse.Result = CreateDto(await _genreRepository.DeleteAsync(await _genreRepository.GetByIdAsync(id)));
             }
             catch (Exception ex)
             {
@@ -70,35 +87,58 @@ namespace Imi.Project.Api.Core.Services
             return serviceResponse;
         }
 
-        public IQueryable<Genre> GetAll()
+        public IQueryable<GenreResponseDto> GetAll()
         {
-            return _genreRepository.GetAll();
+            List<GenreResponseDto> genreResponseDtos = new List<GenreResponseDto>();
+            foreach (Genre entity in _genreRepository.GetAll())
+            {
+                genreResponseDtos.Add(CreateDto(entity));
+            }
+
+            return genreResponseDtos.AsQueryable();
         }
 
-        public async Task<Genre> GetByIdAsync(Guid id)
+        public async Task<GenreResponseDto> GetByIdAsync(Guid id)
         {
-            return await _genreRepository.GetByIdAsync(id);
+            return CreateDto(await _genreRepository.GetByIdAsync(id));
         }
 
-        public async Task<IEnumerable<Genre>> ListAllAsync()
+        public async Task<IEnumerable<GenreResponseDto>> ListAllAsync()
         {
-            return await _genreRepository.ListAllAsync();
+            List<GenreResponseDto> genreResponseDtos = new List<GenreResponseDto>();
+            foreach (Genre entity in await _genreRepository.ListAllAsync())
+            {
+                genreResponseDtos.Add(CreateDto(entity));
+            }
+
+            return genreResponseDtos;
         }
 
-        public async Task<IEnumerable<Genre>> SearchAsync(string search)
+        public async Task<IEnumerable<GenreResponseDto>> SearchAsync(string search)
         {
-            return await _genreRepository.SearchAsync(search);
+            List<GenreResponseDto> genreResponseDtos = new List<GenreResponseDto>();
+            foreach (Genre entity in await _genreRepository.SearchAsync(search))
+            {
+                genreResponseDtos.Add(CreateDto(entity));
+            }
+
+            return genreResponseDtos;
         }
 
-        public async Task<ServiceResult<Genre>> UpdateAsync(GenreResponseDto entity)
+        public async Task<ServiceResult<GenreResponseDto>> UpdateAsync(GenreResponseDto response)
         {
-            var serviceResponse = new ServiceResult<Genre>();
-            var genreEntity = CreateEntity(entity);
+            var serviceResponse = new ServiceResult<GenreResponseDto>();
+
+            if (await _genreRepository.GetByIdAsync(response.Id) == null)
+            {
+                serviceResponse.HasErrors = true;
+                serviceResponse.ErrorMessages.Add("Genre does not exist");
+                return serviceResponse;
+            }
 
             try
             {
-                await _genreRepository.UpdateAsync(genreEntity);
-                serviceResponse.Result = genreEntity;
+                serviceResponse.Result = CreateDto(await _genreRepository.UpdateAsync(CreateEntity(response)));
             }
             catch (Exception ex)
             {

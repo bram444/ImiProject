@@ -1,5 +1,7 @@
 ﻿using Imi.Project.Api.Core.Dto.Genre;
 using Imi.Project.Api.Core.Dto.Publisher;
+using Imi.Project.Api.Core.Dto.User;
+using Imi.Project.Api.Core.Dto.UserGame;
 using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Repository;
 using Imi.Project.Api.Core.Interfaces.Sevices;
@@ -15,32 +17,44 @@ namespace Imi.Project.Api.Core.Services
     {
 
         private readonly IPublisherRepository _publisherRespository;
+        private readonly IGameRepository _gameRepository;
 
-        public PublisherService(IPublisherRepository publisherRespository)
+
+        public PublisherService(IPublisherRepository publisherRespository, IGameRepository gameRepository)
         {
             _publisherRespository = publisherRespository;
+            _gameRepository = gameRepository;
         }
 
         private Publisher CreateEntity(PublisherResponseDto publisherResponseDto)
         {
-            Publisher genre = new Publisher
+            Publisher publisher = new Publisher
             {
                 Id = publisherResponseDto.Id,
                  Country = publisherResponseDto.Country,
                   Name= publisherResponseDto.Name,
             };
-            return genre;
+            return publisher;
         }
 
-        public async Task<ServiceResult<Publisher>> AddAsync(PublisherResponseDto entity)
+        private PublisherResponseDto CreateDto(Publisher publisher)
         {
-            var serviceResponse = new ServiceResult<Publisher>();
-            var publisherEntity = CreateEntity(entity);
+            PublisherResponseDto publisherResponseDto = new PublisherResponseDto
+            {
+                Id = publisher.Id,
+                Country = publisher.Country,
+                Name = publisher.Name,
+            };
+            return publisherResponseDto;
+        }
+
+        public async Task<ServiceResult<PublisherResponseDto>> AddAsync(PublisherResponseDto response)
+        {
+            var serviceResponse = new ServiceResult<PublisherResponseDto>();
 
             try
             {
-                await _publisherRespository.AddAsync(publisherEntity);
-                serviceResponse.Result = publisherEntity;
+                serviceResponse.Result = CreateDto(await _publisherRespository.AddAsync(CreateEntity(response)));
             }
             catch (Exception ex)
             {
@@ -50,15 +64,27 @@ namespace Imi.Project.Api.Core.Services
             return serviceResponse;
         }
 
-        public async Task<ServiceResult<Publisher>> DeleteAsync(PublisherResponseDto entity)
+        public async Task<ServiceResult<PublisherResponseDto>> DeleteAsync(Guid id)
         {
-            var serviceResponse = new ServiceResult<Publisher>();
-            var publisherEntity = CreateEntity(entity);
+            var serviceResponse = new ServiceResult<PublisherResponseDto>();
+
+            if (await _publisherRespository.GetByIdAsync(id) == null)
+            {
+                serviceResponse.HasErrors = true;
+                serviceResponse.ErrorMessages.Add("publisher does not exist");
+                return serviceResponse;
+            }
+
+            if (await _gameRepository.GetByPublisherIdAsync(id) !=null)
+            {
+                serviceResponse.HasErrors = true;
+                serviceResponse.ErrorMessages.Add("Please delete the games before deleting the publisher");
+                return serviceResponse;
+            }
 
             try
             {
-                await _publisherRespository.DeleteAsync(publisherEntity);
-                serviceResponse.Result = publisherEntity;
+                serviceResponse.Result = CreateDto(await _publisherRespository.DeleteAsync(await _publisherRespository.GetByIdAsync(id)));
             }
             catch (Exception ex)
             {
@@ -68,42 +94,70 @@ namespace Imi.Project.Api.Core.Services
             return serviceResponse;
         }
 
-        public IQueryable<Publisher> GetAll()
+        public IQueryable<PublisherResponseDto> GetAll()
         {
-            return _publisherRespository.GetAll();
+            List<PublisherResponseDto> publisherResponseDtos = new List<PublisherResponseDto>();
+            foreach (Publisher response in _publisherRespository.GetAll())
+            {
+                publisherResponseDtos.Add(CreateDto(response));
+            }
+
+            return publisherResponseDtos.AsQueryable();
         }
 
-        public async Task<Publisher> GetByIdAsync(Guid id)
+        public async Task<PublisherResponseDto> GetByIdAsync(Guid id)
         {
-            return await _publisherRespository.GetByIdAsync(id);
+            return CreateDto( await _publisherRespository.GetByIdAsync(id));
         }
 
-        public async Task<IEnumerable<Publisher>> ListAllAsync()
+        public async Task<IEnumerable<PublisherResponseDto>> ListAllAsync()
         {
-            return await _publisherRespository.ListAllAsync();
+            List<PublisherResponseDto> publisherResponseDtos = new List<PublisherResponseDto>();
+            foreach (Publisher entity in await _publisherRespository.ListAllAsync())
+            {
+                publisherResponseDtos.Add(CreateDto(entity));
+            }
+
+            return publisherResponseDtos;
         }
 
-        public async Task<IEnumerable<Publisher>> SearchAsync(string search)
+        public async Task<IEnumerable<PublisherResponseDto>> SearchAsync(string search)
         {
-            return await _publisherRespository.SearchAsync(search);
+            List<PublisherResponseDto> publisherResponseDtos = new List<PublisherResponseDto>();
+            foreach (Publisher entity in await _publisherRespository.SearchAsync(search))
+            {
+                publisherResponseDtos.Add(CreateDto(entity));
+            }
 
+            return publisherResponseDtos;
         }
 
-        public async Task<IEnumerable<Publisher>> SearchByCountryAsync(string country)
+        public async Task<IEnumerable<PublisherResponseDto>> SearchByCountryAsync(string country)
         {
-            return await _publisherRespository.SearchByCountryAsync(country);
+            List<PublisherResponseDto> publisherResponseDtos = new List<PublisherResponseDto>();
+            foreach (Publisher entity in await _publisherRespository.SearchByCountryAsync(country))
+            {
+                publisherResponseDtos.Add(CreateDto(entity));
+            }
 
+            return publisherResponseDtos;
         }
 
-        public async Task<ServiceResult<Publisher>> UpdateAsync(PublisherResponseDto entity)
+        public async Task<ServiceResult<PublisherResponseDto>> UpdateAsync(PublisherResponseDto response)
         {
-            var serviceResponse = new ServiceResult<Publisher>();
-            var publisherEntity = CreateEntity(entity);
+            var serviceResponse = new ServiceResult<PublisherResponseDto>();
+
+            if (await _publisherRespository.GetByIdAsync(response.Id) == null)
+            {
+                serviceResponse.HasErrors = true;
+                serviceResponse.ErrorMessages.Add("publisher does not exist");
+                return serviceResponse;
+            }
 
             try
             {
-                await _publisherRespository.UpdateAsync(publisherEntity);
-                serviceResponse.Result = publisherEntity;
+                await _publisherRespository.UpdateAsync(CreateEntity(response));
+                serviceResponse.Result = CreateDto(await _publisherRespository.UpdateAsync(CreateEntity(response)));
             }
             catch (Exception ex)
             {

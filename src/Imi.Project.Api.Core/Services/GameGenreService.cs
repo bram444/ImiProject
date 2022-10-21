@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+
 namespace Imi.Project.Api.Core.Services
 {
     public class GameGenreService : IGameGenreService
@@ -23,21 +24,29 @@ namespace Imi.Project.Api.Core.Services
             return gameGenre;
         }
 
+        private GameGenreResponseDto CreateDto(GameGenre gameGenre)
+        {
+            GameGenreResponseDto gameGenreResponseDto = new GameGenreResponseDto
+            {
+                GameId = gameGenre.GameId,
+                GenreId = gameGenre.GenreId,
+            };
+            return gameGenreResponseDto;
+        }
 
         public GameGenreService(IGameGenreRepository gameGenreRepository)
         {
             _gameGenreRepository = gameGenreRepository;
+
         }
 
-        public async Task<ServiceResult<GameGenre>> AddAsync(GameGenreResponseDto entity)
+        public async Task<ServiceResult<GameGenreResponseDto>> AddAsync(GameGenreResponseDto response)
         {
-            var serviceResponse =new ServiceResult<GameGenre>();
-            var gameGenreEntity = CreateEntity(entity);
+            var serviceResponse =new ServiceResult<GameGenreResponseDto>();
 
             try
             {
-                await _gameGenreRepository.AddAsync(gameGenreEntity);
-                serviceResponse.Result = gameGenreEntity;
+                serviceResponse.Result = CreateDto(await _gameGenreRepository.AddAsync(CreateEntity(response)));
             }
             catch(Exception ex)
             {
@@ -47,71 +56,73 @@ namespace Imi.Project.Api.Core.Services
             return serviceResponse;
         }
 
-        public async Task<ServiceResult<GameGenre>> DeleteAsync(GameGenreResponseDto entity)
+        public async Task<ServiceResult<GameGenreResponseDto>> DeleteAsync(GameGenreResponseDto response)
         {
-            var serviceResponse = new ServiceResult<GameGenre>();
-            var gameGenreEntity = CreateEntity(entity);
+            var serviceResponse = new ServiceResult<GameGenreResponseDto>();
 
-            try
-            {
-                await _gameGenreRepository.DeleteAsync(gameGenreEntity);
-                serviceResponse.Result = gameGenreEntity;
-            }
-            catch(Exception ex)
+            if (_gameGenreRepository.ListAllAsync().Result.Where(gg => gg.GenreId == response.GenreId && gg.GameId == response.GameId).Count() == 0)
             {
                 serviceResponse.HasErrors = true;
-                serviceResponse.ErrorMessages.Add(ex.Message);
-            }
+                serviceResponse.ErrorMessages.Add($"Many to many relationship does not exist");
 
                 return serviceResponse;
-
-        }
-
-        public IQueryable<GameGenre> GetAll()
-        {
-            return _gameGenreRepository.GetAll();
-        }
-
-        public async Task<GameGenre> GetByGameIdAsync(Guid id)
-        {
-
-            return await _gameGenreRepository.GetByGameIdAsync(id);
-
-        }
-
-        public async Task<GameGenre> GetByGenreIdAsync(Guid id)
-        {
-            return await _gameGenreRepository.GetByGenreIdAsync(id);
-
-        }
-
-        public async Task<IEnumerable< GameGenre>> ListAllAsync()
-        {
-
-
-            return await _gameGenreRepository.ListAllAsync();
-        }
-
-        public async Task<ServiceResult<GameGenre>> UpdateAsync(GameGenreResponseDto entity)
-        {
-
-            var serviceResponse = new ServiceResult<GameGenre>();
-            var gameGenreEntity = CreateEntity(entity);
+            }
 
             try
             {
-                await _gameGenreRepository.UpdateAsync(gameGenreEntity);
-                serviceResponse.Result = gameGenreEntity;
+                serviceResponse.Result = CreateDto(await _gameGenreRepository.DeleteAsync(CreateEntity(response)));
             }
             catch (Exception ex)
             {
                 serviceResponse.HasErrors = true;
                 serviceResponse.ErrorMessages.Add(ex.Message);
             }
-
             return serviceResponse;
+        }
 
+        public IQueryable<GameGenreResponseDto> GetAll()
+        {
+            List<GameGenreResponseDto> gameResponseDtos = new List<GameGenreResponseDto>();
+            foreach (GameGenre entity in _gameGenreRepository.GetAll())
+            {
+                gameResponseDtos.Add(CreateDto(entity));
+            }
 
+            return gameResponseDtos.AsQueryable();
+        }
+
+        public async Task<IEnumerable<GameGenreResponseDto>> GetByGameIdAsync(Guid id)
+        {
+            List<GameGenreResponseDto> gameGenreResponseDtos = new List<GameGenreResponseDto>();
+
+            foreach (GameGenre entity in await _gameGenreRepository.GetByGameIdAsync(id))
+            {
+                gameGenreResponseDtos.Add(CreateDto(entity));
+            }
+
+            return gameGenreResponseDtos;
+        }
+
+        public async Task<IEnumerable<GameGenreResponseDto>> GetByGenreIdAsync(Guid id)
+        {
+            List<GameGenreResponseDto> gameGenreResponseDtos = new List<GameGenreResponseDto>();
+            foreach (GameGenre entity in await _gameGenreRepository.GetByGenreIdAsync(id))
+            {
+                gameGenreResponseDtos.Add(CreateDto(entity));
+            }
+
+            return gameGenreResponseDtos;
+        }
+
+        public async Task<IEnumerable<GameGenreResponseDto>> ListAllAsync()
+        {
+            List<GameGenreResponseDto> gameGenreResponseDtos = new List<GameGenreResponseDto>();
+            foreach (GameGenre entity in await _gameGenreRepository.ListAllAsync())
+            {
+                gameGenreResponseDtos.Add(CreateDto(entity));
+            }
+
+            return gameGenreResponseDtos;
         }
     }
 }
