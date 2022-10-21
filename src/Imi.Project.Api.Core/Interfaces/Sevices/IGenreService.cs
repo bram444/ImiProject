@@ -12,13 +12,13 @@ namespace Imi.Project.Api.Core.Interfaces.Sevices
 {
     public interface IGenreService
     {
-        Task<IEnumerable<Genre>> SearchAsync(string search);
+        Task<IEnumerable<GenreResponseDto>> SearchAsync(string search);
 
-        IQueryable<Genre> GetAll();
-        Task<IEnumerable<Genre>> ListAllAsync();
-        Task<Genre> GetByIdAsync(Guid id);
-        Task<ServiceResult< Genre>> UpdateAsync(GenreResponseDto entity);
-        Task<ServiceResult<Genre>> AddAsync(GenreResponseDto entity);
-        Task<ServiceResult<Genre>> DeleteAsync(GenreResponseDto entity);
+        IQueryable<GenreResponseDto> GetAll();
+        Task<IEnumerable<GenreResponseDto>> ListAllAsync();
+        Task<GenreResponseDto> GetByIdAsync(Guid id);
+        Task<ServiceResult<GenreResponseDto>> UpdateAsync(GenreResponseDto entity);
+        Task<ServiceResult<GenreResponseDto>> AddAsync(GenreResponseDto entity);
+        Task<ServiceResult<GenreResponseDto>> DeleteAsync(Guid id);
     }
 }

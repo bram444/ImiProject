@@ -12,14 +12,14 @@ namespace Imi.Project.Api.Core.Interfaces.Sevices
 {
     public interface IPublisherService
     {
-        Task<IEnumerable<Publisher>> SearchAsync(string search);
-        Task<IEnumerable<Publisher>> SearchByCountryAsync(string country);
+        Task<IEnumerable<PublisherResponseDto>> SearchAsync(string search);
+        Task<IEnumerable<PublisherResponseDto>> SearchByCountryAsync(string country);
 
-        IQueryable<Publisher> GetAll();
-        Task<IEnumerable<Publisher>> ListAllAsync();
-        Task< Publisher> GetByIdAsync(Guid id);
-        Task<ServiceResult<Publisher>> UpdateAsync(PublisherResponseDto entity);
-        Task<ServiceResult<Publisher>> AddAsync(PublisherResponseDto entity);
-        Task<ServiceResult<Publisher>> DeleteAsync(PublisherResponseDto entity);
+        IQueryable<PublisherResponseDto> GetAll();
+        Task<IEnumerable<PublisherResponseDto>> ListAllAsync();
+        Task<PublisherResponseDto> GetByIdAsync(Guid id);
+        Task<ServiceResult<PublisherResponseDto>> UpdateAsync(PublisherResponseDto response);
+        Task<ServiceResult<PublisherResponseDto>> AddAsync(PublisherResponseDto response);
+        Task<ServiceResult<PublisherResponseDto>> DeleteAsync(Guid id);
     }
 }
