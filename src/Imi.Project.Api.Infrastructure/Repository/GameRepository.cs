@@ -18,7 +18,7 @@ namespace Imi.Project.Api.Infrastructure.Repository
 
         public async Task<IEnumerable<Game>> GetByPublisherIdAsync(Guid id)
         {
-            var game = await GetAll().Where(p => p.PublisherId.Equals(id)).ToListAsync();
+            var game = await GetAll().Where(p => p.PublisherId.Equals(id)).AsNoTracking().ToListAsync();
             return game;
         }
 

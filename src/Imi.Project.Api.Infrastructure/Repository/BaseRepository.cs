@@ -29,7 +29,7 @@ namespace Imi.Project.Api.Infrastructure.Repository
 
         public virtual async Task<T> GetByIdAsync(Guid id)
         {
-            return await _dbContext.Set<T>().SingleOrDefaultAsync(t => t.Id == id);
+            return await _dbContext.Set<T>().AsNoTracking().SingleOrDefaultAsync(t => t.Id == id);
         }
 
         public async Task<T> AddAsync(T entity)

@@ -29,12 +29,12 @@ namespace Imi.Project.Api.Infrastructure.Repository
 
         public virtual async Task<IEnumerable<UserGame>> GetByGameIdAsync(Guid id)
         {
-            return await _dbContext.Set<UserGame>().Where(ug=>ug.GameId==id).ToListAsync();
+            return await _dbContext.Set<UserGame>().AsNoTracking().Where(ug=>ug.GameId==id).ToListAsync();
         }
 
         public virtual async Task<IEnumerable<UserGame>> GetByUserIdAsync(Guid id)
         {
-            return await _dbContext.Set<UserGame>().Where(ug => ug.UserId == id).ToListAsync();
+            return await _dbContext.Set<UserGame>().AsNoTracking().Where(ug => ug.UserId == id).ToListAsync();
         }
 
         public async Task<UserGame> AddAsync(UserGame entity)
