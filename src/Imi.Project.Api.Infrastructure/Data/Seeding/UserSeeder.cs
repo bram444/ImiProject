@@ -12,10 +12,10 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
     {
         public static void Seed(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().HasData(
+            modelBuilder.Entity<ApplicationUser>().HasData(
                 new[]
                 {
-                    new User
+                    new ApplicationUser
                     {
                         Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
                         UserName="FirstUser",
@@ -25,7 +25,7 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         LastEditedOn=DateTime.Now,
                         CreatedOn=DateTime.Now,
                     },
-                    new User
+                    new ApplicationUser
                     {
                         Id = Guid.Parse("00000000-0000-0000-0000-000000000002"),
                         UserName="TimTheDestroyerXx400",
@@ -35,7 +35,7 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         LastEditedOn=DateTime.Now,
                         CreatedOn=DateTime.Now,
                     },
-                    new User
+                    new ApplicationUser
                     {
                         Id = Guid.Parse("00000000-0000-0000-0000-000000000003"),
                         UserName="UserTheThird",
@@ -45,7 +45,7 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         LastEditedOn=DateTime.Now,
                         CreatedOn=DateTime.Now,
                     },
-                    new User
+                    new ApplicationUser
                     {
                         Id = Guid.Parse("00000000-0000-0000-0000-000000000004"),
                         UserName="UserTheFourth",
@@ -55,7 +55,7 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         LastEditedOn=DateTime.Now,
                         CreatedOn=DateTime.Now,
                     },
-                    new User
+                    new ApplicationUser
                     {
                         Id = Guid.Parse("00000000-0000-0000-0000-000000000005"),
                         UserName = "UserTheFifth",
@@ -65,7 +65,7 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         LastEditedOn = DateTime.Now,
                         CreatedOn = DateTime.Now,
                     },
-                    new User
+                    new ApplicationUser
                     {
                         Id = Guid.Parse("00000000-0000-0000-0000-000000000006"),
                         UserName = "UserTheSith",
@@ -75,7 +75,7 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         LastEditedOn = DateTime.Now,
                         CreatedOn = DateTime.Now,
                     },
-                    new User
+                    new ApplicationUser
                     {
                         Id = Guid.Parse("00000000-0000-0000-0000-000000000007"),
                         UserName = "UserTheSeven",
@@ -85,7 +85,7 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         LastEditedOn = DateTime.Now,
                         CreatedOn = DateTime.Now,
                     },
-                    new User
+                    new ApplicationUser
                     {
                         Id = Guid.Parse("00000000-0000-0000-0000-000000000008"),
                         UserName = "UserTheEigth",
@@ -95,7 +95,7 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         LastEditedOn = DateTime.Now,
                         CreatedOn = DateTime.Now,
                     },
-                    new User
+                    new ApplicationUser
                     {
                         Id = Guid.Parse("00000000-0000-0000-0000-000000000009"),
                         UserName = "UserTheNinth",
@@ -105,7 +105,7 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         LastEditedOn = DateTime.Now,
                         CreatedOn = DateTime.Now,
                     },
-                    new User
+                    new ApplicationUser
                     {
                         Id = Guid.Parse("00000000-0000-0000-0000-000000000010"),
                         UserName = "UserX",

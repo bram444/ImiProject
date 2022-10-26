@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Infrastructure.Repository
 {
-    public class UserRepository : BaseRepository<User>, IUserRepository
+    public class UserRepository : BaseRepository<ApplicationUser>, IUserRepository
     {
         public UserRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
         }
 
-        public virtual async Task<IEnumerable<User>> SearchFirstNameAsync(string search)
+        public virtual async Task<IEnumerable<ApplicationUser>> SearchFirstNameAsync(string search)
         {
             var user = await GetAll()
                 .Where(g => g.FirstName.Contains(search.Trim().ToUpper()))
@@ -24,7 +24,7 @@ namespace Imi.Project.Api.Infrastructure.Repository
             return user;
         }
 
-        public virtual async Task<IEnumerable<User>> SearchLastNameAsync(string search)
+        public virtual async Task<IEnumerable<ApplicationUser>> SearchLastNameAsync(string search)
         {
             var user = await GetAll()
                 .Where(g => g.LastName.Contains(search.Trim().ToUpper()))
@@ -33,7 +33,7 @@ namespace Imi.Project.Api.Infrastructure.Repository
             return user;
         }
 
-        public virtual async Task<IEnumerable<User>> SearchUserNameAsync(string search)
+        public virtual async Task<IEnumerable<ApplicationUser>> SearchUserNameAsync(string search)
         {
             var user = await GetAll()
                 .Where(g => g.UserName.Contains(search.Trim().ToUpper()))

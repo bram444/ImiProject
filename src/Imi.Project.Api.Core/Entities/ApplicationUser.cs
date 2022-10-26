@@ -2,7 +2,7 @@
 
 namespace Imi.Project.Api.Core.Entities
 {
-    public class User:BaseEntity
+    public class ApplicationUser:BaseEntity
     {
         [Required]
         public string UserName { get; set; }

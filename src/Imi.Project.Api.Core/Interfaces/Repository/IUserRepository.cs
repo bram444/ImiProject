@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Interfaces.Repository
 {
-    public interface IUserRepository : IBaseRepository<User>
+    public interface IUserRepository : IBaseRepository<ApplicationUser>
     {
-        Task<IEnumerable<User>> SearchUserNameAsync(string search);
-        Task<IEnumerable<User>> SearchFirstNameAsync(string search);
-        Task<IEnumerable<User>> SearchLastNameAsync(string search);
+        Task<IEnumerable<ApplicationUser>> SearchUserNameAsync(string search);
+        Task<IEnumerable<ApplicationUser>> SearchFirstNameAsync(string search);
+        Task<IEnumerable<ApplicationUser>> SearchLastNameAsync(string search);
 
     }
 }

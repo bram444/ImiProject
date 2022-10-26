@@ -13,7 +13,7 @@ namespace Imi.Project.Api.Infrastructure
 
         public DbSet<Publisher> Publishers { get; set; }
 
-        public DbSet<User> Users { get; set; }
+        public DbSet<ApplicationUser> Users { get; set; }
 
         public DbSet<UserGame> UsersGames { get; set; }
 
@@ -38,7 +38,7 @@ namespace Imi.Project.Api.Infrastructure
             modelBuilder.Entity<Publisher>().HasMany(p => p.Games)
                 .WithOne(g => g.Publisher).HasForeignKey(g => g.PublisherId);
 
-            modelBuilder.Entity<User>().HasKey(p => p.Id);
+            modelBuilder.Entity<ApplicationUser>().HasKey(p => p.Id);
 
 
             modelBuilder.Entity<GameGenre>()

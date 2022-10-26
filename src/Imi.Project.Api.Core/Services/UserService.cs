@@ -19,9 +19,9 @@ namespace Imi.Project.Api.Core.Services
             _userRepository = userRepository;
         }
 
-        private User CreateEntity(UserResponseDto userResponseDto)
+        private ApplicationUser CreateEntity(UserResponseDto userResponseDto)
         {
-            User user = new User
+            ApplicationUser user = new ApplicationUser
             {
                 Id = userResponseDto.Id,
                 Email = userResponseDto.Email,
@@ -32,7 +32,7 @@ namespace Imi.Project.Api.Core.Services
             return user;
         }
 
-        private UserResponseDto CreateDto(User user)
+        private UserResponseDto CreateDto(ApplicationUser user)
         {
             UserResponseDto userResponseDto = new UserResponseDto
             {
@@ -81,7 +81,7 @@ namespace Imi.Project.Api.Core.Services
         public IQueryable<UserResponseDto> GetAll()
         {
             List<UserResponseDto> userResponseDtos = new List<UserResponseDto>();
-            foreach(User entity in _userRepository.GetAll())
+            foreach(ApplicationUser entity in _userRepository.GetAll())
             {
                 userResponseDtos.Add(CreateDto(entity));
             }
@@ -97,7 +97,7 @@ namespace Imi.Project.Api.Core.Services
         public async Task<IEnumerable<UserResponseDto>> ListAllAsync()
         {
             List<UserResponseDto> userResponseDtos = new List<UserResponseDto>();
-            foreach (User entity in await _userRepository.ListAllAsync())
+            foreach (ApplicationUser entity in await _userRepository.ListAllAsync())
             {
                 userResponseDtos.Add(CreateDto(entity));
             }
@@ -108,7 +108,7 @@ namespace Imi.Project.Api.Core.Services
         public async Task<IEnumerable<UserResponseDto>> SearchFirstNameAsync(string search)
         {
             List<UserResponseDto> userResponseList = new List<UserResponseDto>(); 
-            foreach(User user in await _userRepository.SearchFirstNameAsync(search))
+            foreach(ApplicationUser user in await _userRepository.SearchFirstNameAsync(search))
             {
                 userResponseList.Add(CreateDto(user));
             }
@@ -119,7 +119,7 @@ namespace Imi.Project.Api.Core.Services
         public async Task<IEnumerable<UserResponseDto>> SearchLastNameAsync(string search)
         {
             List<UserResponseDto> userResponseList = new List<UserResponseDto>();
-            foreach (User user in await _userRepository.SearchLastNameAsync(search))
+            foreach (ApplicationUser user in await _userRepository.SearchLastNameAsync(search))
             {
                 userResponseList.Add(CreateDto(user));
             }
@@ -130,7 +130,7 @@ namespace Imi.Project.Api.Core.Services
         public async Task<IEnumerable<UserResponseDto>> SearchUserNameAsync(string search)
         {
             List<UserResponseDto> userResponseList = new List<UserResponseDto>();
-            foreach (User user in await _userRepository.SearchUserNameAsync(search))
+            foreach (ApplicationUser user in await _userRepository.SearchUserNameAsync(search))
             {
                 userResponseList.Add(CreateDto(user));
             }
