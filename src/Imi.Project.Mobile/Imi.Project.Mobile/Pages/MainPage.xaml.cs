@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
-namespace Imi.Project.Mobile
+namespace Imi.Project.Mobile.Pages
 {
     public partial class MainPage : ContentPage
     {
