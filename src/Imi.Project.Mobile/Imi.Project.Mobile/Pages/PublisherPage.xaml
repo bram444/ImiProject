@@ -3,17 +3,24 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Imi.Project.Mobile.Pages.PublisherPage">
     <ContentPage.Content>
-        <ListView x:Name="lvPublisherList">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell>
-                        <StackLayout>
-                            <Label Text="{Binding Name}"></Label>
-                            <Label Text="{Binding Country}"></Label>
-                        </StackLayout>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+        <StackLayout>
+            <Button x:Name="btnAdd"
+                        Text="Add" 
+                            Clicked="Add_Clicked"
+                            HorizontalOptions="Center"></Button>
+
+            <ListView x:Name="lvPublisherList" ItemTapped="OpenPublisher">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout>
+                                <Label Text="{Binding Name}"></Label>
+                                <Label Text="{Binding Country}"></Label>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
     </ContentPage.Content>
 </ContentPage>

@@ -12,7 +12,7 @@ namespace Imi.Project.Mobile.Domain.Validators
         {
             RuleFor(genreinfo => genreinfo.Name)
                  .NotEmpty()
-                 .WithMessage("Ganre name cannot be empty");
+                 .WithMessage("Genre name cannot be empty");
         }
     }
 }

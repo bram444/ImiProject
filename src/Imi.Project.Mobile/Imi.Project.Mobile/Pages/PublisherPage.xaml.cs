@@ -1,4 +1,5 @@
 ﻿using Imi.Project.Mobile.Domain;
+using Imi.Project.Mobile.Domain.Entities;
 using Imi.Project.Mobile.Domain.Services;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,14 @@ namespace Imi.Project.Mobile.Pages
             lvPublisherList.ItemsSource = publisherInfo.GetAllPublisher().Result;
         }
 
-        
+        private async void OpenPublisher(object sender, ItemTappedEventArgs e)
+        {
+            await Navigation.PushAsync(new PublisherItemPage(e.Item as PublisherInfo), true);
+        }
+
+        private async void Add_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new PublisherItemPage(), true);
+        }
     }
 }

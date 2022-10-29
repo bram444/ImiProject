@@ -41,7 +41,6 @@ namespace Imi.Project.Mobile.Domain.Services
 
         public void AddGames(GamesInfo gamesInfo)
         {
-            var gameInfoEdit = GameById(gamesInfo.Id);
             inMemoryGame.Add(gamesInfo);
         }
 

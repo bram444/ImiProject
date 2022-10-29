@@ -41,7 +41,6 @@ namespace Imi.Project.Mobile.Domain.Services
 
         public void AddGenre(GenreInfo genreInfo)
         {
-            var gameInfoEdit = GenreById(genreInfo.Id);
             inMemoryGenre.Add(genreInfo);
         }
 
