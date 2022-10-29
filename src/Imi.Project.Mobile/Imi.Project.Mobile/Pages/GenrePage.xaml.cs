@@ -1,4 +1,5 @@
 ﻿using Imi.Project.Mobile.Domain;
+using Imi.Project.Mobile.Domain.Entities;
 using Imi.Project.Mobile.Domain.Services;
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,16 @@ namespace Imi.Project.Mobile.Pages
             base.OnAppearing();
 
             lvGenreList.ItemsSource = genreInfo.GetAllGenre().Result;
+        }
+
+        private async void OpenGenre(object sender, ItemTappedEventArgs e)
+        {
+            await Navigation.PushAsync(new GenreItemPage(e.Item as GenreInfo), true);
+        }
+
+        private async void Add_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new GenreItemPage(), true);
         }
     }
 }

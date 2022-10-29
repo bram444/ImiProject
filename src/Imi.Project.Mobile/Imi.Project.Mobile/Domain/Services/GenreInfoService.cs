@@ -31,5 +31,23 @@ namespace Imi.Project.Mobile.Domain.Services
         {
             return await Task.FromResult(inMemoryGenre.Where(genre => genre.Id == id).First());
         }
+
+        public void SaveGenre(GenreInfo genreInfo)
+        {
+            var gameInfoEdit = GenreById(genreInfo.Id);
+            gameInfoEdit.Result.Name = genreInfo.Name;
+            gameInfoEdit.Result.Description = genreInfo.Description;
+        }
+
+        public void AddGenre(GenreInfo genreInfo)
+        {
+            var gameInfoEdit = GenreById(genreInfo.Id);
+            inMemoryGenre.Add(genreInfo);
+        }
+
+        public void RemoveGenre(Guid id)
+        {
+            inMemoryGenre.Remove(GenreById(id).Result);
+        }
     }
 }

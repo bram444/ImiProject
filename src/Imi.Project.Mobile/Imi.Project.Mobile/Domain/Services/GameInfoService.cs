@@ -48,7 +48,6 @@ namespace Imi.Project.Mobile.Domain.Services
         public void RemoveGames(Guid id)
         {
             inMemoryGame.Remove(GameById(id).Result);
-
         }
 
     }
