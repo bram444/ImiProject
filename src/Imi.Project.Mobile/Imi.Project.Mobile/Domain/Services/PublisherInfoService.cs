@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Imi.Project.Mobile.Domain.Entities;
 
 namespace Imi.Project.Mobile.Domain.Services
 {
