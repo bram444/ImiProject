@@ -3,19 +3,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Imi.Project.Mobile.Pages.UserPage">
     <ContentPage.Content>
-        <ListView x:Name="lvUserList">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell>
-                        <StackLayout>
-                            <Label Text="{Binding UserName}"></Label>
-                            <Label Text="{Binding FirstName}"></Label>
-                            <Label Text="{Binding LastName}"></Label>
-                            <Label Text="{Binding Email}"></Label>
-                        </StackLayout>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+        <StackLayout>
+            <Button x:Name="btnAdd"
+                        Text="Add" 
+                            Clicked="Add_Clicked"
+                            HorizontalOptions="Center"></Button>
+
+            <ListView x:Name="lvUserList" ItemTapped="OpenUser">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout>
+                                <Label Text="{Binding UserName}"></Label>
+                                <Label Text="{Binding FirstName}"></Label>
+                                <Label Text="{Binding LastName}"></Label>
+                                <Label Text="{Binding Email}"></Label>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
     </ContentPage.Content>
 </ContentPage>

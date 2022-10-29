@@ -31,9 +31,9 @@ namespace Imi.Project.Mobile.Domain.Services
 
         public void SavePublisher(PublisherInfo publisherInfo)
         {
-            var gameInfoEdit = PublisherById(publisherInfo.Id);
-            gameInfoEdit.Result.Name = publisherInfo.Name;
-            gameInfoEdit.Result.Country = publisherInfo.Country;
+            var publisherInfoEdit = PublisherById(publisherInfo.Id);
+            publisherInfoEdit.Result.Name = publisherInfo.Name;
+            publisherInfoEdit.Result.Country = publisherInfo.Country;
         }
 
         public void AddPublisher(PublisherInfo publisherInfo)

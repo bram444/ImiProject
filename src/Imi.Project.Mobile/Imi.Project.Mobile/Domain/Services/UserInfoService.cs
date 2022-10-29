@@ -31,5 +31,23 @@ namespace Imi.Project.Mobile.Domain.Services
             return await Task.FromResult(inMemoryUser.Where(user => user.Id == id).First());
         }
 
+        public void SaveUser(UserInfo userInfo)
+        {
+            var userInfoEdit = UserById(userInfo.Id);
+            userInfoEdit.Result.Email = userInfo.Email;
+            userInfoEdit.Result.FirstName = userInfo.FirstName;
+            userInfoEdit.Result.LastName = userInfo.LastName;
+            userInfoEdit.Result.UserName = userInfo.UserName;
+        }
+
+        public void AddUser(UserInfo userInfo)
+        {
+            inMemoryUser.Add(userInfo);
+        }
+
+        public void RemoveUser(Guid id)
+        {
+            inMemoryUser.Remove(UserById(id).Result);
+        }
     }
 }

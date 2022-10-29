@@ -93,6 +93,11 @@ namespace Imi.Project.Mobile.Pages
 
         private async void Save_Clicked(object sender, EventArgs e)
         {
+            if (txtName.Text == null)
+            {
+                txtName.Text = "";
+            }
+
             if (txtCountry.Text == null)
             {
                 txtCountry.Text = "";
@@ -104,6 +109,8 @@ namespace Imi.Project.Mobile.Pages
                 Name = txtName.Text,
                 Country = txtCountry.Text,
             };
+
+            HideErrorLabels();
 
             var validationContext = new ValidationContext<PublisherInfo>(publisherEdit);
             var validationResult = publisherInfoValidator.Validate(validationContext);
@@ -137,6 +144,8 @@ namespace Imi.Project.Mobile.Pages
                 Name = txtName.Text,
                 Country = txtCountry.Text,
             };
+
+            HideErrorLabels();
 
             var validationContext = new ValidationContext<PublisherInfo>(publisherEdit);
             var validationResult = publisherInfoValidator.Validate(validationContext);

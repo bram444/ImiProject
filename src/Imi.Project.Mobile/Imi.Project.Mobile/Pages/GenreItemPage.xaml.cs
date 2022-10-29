@@ -93,6 +93,11 @@ namespace Imi.Project.Mobile.Pages
 
         private async void Save_Clicked(object sender, EventArgs e)
         {
+            if (txtName.Text == null)
+            {
+                txtName.Text = "";
+            }
+
             if (txtDescription.Text == null)
             {
                 txtDescription.Text = "";
@@ -104,6 +109,9 @@ namespace Imi.Project.Mobile.Pages
                 Name = txtName.Text,
                 Description = txtDescription.Text,
             };
+
+            HideErrorLabels();
+
 
             var validationContext = new ValidationContext<GenreInfo>(genreEdit);
             var validationResult = genreInfoValidator.Validate(validationContext);
@@ -126,6 +134,11 @@ namespace Imi.Project.Mobile.Pages
 
         private async void Add_Clicked(object sender, EventArgs e)
         {
+            if (txtName.Text == null)
+            {
+                txtName.Text = "";
+            }
+
             if (txtDescription.Text == null)
             {
                 txtDescription.Text = "";
@@ -137,6 +150,8 @@ namespace Imi.Project.Mobile.Pages
                 Name = txtName.Text,
                 Description = txtDescription.Text,
             };
+
+            HideErrorLabels();
 
             var validationContext = new ValidationContext<GenreInfo>(genreEdit);
             var validationResult = genreInfoValidator.Validate(validationContext);

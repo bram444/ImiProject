@@ -94,12 +94,19 @@ namespace Imi.Project.Mobile.Pages
         private async void Save_Clicked(object sender, EventArgs e)
         {
 
+            if (txtName.Text == null)
+            {
+                txtName.Text = "";
+            }
+
             GamesInfo gameEdit = new GamesInfo
             {
                 Id = gamesInfo.Id,
                 Name = txtName.Text,
                 Price = 0.0f
             };
+
+            HideErrorLabels();
 
             var validationContext = new ValidationContext<GamesInfo>(gameEdit);
             var validationResult = gameInfoValidator.Validate(validationContext);
@@ -138,6 +145,10 @@ namespace Imi.Project.Mobile.Pages
 
         private async void Add_Clicked(object sender, EventArgs e)
         {
+            if (txtName.Text == null)
+            {
+                txtName.Text = "";
+            }
 
             GamesInfo gameEdit = new GamesInfo
             {
@@ -145,6 +156,8 @@ namespace Imi.Project.Mobile.Pages
                 Name = txtName.Text,
                 Price = 0.0f
             };
+
+            HideErrorLabels();
 
             var validationContext = new ValidationContext<GamesInfo>(gameEdit);
             var validationResult = gameInfoValidator.Validate(validationContext);

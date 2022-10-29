@@ -34,9 +34,9 @@ namespace Imi.Project.Mobile.Domain.Services
 
         public void SaveGenre(GenreInfo genreInfo)
         {
-            var gameInfoEdit = GenreById(genreInfo.Id);
-            gameInfoEdit.Result.Name = genreInfo.Name;
-            gameInfoEdit.Result.Description = genreInfo.Description;
+            var genreInfoEdit = GenreById(genreInfo.Id);
+            genreInfoEdit.Result.Name = genreInfo.Name;
+            genreInfoEdit.Result.Description = genreInfo.Description;
         }
 
         public void AddGenre(GenreInfo genreInfo)
