@@ -33,7 +33,7 @@ namespace Imi.Project.Mobile.Pages
             HideErrorLabels();
 
             gameInfoValidator = new GameInfoValidator();
-            gameInfoService= new GameInfoService();
+            gameInfoService = new GameInfoService();
 
             btnEdit.IsVisible = false;
             btnSave.IsVisible = false;
@@ -52,7 +52,7 @@ namespace Imi.Project.Mobile.Pages
                 [nameof(GamesInfo.Price)] = lblPriceError
             };
 
-            txtName.Text= gamesInfo.Name;
+            txtName.Text = gamesInfo.Name;
             txtPrice.Text = gamesInfo.Price.ToString();
 
             txtName.IsEnabled = false;
@@ -60,7 +60,7 @@ namespace Imi.Project.Mobile.Pages
 
             HideErrorLabels();
 
-            btnEdit.IsVisible=true;
+            btnEdit.IsVisible = true;
             btnSave.IsVisible = false;
             btnCancel.IsVisible = false;
 
@@ -163,7 +163,7 @@ namespace Imi.Project.Mobile.Pages
             var validationResult = gameInfoValidator.Validate(validationContext);
 
             float isfloat;
-            if(txtPrice.Text == null || txtPrice.Text == "")
+            if (txtPrice.Text == null || txtPrice.Text == "")
             {
                 txtPrice.Text = "0";
             }

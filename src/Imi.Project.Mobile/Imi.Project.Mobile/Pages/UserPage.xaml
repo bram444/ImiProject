@@ -1,28 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             Style="{StaticResource PageStyle}"
              x:Class="Imi.Project.Mobile.Pages.UserPage">
     <ContentPage.Content>
         <StackLayout>
-            <Button x:Name="btnAdd"
-                        Text="Add" 
-                            Clicked="Add_Clicked"
-                            HorizontalOptions="Center"></Button>
-
-            <ListView x:Name="lvUserList" ItemTapped="OpenUser">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
+            <Button x:Name="btnAdd" Text="Add" Clicked="Add_Clicked" HorizontalOptions="Center" Style="{StaticResource Add}"/>
+            <ListView x:Name="lvUserList" ItemTapped="OpenUser" Style="{StaticResource List}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
                         <ViewCell>
-                            <StackLayout>
-                                <Label Text="{Binding UserName}"></Label>
-                                <Label Text="{Binding FirstName}"></Label>
-                                <Label Text="{Binding LastName}"></Label>
-                                <Label Text="{Binding Email}"></Label>
-                            </StackLayout>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                            <FlexLayout Style="{StaticResource AlignItems}">
+                                <Label Text="{Binding UserName}"/>
+                                <Label Text="{Binding FirstName}"/>
+                                <Label Text="{Binding LastName}"/>
+                                <Label Text="{Binding Email}"/>
+                            </FlexLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

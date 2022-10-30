@@ -11,21 +11,21 @@ namespace Imi.Project.Mobile.Domain.Validators
         public UserInfoValidator()
         {
             RuleFor(userInfo => userInfo.Email)
-            .NotEmpty()
+            .   NotEmpty()
                 .WithMessage("Please enter your e-mail address")
-            .EmailAddress()
+                .EmailAddress()
                 .WithMessage("Please enter a valid e-mail address");
 
             RuleFor(userInfo => userInfo.UserName)
-            .NotEmpty()
+                .NotEmpty()
                 .WithMessage("Username cannot be empty");
 
             RuleFor(userInfo => userInfo.FirstName)
-            .NotEmpty()
+                .NotEmpty()
                 .WithMessage("Firstname cannot be empty");
 
             RuleFor(userInfo => userInfo.LastName)
-            .NotEmpty()
+                .NotEmpty()
                 .WithMessage("Lastname cannot be empty");
         }
     }

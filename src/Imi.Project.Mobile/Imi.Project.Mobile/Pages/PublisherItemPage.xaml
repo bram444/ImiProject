@@ -1,40 +1,35 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                          Style="{StaticResource PageStyle}"
              x:Class="Imi.Project.Mobile.Pages.PublisherItemPage">
     <ContentPage.Content>
         <ScrollView>
             <Grid>
                 <StackLayout Padding="10">
-                    <Label>Name</Label>
-                    <Entry x:Name="txtName" Keyboard="Text"></Entry>
-                    <Label x:Name="lblNameError"></Label>
-                    <Label>Country</Label>
-                    <Entry x:Name="txtCountry" Keyboard="Text"></Entry>
-                    <Label x:Name="lblCountryError"></Label>
-                    <Button x:Name="btnEdit"
-                        Text="Edit" 
-                            Clicked="Edit_Clicked"
-                            HorizontalOptions="Center"></Button>
-                    <Button x:Name="btnSave"
-                        Text="Save" 
-                            Clicked="Save_Clicked"
-                            HorizontalOptions="Center"></Button>
-                    <Button x:Name="btnCancel"
-                        Text="Cancel" 
-                            Clicked="Cancel_Clicked"
-                            HorizontalOptions="Center"></Button>
-
-                    <Button x:Name="btnDelete"
-                        Text="Delete" 
-                            Clicked="Delete_Clicked"
-                            HorizontalOptions="Center"></Button>
-
-
-                    <Button x:Name="btnAdd"
-                        Text="Add" 
-                            Clicked="Add_Clicked"
-                            HorizontalOptions="Center"></Button>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackLayout Grid.Column="0">
+                            <Label Text="Name"/>
+                            <Entry x:Name="txtName" Keyboard="Text"/>
+                            <Label x:Name="lblNameError" Style="{StaticResource ErrorLabel}"/>
+                        </StackLayout>
+                        <StackLayout Grid.Column="1">
+                            <Label Text="Country"/>
+                            <Entry x:Name="txtCountry" Keyboard="Text"/>
+                            <Label x:Name="lblCountryError" Style="{StaticResource ErrorLabel}"/>
+                        </StackLayout>
+                    </Grid>
+                    <FlexLayout Style="{StaticResource ButtonAlign}">
+                        <Button x:Name="btnEdit" Text="Edit" Clicked="Edit_Clicked" HorizontalOptions="Center" Style="{StaticResource Edit}"/>
+                        <Button x:Name="btnSave" Text="Save" Clicked="Save_Clicked" HorizontalOptions="Center" Style="{StaticResource Save}"/>
+                        <Button x:Name="btnCancel" Text="Cancel" Clicked="Cancel_Clicked" HorizontalOptions="Center" Style="{StaticResource Cancel}"/>
+                        <Button x:Name="btnDelete" Text="Delete" Clicked="Delete_Clicked" HorizontalOptions="Center" Style="{StaticResource Delete}"/>
+                        <Button x:Name="btnAdd" Text="Add" Clicked="Add_Clicked" HorizontalOptions="Center"  Style="{StaticResource Add}"/>
+                    </FlexLayout>
                 </StackLayout>
             </Grid>
         </ScrollView>

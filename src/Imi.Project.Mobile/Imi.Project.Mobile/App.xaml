@@ -3,6 +3,79 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Imi.Project.Mobile.App">
     <Application.Resources>
+        <ResourceDictionary>
 
+            <Style x:Key="ButtonAlign" TargetType="FlexLayout">
+                <Setter Property="AlignContent" Value="SpaceEvenly"/>
+                <Setter Property="AlignItems" Value="Stretch"/>
+                <Setter Property="HorizontalOptions" Value="FillAndExpand"/>
+                <Setter Property="Direction" Value="Column"/>
+            </Style>
+
+            <Style x:Key="PageStyle" TargetType="ContentPage">
+                <Setter Property="BackgroundColor" Value="AliceBlue"/>
+            </Style>
+
+            <Style x:Key="ErrorLabel" TargetType="Label">
+                <Setter Property="TextColor" Value="#ff3d33"/>
+                <Setter Property="FontSize" Value="Micro"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+            </Style>
+
+            <Style x:Key="AlignItems" TargetType="FlexLayout">
+                <Setter Property="AlignContent" Value="SpaceEvenly"/>
+                <Setter Property="JustifyContent" Value="Center"/>
+                <Setter Property="AlignItems" Value="Center"/>
+                <Setter Property="HorizontalOptions" Value="FillAndExpand"/>
+                <Setter Property="Direction" Value="Column"/>
+                <Setter Property="AlignContent" Value="SpaceEvenly"/>
+                <Setter Property="Padding" Value="0,10,0,10"/>
+            </Style>
+
+            <Style x:Key="List" TargetType="ListView">
+                <Setter Property="VerticalOptions" Value="Center"/>
+                <Setter Property="HasUnevenRows" Value="True"/>
+            </Style>
+
+            <Style x:Key="Delete" TargetType="Button">
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="BackgroundColor" Value="Red"/>
+                <Setter Property="BorderWidth" Value="1"/>
+                <Setter Property="BorderColor" Value="Black"/>
+                <Setter  Property="CornerRadius" Value="10"/>
+            </Style>
+
+            <Style x:Key="Add" TargetType="Button">
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="BackgroundColor" Value="Green"/>
+                <Setter Property="BorderWidth" Value="1"/>
+                <Setter Property="BorderColor" Value="Black"/>
+                <Setter  Property="CornerRadius" Value="10"/>
+            </Style>
+
+            <Style x:Key="Cancel" TargetType="Button">
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="BackgroundColor" Value="Gray"/>
+                <Setter Property="BorderWidth" Value="1"/>
+                <Setter Property="BorderColor" Value="Black"/>
+                <Setter  Property="CornerRadius" Value="10"/>
+            </Style>
+
+            <Style x:Key="Save" TargetType="Button">
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="BackgroundColor" Value="Blue"/>
+                <Setter Property="BorderWidth" Value="1"/>
+                <Setter Property="BorderColor" Value="Black"/>
+                <Setter  Property="CornerRadius" Value="10"/>
+            </Style>
+
+            <Style x:Key="Edit" TargetType="Button">
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="BackgroundColor" Value="Yellow"/>
+                <Setter Property="BorderWidth" Value="1"/>
+                <Setter Property="BorderColor" Value="Black"/>
+                <Setter  Property="CornerRadius" Value="10"/>
+            </Style>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

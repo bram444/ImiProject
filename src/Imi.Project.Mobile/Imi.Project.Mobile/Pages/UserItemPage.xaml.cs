@@ -28,9 +28,9 @@ namespace Imi.Project.Mobile.Pages
             errorLabels = new Dictionary<string, Label>
             {
                 [nameof(UserInfo.UserName)] = lblUserNameError,
-                [nameof(UserInfo.FirstName)]= lblFirstNameError,
-                [nameof(UserInfo.LastName)]= lblLastNameError,
-                [nameof(UserInfo.Email)]= lblEmailError
+                [nameof(UserInfo.FirstName)] = lblFirstNameError,
+                [nameof(UserInfo.LastName)] = lblLastNameError,
+                [nameof(UserInfo.Email)] = lblEmailError
             };
             HideErrorLabels();
 
@@ -222,7 +222,7 @@ namespace Imi.Project.Mobile.Pages
             txtEmail.IsEnabled = false;
             txtFirstName.IsEnabled = false;
             txtLastName.IsEnabled = false;
-            txtUserName.IsEnabled=false;
+            txtUserName.IsEnabled = false;
 
             btnEdit.IsVisible = true;
             btnSave.IsVisible = false;
@@ -236,7 +236,7 @@ namespace Imi.Project.Mobile.Pages
             lblFirstNameError.IsVisible = false;
 
             lblLastNameError.Text = "";
-            lblLastNameError.IsVisible=false;
+            lblLastNameError.IsVisible = false;
 
             lblUserNameError.Text = "";
             lblUserNameError.IsVisible = false;

@@ -1,48 +1,49 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                          Style="{StaticResource PageStyle}"
              x:Class="Imi.Project.Mobile.Pages.UserItemPage">
     <ContentPage.Content>
         <ScrollView>
-            <Grid>
-                <StackLayout Padding="10">
-                    <Label>Username</Label>
-                    <Entry x:Name="txtUserName" Keyboard="Text"></Entry>
-                    <Label x:Name="lblUserNameError"></Label>
-                    <Label>Firstname</Label>
-                    <Entry x:Name="txtFirstName" Keyboard="Text"></Entry>
-                    <Label x:Name="lblFirstNameError"></Label>
-                    <Label>Lastname</Label>
-                    <Entry x:Name="txtLastName" Keyboard="Text"></Entry>
-                    <Label x:Name="lblLastNameError"></Label>
-
-                    <Label>E-mail</Label>
-                    <Entry x:Name="txtEmail" Keyboard="Email"></Entry>
-                    <Label x:Name="lblEmailError"></Label>
-
-                    <Button x:Name="btnEdit"
-                        Text="Edit" 
-                            Clicked="Edit_Clicked"
-                            HorizontalOptions="Center"></Button>
-                    <Button x:Name="btnSave"
-                        Text="Save" 
-                            Clicked="Save_Clicked"
-                            HorizontalOptions="Center"></Button>
-                    <Button x:Name="btnCancel"
-                        Text="Cancel" 
-                            Clicked="Cancel_Clicked"
-                            HorizontalOptions="Center"></Button>
-
-                    <Button x:Name="btnDelete"
-                        Text="Delete" 
-                            Clicked="Delete_Clicked"
-                            HorizontalOptions="Center"></Button>
-                    <Button x:Name="btnAdd"
-                        Text="Add" 
-                            Clicked="Add_Clicked"
-                            HorizontalOptions="Center"></Button>
-                </StackLayout>
-            </Grid>
+            <StackLayout Padding="10">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <StackLayout Grid.Row="0" Grid.Column="0">
+                        <Label Text="Username"/> 
+                        <Entry x:Name="txtUserName" Keyboard="Text"/>
+                        <Label x:Name="lblUserNameError" Style="{StaticResource ErrorLabel}"/>
+                    </StackLayout>
+                    <StackLayout  Grid.Row="0" Grid.Column="1">
+                        <Label Text="Firstname"/>
+                        <Entry x:Name="txtFirstName" Keyboard="Text"/>
+                        <Label x:Name="lblFirstNameError" Style="{StaticResource ErrorLabel}"/>
+                    </StackLayout>
+                    <StackLayout  Grid.Row="1" Grid.Column="0">
+                        <Label Text="Lastname"/>
+                        <Entry x:Name="txtLastName" Keyboard="Text"/>
+                        <Label x:Name="lblLastNameError" Style="{StaticResource ErrorLabel}"/>
+                    </StackLayout>
+                    <StackLayout  Grid.Row="1" Grid.Column="1">
+                        <Label Text="E-mail"/>
+                        <Entry x:Name="txtEmail" Keyboard="Email"/>
+                        <Label x:Name="lblEmailError" Style="{StaticResource ErrorLabel}"/>
+                    </StackLayout>
+                </Grid>
+                <FlexLayout Style="{StaticResource ButtonAlign}">
+                    <Button x:Name="btnEdit" Text="Edit" Clicked="Edit_Clicked" HorizontalOptions="Center" Style="{StaticResource Edit}"/>
+                    <Button x:Name="btnSave" Text="Save" Clicked="Save_Clicked" HorizontalOptions="Center" Style="{StaticResource Save}"/>
+                    <Button x:Name="btnCancel" Text="Cancel" Clicked="Cancel_Clicked" HorizontalOptions="Center" Style="{StaticResource Cancel}"/>
+                    <Button x:Name="btnDelete" Text="Delete" Clicked="Delete_Clicked" HorizontalOptions="Center" Style="{StaticResource Delete}"/>
+                    <Button x:Name="btnAdd" Text="Add" Clicked="Add_Clicked" HorizontalOptions="Center" Style="{StaticResource Add}"/>
+                </FlexLayout>
+            </StackLayout>
         </ScrollView>
     </ContentPage.Content>
 </ContentPage>

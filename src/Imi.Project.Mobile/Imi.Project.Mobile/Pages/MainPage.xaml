@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Style="{StaticResource PageStyle}"
              x:Class="Imi.Project.Mobile.Pages.MainPage">
 
-    <StackLayout>
-        <Button x:Name="btnGame" Text="Games" Clicked="btnGame_Clicked"></Button>
-        <Button x:Name="btnGenre" Text="Genre" Clicked="btnGenre_Clicked"></Button>
-        <Button x:Name="btnPublisher" Text="Publisher" Clicked="btnPublisher_Clicked"></Button>
-        <Button x:Name="btnUser" Text="User" Clicked="btnUser_Clicked"></Button>
-
-    </StackLayout>
+    <FlexLayout Style="{StaticResource ButtonAlign}" >
+        <Button x:Name="btnGame" Text="Games" Clicked="btnGame_Clicked"/>
+        <Button x:Name="btnGenre" Text="Genre" Clicked="btnGenre_Clicked"/>
+        <Button x:Name="btnPublisher" Text="Publisher" Clicked="btnPublisher_Clicked"/>
+        <Button x:Name="btnUser" Text="User" Clicked="btnUser_Clicked"/>
+    </FlexLayout>
 
 </ContentPage>

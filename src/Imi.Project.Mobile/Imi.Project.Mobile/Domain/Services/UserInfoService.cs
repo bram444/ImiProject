@@ -19,7 +19,6 @@ namespace Imi.Project.Mobile.Domain.Services
                   LastName="Guy",
                    UserName="Firstguy111"
             }
-
         };
         public async Task<List<UserInfo>> GetAllUser()
         {

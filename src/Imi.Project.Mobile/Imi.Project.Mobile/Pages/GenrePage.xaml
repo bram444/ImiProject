@@ -1,20 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                          Style="{StaticResource PageStyle}"
              x:Class="Imi.Project.Mobile.Pages.GenrePage">
     <ContentPage.Content>
         <StackLayout>
-            <Button x:Name="btnAdd"
-                        Text="Add" 
-                            Clicked="Add_Clicked"
-                            HorizontalOptions="Center"></Button>
+            <Button x:Name="btnAdd" Text="Add" Clicked="Add_Clicked" HorizontalOptions="Center" Style="{StaticResource Add}" />
             <ListView x:Name="lvGenreList" ItemTapped="OpenGenre">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
                             <StackLayout>
-                                <Label Text="{Binding Name}"></Label>
-                                <Label Text="{Binding Description}"></Label>
+                                <FlexLayout Style="{StaticResource AlignItems}">
+                                    <Label Text="{Binding Name}"/>
+                                    <Label Text="{Binding Description}"/>
+                                </FlexLayout>
                             </StackLayout>
                         </ViewCell>
                     </DataTemplate>

@@ -15,8 +15,8 @@ namespace Imi.Project.Mobile.Domain.Validators
                  .WithMessage("Publisher name cannot be empty");
 
             RuleFor(publisherInfo => publisherInfo.Country)
-     .NotEmpty()
-     .WithMessage("Country cannot be empty");
+                .NotEmpty()
+                .WithMessage("Country cannot be empty");
         }
     }
 }

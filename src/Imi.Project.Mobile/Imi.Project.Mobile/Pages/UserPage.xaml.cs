@@ -15,7 +15,7 @@ namespace Imi.Project.Mobile.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class UserPage : ContentPage
     {
-        private UserInfoService userInfo= new UserInfoService();
+        private UserInfoService userInfo = new UserInfoService();
 
         public UserPage()
         {
