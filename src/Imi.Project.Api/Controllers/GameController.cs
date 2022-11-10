@@ -17,13 +17,11 @@ namespace Imi.Project.Api.Controllers
         protected readonly IGameService _gameService;
         private readonly IGameGenreService _gameGenreService;
         private readonly IUserGameService _userGameService;
-        private readonly IPublisherService _publisherService;
-        public GameController(IGameService gameService, IGameGenreService gameGenreService, IUserGameService userGameService, IPublisherService publisherService)
+        public GameController(IGameService gameService, IGameGenreService gameGenreService, IUserGameService userGameService)
         {
             _gameService = gameService;
             _gameGenreService = gameGenreService;
             _userGameService = userGameService;
-            _publisherService = publisherService;
         }
 
         [HttpGet]
@@ -51,7 +49,13 @@ namespace Imi.Project.Api.Controllers
             {
                 return BadRequest(ModelState);
             }
- 
+
+            foreach (Guid genreId in gameResponseDto.GenreId)
+            {
+                GameGenreResponseDto gameGenreResponseDto = new() { GenreId = genreId, GameId = gameResponseDto.Id };
+                await _gameGenreService.AddAsync(gameGenreResponseDto);
+            }
+
             return Ok(await _gameService.AddAsync(gameResponseDto));
         }
 
@@ -62,6 +66,8 @@ namespace Imi.Project.Api.Controllers
             {
                 return BadRequest(ModelState);
             }
+
+            await _gameGenreService.EditGameGenreAsync(gameResponseDto);
 
             return Ok(await _gameService.UpdateAsync(gameResponseDto));
         }
