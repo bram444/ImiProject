@@ -1,4 +1,5 @@
-﻿using Imi.Project.Api.Core.Dto.GameGenre;
+﻿using Imi.Project.Api.Core.Dto.Game;
+using Imi.Project.Api.Core.Dto.GameGenre;
 using Imi.Project.Api.Core.Dto.User;
 using Imi.Project.Api.Core.Dto.UserGame;
 using Imi.Project.Api.Core.Entities;
@@ -23,19 +24,19 @@ namespace Imi.Project.Api.Core.Services
 
         }
 
-        private UserGame CreateEntity(UserGameResponseDto userGameResponseDto)
+        private static UserGame CreateEntity(UserGameResponseDto userGameResponseDto)
         {
-            UserGame gameGenre = new UserGame
+            UserGame gameGenre = new()
             {
                 GameId = userGameResponseDto.GameId,
-                 UserId = userGameResponseDto.UserId,
+                UserId = userGameResponseDto.UserId,
             };
             return gameGenre;
         }
 
-        private UserGameResponseDto CreateDto(UserGame userGame)
+        private static UserGameResponseDto CreateDto(UserGame userGame)
         {
-            UserGameResponseDto userGameResponseDto = new UserGameResponseDto
+            UserGameResponseDto userGameResponseDto = new()
             {
                 GameId = userGame.GameId,
                 UserId = userGame.UserId,
@@ -44,7 +45,7 @@ namespace Imi.Project.Api.Core.Services
         }
         public async Task<ServiceResult<UserGameResponseDto>> AddAsync(UserGameResponseDto response)
         {
-            var serviceResponse = new ServiceResult<UserGameResponseDto>();
+            ServiceResult<UserGameResponseDto> serviceResponse = new();
 
             try
             {
@@ -60,9 +61,9 @@ namespace Imi.Project.Api.Core.Services
 
         public async Task<ServiceResult<UserGameResponseDto>> DeleteAsync(UserGameResponseDto response)
         {
-            var serviceResponse = new ServiceResult<UserGameResponseDto>();
+            ServiceResult<UserGameResponseDto> serviceResponse = new();
 
-            if (_userGameRepository.ListAllAsync().Result.Where(gg => gg.UserId == response.UserId && gg.GameId == response.GameId).Count() == 0)
+            if (!_userGameRepository.ListAllAsync().Result.Any(gg => gg.UserId == response.UserId && gg.GameId == response.GameId))
             {
                 serviceResponse.HasErrors = true;
                 serviceResponse.ErrorMessages.Add($"Many to many relationship does not exist");
@@ -85,7 +86,7 @@ namespace Imi.Project.Api.Core.Services
 
         public IQueryable<UserGameResponseDto> GetAll()
         {
-            List<UserGameResponseDto> userGameResponseDtos = new List<UserGameResponseDto>();
+            List<UserGameResponseDto> userGameResponseDtos = new();
             foreach (UserGame entity in _userGameRepository.GetAll())
             {
                 userGameResponseDtos.Add(CreateDto(entity));
@@ -96,7 +97,7 @@ namespace Imi.Project.Api.Core.Services
 
         public async Task<IEnumerable<UserGameResponseDto>> GetByGameIdAsync(Guid id)
         {
-            List<UserGameResponseDto> userGameResponseDtos = new List<UserGameResponseDto>();
+            List<UserGameResponseDto> userGameResponseDtos = new();
 
             foreach (UserGame entity in await _userGameRepository.GetByGameIdAsync(id))
             {
@@ -108,7 +109,7 @@ namespace Imi.Project.Api.Core.Services
 
         public async Task<IEnumerable<UserGameResponseDto>> GetByUserIdAsync(Guid id)
         {
-            List<UserGameResponseDto> userGameResponseDtos = new List<UserGameResponseDto>();
+            List<UserGameResponseDto> userGameResponseDtos = new();
             foreach (UserGame entity in await _userGameRepository.GetByUserIdAsync(id))
             {
                 userGameResponseDtos.Add(CreateDto(entity));
@@ -119,13 +120,46 @@ namespace Imi.Project.Api.Core.Services
 
         public async Task<IEnumerable<UserGameResponseDto>> ListAllAsync()
         {
-            List<UserGameResponseDto> userResponseDtos = new List<UserGameResponseDto>();
+            List<UserGameResponseDto> userResponseDtos = new();
             foreach (UserGame entity in await _userGameRepository.ListAllAsync())
             {
                 userResponseDtos.Add(CreateDto(entity));
             }
 
             return userResponseDtos;
+        }
+
+        public async Task<ServiceResult<UserGameResponseDto>> EditUserGameAsync(UserResponseDto userResponse)
+        {
+            IEnumerable<UserGameResponseDto> userGameResponses = await GetByUserIdAsync(userResponse.Id);
+
+            List<UserGameResponseDto> updateUserGame = new();
+
+            ServiceResult<UserGameResponseDto> serviceResponse = new();
+
+            foreach (Guid gameId in userResponse.GameId)
+            {
+                updateUserGame.Add(new UserGameResponseDto
+                {
+                    GameId = gameId,
+                    UserId = userResponse.Id
+                });
+            }
+
+            List<UserGameResponseDto> toDeleteGame = userGameResponses.Except(updateUserGame).ToList();
+            foreach (UserGameResponseDto deleteGame in toDeleteGame)
+            {
+                await DeleteAsync(deleteGame);
+            }
+
+            List<UserGameResponseDto> toAddGame = updateUserGame.Except(userGameResponses).ToList();
+
+            foreach (UserGameResponseDto addGame in toAddGame)
+            {
+                serviceResponse = await AddAsync(addGame);
+            }
+
+            return serviceResponse;
         }
     }
 }

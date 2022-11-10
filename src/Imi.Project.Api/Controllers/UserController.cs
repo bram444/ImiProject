@@ -1,4 +1,5 @@
 ﻿using Imi.Project.Api.Core.Dto.Game;
+using Imi.Project.Api.Core.Dto.GameGenre;
 using Imi.Project.Api.Core.Dto.Publisher;
 using Imi.Project.Api.Core.Dto.User;
 using Imi.Project.Api.Core.Dto.UserGame;
@@ -55,6 +56,13 @@ namespace Imi.Project.Api.Controllers
                 return BadRequest(ModelState);
             }
 
+            foreach (Guid gameId in userResponseDto.GameId)
+            {
+                UserGameResponseDto userGameResponseDto = new() { UserId = userResponseDto.Id, GameId = gameId };
+                await _userGameService.AddAsync(userGameResponseDto);
+            }
+
+
             return Ok(await _userService.AddAsync(userResponseDto));
         }
 
@@ -65,6 +73,8 @@ namespace Imi.Project.Api.Controllers
             {
                 return BadRequest(ModelState);
             }
+
+            await _userGameService.EditUserGameAsync(userResponseDto);
 
             return Ok(await _userService.UpdateAsync(userResponseDto));
         }

@@ -1,4 +1,7 @@
-﻿using Imi.Project.Api.Core.Dto.Genre;
+﻿using Imi.Project.Api.Core.Dto.Game;
+using Imi.Project.Api.Core.Dto.GameGenre;
+using Imi.Project.Api.Core.Dto.Genre;
+using Imi.Project.Api.Core.Dto.User;
 using Imi.Project.Api.Core.Dto.UserGame;
 using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Services;
@@ -16,6 +19,8 @@ namespace Imi.Project.Api.Core.Interfaces.Sevices
         Task<IEnumerable<UserGameResponseDto>> ListAllAsync();
         Task<IEnumerable<UserGameResponseDto>> GetByGameIdAsync(Guid id);
         Task<IEnumerable<UserGameResponseDto>> GetByUserIdAsync(Guid id);
+
+        Task<ServiceResult<UserGameResponseDto>> EditUserGameAsync(UserResponseDto userResponse);
 
         Task<ServiceResult<UserGameResponseDto>> AddAsync(UserGameResponseDto response);
         Task<ServiceResult<UserGameResponseDto>> DeleteAsync(UserGameResponseDto response);

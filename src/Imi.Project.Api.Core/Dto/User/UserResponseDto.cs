@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Dto.User
 {
-    public class UserResponseDto:BaseDto
+    public class UserResponseDto : BaseDto
     {
         public string UserName { get; set; }
 
@@ -16,5 +16,8 @@ namespace Imi.Project.Api.Core.Dto.User
         public string LastName { get; set; }
 
         public string Email { get; set; }
+
+        public ICollection<Guid> GameId { get; set; }
+
     }
 }
