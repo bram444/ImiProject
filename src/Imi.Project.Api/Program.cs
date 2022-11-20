@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Globalization;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -56,7 +57,23 @@ builder.Services.AddAuthentication(option =>
       };
   });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+options.AddPolicy("OnlyLoyalMembers", policy =>
+{
+    policy.RequireAssertion(context =>
+    {
+        var registrationClaimValue = context.User.Claims
+                     .SingleOrDefault(c => c.Type == "registration-date")?.Value;
+        if (DateTime.TryParseExact(registrationClaimValue, "yy-MM-dd",
+           CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal,
+           out var registrationTime))
+        {
+            return registrationTime.AddYears(1) < DateTime.UtcNow;
+        }
+        return false;
+    });
+}));
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
