@@ -107,8 +107,7 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         CreatedOn=DateTime.Now,
                         LastEditedOn=DateTime.Now
                     },
-                }
-                );
+                });
         }
     }
 }

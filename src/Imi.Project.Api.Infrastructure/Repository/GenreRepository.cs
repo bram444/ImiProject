@@ -13,7 +13,6 @@ namespace Imi.Project.Api.Infrastructure.Repository
     {
         public GenreRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
-
         }
 
         public virtual async Task<IEnumerable<Genre>> SearchAsync(string search)

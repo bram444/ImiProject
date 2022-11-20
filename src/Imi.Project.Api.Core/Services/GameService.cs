@@ -18,7 +18,6 @@ namespace Imi.Project.Api.Core.Services
         private readonly IPublisherRepository _publisherRepository;
         private readonly IGameGenreRepository _gameGenreRepository;
 
-
         public GameService(IGameRepository gameRepository, IPublisherRepository publisherRepository, IGameGenreRepository gameGenreRepository)
         {
             _gameRepository = gameRepository;
@@ -65,7 +64,6 @@ namespace Imi.Project.Api.Core.Services
             };
             return gameDto;
         }
-
 
         public async Task<ServiceResult<GameResponseDto>> AddAsync(GameResponseDto response)
         {

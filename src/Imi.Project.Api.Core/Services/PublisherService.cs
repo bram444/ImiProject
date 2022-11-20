@@ -15,10 +15,8 @@ namespace Imi.Project.Api.Core.Services
 {
     public class PublisherService : IPublisherService
     {
-
         private readonly IPublisherRepository _publisherRespository;
         private readonly IGameRepository _gameRepository;
-
 
         public PublisherService(IPublisherRepository publisherRespository, IGameRepository gameRepository)
         {
@@ -31,8 +29,8 @@ namespace Imi.Project.Api.Core.Services
             Publisher publisher = new Publisher
             {
                 Id = publisherResponseDto.Id,
-                 Country = publisherResponseDto.Country,
-                  Name= publisherResponseDto.Name,
+                Country = publisherResponseDto.Country,
+                Name = publisherResponseDto.Name,
             };
             return publisher;
         }
@@ -75,7 +73,7 @@ namespace Imi.Project.Api.Core.Services
                 return serviceResponse;
             }
 
-            if (await _gameRepository.GetByPublisherIdAsync(id) !=null)
+            if (await _gameRepository.GetByPublisherIdAsync(id) != null)
             {
                 serviceResponse.HasErrors = true;
                 serviceResponse.ErrorMessages.Add("Please delete the games before deleting the publisher");
@@ -107,7 +105,7 @@ namespace Imi.Project.Api.Core.Services
 
         public async Task<PublisherResponseDto> GetByIdAsync(Guid id)
         {
-            return CreateDto( await _publisherRespository.GetByIdAsync(id));
+            return CreateDto(await _publisherRespository.GetByIdAsync(id));
         }
 
         public async Task<IEnumerable<PublisherResponseDto>> ListAllAsync()

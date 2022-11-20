@@ -91,8 +91,8 @@ namespace Imi.Project.Api.Core.Services
                 serviceResponse.HasErrors = true;
                 serviceResponse.ErrorMessages.Add(ex.Message);
             }
-            return serviceResponse;
 
+            return serviceResponse;
         }
 
         public IQueryable<UserResponseDto> GetAll()
@@ -178,6 +178,7 @@ namespace Imi.Project.Api.Core.Services
                 serviceResponse.HasErrors = true;
                 serviceResponse.ErrorMessages.Add(ex.Message);
             }
+
             return serviceResponse;
         }
     }

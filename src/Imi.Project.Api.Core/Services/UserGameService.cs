@@ -56,6 +56,7 @@ namespace Imi.Project.Api.Core.Services
                 serviceResponse.HasErrors = true;
                 serviceResponse.ErrorMessages.Add(ex.Message);
             }
+     
             return serviceResponse;
         }
 

@@ -17,12 +17,11 @@ namespace Imi.Project.Api.Core.Services
     {
         private readonly IGenreRepository _genreRepository;
 
-
         public GenreService(IGenreRepository genreRepository)
         {
             _genreRepository = genreRepository;
-
         }
+
         private Genre CreateEntity(GenreResponseDto genreResponseDto)
         {
             Genre genre = new Genre
@@ -75,8 +74,6 @@ namespace Imi.Project.Api.Core.Services
 
             try
             {
-                
-
                 serviceResponse.Result = CreateDto(await _genreRepository.DeleteAsync(await _genreRepository.GetByIdAsync(id)));
             }
             catch (Exception ex)

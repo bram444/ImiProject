@@ -16,11 +16,10 @@ namespace Imi.Project.Api.Controllers
         protected readonly IGenreService _genreService;
         protected readonly IGameGenreService _gameGenreService;
 
-
         public GenreController(IGenreService genreService, IGameGenreService gameGenreService)
         {
             _genreService = genreService;
-            _gameGenreService=gameGenreService;
+            _gameGenreService = gameGenreService;
         }
 
         [HttpGet]

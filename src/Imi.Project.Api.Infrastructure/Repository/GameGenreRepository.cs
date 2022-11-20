@@ -34,7 +34,7 @@ namespace Imi.Project.Api.Infrastructure.Repository
             return gameGenre.Where(gg => gg.GameId == id);
         }
 
-        public virtual async Task<IEnumerable< GameGenre>> GetByGenreIdAsync(Guid id)
+        public virtual async Task<IEnumerable<GameGenre>> GetByGenreIdAsync(Guid id)
         {
             var gameGenre = await ListAllAsync();
             return gameGenre.Where(gg => gg.GameId == id);

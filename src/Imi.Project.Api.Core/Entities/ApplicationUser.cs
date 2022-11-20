@@ -1,11 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Imi.Project.Api.Core.Entities
 {
-    public class ApplicationUser:BaseEntity
+    public class ApplicationUser : IdentityUser<Guid>
     {
-        [Required]
-        public string UserName { get; set; }
 
         [Required]
         public string FirstName { get; set; }
@@ -13,7 +13,5 @@ namespace Imi.Project.Api.Core.Entities
         [Required]
         public string LastName { get; set; }
 
-        [Required]
-        public string Email { get; set; }
     }
 }

@@ -16,7 +16,7 @@ namespace Imi.Project.Api.Controllers
         protected readonly IPublisherService _publisherService;
         private readonly IGameService _gameService;
 
-        public PublisherController(IPublisherService publisherService,IGameService gameService)
+        public PublisherController(IPublisherService publisherService, IGameService gameService)
         {
             _publisherService = publisherService;
             _gameService = gameService;

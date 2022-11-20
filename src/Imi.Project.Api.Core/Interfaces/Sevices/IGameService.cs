@@ -12,7 +12,7 @@ namespace Imi.Project.Api.Core.Interfaces.Sevices
 {
     public interface IGameService
     {
-        Task<IEnumerable<GameResponseDto >> GetByPublisherIdAsync(Guid id);
+        Task<IEnumerable<GameResponseDto>> GetByPublisherIdAsync(Guid id);
         Task<IEnumerable<GameResponseDto>> SearchAsync(string search);
 
         IQueryable<GameResponseDto> GetAll();

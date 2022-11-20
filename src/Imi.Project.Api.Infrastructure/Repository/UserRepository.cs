@@ -9,10 +9,14 @@ using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Infrastructure.Repository
 {
-    public class UserRepository : BaseRepository<ApplicationUser>, IUserRepository
+    public class UserRepository : IUserRepository
     {
-        public UserRepository(ApplicationDbContext dbContext) : base(dbContext)
+
+        protected readonly ApplicationDbContext _dbContext;
+
+        public UserRepository(ApplicationDbContext dbContext)
         {
+            _dbContext = dbContext;
         }
 
         public virtual async Task<IEnumerable<ApplicationUser>> SearchFirstNameAsync(string search)
@@ -40,6 +44,47 @@ namespace Imi.Project.Api.Infrastructure.Repository
                 .ToListAsync();
 
             return user;
+        }
+
+        public virtual IQueryable<ApplicationUser> GetAll()
+        {
+            return _dbContext.Set<ApplicationUser>().AsQueryable();
+        }
+
+        public virtual async Task<IEnumerable<ApplicationUser>> ListAllAsync()
+        {
+            return await _dbContext.Set<ApplicationUser>().AsNoTracking().ToListAsync();
+        }
+
+        public virtual async Task<ApplicationUser> GetByIdAsync(Guid id)
+        {
+            return await _dbContext.Set<ApplicationUser>().AsNoTracking().SingleOrDefaultAsync(t => t.Id == id);
+        }
+
+        public async Task<ApplicationUser> AddAsync(ApplicationUser entity)
+        {
+            entity.Id = Guid.NewGuid();
+            _dbContext.Set<ApplicationUser>().Add(entity);
+            _dbContext.Entry(entity).State = EntityState.Added;
+            await _dbContext.SaveChangesAsync();
+            return entity;
+        }
+
+        public async Task<ApplicationUser> UpdateAsync(ApplicationUser entity)
+        {
+
+            _dbContext.Set<ApplicationUser>().Update(entity);
+            await _dbContext.SaveChangesAsync();
+            return entity;
+        }
+
+        public async Task<ApplicationUser> DeleteAsync(ApplicationUser entity)
+        {
+            _dbContext.Set<ApplicationUser>().Remove(entity);
+            _dbContext.Entry(entity).State = EntityState.Deleted;
+
+            await _dbContext.SaveChangesAsync();
+            return entity;
         }
     }
 }

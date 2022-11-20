@@ -62,7 +62,6 @@ namespace Imi.Project.Api.Controllers
                 await _userGameService.AddAsync(userGameResponseDto);
             }
 
-
             return Ok(await _userService.AddAsync(userResponseDto));
         }
 

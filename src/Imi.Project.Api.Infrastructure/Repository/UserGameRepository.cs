@@ -22,6 +22,7 @@ namespace Imi.Project.Api.Infrastructure.Repository
         {
             return _dbContext.Set<UserGame>().AsQueryable();
         }
+
         public virtual async Task<IEnumerable<UserGame>> ListAllAsync()
         {
             return await _dbContext.Set<UserGame>().AsNoTracking().ToListAsync();
@@ -29,7 +30,7 @@ namespace Imi.Project.Api.Infrastructure.Repository
 
         public virtual async Task<IEnumerable<UserGame>> GetByGameIdAsync(Guid id)
         {
-            return await _dbContext.Set<UserGame>().AsNoTracking().Where(ug=>ug.GameId==id).ToListAsync();
+            return await _dbContext.Set<UserGame>().AsNoTracking().Where(ug => ug.GameId == id).ToListAsync();
         }
 
         public virtual async Task<IEnumerable<UserGame>> GetByUserIdAsync(Guid id)
