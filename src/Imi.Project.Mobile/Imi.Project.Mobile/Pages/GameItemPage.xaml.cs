@@ -123,7 +123,7 @@ namespace Imi.Project.Mobile.Pages
                 if (validationResult.IsValid)
                 {
                     gameInfoService.SaveGames(gameEdit);
-                    await Navigation.PopToRootAsync();
+                    await Navigation.PopAsync();
                 }
                 else
                 {
@@ -173,7 +173,7 @@ namespace Imi.Project.Mobile.Pages
                 if (validationResult.IsValid)
                 {
                     gameInfoService.AddGames(gameEdit);
-                    await Navigation.PopToRootAsync();
+                    await Navigation.PopAsync();
                 }
                 else
                 {
@@ -197,7 +197,7 @@ namespace Imi.Project.Mobile.Pages
         private async void Delete_Clicked(object sender, EventArgs e)
         {
             gameInfoService.RemoveGames(gamesInfo.Id);
-            await Navigation.PopToRootAsync();
+            await Navigation.PopAsync();
         }
 
         private void Cancel_Clicked(object sender, EventArgs e)

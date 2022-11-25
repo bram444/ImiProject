@@ -119,7 +119,7 @@ namespace Imi.Project.Mobile.Pages
             if (validationResult.IsValid)
             {
                 genreInfoService.SaveGenre(genreEdit);
-                await Navigation.PopToRootAsync();
+                await Navigation.PopAsync();
             }
             else
             {
@@ -159,7 +159,7 @@ namespace Imi.Project.Mobile.Pages
             if (validationResult.IsValid)
             {
                 genreInfoService.AddGenre(genreEdit);
-                await Navigation.PopToRootAsync();
+                await Navigation.PopAsync();
             }
             else
             {
@@ -176,7 +176,7 @@ namespace Imi.Project.Mobile.Pages
         private async void Delete_Clicked(object sender, EventArgs e)
         {
             genreInfoService.RemoveGenre(genreInfo.Id);
-            await Navigation.PopToRootAsync();
+            await Navigation.PopAsync();
         }
 
         private void Cancel_Clicked(object sender, EventArgs e)

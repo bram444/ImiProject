@@ -25,9 +25,10 @@ namespace Imi.Project.Mobile.Pages
 
         protected override void OnAppearing()
         {
+            lvPublisherList.ItemsSource = null;
+            lvPublisherList.ItemsSource = publisherInfo.GetAllPublisher().Result;
             base.OnAppearing();
 
-            lvPublisherList.ItemsSource = publisherInfo.GetAllPublisher().Result;
         }
 
         private async void OpenPublisher(object sender, ItemTappedEventArgs e)

@@ -24,6 +24,7 @@ namespace Imi.Project.Mobile.Pages
 
         protected override void OnAppearing()
         {
+            lvGameList.ItemsSource = null;
             lvGameList.ItemsSource = gameInfo.GetAllGames().Result;
             base.OnAppearing();
 

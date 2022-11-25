@@ -24,9 +24,11 @@ namespace Imi.Project.Mobile.Pages
 
         protected override void OnAppearing()
         {
+            lvGenreList.ItemsSource = null;
+            lvGenreList.ItemsSource = genreInfo.GetAllGenre().Result;
+
             base.OnAppearing();
 
-            lvGenreList.ItemsSource = genreInfo.GetAllGenre().Result;
         }
 
         private async void OpenGenre(object sender, ItemTappedEventArgs e)

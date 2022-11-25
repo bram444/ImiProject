@@ -24,9 +24,10 @@ namespace Imi.Project.Mobile.Pages
 
         protected override void OnAppearing()
         {
-            base.OnAppearing();
-
+            lvUserList.ItemsSource = null;
             lvUserList.ItemsSource = userInfo.GetAllUser().Result;
+
+            base.OnAppearing();
         }
 
         private async void OpenUser(object sender, ItemTappedEventArgs e)

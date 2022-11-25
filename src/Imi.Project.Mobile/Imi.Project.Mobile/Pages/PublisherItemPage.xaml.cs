@@ -118,7 +118,7 @@ namespace Imi.Project.Mobile.Pages
             if (validationResult.IsValid)
             {
                 publisherInfoService.SavePublisher(publisherEdit);
-                await Navigation.PopToRootAsync();
+                await Navigation.PopAsync();
             }
             else
             {
@@ -153,7 +153,7 @@ namespace Imi.Project.Mobile.Pages
             if (validationResult.IsValid)
             {
                 publisherInfoService.AddPublisher(publisherEdit);
-                await Navigation.PopToRootAsync();
+                await Navigation.PopAsync();
             }
             else
             {
@@ -170,7 +170,7 @@ namespace Imi.Project.Mobile.Pages
         private async void Delete_Clicked(object sender, EventArgs e)
         {
             publisherInfoService.RemovePublisher(publisherInfo.Id);
-            await Navigation.PopToRootAsync();
+            await Navigation.PopAsync();
         }
 
         private void Cancel_Clicked(object sender, EventArgs e)
