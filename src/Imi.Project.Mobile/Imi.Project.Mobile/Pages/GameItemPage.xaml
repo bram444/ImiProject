@@ -2,7 +2,9 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                           Style="{StaticResource PageStyle}"
-             x:Class="Imi.Project.Mobile.Pages.GameItemPage">
+             x:Class="Imi.Project.Mobile.Pages.GameItemPage"
+             Title="Games item">
+
     <ContentPage.Content>
         <ScrollView>
             <StackLayout Padding="10">
@@ -23,11 +25,11 @@
                     </StackLayout>
                 </Grid>
                 <FlexLayout Style="{StaticResource ButtonAlign}">
-                <Button x:Name="btnEdit" Text="Edit" Clicked="Edit_Clicked" HorizontalOptions="Center" Style="{StaticResource Edit}"/>
-                <Button x:Name="btnSave" Text="Save" Clicked="Save_Clicked" HorizontalOptions="Center" Style="{StaticResource Save}"/>
-                <Button x:Name="btnCancel" Text="Cancel" Clicked="Cancel_Clicked" HorizontalOptions="Center" Style="{StaticResource Cancel}"/>
-                <Button x:Name="btnDelete" Text="Delete" Clicked="Delete_Clicked" HorizontalOptions="Center" Style="{StaticResource Delete}"/>
-                <Button x:Name="btnAdd" Text="Add" Clicked="Add_Clicked" HorizontalOptions="Center"  Style="{StaticResource Add}"/>
+                    <Button x:Name="btnEdit" Text="Edit" Clicked="Edit_Clicked" HorizontalOptions="Center" Style="{StaticResource Edit}"/>
+                    <Button x:Name="btnSave" Text="Save" Clicked="Save_Clicked" HorizontalOptions="Center" Style="{StaticResource Save}"/>
+                    <Button x:Name="btnCancel" Text="Cancel" Clicked="Cancel_Clicked" HorizontalOptions="Center" Style="{StaticResource Cancel}"/>
+                    <Button x:Name="btnDelete" Text="Delete" Clicked="Delete_Clicked" HorizontalOptions="Center" Style="{StaticResource Delete}"/>
+                    <Button x:Name="btnAdd" Text="Add" Clicked="Add_Clicked" HorizontalOptions="Center"  Style="{StaticResource Add}"/>
                 </FlexLayout>
             </StackLayout>
         </ScrollView>

@@ -5,6 +5,12 @@
     <Application.Resources>
         <ResourceDictionary>
 
+            <Style x:Key="Title" TargetType="Label">
+                <Setter Property="Margin" Value="0,5"/>
+                <Setter Property="FontSize" Value="Large"/>
+                <Setter Property="TextColor" Value="#FFD972"/>
+            </Style>
+            
             <Style x:Key="ButtonAlign" TargetType="FlexLayout">
                 <Setter Property="AlignContent" Value="SpaceEvenly"/>
                 <Setter Property="AlignItems" Value="Stretch"/>
@@ -30,6 +36,8 @@
                 <Setter Property="Direction" Value="Column"/>
                 <Setter Property="AlignContent" Value="SpaceEvenly"/>
                 <Setter Property="Padding" Value="0,10,0,10"/>
+                <Setter Property="BackgroundColor" Value="#E6917C"/>
+                <Setter Property="Margin" Value="5"/>
             </Style>
 
             <Style x:Key="List" TargetType="ListView">
@@ -37,20 +45,13 @@
                 <Setter Property="HasUnevenRows" Value="True"/>
             </Style>
 
-            <Style x:Key="Delete" TargetType="Button">
-                <Setter Property="FontAttributes" Value="Bold"/>
-                <Setter Property="BackgroundColor" Value="Red"/>
-                <Setter Property="BorderWidth" Value="1"/>
-                <Setter Property="BorderColor" Value="Black"/>
-                <Setter  Property="CornerRadius" Value="10"/>
-            </Style>
-
             <Style x:Key="Add" TargetType="Button">
                 <Setter Property="FontAttributes" Value="Bold"/>
                 <Setter Property="BackgroundColor" Value="Green"/>
                 <Setter Property="BorderWidth" Value="1"/>
                 <Setter Property="BorderColor" Value="Black"/>
-                <Setter  Property="CornerRadius" Value="10"/>
+                <Setter Property="CornerRadius" Value="10"/>
+                <Setter Property="Margin" Value="5"/>
             </Style>
 
             <Style x:Key="Cancel" TargetType="Button">
@@ -58,7 +59,9 @@
                 <Setter Property="BackgroundColor" Value="Gray"/>
                 <Setter Property="BorderWidth" Value="1"/>
                 <Setter Property="BorderColor" Value="Black"/>
-                <Setter  Property="CornerRadius" Value="10"/>
+                <Setter Property="CornerRadius" Value="10"/>
+                <Setter Property="Margin" Value="5"/>
+                <Setter Property="Padding" Value="0,10,0,10"/>
             </Style>
 
             <Style x:Key="Save" TargetType="Button">
@@ -66,7 +69,9 @@
                 <Setter Property="BackgroundColor" Value="Blue"/>
                 <Setter Property="BorderWidth" Value="1"/>
                 <Setter Property="BorderColor" Value="Black"/>
-                <Setter  Property="CornerRadius" Value="10"/>
+                <Setter Property="CornerRadius" Value="10"/>
+                <Setter Property="Margin" Value="5"/>
+                <Setter Property="Padding" Value="0,10,0,10"/>
             </Style>
 
             <Style x:Key="Edit" TargetType="Button">
@@ -74,8 +79,30 @@
                 <Setter Property="BackgroundColor" Value="Yellow"/>
                 <Setter Property="BorderWidth" Value="1"/>
                 <Setter Property="BorderColor" Value="Black"/>
-                <Setter  Property="CornerRadius" Value="10"/>
+                <Setter Property="CornerRadius" Value="10"/>
+                <Setter Property="Margin" Value="5"/>
+                <Setter Property="Padding" Value="0,10,0,10"/>
             </Style>
+
+            <Style x:Key="Delete" TargetType="Button">
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="BackgroundColor" Value="Red"/>
+                <Setter Property="BorderWidth" Value="1"/>
+                <Setter Property="BorderColor" Value="Black"/>
+                <Setter Property="CornerRadius" Value="10"/>
+                <Setter Property="Padding" Value="0,10,0,10"/>
+                <Setter Property="Margin" Value="5"/>
+            </Style>
+
+            <Style x:Key="HomeButtons" TargetType="Button">
+                <Setter Property="Padding" Value="5"/>
+                <Setter Property="BackgroundColor" Value="#E6917C"/>
+                <Setter Property="Margin" Value="0,2"/>
+                <Setter Property="FontSize" Value="30"/>
+                <Setter Property="TextColor" Value="#FFD972"/>
+
+            </Style>
+            
         </ResourceDictionary>
     </Application.Resources>
 </Application>

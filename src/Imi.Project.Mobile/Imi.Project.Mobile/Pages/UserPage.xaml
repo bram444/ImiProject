@@ -4,7 +4,8 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              Style="{StaticResource PageStyle}"
-             x:Class="Imi.Project.Mobile.Pages.UserPage">
+             x:Class="Imi.Project.Mobile.Pages.UserPage"
+             Title="User">
     <ContentPage.Content>
         <StackLayout>
             <Button x:Name="btnAdd" Text="Add" Clicked="Add_Clicked" HorizontalOptions="Center" Style="{StaticResource Add}"/>
