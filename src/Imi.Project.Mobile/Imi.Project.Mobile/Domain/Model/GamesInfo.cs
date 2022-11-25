@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Imi.Project.Mobile.Domain.Entities
+namespace Imi.Project.Mobile.Domain.Models
 {
     public class GamesInfo
     {

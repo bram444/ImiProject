@@ -1,5 +1,5 @@
 ﻿using Imi.Project.Mobile.Domain;
-using Imi.Project.Mobile.Domain.Entities;
+using Imi.Project.Mobile.Domain.Models;
 using Imi.Project.Mobile.Domain.Services;
 using System;
 using System.Collections.Generic;

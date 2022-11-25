@@ -8,7 +8,7 @@ using Xamarin.Forms.Xaml;
 using Imi.Project.Mobile;
 using System.Windows.Input;
 using Imi.Project.Mobile.Domain.Services;
-using Imi.Project.Mobile.Domain.Entities;
+using Imi.Project.Mobile.Domain.Models;
 
 namespace Imi.Project.Mobile.Pages
 {

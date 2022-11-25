@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Imi.Project.Mobile.Domain.Entities;
+using Imi.Project.Mobile.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;

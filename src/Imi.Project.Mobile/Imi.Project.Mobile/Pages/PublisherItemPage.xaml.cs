@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Imi.Project.Mobile.Domain.Entities;
+using Imi.Project.Mobile.Domain.Models;
 using Imi.Project.Mobile.Domain.Services;
 using Imi.Project.Mobile.Domain.Validators;
 using System;
