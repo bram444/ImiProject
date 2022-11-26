@@ -1,19 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                          Style="{StaticResource PageStyle}"
+             Style="{StaticResource PageStyle}"
              x:Class="Imi.Project.Mobile.Pages.PublisherPage"
-             Title="Publisher">
+             xmlns:bhv="clr-namespace:Imi.Project.Mobile.Behaviors" 
+             Title="{Binding Title}">
+
     <ContentPage.Content>
         <StackLayout>
-            <Button x:Name="btnAdd" Text="Add" Clicked="Add_Clicked" HorizontalOptions="Center"  Style="{StaticResource Add}"/>
-            <ListView x:Name="lvPublisherList" ItemTapped="OpenPublisher">
+            <Button x:Name="btnAdd" Text="Add" Command="{Binding AddPublisherItem}"  Style="{StaticResource Add}"/>
+            <ListView ItemsSource="{Binding PublisherInfo}" >
+                <ListView.Behaviors>
+                    <bhv:EventToCommandBehavior
+                        EventName="ItemTapped"
+                        Command="{Binding AddPublisherItem}"
+                        EventArgsConverter="{StaticResource ItemTappedEventArgsConv}" />
+                </ListView.Behaviors>
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
                             <StackLayout>
                                 <FlexLayout Style="{StaticResource AlignItems}">
-                                    <Label Text="{Binding Name}"/>
+                                    <Label Text="{Binding Name}" Style="{StaticResource Title}"/>
                                     <Label Text="{Binding Country}"/>
                                 </FlexLayout>
                             </StackLayout>

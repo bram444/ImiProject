@@ -1,9 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Application xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:conv="clr-namespace:Imi.Project.Mobile.Converters"
+
              x:Class="Imi.Project.Mobile.App">
     <Application.Resources>
         <ResourceDictionary>
+            <conv:ItemTappedEventArgsConverter x:Key="ItemTappedEventArgsConv" />
 
             <Style x:Key="Title" TargetType="Label">
                 <Setter Property="Margin" Value="0,5"/>
@@ -52,6 +55,8 @@
                 <Setter Property="BorderColor" Value="Black"/>
                 <Setter Property="CornerRadius" Value="10"/>
                 <Setter Property="Margin" Value="5"/>
+                <Setter Property="Padding" Value="0,10,0,10"/>
+                <Setter Property="HorizontalOptions" Value="FillAndExpand"/>
             </Style>
 
             <Style x:Key="Cancel" TargetType="Button">
@@ -62,6 +67,7 @@
                 <Setter Property="CornerRadius" Value="10"/>
                 <Setter Property="Margin" Value="5"/>
                 <Setter Property="Padding" Value="0,10,0,10"/>
+                <Setter Property="HorizontalOptions" Value="FillAndExpand"/>
             </Style>
 
             <Style x:Key="Save" TargetType="Button">
@@ -72,6 +78,7 @@
                 <Setter Property="CornerRadius" Value="10"/>
                 <Setter Property="Margin" Value="5"/>
                 <Setter Property="Padding" Value="0,10,0,10"/>
+                <Setter Property="HorizontalOptions" Value="FillAndExpand"/>
             </Style>
 
             <Style x:Key="Edit" TargetType="Button">
@@ -82,6 +89,7 @@
                 <Setter Property="CornerRadius" Value="10"/>
                 <Setter Property="Margin" Value="5"/>
                 <Setter Property="Padding" Value="0,10,0,10"/>
+                <Setter Property="HorizontalOptions" Value="FillAndExpand"/>
             </Style>
 
             <Style x:Key="Delete" TargetType="Button">
@@ -92,6 +100,7 @@
                 <Setter Property="CornerRadius" Value="10"/>
                 <Setter Property="Padding" Value="0,10,0,10"/>
                 <Setter Property="Margin" Value="5"/>
+                <Setter Property="HorizontalOptions" Value="FillAndExpand"/>
             </Style>
 
             <Style x:Key="HomeButtons" TargetType="Button">
@@ -100,7 +109,7 @@
                 <Setter Property="Margin" Value="0,2"/>
                 <Setter Property="FontSize" Value="30"/>
                 <Setter Property="TextColor" Value="#FFD972"/>
-
+                <Setter Property="HorizontalOptions" Value="FillAndExpand"/>
             </Style>
             
         </ResourceDictionary>

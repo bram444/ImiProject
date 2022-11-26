@@ -15,29 +15,9 @@ namespace Imi.Project.Mobile.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class UserPage : ContentPage
     {
-        private UserInfoService userInfo = new UserInfoService();
-
         public UserPage()
         {
             InitializeComponent();
-        }
-
-        protected override void OnAppearing()
-        {
-            lvUserList.ItemsSource = null;
-            lvUserList.ItemsSource = userInfo.GetAllUser().Result;
-
-            base.OnAppearing();
-        }
-
-        private async void OpenUser(object sender, ItemTappedEventArgs e)
-        {
-            await Navigation.PushAsync(new UserItemPage(e.Item as UserInfo), true);
-        }
-
-        private async void Add_Clicked(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new UserItemPage(), true);
         }
     }
 }

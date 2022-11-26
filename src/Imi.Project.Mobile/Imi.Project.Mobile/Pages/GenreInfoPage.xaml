@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:views="clr-namespace:Imi.Project.Mobile.Pages"
+             Style="{StaticResource PageStyle}"
+             x:Class="Imi.Project.Mobile.Pages.GenreInfoPage"
+             mc:Ignorable="d"
+             Title="{Binding Title}">
+    
+    <ContentPage.Content>
+        <ScrollView>
+            <Grid>
+                <StackLayout Padding="10">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackLayout Grid.Column="0">
+                            <Label Text="Name"/>
+                            <Entry x:Name="txtName" Text="{Binding GenreName}" IsEnabled="{Binding EnableEditData}" Keyboard="Text"/>
+                            <Label x:Name="lblNameError" Text="{Binding GenreNameError}" Style="{StaticResource ErrorLabel}"/>
+                        </StackLayout>
+                        <StackLayout Grid.Column="1">
+                            <Label Text="Description"/>
+                            <Entry x:Name="txtDescription" Keyboard="Text" Text="{Binding GenreDescription}"  IsEnabled="{Binding EnableEditData}"/>
+                        </StackLayout>
+                    </Grid>
+                    <FlexLayout Style="{StaticResource ButtonAlign}">
+                        <Button x:Name="btnAdd" Text="Add" HorizontalOptions="Center" Command="{Binding AddGenreInfoCommand}" IsVisible="{Binding VisableAdd}" Style="{StaticResource Add}"/>
+                        <Button x:Name="btnEdit" Text="Edit" HorizontalOptions="Center" Command="{Binding EditCommand}" IsVisible="{Binding VisableEdit}" Style="{StaticResource Edit}"/>
+                        <Button x:Name="btnSave" Text="Save" HorizontalOptions="Center" Command="{Binding SaveGenreInfoCommand}" IsVisible="{Binding VisableSave}" Style="{StaticResource Save}"/>
+                        <Button x:Name="btnCancel" Text="Cancel" HorizontalOptions="Center" Command="{Binding CancelCommand}" IsVisible="{Binding VisableCancel}" Style="{StaticResource Cancel}"/>
+                        <Button x:Name="btnDelete" Text="Delete" HorizontalOptions="Center" Command="{Binding DeleteCommand}" IsVisible="{Binding VisableDelete}" Style="{StaticResource Delete}"/>
+                    </FlexLayout>
+                </StackLayout>
+            </Grid>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

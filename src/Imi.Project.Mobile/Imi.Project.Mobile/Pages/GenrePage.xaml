@@ -3,17 +3,25 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                           Style="{StaticResource PageStyle}"
              x:Class="Imi.Project.Mobile.Pages.GenrePage"
-             Title="Genres">
+             xmlns:bhv="clr-namespace:Imi.Project.Mobile.Behaviors" 
+             Title="{Binding Title}">
+
     <ContentPage.Content>
         <StackLayout>
-            <Button x:Name="btnAdd" Text="Add" Clicked="Add_Clicked" HorizontalOptions="Center" Style="{StaticResource Add}" />
-            <ListView x:Name="lvGenreList" ItemTapped="OpenGenre">
+            <Button x:Name="btnAdd" Text="Add" Command="{Binding AddGenreItem}" Style="{StaticResource Add}" />
+            <ListView ItemsSource="{Binding GenreInfo}">
+                <ListView.Behaviors>
+                    <bhv:EventToCommandBehavior
+                        EventName="ItemTapped"
+                        Command="{Binding AddGenreItem}"
+                        EventArgsConverter="{StaticResource ItemTappedEventArgsConv}" />
+                </ListView.Behaviors>
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
                             <StackLayout>
                                 <FlexLayout Style="{StaticResource AlignItems}">
-                                    <Label Text="{Binding Name}"/>
+                                    <Label Text="{Binding Name}" Style="{StaticResource Title}"/>
                                     <Label Text="{Binding Description}"/>
                                 </FlexLayout>
                             </StackLayout>

@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:views="clr-namespace:Imi.Project.Mobile.Pages"
+             x:Class="Imi.Project.Mobile.Pages.GameInfoPage"
+             Style="{StaticResource PageStyle}"
+             mc:Ignorable="d"
+             Title="{Binding Title}">
+
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout Padding="10">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackLayout Grid.Column="0">
+                        <Label Text="Name"/>
+                        <Entry x:Name="txtName" Keyboard="Text" Text="{Binding GameName}" IsEnabled="{Binding EnableEditData}"/>
+                        <Label x:Name="lblNameError" Text="{Binding GameError}" Style="{StaticResource ErrorLabel}"/>
+                    </StackLayout>
+                    <StackLayout Grid.Column="1">
+                        <Label Text="Price"/>
+                        <Entry x:Name="txtPrice" Keyboard="Numeric" Text="{Binding GamePrice}" IsEnabled="{Binding EnableEditData}"/>
+                        <Label x:Name="lblPriceError" Text="{Binding GamePriceError}" Style="{StaticResource ErrorLabel}"/>
+                    </StackLayout>
+                </Grid>
+                <FlexLayout Style="{StaticResource ButtonAlign}">
+                    <Button x:Name="btnAdd" Text="Add" HorizontalOptions="Center" Command="{Binding AddGameInfoCommand}" IsVisible="{Binding VisableAdd}" Style="{StaticResource Add}"/>
+                    <Button x:Name="btnEdit" Text="Edit" HorizontalOptions="Center" Command="{Binding EditCommand}" IsVisible="{Binding VisableEdit}" Style="{StaticResource Edit}"/>
+                    <Button x:Name="btnSave" Text="Save" HorizontalOptions="Center" Command="{Binding SaveGameInfoCommand}" IsVisible="{Binding VisableSave}" Style="{StaticResource Save}"/>
+                    <Button x:Name="btnCancel" Text="Cancel" HorizontalOptions="Center" Command="{Binding CancelCommand}" IsVisible="{Binding VisableCancel}" Style="{StaticResource Cancel}"/>
+                    <Button x:Name="btnDelete" Text="Delete" HorizontalOptions="Center" Command="{Binding DeleteCommand}" IsVisible="{Binding VisableDelete}" Style="{StaticResource Delete}"/>
+                </FlexLayout>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

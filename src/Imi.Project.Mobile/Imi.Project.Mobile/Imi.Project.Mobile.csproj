@@ -19,25 +19,40 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Pages\GameItemPage.xaml">
+    <Compile Update="Pages\GameInfoPage.xaml.cs">
+      <DependentUpon>GameInfoPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\GenreInfoPage.xaml.cs">
+      <DependentUpon>GenreInfoPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\PublisherInfoPage.xaml.cs">
+      <DependentUpon>PublisherInfoPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\UserInfoPage.xaml.cs">
+      <DependentUpon>UserInfoPage.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Pages\GameInfoPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Pages\GamePage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Pages\GenreItemPage.xaml">
+    <EmbeddedResource Update="Pages\GenreInfoPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Pages\GenrePage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Pages\PublisherItemPage.xaml">
+    <EmbeddedResource Update="Pages\PublisherInfoPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Pages\PublisherPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Pages\UserItemPage.xaml">
+    <EmbeddedResource Update="Pages\UserInfoPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Pages\UserPage.xaml">

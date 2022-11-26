@@ -15,29 +15,9 @@ namespace Imi.Project.Mobile.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class GamePage : ContentPage
     {
-        private GameInfoService gameInfo = new GameInfoService();
-
         public GamePage()
         {
             InitializeComponent();
-        }
-
-        protected override void OnAppearing()
-        {
-            lvGameList.ItemsSource = null;
-            lvGameList.ItemsSource = gameInfo.GetAllGames().Result;
-            base.OnAppearing();
-
-        }
-
-        private async void OpenGame(object sender, ItemTappedEventArgs e)
-        {
-            await Navigation.PushAsync(new GameItemPage(e.Item as GamesInfo), true);
-        }
-
-        private async void Add_Clicked(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new GameItemPage(), true);
         }
     }
 }

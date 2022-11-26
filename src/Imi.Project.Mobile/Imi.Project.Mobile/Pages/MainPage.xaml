@@ -1,15 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
              Style="{StaticResource PageStyle}"
              x:Class="Imi.Project.Mobile.Pages.MainPage"
              Title="Home">
 
     <FlexLayout Style="{StaticResource ButtonAlign}" >
-        <Button x:Name="btnGame" Text="Games" Clicked="btnGame_Clicked" Style="{StaticResource HomeButtons}"/>
-        <Button x:Name="btnGenre" Text="Genre" Clicked="btnGenre_Clicked" Style="{StaticResource HomeButtons}"/>
-        <Button x:Name="btnPublisher" Text="Publisher" Clicked="btnPublisher_Clicked" Style="{StaticResource HomeButtons}"/>
-        <Button x:Name="btnUser" Text="User" Clicked="btnUser_Clicked" Style="{StaticResource HomeButtons}"/>
+        <Button x:Name="btnGame" Text="Games" Command="{Binding OpenGame}" Style="{StaticResource HomeButtons}"/>
+        <Button x:Name="btnGenre" Text="Genre" Command="{Binding OpenGenre}" Style="{StaticResource HomeButtons}"/>
+        <Button x:Name="btnPublisher" Text="Publisher" Command="{Binding OpenPublisher}" Style="{StaticResource HomeButtons}"/>
+        <Button x:Name="btnUser" Text="User" Command="{Binding OpenUser}" Style="{StaticResource HomeButtons}"/>
     </FlexLayout>
 
 </ContentPage>

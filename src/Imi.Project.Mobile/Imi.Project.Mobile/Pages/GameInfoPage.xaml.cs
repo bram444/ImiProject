@@ -1,6 +1,8 @@
-﻿using Imi.Project.Mobile.Domain;
+﻿using FluentValidation;
+using FluentValidation.Results;
 using Imi.Project.Mobile.Domain.Models;
 using Imi.Project.Mobile.Domain.Services;
+using Imi.Project.Mobile.Domain.Validators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +15,9 @@ using Xamarin.Forms.Xaml;
 namespace Imi.Project.Mobile.Pages
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class PublisherPage : ContentPage
+    public partial class GameInfoPage : ContentPage
     {
-        public PublisherPage()
+        public GameInfoPage()
         {
             InitializeComponent();
         }

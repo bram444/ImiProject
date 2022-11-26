@@ -1,22 +1,26 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              Style="{StaticResource PageStyle}"
              x:Class="Imi.Project.Mobile.Pages.UserPage"
-             Title="User">
+             xmlns:bhv="clr-namespace:Imi.Project.Mobile.Behaviors"
+             Title="{Binding Title}">
+    
     <ContentPage.Content>
         <StackLayout>
-            <Button x:Name="btnAdd" Text="Add" Clicked="Add_Clicked" HorizontalOptions="Center" Style="{StaticResource Add}"/>
-            <ListView x:Name="lvUserList" ItemTapped="OpenUser" Style="{StaticResource List}">
-                    <ListView.ItemTemplate>
+            <Button x:Name="btnAdd" Text="Add" Command="{Binding AddUserItem}" Style="{StaticResource Add}"/>
+            <ListView ItemsSource="{Binding UserInfo}" >
+                <ListView.Behaviors>
+                    <bhv:EventToCommandBehavior
+                        EventName="ItemTapped"
+                        Command="{Binding AddUserItem}"
+                        EventArgsConverter="{StaticResource ItemTappedEventArgsConv}" />
+                </ListView.Behaviors>
+                <ListView.ItemTemplate>
                         <DataTemplate>
                         <ViewCell>
                             <FlexLayout Style="{StaticResource AlignItems}">
-                                <Label Text="{Binding UserName}"/>
-                                <Label Text="{Binding FirstName}"/>
-                                <Label Text="{Binding LastName}"/>
+                                <Label Text="{Binding UserName}" Style="{StaticResource Title}"/>
                                 <Label Text="{Binding Email}"/>
                             </FlexLayout>
                             </ViewCell>

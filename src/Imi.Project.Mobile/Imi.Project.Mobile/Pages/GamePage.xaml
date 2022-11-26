@@ -1,16 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                          Style="{StaticResource PageStyle}"
+             Style="{StaticResource PageStyle}"
              x:Class="Imi.Project.Mobile.Pages.GamePage"
-             Title="Game">
+             xmlns:bhv="clr-namespace:Imi.Project.Mobile.Behaviors" 
+             Title="{Binding Title}">
 
     <ContentPage.Content>
         <StackLayout>
-            <Button x:Name="btnAdd" Text="Add" Clicked="Add_Clicked" HorizontalOptions="Center" Style="{StaticResource Add}"/>
-            <ListView x:Name="lvGameList" ItemTapped="OpenGame">
-            <ListView.ItemTemplate>
-                <DataTemplate>
+            <Button x:Name="btnAdd" Text="Add" Command="{Binding AddGameItem}" HorizontalOptions="FillAndExpand" Style="{StaticResource Add}"/>
+            <ListView ItemsSource="{Binding GamesInfo}" >
+                <ListView.Behaviors>
+                    <bhv:EventToCommandBehavior
+                        EventName="ItemTapped"
+                        Command="{Binding AddGameItem}"
+                        EventArgsConverter="{StaticResource ItemTappedEventArgsConv}" />
+                </ListView.Behaviors>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
                         <ViewCell>
                             <StackLayout>
                                 <FlexLayout Style="{StaticResource AlignItems}">
@@ -19,9 +26,9 @@
                                 </FlexLayout>
                             </StackLayout>
                         </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
