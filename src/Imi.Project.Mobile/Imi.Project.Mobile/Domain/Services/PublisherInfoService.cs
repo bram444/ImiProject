@@ -7,7 +7,7 @@ using Imi.Project.Mobile.Domain.Models;
 
 namespace Imi.Project.Mobile.Domain.Services
 {
-    public class PublisherInfoService
+    public class PublisherInfoService:IPublisherService
     {
         private static List<PublisherInfo> inMemoryPublisher = new List<PublisherInfo>
         {
@@ -29,21 +29,25 @@ namespace Imi.Project.Mobile.Domain.Services
             return await Task.FromResult(inMemoryPublisher.Where(publisher => publisher.Id == id).First());
         }
 
-        public void SavePublisher(PublisherInfo publisherInfo)
+        public Task<PublisherInfo> UpdatePublisher(PublisherInfo publisher)
         {
-            var publisherInfoEdit = PublisherById(publisherInfo.Id);
-            publisherInfoEdit.Result.Name = publisherInfo.Name;
-            publisherInfoEdit.Result.Country = publisherInfo.Country;
+            var publisherInfoEdit = PublisherById(publisher.Id);
+            publisherInfoEdit.Result.Name = publisher.Name;
+            publisherInfoEdit.Result.Country = publisher.Country;
+
+            return publisherInfoEdit;
         }
 
-        public void AddPublisher(PublisherInfo publisherInfo)
-        {
-            inMemoryPublisher.Add(publisherInfo);
-        }
-
-        public void RemovePublisher(Guid id)
+        public Task DeletePublisher(Guid id)
         {
             inMemoryPublisher.Remove(PublisherById(id).Result);
+            return Task.CompletedTask;
+        }
+
+        public Task<PublisherInfo> AddPublisher(PublisherInfo publisher)
+        {
+            inMemoryPublisher.Add(publisher);
+            return PublisherById(publisher.Id);
         }
     }
 }

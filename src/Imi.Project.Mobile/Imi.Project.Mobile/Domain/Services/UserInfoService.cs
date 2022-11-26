@@ -7,7 +7,7 @@ using Imi.Project.Mobile.Domain.Models;
 
 namespace Imi.Project.Mobile.Domain.Services
 {
-    public class UserInfoService
+    public class UserInfoService:IUserService
     {
         private static List<UserInfo> inMemoryUser = new List<UserInfo>
         {
@@ -30,23 +30,27 @@ namespace Imi.Project.Mobile.Domain.Services
             return await Task.FromResult(inMemoryUser.Where(user => user.Id == id).First());
         }
 
-        public void SaveUser(UserInfo userInfo)
+        public Task<UserInfo> UpdateUser(UserInfo user)
         {
-            var userInfoEdit = UserById(userInfo.Id);
-            userInfoEdit.Result.Email = userInfo.Email;
-            userInfoEdit.Result.FirstName = userInfo.FirstName;
-            userInfoEdit.Result.LastName = userInfo.LastName;
-            userInfoEdit.Result.UserName = userInfo.UserName;
+            var userInfoEdit = UserById(user.Id);
+            userInfoEdit.Result.Email = user.Email;
+            userInfoEdit.Result.FirstName = user.FirstName;
+            userInfoEdit.Result.LastName = user.LastName;
+            userInfoEdit.Result.UserName = user.UserName;
+
+            return userInfoEdit;
         }
 
-        public void AddUser(UserInfo userInfo)
-        {
-            inMemoryUser.Add(userInfo);
-        }
-
-        public void RemoveUser(Guid id)
+        public Task DeleteUser(Guid id)
         {
             inMemoryUser.Remove(UserById(id).Result);
+            return Task.CompletedTask;
+        }
+
+        public Task<UserInfo> AddUser(UserInfo user)
+        {
+            inMemoryUser.Add(user);
+            return UserById(user.Id);
         }
     }
 }

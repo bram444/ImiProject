@@ -7,7 +7,7 @@ using Imi.Project.Mobile.Domain.Models;
 
 namespace Imi.Project.Mobile.Domain.Services
 {
-    public class GenreInfoService
+    public class GenreInfoService : IGenreService
     {
         private static List<GenreInfo> inMemoryGenre = new List<GenreInfo>
         {
@@ -17,7 +17,7 @@ namespace Imi.Project.Mobile.Domain.Services
               Description=""
             },
             new GenreInfo{
-             Id= Guid.Parse("00000000-0000-0000-0000-000000000001"),
+             Id= Guid.Parse("00000000-0000-0000-0000-000000000002"),
              Name ="Puzzle",
              Description=""
             }
@@ -32,21 +32,25 @@ namespace Imi.Project.Mobile.Domain.Services
             return await Task.FromResult(inMemoryGenre.Where(genre => genre.Id == id).First());
         }
 
-        public void SaveGenre(GenreInfo genreInfo)
+        public Task<GenreInfo> UpdateGenre(GenreInfo genre)
         {
-            var genreInfoEdit = GenreById(genreInfo.Id);
-            genreInfoEdit.Result.Name = genreInfo.Name;
-            genreInfoEdit.Result.Description = genreInfo.Description;
+            var genreInfoEdit = GenreById(genre.Id);
+            genreInfoEdit.Result.Name = genre.Name;
+            genreInfoEdit.Result.Description = genre.Description;
+
+            return genreInfoEdit;
         }
 
-        public void AddGenre(GenreInfo genreInfo)
-        {
-            inMemoryGenre.Add(genreInfo);
-        }
-
-        public void RemoveGenre(Guid id)
+        public Task DeleteGenre(Guid id)
         {
             inMemoryGenre.Remove(GenreById(id).Result);
+            return Task.CompletedTask;
+        }
+
+        public Task<GenreInfo> AddGenre(GenreInfo genre)
+        {
+            inMemoryGenre.Add(genre);
+            return GenreById(genre.Id);
         }
     }
 }
