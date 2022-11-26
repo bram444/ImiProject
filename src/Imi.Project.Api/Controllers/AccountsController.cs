@@ -68,14 +68,6 @@ namespace Imi.Project.Api.Controllers
         [HttpPost("login")]
         public async Task<ActionResult> Login([FromBody] LoginUserRequestDto login)
         {
-            //var result = await _signInManager.PasswordSignInAsync(login.UserName, login.Password, isPersistent: false, lockoutOnFailure: false);
-
-            //if (!result.Succeeded)
-            //{
-            //    return Unauthorized();
-            //}
-
-
             var applicationUser = await _userManager.FindByNameAsync(login.UserName);
             JwtSecurityToken token = await GenerateTokenAsync(applicationUser);
             string serializedToken = new JwtSecurityTokenHandler().WriteToken(token); //serialize the token 
