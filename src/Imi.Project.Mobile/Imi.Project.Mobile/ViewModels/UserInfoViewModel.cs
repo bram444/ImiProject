@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Input;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
@@ -336,8 +337,14 @@ namespace Imi.Project.Mobile.ViewModels
 
         public ICommand DeleteCommand => new Command(async () =>
         {
+            if (DeviceInfo.Platform == DevicePlatform.Android)
+            {
+                Vibration.Vibrate(TimeSpan.FromSeconds(0.5));
+            }
+
             await userService.DeleteUser(currentUserInfo.Id);
-            await CoreMethods.PopPageModel(new UserInfo(),false,true);
+
+            await CoreMethods.PopPageModel(new UserInfo(), false, true);
         });
 
         private bool Validate(UserInfo userInfo)

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Input;
 using System.Xml.Linq;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration;
 
@@ -290,6 +291,11 @@ namespace Imi.Project.Mobile.ViewModels
 
         public ICommand DeleteCommand => new Command(async () =>
         {
+            if (DeviceInfo.Platform == DevicePlatform.Android)
+            {
+                Vibration.Vibrate(TimeSpan.FromSeconds(0.5));
+            }
+
             await gameService.DeleteGame(currentGameInfo.Id);
             await CoreMethods.PopPageModel(new GamesInfo(),false,true);
         });
