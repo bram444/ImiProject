@@ -14,7 +14,7 @@ namespace Imi.Project.Mobile.Domain.Services
 
         Task<GenreInfo> UpdateGenre(GenreInfo genre);
 
-        Task DeleteGenre(Guid id);
+        Task<GenreInfo> DeleteGenre(Guid id);
 
         Task<GenreInfo> AddGenre(GenreInfo genre);
 

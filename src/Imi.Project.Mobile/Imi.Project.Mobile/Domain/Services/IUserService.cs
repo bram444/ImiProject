@@ -14,7 +14,7 @@ namespace Imi.Project.Mobile.Domain.Services
 
         Task<UserInfo> UpdateUser(UserInfo user);
 
-        Task DeleteUser(Guid id);
+        Task<UserInfo> DeleteUser(Guid id);
 
         Task<UserInfo> AddUser(UserInfo user);
     }

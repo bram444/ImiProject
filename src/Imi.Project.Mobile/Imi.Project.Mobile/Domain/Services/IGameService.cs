@@ -13,9 +13,10 @@ namespace Imi.Project.Mobile.Domain.Services
         Task<GamesInfo> GameById(Guid id);
 
         Task<GamesInfo> UpdateGame(GamesInfo game);
-        
-        Task DeleteGame(Guid id);
-        
+               
         Task<GamesInfo> AddGames(GamesInfo game);
+
+        Task<GamesInfo> DeleteGame(Guid id);
+
     }
 }

@@ -14,7 +14,7 @@ namespace Imi.Project.Mobile.Domain.Services
 
         Task<PublisherInfo> UpdatePublisher(PublisherInfo publisher);
 
-        Task DeletePublisher(Guid id);
+        Task<PublisherInfo> DeletePublisher(Guid id);
 
         Task<PublisherInfo> AddPublisher(PublisherInfo publisher);
 

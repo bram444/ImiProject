@@ -17,7 +17,7 @@ namespace Imi.Project.Mobile
         {
             InitializeComponent();
 
-            FreshIOC.Container.Register<IGameService>(new GameInfoService());
+            FreshIOC.Container.Register<IGameService, GameInfoService>();
             FreshIOC.Container.Register<IUserService>(new UserInfoService());
             FreshIOC.Container.Register<IGenreService>(new GenreInfoService());
             FreshIOC.Container.Register<IPublisherService>(new PublisherInfoService());

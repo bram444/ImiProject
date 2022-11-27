@@ -9,45 +9,36 @@ namespace Imi.Project.Mobile.Domain.Services
 {
     public class PublisherInfoService:IPublisherService
     {
-        private static List<PublisherInfo> inMemoryPublisher = new List<PublisherInfo>
-        {
-            new PublisherInfo
-            {
-                Id= Guid.Parse("00000000-0000-0000-0000-000000000001"),
-                 Country="Japan",
-                  Name="Nintendo"
-            }
+        private readonly CustomHttpClient _httpClient = new CustomHttpClient();
 
-        };
+        public PublisherInfoService(CustomHttpClient customHttpClient)
+        {
+            _httpClient = customHttpClient;
+        }
         public async Task<List<PublisherInfo>> GetAllPublisher()
         {
-            return await Task.FromResult(inMemoryPublisher);
+            return await _httpClient.GetApiResult<List<PublisherInfo>>("https://172.31.224.1:5001/api/Publisher/");
         }
 
         public async Task<PublisherInfo> PublisherById(Guid id)
         {
-            return await Task.FromResult(inMemoryPublisher.Where(publisher => publisher.Id == id).First());
+            return await _httpClient.GetApiResult<PublisherInfo>($"https://172.31.224.1:5001/api/Publisher/{id}");
         }
 
-        public Task<PublisherInfo> UpdatePublisher(PublisherInfo publisher)
+        public async Task<PublisherInfo> UpdatePublisher(PublisherInfo publisher)
         {
-            var publisherInfoEdit = PublisherById(publisher.Id);
-            publisherInfoEdit.Result.Name = publisher.Name;
-            publisherInfoEdit.Result.Country = publisher.Country;
-
-            return publisherInfoEdit;
+            return await _httpClient.PutCallApi<PublisherInfo, PublisherInfo>($"https://172.31.224.1:5001/api/Publisher/{publisher.Id}", publisher);
         }
 
-        public Task DeletePublisher(Guid id)
+        public async Task<PublisherInfo> DeletePublisher(Guid id)
         {
-            inMemoryPublisher.Remove(PublisherById(id).Result);
-            return Task.CompletedTask;
+            return await _httpClient.DeleteCallApi<PublisherInfo>($"https://172.31.224.1:5001/api/Publisher/{id}");
+
         }
 
-        public Task<PublisherInfo> AddPublisher(PublisherInfo publisher)
+        public async Task<PublisherInfo> AddPublisher(PublisherInfo publisher)
         {
-            inMemoryPublisher.Add(publisher);
-            return PublisherById(publisher.Id);
+            return await _httpClient.PostCallApi<PublisherInfo, PublisherInfo>($"https://172.31.224.1:5001/api/Publisher", publisher);
         }
     }
 }

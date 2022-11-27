@@ -9,48 +9,39 @@ namespace Imi.Project.Mobile.Domain.Services
 {
     public class UserInfoService:IUserService
     {
-        private static List<UserInfo> inMemoryUser = new List<UserInfo>
+        private readonly CustomHttpClient _httpClient = new CustomHttpClient();
+
+        public UserInfoService(CustomHttpClient customHttpClient)
         {
-            new UserInfo
-            {
-                Id= Guid.Parse("00000000-0000-0000-0000-000000000001"),
-                 Email="Email@email.com",
-                  FirstName="First",
-                  LastName="Guy",
-                   UserName="Firstguy111"
-            }
-        };
+            _httpClient = customHttpClient;
+        }
+
         public async Task<List<UserInfo>> GetAllUser()
         {
-            return await Task.FromResult(inMemoryUser);
+            return await _httpClient.GetApiResult<List<UserInfo>>("https://172.31.224.1:5001/api/User/");
         }
 
         public async Task<UserInfo> UserById(Guid id)
         {
-            return await Task.FromResult(inMemoryUser.Where(user => user.Id == id).First());
+            return await _httpClient.GetApiResult<UserInfo>($"https://172.31.224.1:5001/api/User/{id}");
         }
 
-        public Task<UserInfo> UpdateUser(UserInfo user)
+        public async Task<UserInfo> UpdateUser(UserInfo user)
         {
-            var userInfoEdit = UserById(user.Id);
-            userInfoEdit.Result.Email = user.Email;
-            userInfoEdit.Result.FirstName = user.FirstName;
-            userInfoEdit.Result.LastName = user.LastName;
-            userInfoEdit.Result.UserName = user.UserName;
+            return await _httpClient.PutCallApi<UserInfo, UserInfo>($"https://172.31.224.1:5001/api/User/{user.Id}", user);
 
-            return userInfoEdit;
         }
 
-        public Task DeleteUser(Guid id)
+        public async Task<UserInfo> DeleteUser(Guid id)
         {
-            inMemoryUser.Remove(UserById(id).Result);
-            return Task.CompletedTask;
+            return await _httpClient.DeleteCallApi<UserInfo>($"https://172.31.224.1:5001/api/User/{id}");
+
         }
 
-        public Task<UserInfo> AddUser(UserInfo user)
+        public async Task<UserInfo> AddUser(UserInfo user)
         {
-            inMemoryUser.Add(user);
-            return UserById(user.Id);
+            return await _httpClient.PostCallApi<UserInfo, UserInfo>($"https://172.31.224.1:5001/api/User", user);
+
         }
     }
 }

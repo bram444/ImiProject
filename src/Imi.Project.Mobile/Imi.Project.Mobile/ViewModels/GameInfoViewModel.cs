@@ -171,6 +171,31 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
+        private Guid publisherId;
+
+        public Guid PublisherId
+        {
+            get { return publisherId; }
+            set
+            {
+                publisherId = value;
+                RaisePropertyChanged(nameof(PublisherId));
+            }
+        }
+
+        private ICollection<Guid> genreId;
+
+        public ICollection<Guid> GenreId
+        {
+            get { return genreId; }
+            set
+            {
+                genreId = value;
+                RaisePropertyChanged(nameof(GenreId));
+            }
+        }
+
+
         public override void Init(object initData)
         {
             if (initData != null)
@@ -195,18 +220,24 @@ namespace Imi.Project.Mobile.ViewModels
         {
             GameName = null;
             GamePrice = null;
+            PublisherId = Guid.Empty;
+            GenreId = null;
 
             if (currentGameInfo != null)
-            { 
+            {
                 GameName = currentGameInfo.Name;
-            GamePrice = currentGameInfo.Price.ToString();
-        }
+                GamePrice = currentGameInfo.Price.ToString();
+                PublisherId = currentGameInfo.PublisherId;
+                GenreId = currentGameInfo.GenreId;
+            }
         }
 
         private void SaveGameState()
         {
             currentGameInfo.Price = float.Parse(GamePrice);
             currentGameInfo.Name = GameName;
+            currentGameInfo.PublisherId = PublisherId;
+            currentGameInfo.GenreId = GenreId;
         }
 
         public ICommand SaveGameInfoCommand => new Command(
