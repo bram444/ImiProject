@@ -2,8 +2,10 @@
 using Imi.Project.Mobile.Domain.Services;
 using Imi.Project.Mobile.Pages;
 using Imi.Project.Mobile.ViewModels;
+using Plugin.FirebasePushNotification;
 using System;
 using System.Net;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -22,6 +24,15 @@ namespace Imi.Project.Mobile
 
 
             MainPage = new FreshNavigationContainer(FreshPageModelResolver.ResolvePageModel<MainViewModel>());
+            if (DeviceInfo.Platform == DevicePlatform.Android)
+            {
+                CrossFirebasePushNotification.Current.OnTokenRefresh += Current_OnTokenFresh;
+            }
+        }
+
+        private void Current_OnTokenFresh(object source,FirebasePushNotificationTokenEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine($"Token: {e.Token}");
         }
 
         protected override void OnStart()

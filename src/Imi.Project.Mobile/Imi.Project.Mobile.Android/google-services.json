@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "288717870022",
+    "project_id": "imi-api-49059",
+    "storage_bucket": "imi-api-49059.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:288717870022:android:a39b1020bf7662f53298c7",
+        "android_client_info": {
+          "package_name": "com.companyname.imi.project.mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "288717870022-0ifvdtm0ddq8khtnov6a0ohvekgusjn9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAC4hxGs2l13l_P58EUZ01Xjbtns_0kQHs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "288717870022-0ifvdtm0ddq8khtnov6a0ohvekgusjn9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
