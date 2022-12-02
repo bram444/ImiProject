@@ -10,6 +10,7 @@ namespace Imi.Project.Mobile.Domain.Services
 {
     public class GameInfoService: IGameService
     {
+        string baseUrl = Constants.baseUrl;
 
         private readonly CustomHttpClient _httpClient = new CustomHttpClient();
 
@@ -18,29 +19,30 @@ namespace Imi.Project.Mobile.Domain.Services
             _httpClient = customHttpClient;
         }
 
-        public async Task<List<GamesInfo>> GetAllGames()
+        public async Task<IEnumerable<GamesInfo>> GetAllGames()
         {
-            return await _httpClient.GetApiResult<List<GamesInfo>>("https://172.31.224.1:5001/api/Game/");
+            return await _httpClient.GetApiResult<IEnumerable<GamesInfo>>($"{baseUrl}/api/Game/");
         }
 
         public async Task<GamesInfo> GameById(Guid id)
         {
-            return await _httpClient.GetApiResult<GamesInfo>($"https://172.31.224.1:5001/api/Game/{id}");
+            return await _httpClient.GetApiResult<GamesInfo>($"{baseUrl}/api/Game/{id}");
         }
 
         public async Task<GamesInfo> UpdateGame(GamesInfo game)
         {
-            return await _httpClient.PutCallApi<GamesInfo, GamesInfo>($"https://172.31.224.1:5001/api/Game/{game.Id}", game);
+            return await _httpClient.PutCallApi<GamesInfo, GamesInfo>($"{baseUrl}/api/Game/", game);
         }
 
         public async Task<GamesInfo> DeleteGame(Guid id)
         {
-            return await _httpClient.DeleteCallApi<GamesInfo>($"https://172.31.224.1:5001/api/Game/{id}");
+            return await _httpClient.DeleteCallApi<GamesInfo>($"{baseUrl}/api/Game/{id}");
+
         }
 
         public async Task<GamesInfo> AddGames(GamesInfo game)
         {
-            return await _httpClient.PostCallApi<GamesInfo, GamesInfo>($"https://172.31.224.1:5001/api/Game", game);
+            return await _httpClient.PostCallApi<GamesInfo, GamesInfo>($"{baseUrl}/api/Game", game);
         }
     }
 }

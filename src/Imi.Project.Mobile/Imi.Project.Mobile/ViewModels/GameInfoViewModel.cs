@@ -221,7 +221,11 @@ namespace Imi.Project.Mobile.ViewModels
             GameName = null;
             GamePrice = null;
             PublisherId = Guid.Empty;
-            GenreId = null;
+
+            GenreId = new List<Guid>
+            {
+                Guid.Empty
+            };
 
             if (currentGameInfo != null)
             {
@@ -279,7 +283,12 @@ namespace Imi.Project.Mobile.ViewModels
                 {
                     Id = Guid.NewGuid(),
                     Name = GameName,
-                    Price = 0.0f
+                    Price = 0.0f,
+                    GenreId = new List<Guid>
+                    {
+                        Guid.Parse("00000000-0000-0000-0000-000000000001")//temp
+                    },
+                    PublisherId = Guid.Parse("00000000-0000-0000-0000-000000000001")//temp
                 };
 
                 if (Validate(gameEdit))

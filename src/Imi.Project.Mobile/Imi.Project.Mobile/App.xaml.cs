@@ -18,9 +18,9 @@ namespace Imi.Project.Mobile
             InitializeComponent();
 
             FreshIOC.Container.Register<IGameService, GameInfoService>();
-            FreshIOC.Container.Register<IUserService>(new UserInfoService());
-            FreshIOC.Container.Register<IGenreService>(new GenreInfoService());
-            FreshIOC.Container.Register<IPublisherService>(new PublisherInfoService());
+            FreshIOC.Container.Register<IUserService, UserInfoService>();
+            FreshIOC.Container.Register<IGenreService,GenreInfoService>();
+            FreshIOC.Container.Register<IPublisherService, PublisherInfoService>();
 
 
             MainPage = new FreshNavigationContainer(FreshPageModelResolver.ResolvePageModel<MainViewModel>());

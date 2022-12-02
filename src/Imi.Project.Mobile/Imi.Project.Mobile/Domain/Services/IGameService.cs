@@ -8,7 +8,7 @@ namespace Imi.Project.Mobile.Domain.Services
 {
     public interface IGameService
     {
-        Task<List<GamesInfo>> GetAllGames();
+        Task<IEnumerable<GamesInfo>> GetAllGames();
 
         Task<GamesInfo> GameById(Guid id);
 

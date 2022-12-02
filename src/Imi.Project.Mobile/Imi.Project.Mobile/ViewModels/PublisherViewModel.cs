@@ -28,8 +28,8 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        private List<PublisherInfo> publisherInfo;
-        public List<PublisherInfo> PublisherInfo
+        private IEnumerable<PublisherInfo> publisherInfo;
+        public IEnumerable<PublisherInfo> PublisherInfo
         {
             get { return publisherInfo; }
             set
@@ -92,7 +92,7 @@ namespace Imi.Project.Mobile.ViewModels
         {
             PublisherInfo = null;
 
-            PublisherInfo = publisherService.GetAllPublisher().Result;
+            PublisherInfo = await publisherService.GetAllPublisher();
 
                 Title = "Publishers";
             if (currentPublisherInfo != null&&currentPublisherInfo.Id != Guid.Empty)

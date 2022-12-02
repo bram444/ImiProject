@@ -9,6 +9,8 @@ namespace Imi.Project.Mobile.Domain.Services
 {
     public class UserInfoService:IUserService
     {
+        string baseUrl = Constants.baseUrl;
+
         private readonly CustomHttpClient _httpClient = new CustomHttpClient();
 
         public UserInfoService(CustomHttpClient customHttpClient)
@@ -16,31 +18,31 @@ namespace Imi.Project.Mobile.Domain.Services
             _httpClient = customHttpClient;
         }
 
-        public async Task<List<UserInfo>> GetAllUser()
+        public async Task<IEnumerable<UserInfo>> GetAllUser()
         {
-            return await _httpClient.GetApiResult<List<UserInfo>>("https://172.31.224.1:5001/api/User/");
+            return await _httpClient.GetApiResult<IEnumerable<UserInfo>>($"{baseUrl}/api/User/");
         }
 
         public async Task<UserInfo> UserById(Guid id)
         {
-            return await _httpClient.GetApiResult<UserInfo>($"https://172.31.224.1:5001/api/User/{id}");
+            return await _httpClient.GetApiResult<UserInfo>($"{baseUrl}/api/User/{id}");
         }
 
         public async Task<UserInfo> UpdateUser(UserInfo user)
         {
-            return await _httpClient.PutCallApi<UserInfo, UserInfo>($"https://172.31.224.1:5001/api/User/{user.Id}", user);
+            return await _httpClient.PutCallApi<UserInfo, UserInfo>($"{baseUrl}/api/User/", user);
 
         }
 
         public async Task<UserInfo> DeleteUser(Guid id)
         {
-            return await _httpClient.DeleteCallApi<UserInfo>($"https://172.31.224.1:5001/api/User/{id}");
+            return await _httpClient.DeleteCallApi<UserInfo>($"{baseUrl}/api/User/{id}");
 
         }
 
         public async Task<UserInfo> AddUser(UserInfo user)
         {
-            return await _httpClient.PostCallApi<UserInfo, UserInfo>($"https://172.31.224.1:5001/api/User", user);
+            return await _httpClient.PostCallApi<UserInfo, UserInfo>($"{baseUrl}/api/User", user);
 
         }
     }

@@ -23,7 +23,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
 }).AddRoles<IdentityRole<Guid>>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-builder.WebHost.UseUrls("https://172.29.176.1:5001");
+builder.WebHost.UseUrls("https://0.0.0.0:5001");
 
 builder.Services.AddScoped<IGameGenreRepository, GameGenreRepository>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();

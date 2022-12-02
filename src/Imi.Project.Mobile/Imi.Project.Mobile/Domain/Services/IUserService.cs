@@ -8,7 +8,7 @@ namespace Imi.Project.Mobile.Domain.Services
 {
     public interface IUserService
     {
-        Task<List<UserInfo>> GetAllUser();
+        Task<IEnumerable<UserInfo>> GetAllUser();
 
         Task<UserInfo> UserById(Guid id);
 

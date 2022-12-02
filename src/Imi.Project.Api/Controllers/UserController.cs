@@ -25,7 +25,7 @@ namespace Imi.Project.Api.Controllers
             _userGameService = userGameService;
         }
 
-        [Authorize(Policy = "OnlyLoyalMembers")]
+        //[Authorize(Policy = "OnlyLoyalMembers")]
         [HttpGet]
         public async Task<IActionResult> Get()
         {

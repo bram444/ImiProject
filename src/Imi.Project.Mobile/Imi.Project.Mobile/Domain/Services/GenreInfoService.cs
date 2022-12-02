@@ -9,6 +9,8 @@ namespace Imi.Project.Mobile.Domain.Services
 {
     public class GenreInfoService : IGenreService
     {
+        string baseUrl = Constants.baseUrl;
+
         private readonly CustomHttpClient _httpClient = new CustomHttpClient();
 
         public GenreInfoService(CustomHttpClient customHttpClient)
@@ -16,31 +18,31 @@ namespace Imi.Project.Mobile.Domain.Services
             _httpClient = customHttpClient;
         }
 
-        public async Task<List<GenreInfo>> GetAllGenre()
+        public async Task<IEnumerable<GenreInfo>> GetAllGenre()
         {
-            return await _httpClient.GetApiResult<List<GenreInfo>>("https://172.31.224.1:5001/api/Genre/");
+            return await _httpClient.GetApiResult<List<GenreInfo>>($"{baseUrl}/api/Genre/");
         }
 
         public async Task<GenreInfo> GenreById(Guid id)
         {
-            return await _httpClient.GetApiResult<GenreInfo>($"https://172.31.224.1:5001/api/Genre/{id}");
+            return await _httpClient.GetApiResult<GenreInfo>($"{baseUrl}/api/Genre/{id}");
         }
 
         public async Task<GenreInfo> UpdateGenre(GenreInfo genre)
         {
-            return await _httpClient.PutCallApi<GenreInfo, GenreInfo>($"https://172.31.224.1:5001/api/Genre/{genre.Id}", genre);
+            return await _httpClient.PutCallApi<GenreInfo, GenreInfo>($"{baseUrl}/api/Genre/", genre);
 
         }
 
         public async Task<GenreInfo> DeleteGenre(Guid id)
         {
-            return await _httpClient.DeleteCallApi<GenreInfo>($"https://172.31.224.1:5001/api/Genre/{id}");
+            return await _httpClient.DeleteCallApi<GenreInfo>($"{baseUrl}/api/Genre/{id}");
 
         }
 
         public async Task<GenreInfo> AddGenre(GenreInfo genre)
         {
-            return await _httpClient.PostCallApi<GenreInfo, GenreInfo>($"https://172.31.224.1:5001/api/Genre", genre);
+            return await _httpClient.PostCallApi<GenreInfo, GenreInfo>($"{baseUrl}/api/Genre", genre);
         }
     }
 }

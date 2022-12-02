@@ -28,8 +28,8 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        private List<GenreInfo> genreInfo;
-        public List<GenreInfo> GenreInfo
+        private IEnumerable<GenreInfo> genreInfo;
+        public IEnumerable<GenreInfo> GenreInfo
         {
             get { return genreInfo; }
             set
@@ -92,7 +92,7 @@ namespace Imi.Project.Mobile.ViewModels
         {
             GenreInfo = null;
 
-            GenreInfo = genreService.GetAllGenre().Result;
+            GenreInfo = await genreService.GetAllGenre();
 
                 Title = "Genres";
             if (currentGenreInfo != null && currentGenreInfo.Id != Guid.Empty)

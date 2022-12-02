@@ -8,7 +8,7 @@ namespace Imi.Project.Mobile.Domain.Services
 {
     public interface IPublisherService
     {
-        Task<List<PublisherInfo>> GetAllPublisher();
+        Task<IEnumerable<PublisherInfo>> GetAllPublisher();
 
         Task<PublisherInfo> PublisherById(Guid id);
 

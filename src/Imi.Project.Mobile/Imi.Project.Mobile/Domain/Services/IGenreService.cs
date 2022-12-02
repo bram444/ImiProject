@@ -8,7 +8,7 @@ namespace Imi.Project.Mobile.Domain.Services
 {
     public interface IGenreService
     {
-        Task<List<GenreInfo>> GetAllGenre();
+        Task<IEnumerable<GenreInfo>> GetAllGenre();
 
         Task<GenreInfo> GenreById(Guid id);
 

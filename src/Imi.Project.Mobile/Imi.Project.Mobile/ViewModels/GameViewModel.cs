@@ -32,8 +32,8 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        private List<GamesInfo> gamesInfo;
-        public List<GamesInfo> GamesInfo
+        private IEnumerable<GamesInfo> gamesInfo;
+        public IEnumerable<GamesInfo> GamesInfo
         {
             get { return gamesInfo; }
             set
@@ -67,6 +67,17 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
+        private bool visableAdd;
+        public bool VisableAdd
+        {
+            get { return visableAdd; }
+            set
+            {
+                visableAdd = value;
+                RaisePropertyChanged(nameof(VisableAdd));
+            }
+        }
+
         public GameViewModel(IGameService gameService)
         {
             this.gameService = gameService;
@@ -77,6 +88,7 @@ namespace Imi.Project.Mobile.ViewModels
             base.Init(initData);
 
             currentGameInfo = initData as GamesInfo;
+            VisableAdd = false;
 
             await RefreshGame();
         }
@@ -84,6 +96,8 @@ namespace Imi.Project.Mobile.ViewModels
         public async override void ReverseInit(object initData)
         {
             base.ReverseInit(initData);
+
+            VisableAdd = false;
 
             if (initData is GamesInfo)
             {
@@ -96,20 +110,29 @@ namespace Imi.Project.Mobile.ViewModels
         {
             GamesInfo = null;
 
-            GamesInfo = gameService.GetAllGames().Result;
+            Title = "Loading";
+
+
+            GamesInfo = await gameService.GetAllGames();
+            VisableAdd = true;
 
                 Title = "Games";
-            if (currentGameInfo != null &&currentGameInfo.Id != Guid.Empty)
-            {
-                currentGameInfo = await gameService.GameById(currentGameInfo.Id);
-            }
-            else
-            {
                 currentGameInfo = new GamesInfo
                 {
                     Id = Guid.NewGuid()
                 };
-            }
+            //if (currentGameInfo != null &&currentGameInfo.Id != Guid.Empty)
+            //{
+
+            //    //currentGameInfo = await gameService.GameById(currentGameInfo.Id);
+            //}
+            //else
+            //{
+            //    currentGameInfo = new GamesInfo
+            //    {
+            //        Id = Guid.NewGuid()
+            //    };
+            //}
             LoadGameState();
         }
 

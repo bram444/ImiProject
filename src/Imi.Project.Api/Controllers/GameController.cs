@@ -72,8 +72,8 @@ namespace Imi.Project.Api.Controllers
             return Ok(await _gameService.UpdateAsync(gameResponseDto));
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> Delete(Guid id)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
 
             foreach (GameGenreResponseDto gg in await _gameGenreService.GetByGameIdAsync(id))

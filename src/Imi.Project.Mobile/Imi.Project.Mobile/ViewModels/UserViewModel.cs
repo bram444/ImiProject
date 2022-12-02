@@ -77,8 +77,8 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        private List<UserInfo> userInfo;
-        public List<UserInfo> UserInfo
+        private IEnumerable<UserInfo> userInfo;
+        public IEnumerable<UserInfo> UserInfo
         {
             get { return userInfo; }
             set
@@ -117,7 +117,7 @@ namespace Imi.Project.Mobile.ViewModels
         {
             UserInfo = null;
 
-            UserInfo = userService.GetAllUser().Result;
+            UserInfo = await userService.GetAllUser();
 
                 Title = "Users";
 
