@@ -43,7 +43,6 @@ namespace Imi.Project.Mobile.Domain.Services
         public async Task<UserInfo> AddUser(UserInfo user)
         {
             return await _httpClient.PostCallApi<UserInfo, UserInfo>($"{baseUrl}/api/User", user);
-
         }
     }
 }

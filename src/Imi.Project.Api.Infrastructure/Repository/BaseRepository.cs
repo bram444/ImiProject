@@ -36,7 +36,6 @@ namespace Imi.Project.Api.Infrastructure.Repository
         {
             entity.CreatedOn = DateTime.UtcNow;
             entity.LastEditedOn = DateTime.UtcNow;
-            //entity.Id = Guid.NewGuid();
             _dbContext.Set<T>().Add(entity);
             _dbContext.Entry(entity).State = EntityState.Added;
             await _dbContext.SaveChangesAsync();

@@ -63,6 +63,17 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
+        private bool visableAdd;
+        public bool VisableAdd
+        {
+            get { return visableAdd; }
+            set
+            {
+                visableAdd = value;
+                RaisePropertyChanged(nameof(VisableAdd));
+            }
+        }
+
         public GenreViewModel(IGenreService genreService)
         {
             this.genreService = genreService;
@@ -92,20 +103,33 @@ namespace Imi.Project.Mobile.ViewModels
         {
             GenreInfo = null;
 
+            VisableAdd = false;
+            
+            Title = "Loading";
+
             GenreInfo = await genreService.GetAllGenre();
+            
+            VisableAdd = true;
 
                 Title = "Genres";
-            if (currentGenreInfo != null && currentGenreInfo.Id != Guid.Empty)
+
+            currentGenreInfo = new GenreInfo
             {
-                currentGenreInfo = await genreService.GenreById(currentGenreInfo.Id);
-            }
-            else
-            {
-                currentGenreInfo = new GenreInfo
-                {
-                    Id = Guid.NewGuid()
-                };
-            }
+                Id = Guid.NewGuid()
+            };
+
+            //if (currentGenreInfo != null && currentGenreInfo.Id != Guid.Empty)
+            //{
+            //    currentGenreInfo = await genreService.GenreById(currentGenreInfo.Id);
+            //}
+            //else
+            //{
+            //    currentGenreInfo = new GenreInfo
+            //    {
+            //        Id = Guid.NewGuid()
+            //    };
+            //}
+
             LoadGenreState();
         }
 

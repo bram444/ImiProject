@@ -3,6 +3,7 @@ using Imi.Project.Api.Core.Dto.UserGame;
 using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Repository;
 using Imi.Project.Api.Core.Interfaces.Sevices;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,13 +16,15 @@ namespace Imi.Project.Api.Core.Services
         private readonly IUserRepository _userRepository;
         private readonly IUserGameRepository _userGameRepository;
 
+        private readonly IPasswordHasher<ApplicationUser> passwordHasher = new PasswordHasher<ApplicationUser>();
+
         public UserService(IUserRepository userRepository, IUserGameRepository userGameRepository)
         {
             _userRepository = userRepository;
             _userGameRepository = userGameRepository;
         }
 
-        private static ApplicationUser CreateEntity(UserResponseDto userResponseDto)
+        private ApplicationUser CreateEntity(UserResponseDto userResponseDto)
         {
             ApplicationUser user = new()
             {
@@ -30,8 +33,27 @@ namespace Imi.Project.Api.Core.Services
                 FirstName = userResponseDto.FirstName,
                 LastName = userResponseDto.LastName,
                 UserName = userResponseDto.UserName,
-            };
+           };
+
+            user.PasswordHash = passwordHasher.HashPassword(user, userResponseDto.Password);
+
             return user;
+        }
+
+        private static UserResponseDto CreateDto(ApplicationUser user, List<Guid> gameId)
+        {
+            UserResponseDto userResponseDto = new()
+            {
+                Id = user.Id,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                UserName = user.UserName,
+                GameId = gameId,
+                Password = user.PasswordHash,
+                ConfirmPassword = user.PasswordHash
+            };
+            return userResponseDto;
         }
 
         private async Task<List<Guid>> GetGameList(Guid userId)
@@ -46,20 +68,6 @@ namespace Imi.Project.Api.Core.Services
             }
 
             return gameIds;
-        }
-
-        private static UserResponseDto CreateDto(ApplicationUser user, List<Guid> gameId)
-        {
-            UserResponseDto userResponseDto = new()
-            {
-                Id = user.Id,
-                Email = user.Email,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                UserName = user.UserName,
-                GameId = gameId
-            };
-            return userResponseDto;
         }
 
         public async Task<ServiceResult<UserResponseDto>> AddAsync(UserResponseDto response)
@@ -169,9 +177,17 @@ namespace Imi.Project.Api.Core.Services
         {
             ServiceResult<UserResponseDto> serviceResponse = new();
 
+            ApplicationUser editUser = await _userRepository.GetByIdAsync(response.Id);
+
+            editUser.Email = response.Email;
+            editUser.FirstName = response.FirstName;
+            editUser.LastName = response.LastName;
+            editUser.UserName = response.UserName;
+            editUser.PasswordHash = passwordHasher.HashPassword(editUser, response.Password);
+
             try
             {
-                serviceResponse.Result = CreateDto(await _userRepository.UpdateAsync(CreateEntity(response)), await GetGameList(response.Id));
+                serviceResponse.Result = CreateDto(await _userRepository.UpdateAsync(editUser), await GetGameList(response.Id));
             }
             catch (Exception ex)
             {

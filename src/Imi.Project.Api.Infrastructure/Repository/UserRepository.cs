@@ -72,8 +72,8 @@ namespace Imi.Project.Api.Infrastructure.Repository
 
         public async Task<ApplicationUser> UpdateAsync(ApplicationUser entity)
         {
-
             _dbContext.Set<ApplicationUser>().Update(entity);
+            _dbContext.Entry(entity).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
             return entity;
         }

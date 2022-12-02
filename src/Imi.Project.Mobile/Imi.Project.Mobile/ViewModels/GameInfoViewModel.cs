@@ -96,7 +96,6 @@ namespace Imi.Project.Mobile.ViewModels
                 gamePriceError = value;
                 RaisePropertyChanged(nameof(GamePriceError));
                 RaisePropertyChanged(nameof(GamePriceErrorVisible));
-
             }
         }
 
@@ -194,8 +193,6 @@ namespace Imi.Project.Mobile.ViewModels
                 RaisePropertyChanged(nameof(GenreId));
             }
         }
-
-
         public override void Init(object initData)
         {
             if (initData != null)

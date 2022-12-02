@@ -63,6 +63,16 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
+        private bool visableAdd;
+        public bool VisableAdd
+        {
+            get { return visableAdd; }
+            set
+            {
+                visableAdd = value;
+                RaisePropertyChanged(nameof(VisableAdd));
+            }
+        }
         public PublisherViewModel(IPublisherService publisherService)
         {
             this.publisherService = publisherService;
@@ -92,20 +102,28 @@ namespace Imi.Project.Mobile.ViewModels
         {
             PublisherInfo = null;
 
-            PublisherInfo = await publisherService.GetAllPublisher();
+            VisableAdd = false;
+            Title = "Loading";
 
+            PublisherInfo = await publisherService.GetAllPublisher();
+            VisableAdd = true;
                 Title = "Publishers";
-            if (currentPublisherInfo != null&&currentPublisherInfo.Id != Guid.Empty)
+
+            currentPublisherInfo = new PublisherInfo
             {
-                currentPublisherInfo = await publisherService.PublisherById(currentPublisherInfo.Id);
-            }
-            else
-            {
-                currentPublisherInfo = new PublisherInfo
-                {
-                    Id = Guid.NewGuid()
-                };
-            }
+                Id = Guid.NewGuid()
+            };
+            //if (currentPublisherInfo != null&&currentPublisherInfo.Id != Guid.Empty)
+            //{
+            //    currentPublisherInfo = await publisherService.PublisherById(currentPublisherInfo.Id);
+            //}
+            //else
+            //{
+            //    currentPublisherInfo = new PublisherInfo
+            //    {
+            //        Id = Guid.NewGuid()
+            //    };
+            //}
             LoadPublisherState();
         }
 

@@ -80,6 +80,18 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
+        private string password;
+
+        public string Password
+        {
+            get { return password; }
+            set
+            {
+                password = value;
+                RaisePropertyChanged(nameof(Password));
+            }
+        }
+
         private string userEmailError;
 
         public string UserEmailError
@@ -231,6 +243,18 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
+        private ICollection<Guid> gameId;
+
+        public ICollection<Guid> GameId
+        {
+            get { return gameId; }
+            set
+            {
+                gameId = value;
+                RaisePropertyChanged(nameof(GameId));
+            }
+        }
+
         public override void Init(object initData)
         {
             if (initData != null)
@@ -255,13 +279,20 @@ namespace Imi.Project.Mobile.ViewModels
         {
             UserName = null;
             FirstName = null;
-            lastName = null;
+            LastName = null;
             Email = null;
+            GameId = new List<Guid>
+            {
+            };
+            Password = null;
+
 
             UserName = currentUserInfo.UserName;
             FirstName = currentUserInfo.FirstName;
-            lastName = currentUserInfo.LastName;
+            LastName = currentUserInfo.LastName;
             Email = currentUserInfo.Email;
+            GameId = currentUserInfo.GameId;
+            Password = "Test123?";//temp
         }
 
         private void SaveUserState()
@@ -270,6 +301,9 @@ namespace Imi.Project.Mobile.ViewModels
             currentUserInfo.LastName = LastName;
             currentUserInfo.FirstName = FirstName;
             currentUserInfo.Email = Email;
+            currentUserInfo.GameId = GameId;
+            currentUserInfo.Password = Password;//temp
+            currentUserInfo.ConfirmPassword = Password;//temp
         }
 
         public ICommand SaveUserInfoCommand => new Command(
@@ -314,6 +348,12 @@ namespace Imi.Project.Mobile.ViewModels
                         LastName = this.LastName,
                         UserName = this.UserName,
                         Email = this.Email,
+                        GameId = new List<Guid>
+                        {
+                        },
+                        Password = "Test123?",
+                        ConfirmPassword= "Test123?"//temp
+
                     };
 
                     if (Validate(userEdit))

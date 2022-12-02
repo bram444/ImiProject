@@ -6,7 +6,6 @@ namespace Imi.Project.Mobile
 {
     public class Constants
     {
-        public static string baseUrl = "https://172.30.37.132:5001";
-
+        public static string baseUrl = "https://172.29.176.1:5001";
     }
 }

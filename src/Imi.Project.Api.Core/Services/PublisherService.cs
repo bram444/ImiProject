@@ -26,7 +26,7 @@ namespace Imi.Project.Api.Core.Services
 
         private Publisher CreateEntity(PublisherResponseDto publisherResponseDto)
         {
-            Publisher publisher = new Publisher
+            Publisher publisher = new()
             {
                 Id = publisherResponseDto.Id,
                 Country = publisherResponseDto.Country,
@@ -37,7 +37,7 @@ namespace Imi.Project.Api.Core.Services
 
         private PublisherResponseDto CreateDto(Publisher publisher)
         {
-            PublisherResponseDto publisherResponseDto = new PublisherResponseDto
+            PublisherResponseDto publisherResponseDto = new()
             {
                 Id = publisher.Id,
                 Country = publisher.Country,
@@ -73,7 +73,7 @@ namespace Imi.Project.Api.Core.Services
                 return serviceResponse;
             }
 
-            if (await _gameRepository.GetByPublisherIdAsync(id) != null)
+            if (await _gameRepository.GetByPublisherIdAsync(id) != null && _gameRepository.GetByPublisherIdAsync(id).Result.Any())
             {
                 serviceResponse.HasErrors = true;
                 serviceResponse.ErrorMessages.Add("Please delete the games before deleting the publisher");
@@ -94,7 +94,7 @@ namespace Imi.Project.Api.Core.Services
 
         public IQueryable<PublisherResponseDto> GetAll()
         {
-            List<PublisherResponseDto> publisherResponseDtos = new List<PublisherResponseDto>();
+            List<PublisherResponseDto> publisherResponseDtos = new();
             foreach (Publisher response in _publisherRespository.GetAll())
             {
                 publisherResponseDtos.Add(CreateDto(response));
@@ -110,7 +110,7 @@ namespace Imi.Project.Api.Core.Services
 
         public async Task<IEnumerable<PublisherResponseDto>> ListAllAsync()
         {
-            List<PublisherResponseDto> publisherResponseDtos = new List<PublisherResponseDto>();
+            List<PublisherResponseDto> publisherResponseDtos = new();
             foreach (Publisher entity in await _publisherRespository.ListAllAsync())
             {
                 publisherResponseDtos.Add(CreateDto(entity));
@@ -121,7 +121,7 @@ namespace Imi.Project.Api.Core.Services
 
         public async Task<IEnumerable<PublisherResponseDto>> SearchAsync(string search)
         {
-            List<PublisherResponseDto> publisherResponseDtos = new List<PublisherResponseDto>();
+            List<PublisherResponseDto> publisherResponseDtos = new();
             foreach (Publisher entity in await _publisherRespository.SearchAsync(search))
             {
                 publisherResponseDtos.Add(CreateDto(entity));
@@ -132,7 +132,7 @@ namespace Imi.Project.Api.Core.Services
 
         public async Task<IEnumerable<PublisherResponseDto>> SearchByCountryAsync(string country)
         {
-            List<PublisherResponseDto> publisherResponseDtos = new List<PublisherResponseDto>();
+            List<PublisherResponseDto> publisherResponseDtos = new();
             foreach (Publisher entity in await _publisherRespository.SearchByCountryAsync(country))
             {
                 publisherResponseDtos.Add(CreateDto(entity));

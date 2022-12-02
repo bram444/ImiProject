@@ -24,7 +24,7 @@ namespace Imi.Project.Api.Core.Services
 
         private Genre CreateEntity(GenreResponseDto genreResponseDto)
         {
-            Genre genre = new Genre
+            Genre genre = new()
             {
                 Id = genreResponseDto.Id,
                 Name = genreResponseDto.Name,
@@ -35,7 +35,7 @@ namespace Imi.Project.Api.Core.Services
 
         private GenreResponseDto CreateDto(Genre genre)
         {
-            GenreResponseDto genreDto = new GenreResponseDto
+            GenreResponseDto genreDto = new()
             {
                 Id = genre.Id,
                 Name = genre.Name,
@@ -86,7 +86,7 @@ namespace Imi.Project.Api.Core.Services
 
         public IQueryable<GenreResponseDto> GetAll()
         {
-            List<GenreResponseDto> genreResponseDtos = new List<GenreResponseDto>();
+            List<GenreResponseDto> genreResponseDtos = new();
             foreach (Genre entity in _genreRepository.GetAll())
             {
                 genreResponseDtos.Add(CreateDto(entity));
@@ -102,7 +102,7 @@ namespace Imi.Project.Api.Core.Services
 
         public async Task<IEnumerable<GenreResponseDto>> ListAllAsync()
         {
-            List<GenreResponseDto> genreResponseDtos = new List<GenreResponseDto>();
+            List<GenreResponseDto> genreResponseDtos = new();
             foreach (Genre entity in await _genreRepository.ListAllAsync())
             {
                 genreResponseDtos.Add(CreateDto(entity));
@@ -113,7 +113,7 @@ namespace Imi.Project.Api.Core.Services
 
         public async Task<IEnumerable<GenreResponseDto>> SearchAsync(string search)
         {
-            List<GenreResponseDto> genreResponseDtos = new List<GenreResponseDto>();
+            List<GenreResponseDto> genreResponseDtos = new();
             foreach (Genre entity in await _genreRepository.SearchAsync(search))
             {
                 genreResponseDtos.Add(CreateDto(entity));

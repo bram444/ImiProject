@@ -88,6 +88,17 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
+        private bool visableAdd;
+        public bool VisableAdd
+        {
+            get { return visableAdd; }
+            set
+            {
+                visableAdd = value;
+                RaisePropertyChanged(nameof(VisableAdd));
+            }
+        }
+
         public UserViewModel(IUserService userService)
         {
             this.userService = userService;
@@ -117,21 +128,32 @@ namespace Imi.Project.Mobile.ViewModels
         {
             UserInfo = null;
 
+            VisableAdd = false;
+
+            Title = "Loading";
+
             UserInfo = await userService.GetAllUser();
+
+            VisableAdd = true;
 
                 Title = "Users";
 
-            if (currentUserInfo != null && currentUserInfo.Id != Guid.Empty)
+            currentUserInfo = new UserInfo
             {
-                currentUserInfo = await userService.UserById(currentUserInfo.Id);
-            }
-            else
-            {
-                currentUserInfo = new UserInfo
-                {
-                    Id = Guid.NewGuid()
-                };
-            }
+                Id = Guid.NewGuid()
+            };
+
+            //if (currentUserInfo != null && currentUserInfo.Id != Guid.Empty)
+            //{
+            //    currentUserInfo = await userService.UserById(currentUserInfo.Id);
+            //}
+            //else
+            //{
+            //    currentUserInfo = new UserInfo
+            //    {
+            //        Id = Guid.NewGuid()
+            //    };
+            //}
             LoadUserState();
         }
 
