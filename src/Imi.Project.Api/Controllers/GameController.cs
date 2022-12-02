@@ -1,11 +1,7 @@
 ﻿using Imi.Project.Api.Core.Dto.Game;
 using Imi.Project.Api.Core.Dto.GameGenre;
-using Imi.Project.Api.Core.Dto.Publisher;
 using Imi.Project.Api.Core.Dto.UserGame;
-using Imi.Project.Api.Core.Entities;
-using Imi.Project.Api.Core.Interfaces.Repository;
 using Imi.Project.Api.Core.Interfaces.Sevices;
-using Imi.Project.Api.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Imi.Project.Api.Controllers

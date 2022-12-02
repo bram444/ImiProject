@@ -49,7 +49,8 @@ namespace Imi.Project.Api.Controllers
         {
             return Ok(await _userService.SearchUserNameAsync(search));
         }
-                [Authorize(Policy = "OnlyLoyalMembers")]
+
+                //[Authorize(Policy = "OnlyLoyalMembers")]
         [HttpPost]
         public async Task<IActionResult> Post(UserResponseDto userResponseDto)
         {
@@ -80,8 +81,8 @@ namespace Imi.Project.Api.Controllers
             return Ok(await _userService.UpdateAsync(userResponseDto));
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> Delete(Guid id)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             foreach (UserGameResponseDto ug in await _userGameService.GetByUserIdAsync(id))
             {

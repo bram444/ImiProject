@@ -63,8 +63,8 @@ namespace Imi.Project.Api.Controllers
             return Ok(await _publisherService.UpdateAsync(publisherResponseDto));
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> Delete(Guid id)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             return Ok(await _publisherService.DeleteAsync(id));
         }
