@@ -11,7 +11,7 @@ namespace Imi.Project.Mobile.Domain.Validators
         public UserInfoValidator()
         {
             RuleFor(userInfo => userInfo.Email)
-            .   NotEmpty()
+                .NotEmpty()
                 .WithMessage("Please enter your e-mail address")
                 .EmailAddress()
                 .WithMessage("Please enter a valid e-mail address");

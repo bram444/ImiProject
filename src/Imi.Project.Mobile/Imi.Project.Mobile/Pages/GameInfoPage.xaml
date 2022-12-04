@@ -17,6 +17,12 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
                     <StackLayout Grid.Column="0">
                         <Label Text="Name"/>
                         <Entry x:Name="txtName" Keyboard="Text" Text="{Binding GameName}" IsEnabled="{Binding EnableEditData}"/>
@@ -26,6 +32,23 @@
                         <Label Text="Price"/>
                         <Entry x:Name="txtPrice" Keyboard="Numeric" Text="{Binding GamePrice}" IsEnabled="{Binding EnableEditData}"/>
                         <Label x:Name="lblPriceError" Text="{Binding GamePriceError}" Style="{StaticResource ErrorLabel}"/>
+                    </StackLayout>
+                    <StackLayout Grid.Row="1" Grid.Column="0">
+                        <Label Text="Genres"/>
+                        <Picker ItemsSource="{Binding Genres}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding FirstGenre}" IsEnabled="{Binding EnableFirstGenre}"/>
+                    </StackLayout>
+                    <StackLayout Grid.Row="1" Grid.Column="1">
+                        <Label/>
+                        <Picker ItemsSource="{Binding Genres}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SecondGenre}" IsEnabled="{Binding EnableSecondGenre}"/>
+                    </StackLayout>
+                    <StackLayout Grid.Row="2" Grid.Column="0">
+                        <Picker ItemsSource="{Binding Genres}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding ThirdGenre}" IsEnabled="{Binding EnableThirdGenre}"/>
+                    </StackLayout>
+                    <StackLayout Grid.Row="3">
+                        <Label Text="Publishers"/>
+                        <Picker ItemsSource="{Binding Publishers}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding ChosenPublisher}" IsEnabled="{Binding EnablePublisher}"/>
+                        <Label x:Name="lblPublisherError" Text="{Binding PublisherError}" Style="{StaticResource ErrorLabel}"/>
+
                     </StackLayout>
                 </Grid>
                 <FlexLayout Style="{StaticResource ButtonAlign}">
