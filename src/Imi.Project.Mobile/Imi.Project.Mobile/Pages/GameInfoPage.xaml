@@ -45,10 +45,9 @@
                         <Picker ItemsSource="{Binding Genres}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding ThirdGenre}" IsEnabled="{Binding EnableThirdGenre}"/>
                     </StackLayout>
                     <StackLayout Grid.Row="3">
-                        <Label Text="Publishers"/>
+                        <Label Text="Publisher"/>
                         <Picker ItemsSource="{Binding Publishers}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding ChosenPublisher}" IsEnabled="{Binding EnablePublisher}"/>
                         <Label x:Name="lblPublisherError" Text="{Binding PublisherError}" Style="{StaticResource ErrorLabel}"/>
-
                     </StackLayout>
                 </Grid>
                 <FlexLayout Style="{StaticResource ButtonAlign}">

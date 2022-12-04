@@ -21,11 +21,8 @@ namespace Imi.Project.Mobile.ViewModels
     {
         private GamesInfo currentGameInfo;
         private readonly IValidator gameInfoValidator;
-
         private readonly IGameService gameService;
-
         private readonly IGenreService genreService;
-
         private readonly IPublisherService publisherService;
 
         public GameInfoViewModel(IGameService gameService, IGenreService genreService, IPublisherService publisherService)
@@ -38,6 +35,8 @@ namespace Imi.Project.Mobile.ViewModels
 
             gameInfoValidator = new GameInfoValidator();
         }
+
+        #region Properties
 
         private string title;
         public string Title
@@ -86,7 +85,6 @@ namespace Imi.Project.Mobile.ViewModels
                 gameError = value;
                 RaisePropertyChanged(nameof(GameError));
                 RaisePropertyChanged(nameof(GameErrorVisible));
-
             }
         }
 
@@ -337,9 +335,12 @@ namespace Imi.Project.Mobile.ViewModels
             set
             {
                 chosenPublisher = value;
+                PublisherError = null;
                 RaisePropertyChanged(nameof(ChosenPublisher));
             }
         }
+
+        #endregion 
 
         public async override void Init(object initData)
         {
@@ -347,144 +348,54 @@ namespace Imi.Project.Mobile.ViewModels
             {
                 currentGameInfo = initData as GamesInfo;
 
-                Title = currentGameInfo.Name;
                 await LoadGameStateAsync();
                 SetRead();
-
             }
             else
             {
-                Title = "New game";
                 SetAdd();
             }
 
             base.Init(initData);
         }
 
-        private async Task LoadGameStateAsync()
-        {
-            GameName = null;
-            GamePrice = null;
-            PublisherId = Guid.Empty;
-
-            GenreId = new List<Guid>
-            {
-                Guid.Empty
-            };
-
-            Genres = null;
-
-            FirstGenre = null;
-            SecondGenre = null;
-            ThirdGenre = null;
-
-            Publishers = null;
-            ChosenPublisher = null;
-
-            if (currentGameInfo != null)
-            {
-                GameName = currentGameInfo.Name;
-                GamePrice = currentGameInfo.Price.ToString();
-                PublisherId = currentGameInfo.PublisherId;
-                GenreId = currentGameInfo.GenreId;
-
-                List<PublisherInfo> selectPublisher = new List<PublisherInfo> { new PublisherInfo
-                {
-                 Id= Guid.Empty,
-                  Name="Select a publisher"
-                } };
-
-                foreach (PublisherInfo publisher in await publisherService.GetAllPublisher())
-                {
-                    selectPublisher.Add(publisher);
-                }
-
-                List<GenreInfo> selectGenre = new List<GenreInfo> { new GenreInfo{ Id = Guid.Empty,
-                    Name = "Select a genre"
-                }};
-
-
-                foreach (GenreInfo genre in await genreService.GetAllGenre())
-                {
-                    selectGenre.Add(genre);
-                }
-
-                Publishers = selectPublisher;
-
-                ChosenPublisher = Publishers.FirstOrDefault();
-
-                Genres = selectGenre;
-
-                FirstGenre = Genres.FirstOrDefault();
-                SecondGenre = Genres.FirstOrDefault();
-                ThirdGenre = Genres.FirstOrDefault();
-
-                if (publisherId != null || !Publishers.Any(publisher => publisher.Id == PublisherId))
-                {
-                    ChosenPublisher = Publishers.Where(publisher => publisher.Id == publisherId).Single();
-                }
-
-                if (GenreId.Count > 0)
-                {
-                    FirstGenre = Genres.Where(allGenres => allGenres.Id == GenreId.ElementAt(0)).Single();
-
-                    if (GenreId.Count > 1)
-                    {
-                        SecondGenre = Genres.Where(allGenres => allGenres.Id == GenreId.ElementAt(1)).Single();
-
-                        if (GenreId.Count > 2)
-                        {
-                            ThirdGenre = Genres.Where(allGenres => allGenres.Id == GenreId.ElementAt(2)).Single();
-                        }
-                    }
-                }
-            }
-        }
-
-        private void SaveGameState()
-        {
-            if (GamePrice != null && float.TryParse(GamePrice, out float isfloat))
-            {
-                currentGameInfo.Price = float.Parse(GamePrice);
-            }
-            else
-            {
-                currentGameInfo.Price = 0;
-            }
-
-            currentGameInfo.Name = GameName;
-            currentGameInfo.PublisherId = PublisherId;
-
-            List<GenreInfo> allGenreId = new List<GenreInfo>
-            {
-                FirstGenre,
-                SecondGenre,
-                ThirdGenre
-            };
-
-            allGenreId.RemoveAll(selectGenre => selectGenre.Id == Guid.Empty);
-
-            List<Guid> gameGenreId = new List<Guid>();
-
-            foreach (var genre in allGenreId.Distinct())
-            {
-                gameGenreId.Add(genre.Id);
-            }
-
-            currentGameInfo.GenreId = gameGenreId;
-            currentGameInfo.PublisherId = ChosenPublisher.Id;
-
-        }
-
         public ICommand SaveGameInfoCommand => new Command(
             async () =>
             {
-                SaveGameState();
-
-                if (Validate(currentGameInfo))
+                List<GenreInfo> allGenreId = new List<GenreInfo>
                 {
-                    await gameService.UpdateGame(currentGameInfo);
-                    await CoreMethods.PopPageModel(currentGameInfo, false, true);
+                    FirstGenre,
+                    SecondGenre,
+                    ThirdGenre
+                };
+
+                allGenreId.RemoveAll(selectGenre => selectGenre.Id == Guid.Empty);
+
+                List<Guid> gameGenreId = new List<Guid>();
+
+                foreach (var genre in allGenreId.Distinct())
+                {
+                    gameGenreId.Add(genre.Id);
+                }
+
+                GamesInfo gameValidate = new GamesInfo
+                {
+                    Id = currentGameInfo.Id,
+                    GenreId = gameGenreId,
+                    PublisherId = ChosenPublisher.Id,
+                    Name = GameName,
+                    Price = 0
+                };
+
+                if (GamePrice != null && float.TryParse(GamePrice, out float isfloat))
+                {
+                    gameValidate.Price = float.Parse(GamePrice);
+                }
+
+                if (Validate(gameValidate))
+                {
+                    await gameService.UpdateGame(gameValidate);
+                    await CoreMethods.PopPageModel(gameValidate, false, true);
                 }
             });
 
@@ -528,15 +439,8 @@ namespace Imi.Project.Mobile.ViewModels
 
                 if (Validate(gameEdit))
                 {
-                    if (gameEdit.Price < 0.0f)
-                    {
-                        GamePriceError = "Price cant be negative";
-                    }
-                    else
-                    {
-                        await gameService.AddGames(gameEdit);
-                        await CoreMethods.PopPageModel(gameEdit, false, true);
-                    }
+                    await gameService.AddGames(gameEdit);
+                    await CoreMethods.PopPageModel(gameEdit, false, true);
                 }
             });
 
@@ -562,6 +466,74 @@ namespace Imi.Project.Mobile.ViewModels
             await CoreMethods.PopPageModel(new GamesInfo(), false, true);
         });
 
+        private async Task LoadGameStateAsync()
+        {
+            PublisherId = Guid.Empty;
+
+            GenreId = new List<Guid>
+            {
+                Guid.Empty
+            };
+
+            if (currentGameInfo != null)
+            {
+                GameName = currentGameInfo.Name;
+                GamePrice = currentGameInfo.Price.ToString();
+                PublisherId = currentGameInfo.PublisherId;
+                GenreId = currentGameInfo.GenreId;
+
+                List<PublisherInfo> selectPublisher = new List<PublisherInfo> { new PublisherInfo
+                {
+                    Id= Guid.Empty,
+                    Name="Select a publisher"
+                }};
+
+                foreach (PublisherInfo publisher in await publisherService.GetAllPublisher())
+                {
+                    selectPublisher.Add(publisher);
+                }
+
+                Publishers = selectPublisher;
+
+                ChosenPublisher = Publishers.FirstOrDefault();
+
+                if (publisherId != null || !Publishers.Any(publisher => publisher.Id == PublisherId))
+                {
+                    ChosenPublisher = Publishers.Where(publisher => publisher.Id == publisherId).Single();
+                }
+
+                List<GenreInfo> selectGenre = new List<GenreInfo> { new GenreInfo
+                {
+                    Id = Guid.Empty,
+                    Name = "Select a genre"
+                }};
+
+                foreach (GenreInfo genre in await genreService.GetAllGenre())
+                {
+                    selectGenre.Add(genre);
+                }
+
+                Genres = selectGenre;
+
+                FirstGenre = Genres.FirstOrDefault();
+                SecondGenre = Genres.FirstOrDefault();
+                ThirdGenre = Genres.FirstOrDefault();
+
+                if (GenreId.Count > 0)
+                {
+                    FirstGenre = Genres.Where(allGenres => allGenres.Id == GenreId.ElementAt(0)).Single();
+                    if (GenreId.Count > 1)
+                    {
+                        SecondGenre = Genres.Where(allGenres => allGenres.Id == GenreId.ElementAt(1)).Single();
+                        if (GenreId.Count > 2)
+                        {
+                            ThirdGenre = Genres.Where(allGenres => allGenres.Id == GenreId.ElementAt(2)).Single();
+                        }
+                    }
+                }
+            }
+        }
+
         private bool Validate(GamesInfo gamesInfo)
         {
             var validationContext = new ValidationContext<GamesInfo>(gamesInfo);
@@ -569,17 +541,22 @@ namespace Imi.Project.Mobile.ViewModels
 
             foreach (var error in validationResult.Errors)
             {
-                if (error.PropertyName == nameof(gamesInfo.Name))
+                switch (error.PropertyName)
                 {
-                    GameError = error.ErrorMessage;
-                }
-                if (error.PropertyName == nameof(gamesInfo.PublisherId))
-                {
-                    PublisherError = error.ErrorMessage;
-                }
-                if (error.PropertyName == nameof(gamesInfo.Price))
-                {
-                    GamePriceError = error.ErrorMessage;
+                    case nameof(gamesInfo.Name):
+                        GameError = error.ErrorMessage;
+                        break;
+
+                    case nameof(gamesInfo.PublisherId):
+                        PublisherError = error.ErrorMessage;
+                        break;
+
+                    case nameof(gamesInfo.Price):
+                        GamePriceError = error.ErrorMessage;
+                        break;
+
+                    default:
+                        break;
                 }
             }
             return validationResult.IsValid;
@@ -587,43 +564,42 @@ namespace Imi.Project.Mobile.ViewModels
 
         private async void SetAdd()
         {
-            VisableAdd = true;
-            VisableCancel = false;
+            Title = "New game";
 
             EnableEditData = true;
-
             EnableFirstGenre = true;
             EnableSecondGenre = true;
             EnableThirdGenre = true;
             EnablePublisher = true;
 
+            VisableAdd = true;
+            VisableCancel = false;
             VisableEdit = false;
             VisableDelete = false;
             VisableSave = false;
-            Genres = null;
 
-            List<GenreInfo> selectList = new List<GenreInfo> { new GenreInfo{ Id = Guid.Empty,
-                    Name = "Select a genre"
-                }};
-
+            List<GenreInfo> selectGenres = new List<GenreInfo> { new GenreInfo
+            {
+                Id = Guid.Empty,
+                Name = "Select a genre"
+            }};
 
             foreach (GenreInfo genre in await genreService.GetAllGenre())
             {
-                selectList.Add(genre);
+                selectGenres.Add(genre);
             }
 
-            Genres = selectList;
+            Genres = selectGenres;
 
             FirstGenre = Genres.FirstOrDefault();
             SecondGenre = Genres.FirstOrDefault();
             ThirdGenre = Genres.FirstOrDefault();
 
-
             List<PublisherInfo> selectPublisher = new List<PublisherInfo> { new PublisherInfo
-                {
-                 Id= Guid.Empty,
-                  Name="Select a publisher"
-                } };
+            {
+                Id= Guid.Empty,
+                Name="Select a publisher"
+            }};
 
             foreach (PublisherInfo publisher in await publisherService.GetAllPublisher())
             {
@@ -633,7 +609,6 @@ namespace Imi.Project.Mobile.ViewModels
             Publishers = selectPublisher;
 
             ChosenPublisher = Publishers.FirstOrDefault();
-
         }
 
         private void SetRead()
@@ -642,16 +617,15 @@ namespace Imi.Project.Mobile.ViewModels
             {
                 Title = currentGameInfo.Name;
             }
-            VisableAdd = false;
-            VisableCancel = false;
 
             EnableEditData = false;
-
             EnableFirstGenre = false;
             EnableSecondGenre = false;
             EnableThirdGenre = false;
             EnablePublisher = false;
 
+            VisableAdd = false;
+            VisableCancel = false;
             VisableEdit = true;
             VisableDelete = true;
             VisableSave = false;
@@ -661,16 +635,14 @@ namespace Imi.Project.Mobile.ViewModels
         {
             Title = "Edit " + currentGameInfo.Name;
 
-            VisableAdd = false;
-            VisableCancel = true;
-
             EnableEditData = true;
-
             EnableFirstGenre = true;
             EnableSecondGenre = true;
             EnableThirdGenre = true;
             EnablePublisher = true;
 
+            VisableAdd = false;
+            VisableCancel = true;
             VisableEdit = false;
             VisableDelete = false;
             VisableSave = true;

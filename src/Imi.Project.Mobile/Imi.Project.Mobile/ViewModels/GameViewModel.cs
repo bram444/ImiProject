@@ -18,8 +18,14 @@ namespace Imi.Project.Mobile.ViewModels
     public class GameViewModel : FreshBasePageModel
     {
         private readonly IGameService gameService;
-
         private GamesInfo currentGameInfo;
+
+        public GameViewModel(IGameService gameService)
+        {
+            this.gameService = gameService;
+        }
+
+        #region Properties
 
         private string title;
         public string Title
@@ -78,10 +84,7 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        public GameViewModel(IGameService gameService)
-        {
-            this.gameService = gameService;
-        }
+        #endregion
 
         public async override void Init(object initData)
         {
@@ -97,42 +100,32 @@ namespace Imi.Project.Mobile.ViewModels
         {
             base.ReverseInit(initData);
 
-            VisableAdd = false;
-
             if (initData is GamesInfo)
             {
                 currentGameInfo = initData as GamesInfo;
             }
+            VisableAdd = false;
+
             await RefreshGame();
         }
 
         private async Task RefreshGame()
         {
-            GamesInfo = null;
-
             Title = "Loading";
 
+            GamesInfo = null;
 
             GamesInfo = await gameService.GetAllGames();
+
             VisableAdd = true;
 
-                Title = "Games";
-                currentGameInfo = new GamesInfo
-                {
-                    Id = Guid.NewGuid()
-                };
-            //if (currentGameInfo != null &&currentGameInfo.Id != Guid.Empty)
-            //{
+            Title = "Games";
 
-            //    //currentGameInfo = await gameService.GameById(currentGameInfo.Id);
-            //}
-            //else
-            //{
-            //    currentGameInfo = new GamesInfo
-            //    {
-            //        Id = Guid.NewGuid()
-            //    };
-            //}
+            currentGameInfo = new GamesInfo
+            {
+                Id = Guid.NewGuid()
+            };
+
             LoadGameState();
         }
 
@@ -142,7 +135,6 @@ namespace Imi.Project.Mobile.ViewModels
                 SaveGameState();
                 await CoreMethods.PushPageModel<GameInfoViewModel>(game);
             });
-
 
         private void LoadGameState()
         {
@@ -154,6 +146,5 @@ namespace Imi.Project.Mobile.ViewModels
             currentGameInfo.Price = GamePrice;
             currentGameInfo.Name = GameName;
         }
-
     }
 }

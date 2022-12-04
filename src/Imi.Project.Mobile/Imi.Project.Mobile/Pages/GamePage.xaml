@@ -1,34 +1,34 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-    <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              Style="{StaticResource PageStyle}"
              x:Class="Imi.Project.Mobile.Pages.GamePage"
              xmlns:bhv="clr-namespace:Imi.Project.Mobile.Behaviors" 
              Title="{Binding Title}">
 
-        <ContentPage.Content>
-            <StackLayout>
+    <ContentPage.Content>
+        <StackLayout>
             <Button x:Name="btnAdd" Text="Add" Command="{Binding AddGameItem}" HorizontalOptions="FillAndExpand" Style="{StaticResource Add}" IsVisible="{Binding VisableAdd}"/>
-                <ListView ItemsSource="{Binding GamesInfo}" HeightRequest="-1" RowHeight="100">
-                    <ListView.Behaviors>
-                        <bhv:EventToCommandBehavior
+            <ListView ItemsSource="{Binding GamesInfo}" HeightRequest="-1" RowHeight="100">
+                <ListView.Behaviors>
+                    <bhv:EventToCommandBehavior
                         EventName="ItemTapped"
                         Command="{Binding AddGameItem}"
                         EventArgsConverter="{StaticResource ItemTappedEventArgsConv}" />
-                    </ListView.Behaviors>
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <ViewCell>
-                                <StackLayout>
-                                    <FlexLayout Style="{StaticResource AlignItems}">
-                                        <Label Text="{Binding Name}" Style="{StaticResource Title}"/>
-                                        <Label Text="{Binding Price}"/>
-                                    </FlexLayout>
-                                </StackLayout>
-                            </ViewCell>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </StackLayout>
-        </ContentPage.Content>
-    </ContentPage>
+                </ListView.Behaviors>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout>
+                                <FlexLayout Style="{StaticResource AlignItems}">
+                                    <Label Text="{Binding Name}" Style="{StaticResource Title}"/>
+                                    <Label Text="{Binding Price}"/>
+                                </FlexLayout>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
