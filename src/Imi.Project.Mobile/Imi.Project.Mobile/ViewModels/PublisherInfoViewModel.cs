@@ -6,6 +6,7 @@ using Imi.Project.Mobile.Domain.Validators;
 using Imi.Project.Mobile.Pages;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Windows.Input;
 using Xamarin.Essentials;
@@ -17,15 +18,18 @@ namespace Imi.Project.Mobile.ViewModels
     {
         private PublisherInfo currentPublisherInfo;
         private readonly IValidator publisherInfoValidator;
-
         private readonly IPublisherService publisherService;
+        private readonly IGameService gameService;
 
-        public PublisherInfoViewModel(IPublisherService publisherService)
+        public PublisherInfoViewModel(IPublisherService publisherService, IGameService gameService)
         {
             this.publisherService = publisherService;
+            this.gameService = gameService;
 
             publisherInfoValidator = new PublisherInfoValidator();
         }
+
+        #region Properties
 
         private string title;
         public string Title
@@ -39,7 +43,6 @@ namespace Imi.Project.Mobile.ViewModels
         }
 
         private string publisherName;
-
         public string PublisherName
         {
             get { return publisherName; }
@@ -52,7 +55,6 @@ namespace Imi.Project.Mobile.ViewModels
         }
 
         private string publisherCountry;
-
         public string PublisherCountry
         {
             get { return publisherCountry; }
@@ -65,7 +67,6 @@ namespace Imi.Project.Mobile.ViewModels
         }
 
         private string publisherNameError;
-
         public string PublisherNameError
         {
             get { return publisherNameError; }
@@ -74,7 +75,6 @@ namespace Imi.Project.Mobile.ViewModels
                 publisherNameError = value;
                 RaisePropertyChanged(nameof(PublisherNameError));
                 RaisePropertyChanged(nameof(PublisherNameErrorVisible));
-
             }
         }
 
@@ -83,8 +83,24 @@ namespace Imi.Project.Mobile.ViewModels
             get { return !string.IsNullOrWhiteSpace(PublisherNameError); }
         }
 
-        private string publisherCounryError;
+        private string publisherDeleteError;
+        public string PublisherDeleteError
+        {
+            get { return publisherDeleteError; }
+            set
+            {
+                publisherDeleteError = value;
+                RaisePropertyChanged(nameof(PublisherDeleteError));
+                RaisePropertyChanged(nameof(PublisherDeleteErrorVisible));
+            }
+        }
 
+        public bool PublisherDeleteErrorVisible
+        {
+            get { return !string.IsNullOrWhiteSpace(PublisherDeleteError); }
+        }
+
+        private string publisherCounryError;
         public string PublisherCountryError
         {
             get { return publisherCounryError; }
@@ -93,7 +109,6 @@ namespace Imi.Project.Mobile.ViewModels
                 publisherCounryError = value;
                 RaisePropertyChanged(nameof(PublisherCountryError));
                 RaisePropertyChanged(nameof(PublisherCounryErrorVisible));
-
             }
         }
 
@@ -168,81 +183,89 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
+        private bool enableGameList;
+        public bool EnableGameList
+        {
+            get { return enableGameList; }
+            set
+            {
+                enableGameList = value;
+                RaisePropertyChanged(nameof(EnableGameList));
+            }
+        }
+
+        private IEnumerable<GamesInfo> games;
+        public IEnumerable<GamesInfo> Games
+        {
+            get { return games; }
+            set
+            {
+                games = value;
+                RaisePropertyChanged(nameof(Games));
+            }
+        }
+
+        #endregion
+
         public override void Init(object initData)
         {
             if (initData != null)
             {
                 currentPublisherInfo = initData as PublisherInfo;
 
-                Title = currentPublisherInfo.Name;
-                LoadPublisherState();
                 SetRead();
-
             }
             else
             {
-                Title = "New publisher";
                 SetAdd();
             }
 
             base.Init(initData);
         }
 
-        private void LoadPublisherState()
-        {
-            PublisherCountry = null;
-            PublisherName = null;
-
-            PublisherCountry = currentPublisherInfo.Country;
-            PublisherName = currentPublisherInfo.Name;
-        }
-
-        private void SavePublisherState()
-        {
-            currentPublisherInfo.Country = PublisherCountry;
-            currentPublisherInfo.Name = PublisherName;
-        }
-
         public ICommand SavePublisherInfoCommand => new Command(
-                async () =>
+            async () =>
+            {
+                var validatePublisher = new PublisherInfo
                 {
-                    SavePublisherState();
+                    Id = currentPublisherInfo.Id,
+                    Country = PublisherCountry,
+                    Name = PublisherName
+                };
 
-                    if (Validate(currentPublisherInfo))
-                    {
-                        await publisherService.UpdatePublisher(currentPublisherInfo);
-                        await CoreMethods.PopPageModel(currentPublisherInfo, false, true);
-                    }
-                });
+                if (Validate(validatePublisher))
+                {
+                    await publisherService.UpdatePublisher(validatePublisher);
+                    await CoreMethods.PopPageModel(validatePublisher, false, true);
+                }
+            });
 
         public ICommand AddPublisherInfoCommand => new Command(
-                async () =>
+            async () =>
+            {
+                if (PublisherName == null)
                 {
-                    if (PublisherName == null)
-                    {
-                        PublisherName = "";
-                    }
+                    PublisherName = "";
+                }
 
-                    if (PublisherCountry == null)
-                    {
-                        PublisherCountry = "";
-                    }
+                if (PublisherCountry == null)
+                {
+                    PublisherCountry = "";
+                }
 
-                    PublisherInfo publisherEdit = new PublisherInfo
-                    {
-                        Id = Guid.NewGuid(),
-                        Name = PublisherName,
-                        Country = PublisherCountry,
-                    };
+                PublisherInfo publisherEdit = new PublisherInfo
+                {
+                    Id = Guid.NewGuid(),
+                    Name = PublisherName,
+                    Country = PublisherCountry,
+                };
 
-                    if (Validate(publisherEdit))
-                    {
-
-                        await publisherService.AddPublisher(publisherEdit);
-                        await CoreMethods.PopPageModel(publisherEdit, false, true);
-
-                    }
-                });
+                if (Validate(publisherEdit))
+                {
+                    await publisherService.AddPublisher(publisherEdit);
+                    await CoreMethods.PopPageModel(publisherEdit, false, true);
+                }
+            });
 
         public ICommand EditCommand => new Command(() =>
         {
@@ -251,19 +274,25 @@ namespace Imi.Project.Mobile.ViewModels
 
         public ICommand CancelCommand => new Command(() =>
         {
-            LoadPublisherState();
             SetRead();
         });
 
         public ICommand DeleteCommand => new Command(async () =>
         {
-            if (DeviceInfo.Platform == DevicePlatform.Android)
+            if (Games.Count() > 0)
             {
-                Vibration.Vibrate(TimeSpan.FromSeconds(0.5));
+                PublisherDeleteError = "Cannot delete while publisher has games";
             }
+            else
+            {
+                if (DeviceInfo.Platform == DevicePlatform.Android)
+                {
+                    Vibration.Vibrate(TimeSpan.FromSeconds(0.5));
+                }
 
-            await publisherService.DeletePublisher(currentPublisherInfo.Id);
-            await CoreMethods.PopPageModel(new PublisherInfo(),false,true);
+                await publisherService.DeletePublisher(currentPublisherInfo.Id);
+                await CoreMethods.PopPageModel(new PublisherInfo(), false, true);
+            }
         });
 
         private bool Validate(PublisherInfo publisherInfo)
@@ -287,7 +316,6 @@ namespace Imi.Project.Mobile.ViewModels
                         PublisherCountryError = "";
                         PublisherNameError = "";
                         break;
-
                 }
             }
             return validationResult.IsValid;
@@ -295,27 +323,40 @@ namespace Imi.Project.Mobile.ViewModels
 
         private void SetAdd()
         {
+            Title = "New publisher";
+
             VisableAdd = true;
             VisableCancel = false;
-
-            EnableEditData = true;
-
             VisableEdit = false;
             VisableDelete = false;
             VisableSave = false;
+
+            EnableEditData = true;
         }
 
-        private void SetRead()
+        private async void SetRead()
         {
             Title = currentPublisherInfo.Name;
+            PublisherCountry = currentPublisherInfo.Country;
+            PublisherName = currentPublisherInfo.Name;
+
             VisableAdd = false;
             VisableCancel = false;
-
-            EnableEditData = false;
-
             VisableEdit = true;
             VisableDelete = true;
             VisableSave = false;
+
+            EnableGameList = true;
+            EnableEditData = false;
+
+            var allGames = await gameService.GetAllGames();
+
+            Games = allGames.Where(gamess => gamess.PublisherId == currentPublisherInfo.Id).ToList();
+
+            if (Games.Count() == 0)
+            {
+                EnableGameList = false;
+            }
         }
 
         private void SetEdit()
@@ -324,13 +365,13 @@ namespace Imi.Project.Mobile.ViewModels
 
             VisableAdd = false;
             VisableCancel = true;
-
-            EnableEditData = true;
-
             VisableEdit = false;
             VisableDelete = false;
             VisableSave = true;
-        }
 
+            EnableEditData = true;
+
+            PublisherDeleteError = null;
+        }
     }
 }

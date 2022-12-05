@@ -8,7 +8,7 @@
              Style="{StaticResource PageStyle}"
              mc:Ignorable="d"
              Title="{Binding Title}">
-    
+
     <ContentPage.Content>
         <ScrollView>
             <Grid>
@@ -18,24 +18,40 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <StackLayout Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <StackLayout Grid.Column="0" Grid.Row="0">
                             <Label Text="Name"/>
                             <Entry x:Name="txtName" Keyboard="Text" Text="{Binding PublisherName}" IsEnabled="{Binding EnableEditData}"/>
                             <Label x:Name="lblNameError" Text="{Binding PublisherNameError}" Style="{StaticResource ErrorLabel}"/>
                         </StackLayout>
-                        <StackLayout Grid.Column="1">
+                        <StackLayout Grid.Column="1" Grid.Row="0">
                             <Label Text="Country"/>
                             <Entry x:Name="txtCountry" Text="{Binding PublisherCountry}" Keyboard="Text" IsEnabled="{Binding EnableEditData}"/>
                             <Label x:Name="lblCountryError" Text="{Binding PublisherCountryError}" Style="{StaticResource ErrorLabel}"/>
                         </StackLayout>
+                        <StackLayout Grid.Row="1" Grid.ColumnSpan="2" IsVisible="{Binding EnableGameList}">
+                            <Label Text="All Games from company:"/>
+                            <ListView ItemsSource="{Binding Games}" HeightRequest="-1" RowHeight="20" VerticalOptions="Start">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextCell Text="{Binding Name}"/>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                            <Label x:Name="lblDeleteError" Text="{Binding PublisherDeleteError}" Style="{StaticResource ErrorLabel}"/>
+                        </StackLayout>
+                        <FlexLayout Style="{StaticResource ButtonAlign}" Grid.Row="2" Grid.ColumnSpan="2">
+                            <Button x:Name="btnAdd" Text="Add" HorizontalOptions="Center" Command="{Binding AddPublisherInfoCommand}" IsVisible="{Binding VisableAdd}" Style="{StaticResource Add}"/>
+                            <Button x:Name="btnEdit" Text="Edit" HorizontalOptions="Center" Command="{Binding EditCommand}" IsVisible="{Binding VisableEdit}" Style="{StaticResource Edit}"/>
+                            <Button x:Name="btnSave" Text="Save" HorizontalOptions="Center" Command="{Binding SavePublisherInfoCommand}" IsVisible="{Binding VisableSave}" Style="{StaticResource Save}"/>
+                            <Button x:Name="btnCancel" Text="Cancel" HorizontalOptions="Center" Command="{Binding CancelCommand}" IsVisible="{Binding VisableCancel}" Style="{StaticResource Cancel}"/>
+                            <Button x:Name="btnDelete" Text="Delete" HorizontalOptions="Center" Command="{Binding DeleteCommand}" IsVisible="{Binding VisableDelete}" Style="{StaticResource Delete}"/>
+                        </FlexLayout>
                     </Grid>
-                    <FlexLayout Style="{StaticResource ButtonAlign}">
-                        <Button x:Name="btnAdd" Text="Add" HorizontalOptions="Center" Command="{Binding AddPublisherInfoCommand}" IsVisible="{Binding VisableAdd}" Style="{StaticResource Add}"/>
-                        <Button x:Name="btnEdit" Text="Edit" HorizontalOptions="Center" Command="{Binding EditCommand}" IsVisible="{Binding VisableEdit}" Style="{StaticResource Edit}"/>
-                        <Button x:Name="btnSave" Text="Save" HorizontalOptions="Center" Command="{Binding SavePublisherInfoCommand}" IsVisible="{Binding VisableSave}" Style="{StaticResource Save}"/>
-                        <Button x:Name="btnCancel" Text="Cancel" HorizontalOptions="Center" Command="{Binding CancelCommand}" IsVisible="{Binding VisableCancel}" Style="{StaticResource Cancel}"/>
-                        <Button x:Name="btnDelete" Text="Delete" HorizontalOptions="Center" Command="{Binding DeleteCommand}" IsVisible="{Binding VisableDelete}" Style="{StaticResource Delete}"/>
-                    </FlexLayout>
                 </StackLayout>
             </Grid>
         </ScrollView>

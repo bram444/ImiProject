@@ -4,6 +4,7 @@ using Imi.Project.Mobile.Domain.Services;
 using Imi.Project.Mobile.Pages;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -77,8 +78,8 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        private IEnumerable<UserInfo> userInfo;
-        public IEnumerable<UserInfo> UserInfo
+        private ObservableCollection<UserInfo> userInfo;
+        public ObservableCollection<UserInfo> UserInfo
         {
             get { return userInfo; }
             set
@@ -132,7 +133,7 @@ namespace Imi.Project.Mobile.ViewModels
 
             Title = "Loading";
 
-            UserInfo = await userService.GetAllUser();
+            UserInfo = new ObservableCollection<UserInfo>( await userService.GetAllUser());
 
             VisableAdd = true;
 

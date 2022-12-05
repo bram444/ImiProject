@@ -8,13 +8,13 @@
 
     <ContentPage.Content>
         <StackLayout>
-            <Button x:Name="btnAdd" Text="Add" Command="{Binding AddPublisherItem}"  Style="{StaticResource Add}" IsVisible="{Binding VisableAdd}"/>
+            <Button x:Name="btnAdd" Text="Add" Command="{Binding AddPublisherItem}" Style="{StaticResource Add}" IsVisible="{Binding VisableAdd}"/>
             <ListView ItemsSource="{Binding PublisherInfo}" HeightRequest="-1" RowHeight="100">
                 <ListView.Behaviors>
                     <bhv:EventToCommandBehavior
                         EventName="ItemTapped"
                         Command="{Binding AddPublisherItem}"
-                        EventArgsConverter="{StaticResource ItemTappedEventArgsConv}" />
+                        EventArgsConverter="{StaticResource ItemTappedEventArgsConv}"/>
                 </ListView.Behaviors>
                 <ListView.ItemTemplate>
                     <DataTemplate>

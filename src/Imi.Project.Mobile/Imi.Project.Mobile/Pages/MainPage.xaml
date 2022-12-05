@@ -13,11 +13,9 @@
         <Button x:Name="btnGenre" Text="Genre" Command="{Binding OpenGenre}" Style="{StaticResource HomeButtons}"/>
         <Button x:Name="btnPublisher" Text="Publisher" Command="{Binding OpenPublisher}" Style="{StaticResource HomeButtons}"/>
         <Button x:Name="btnUser" Text="User" Command="{Binding OpenUser}" Style="{StaticResource HomeButtons}"/>
-
         <StackLayout >
             <Label HorizontalOptions="Center" Text="{Binding AppName}"/>
-            <Label HorizontalOptions="Center" Text="{Binding AppVersion}" />
+            <Label HorizontalOptions="Center" Text="{Binding AppVersion}"/>
         </StackLayout>
     </FlexLayout>
-
 </ContentPage>

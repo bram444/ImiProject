@@ -25,14 +25,14 @@
                     </StackLayout>
                     <StackLayout Grid.Column="1" Grid.Row="0">
                         <Label Text="Description"/>
-                        <Entry x:Name="txtDescription" Keyboard="Text" Text="{Binding GenreDescription}"  IsEnabled="{Binding EnableEditData}"/>
+                        <Entry x:Name="txtDescription" Keyboard="Text" Text="{Binding GenreDescription}" IsEnabled="{Binding EnableEditData}"/>
                     </StackLayout>
-                    <StackLayout Grid.Row="1" Grid.ColumnSpan="2">
+                    <StackLayout Grid.Row="1" Grid.ColumnSpan="2" IsVisible="{Binding EnableGameList}">
                         <Label Text="All Games with this genre:"/>
                         <ListView ItemsSource="{Binding Games}" HeightRequest="-1" RowHeight="20" VerticalOptions="Start">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
-                                    <TextCell Text="{Binding Name}" />
+                                    <TextCell Text="{Binding Name}"/>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>

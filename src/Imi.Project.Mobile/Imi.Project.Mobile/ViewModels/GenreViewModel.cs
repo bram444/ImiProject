@@ -4,6 +4,7 @@ using Imi.Project.Mobile.Domain.Services;
 using Imi.Project.Mobile.Pages;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -17,6 +18,13 @@ namespace Imi.Project.Mobile.ViewModels
 
         private GenreInfo currentGenreInfo;
 
+        public GenreViewModel(IGenreService genreService)
+        {
+            this.genreService = genreService;
+        }
+
+        #region Properties
+
         private string title;
         public string Title
         {
@@ -28,8 +36,8 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        private IEnumerable<GenreInfo> genreInfo;
-        public IEnumerable<GenreInfo> GenreInfo
+        private ObservableCollection<GenreInfo> genreInfo;
+        public ObservableCollection<GenreInfo> GenreInfo
         {
             get { return genreInfo; }
             set
@@ -40,7 +48,6 @@ namespace Imi.Project.Mobile.ViewModels
         }
 
         private string genreName;
-
         public string GenreName
         {
             get { return genreName; }
@@ -74,10 +81,7 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        public GenreViewModel(IGenreService genreService)
-        {
-            this.genreService = genreService;
-        }
+#endregion
 
         public async override void Init(object initData)
         {
@@ -104,35 +108,22 @@ namespace Imi.Project.Mobile.ViewModels
             GenreInfo = null;
 
             VisableAdd = false;
-            
+
             Title = "Loading";
 
-            GenreInfo = await genreService.GetAllGenre();
-            
+            GenreInfo = new ObservableCollection<GenreInfo>(await genreService.GetAllGenre());
+
             VisableAdd = true;
 
-                Title = "Genres";
+            Title = "Genres";
 
             currentGenreInfo = new GenreInfo
             {
                 Id = Guid.NewGuid()
             };
 
-            //if (currentGenreInfo != null && currentGenreInfo.Id != Guid.Empty)
-            //{
-            //    currentGenreInfo = await genreService.GenreById(currentGenreInfo.Id);
-            //}
-            //else
-            //{
-            //    currentGenreInfo = new GenreInfo
-            //    {
-            //        Id = Guid.NewGuid()
-            //    };
-            //}
-
             LoadGenreState();
         }
-
 
         public ICommand AddGenreItem => new Command<GenreInfo>(
                 async (GenreInfo genreInfo) =>
@@ -146,6 +137,7 @@ namespace Imi.Project.Mobile.ViewModels
             GenreName = currentGenreInfo.Name;
             GenreDescription = currentGenreInfo.Description;
         }
+
         private void SaveGenreState()
         {
             currentGenreInfo.Description = GenreDescription;

@@ -4,6 +4,7 @@ using Imi.Project.Mobile.Domain.Services;
 using Imi.Project.Mobile.Pages;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -13,9 +14,15 @@ namespace Imi.Project.Mobile.ViewModels
 {
     public class PublisherViewModel : FreshBasePageModel
     {
+        private PublisherInfo currentPublisherInfo;
         private readonly IPublisherService publisherService;
 
-        private PublisherInfo currentPublisherInfo;
+        public PublisherViewModel(IPublisherService publisherService)
+        {
+            this.publisherService = publisherService;
+        }
+
+        #region Properties
 
         private string title;
         public string Title
@@ -28,8 +35,8 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        private IEnumerable<PublisherInfo> publisherInfo;
-        public IEnumerable<PublisherInfo> PublisherInfo
+        private ObservableCollection<PublisherInfo> publisherInfo;
+        public ObservableCollection<PublisherInfo> PublisherInfo
         {
             get { return publisherInfo; }
             set
@@ -40,7 +47,6 @@ namespace Imi.Project.Mobile.ViewModels
         }
 
         private string publisherName;
-
         public string PublisherName
         {
             get { return publisherName; }
@@ -52,7 +58,6 @@ namespace Imi.Project.Mobile.ViewModels
         }
 
         private string publisherCountry;
-
         public string PublisherCountry
         {
             get { return publisherCountry; }
@@ -73,10 +78,8 @@ namespace Imi.Project.Mobile.ViewModels
                 RaisePropertyChanged(nameof(VisableAdd));
             }
         }
-        public PublisherViewModel(IPublisherService publisherService)
-        {
-            this.publisherService = publisherService;
-        }
+
+        #endregion
 
         public async override void Init(object initData)
         {
@@ -95,6 +98,7 @@ namespace Imi.Project.Mobile.ViewModels
             {
                 currentPublisherInfo = initData as PublisherInfo;
             }
+
             await RefreshPublisher();
         }
 
@@ -105,34 +109,25 @@ namespace Imi.Project.Mobile.ViewModels
             VisableAdd = false;
             Title = "Loading";
 
-            PublisherInfo = await publisherService.GetAllPublisher();
+            PublisherInfo = new ObservableCollection<PublisherInfo>(await publisherService.GetAllPublisher());
+
             VisableAdd = true;
-                Title = "Publishers";
+            Title = "Publishers";
 
             currentPublisherInfo = new PublisherInfo
             {
                 Id = Guid.NewGuid()
             };
-            //if (currentPublisherInfo != null&&currentPublisherInfo.Id != Guid.Empty)
-            //{
-            //    currentPublisherInfo = await publisherService.PublisherById(currentPublisherInfo.Id);
-            //}
-            //else
-            //{
-            //    currentPublisherInfo = new PublisherInfo
-            //    {
-            //        Id = Guid.NewGuid()
-            //    };
-            //}
+
             LoadPublisherState();
         }
 
         public ICommand AddPublisherItem => new Command<PublisherInfo>(
-                async (PublisherInfo publisher) =>
-                {
-                    SavePublisherState();
-                    await CoreMethods.PushPageModel<PublisherInfoViewModel>(publisher);
-                });
+            async (PublisherInfo publisher) =>
+            {
+                SavePublisherState();
+                await CoreMethods.PushPageModel<PublisherInfoViewModel>(publisher);
+            });
 
         private void LoadPublisherState()
         {
@@ -144,6 +139,5 @@ namespace Imi.Project.Mobile.ViewModels
             currentPublisherInfo.Name = PublisherName;
             currentPublisherInfo.Country = PublisherCountry;
         }
-
     }
 }

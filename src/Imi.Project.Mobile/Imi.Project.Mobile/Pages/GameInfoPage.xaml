@@ -18,10 +18,11 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <StackLayout Grid.Column="0">
                         <Label Text="Name"/>
@@ -49,14 +50,14 @@
                         <Picker ItemsSource="{Binding Publishers}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding ChosenPublisher}" IsEnabled="{Binding EnablePublisher}"/>
                         <Label x:Name="lblPublisherError" Text="{Binding PublisherError}" Style="{StaticResource ErrorLabel}"/>
                     </StackLayout>
+                    <FlexLayout Style="{StaticResource ButtonAlign}" Grid.Row="4" Grid.ColumnSpan="2">
+                        <Button x:Name="btnAdd" Text="Add" HorizontalOptions="Center" Command="{Binding AddGameInfoCommand}" IsVisible="{Binding VisableAdd}" Style="{StaticResource Add}"/>
+                        <Button x:Name="btnEdit" Text="Edit" HorizontalOptions="Center" Command="{Binding EditCommand}" IsVisible="{Binding VisableEdit}" Style="{StaticResource Edit}"/>
+                        <Button x:Name="btnSave" Text="Save" HorizontalOptions="Center" Command="{Binding SaveGameInfoCommand}" IsVisible="{Binding VisableSave}" Style="{StaticResource Save}"/>
+                        <Button x:Name="btnCancel" Text="Cancel" HorizontalOptions="Center" Command="{Binding CancelCommand}" IsVisible="{Binding VisableCancel}" Style="{StaticResource Cancel}"/>
+                        <Button x:Name="btnDelete" Text="Delete" HorizontalOptions="Center" Command="{Binding DeleteCommand}" IsVisible="{Binding VisableDelete}" Style="{StaticResource Delete}"/>
+                    </FlexLayout>
                 </Grid>
-                <FlexLayout Style="{StaticResource ButtonAlign}">
-                    <Button x:Name="btnAdd" Text="Add" HorizontalOptions="Center" Command="{Binding AddGameInfoCommand}" IsVisible="{Binding VisableAdd}" Style="{StaticResource Add}"/>
-                    <Button x:Name="btnEdit" Text="Edit" HorizontalOptions="Center" Command="{Binding EditCommand}" IsVisible="{Binding VisableEdit}" Style="{StaticResource Edit}"/>
-                    <Button x:Name="btnSave" Text="Save" HorizontalOptions="Center" Command="{Binding SaveGameInfoCommand}" IsVisible="{Binding VisableSave}" Style="{StaticResource Save}"/>
-                    <Button x:Name="btnCancel" Text="Cancel" HorizontalOptions="Center" Command="{Binding CancelCommand}" IsVisible="{Binding VisableCancel}" Style="{StaticResource Cancel}"/>
-                    <Button x:Name="btnDelete" Text="Delete" HorizontalOptions="Center" Command="{Binding DeleteCommand}" IsVisible="{Binding VisableDelete}" Style="{StaticResource Delete}"/>
-                </FlexLayout>
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>

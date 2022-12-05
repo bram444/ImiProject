@@ -38,8 +38,8 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        private IEnumerable<GamesInfo> gamesInfo;
-        public IEnumerable<GamesInfo> GamesInfo
+        private ObservableCollection<GamesInfo> gamesInfo;
+        public ObservableCollection<GamesInfo> GamesInfo
         {
             get { return gamesInfo; }
             set
@@ -115,7 +115,7 @@ namespace Imi.Project.Mobile.ViewModels
 
             GamesInfo = null;
 
-            GamesInfo = await gameService.GetAllGames();
+            GamesInfo = new ObservableCollection<GamesInfo>( await gameService.GetAllGames());
 
             VisableAdd = true;
 

@@ -14,7 +14,7 @@
                     <bhv:EventToCommandBehavior
                         EventName="ItemTapped"
                         Command="{Binding AddGameItem}"
-                        EventArgsConverter="{StaticResource ItemTappedEventArgsConv}" />
+                        EventArgsConverter="{StaticResource ItemTappedEventArgsConv}"/>
                 </ListView.Behaviors>
                 <ListView.ItemTemplate>
                     <DataTemplate>

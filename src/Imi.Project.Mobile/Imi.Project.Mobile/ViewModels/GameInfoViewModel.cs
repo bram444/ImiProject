@@ -28,9 +28,7 @@ namespace Imi.Project.Mobile.ViewModels
         public GameInfoViewModel(IGameService gameService, IGenreService genreService, IPublisherService publisherService)
         {
             this.gameService = gameService;
-
             this.genreService = genreService;
-
             this.publisherService = publisherService;
 
             gameInfoValidator = new GameInfoValidator();
@@ -50,7 +48,6 @@ namespace Imi.Project.Mobile.ViewModels
         }
 
         private string gameName;
-
         public string GameName
         {
             get { return gameName; }
@@ -63,20 +60,18 @@ namespace Imi.Project.Mobile.ViewModels
         }
 
         private string gamePrice;
-
         public string GamePrice
         {
             get { return gamePrice; }
             set
             {
-                this.gamePrice = value;
+                gamePrice = value;
                 GamePriceError = null;
                 RaisePropertyChanged(nameof(GamePrice));
             }
         }
 
         private string gameError;
-
         public string GameError
         {
             get { return gameError; }
@@ -94,7 +89,6 @@ namespace Imi.Project.Mobile.ViewModels
         }
 
         private string publisherError;
-
         public string PublisherError
         {
             get { return publisherError; }
@@ -112,7 +106,6 @@ namespace Imi.Project.Mobile.ViewModels
         }
 
         private string gamePriceError;
-
         public string GamePriceError
         {
             get { return gamePriceError; }
@@ -185,7 +178,6 @@ namespace Imi.Project.Mobile.ViewModels
         }
 
         private bool enableFirstGenre;
-
         public bool EnableFirstGenre
         {
             get { return enableFirstGenre; }
@@ -197,7 +189,6 @@ namespace Imi.Project.Mobile.ViewModels
         }
 
         private bool enableSecondGenre;
-
         public bool EnableSecondGenre
         {
             get { return enableSecondGenre; }
@@ -209,7 +200,6 @@ namespace Imi.Project.Mobile.ViewModels
         }
 
         private bool enableThirdGenre;
-
         public bool EnableThirdGenre
         {
             get { return enableThirdGenre; }
@@ -232,7 +222,6 @@ namespace Imi.Project.Mobile.ViewModels
         }
 
         private bool enablePublisher;
-
         public bool EnablePublisher
         {
             get { return enablePublisher; }
@@ -244,7 +233,6 @@ namespace Imi.Project.Mobile.ViewModels
         }
 
         private Guid publisherId;
-
         public Guid PublisherId
         {
             get { return publisherId; }
@@ -256,7 +244,6 @@ namespace Imi.Project.Mobile.ViewModels
         }
 
         private ICollection<Guid> genreId;
-
         public ICollection<Guid> GenreId
         {
             get { return genreId; }
@@ -268,7 +255,6 @@ namespace Imi.Project.Mobile.ViewModels
         }
 
         private ICollection<PublisherInfo> publishers;
-
         public ICollection<PublisherInfo> Publishers
         {
             get { return publishers; }
@@ -280,7 +266,6 @@ namespace Imi.Project.Mobile.ViewModels
         }
 
         private IEnumerable<GenreInfo> genres;
-
         public IEnumerable<GenreInfo> Genres
         {
             get { return genres; }
@@ -292,7 +277,6 @@ namespace Imi.Project.Mobile.ViewModels
         }
 
         private GenreInfo firstGenre;
-
         public GenreInfo FirstGenre
         {
             get { return firstGenre; }
@@ -304,7 +288,6 @@ namespace Imi.Project.Mobile.ViewModels
         }
 
         private GenreInfo secondGenre;
-
         public GenreInfo SecondGenre
         {
             get { return secondGenre; }
@@ -316,7 +299,6 @@ namespace Imi.Project.Mobile.ViewModels
         }
 
         private GenreInfo thirdGenre;
-
         public GenreInfo ThirdGenre
         {
             get { return thirdGenre; }
@@ -328,7 +310,6 @@ namespace Imi.Project.Mobile.ViewModels
         }
 
         private PublisherInfo chosenPublisher;
-
         public PublisherInfo ChosenPublisher
         {
             get { return chosenPublisher; }
