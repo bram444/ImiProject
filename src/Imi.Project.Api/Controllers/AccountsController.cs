@@ -34,7 +34,7 @@ namespace Imi.Project.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            ApplicationUser newUser = new()
+            ApplicationUser? newUser = new()
             {
                 Email = registration.Email,
                 UserName = registration.UserName,
@@ -55,8 +55,8 @@ namespace Imi.Project.Api.Controllers
             }
 
             newUser = await _userManager.FindByEmailAsync(registration.Email);
-            await _userManager.AddClaimAsync(newUser, new Claim("registration-date", DateTime.UtcNow.ToString("yy-MM-dd")));
-            await _userManager.AddClaimAsync(newUser, new Claim("username", registration.UserName));
+            await _userManager.AddClaimAsync(newUser!, new Claim("registration-date", DateTime.UtcNow.ToString("yy-MM-dd")));
+            await _userManager.AddClaimAsync(newUser!, new Claim("username", registration.UserName));
 
             return Ok();
         }
@@ -66,7 +66,7 @@ namespace Imi.Project.Api.Controllers
         public async Task<ActionResult> Login([FromBody] LoginUserRequestDto login)
         {
             var applicationUser = await _userManager.FindByNameAsync(login.UserName);
-            JwtSecurityToken token = await GenerateTokenAsync(applicationUser);
+            JwtSecurityToken token = await GenerateTokenAsync(applicationUser!);
             string serializedToken = new JwtSecurityTokenHandler().WriteToken(token); //serialize the token 
             return Ok(new LoginUserResponseDto()
             {
