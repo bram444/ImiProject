@@ -1,22 +1,20 @@
-﻿using System;
+﻿using Imi.Project.Mobile.Domain.Model;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Imi.Project.Mobile.Domain.Models;
 
 namespace Imi.Project.Mobile.Domain.Services
 {
-    public class PublisherInfoService:IPublisherService
+    public class PublisherInfoService: IPublisherService
     {
-        string baseUrl = Constants.baseUrl;
-
+        private readonly string baseUrl = Constants.baseUrl;
         private readonly CustomHttpClient _httpClient = new CustomHttpClient();
 
         public PublisherInfoService(CustomHttpClient customHttpClient)
         {
             _httpClient = customHttpClient;
         }
+
         public async Task<IEnumerable<PublisherInfo>> GetAllPublisher()
         {
             return await _httpClient.GetApiResult<List<PublisherInfo>>($"{baseUrl}/api/Publisher/");
@@ -35,7 +33,6 @@ namespace Imi.Project.Mobile.Domain.Services
         public async Task<PublisherInfo> DeletePublisher(Guid id)
         {
             return await _httpClient.DeleteCallApi<PublisherInfo>($"{baseUrl}/api/Publisher/{id}");
-
         }
 
         public async Task<PublisherInfo> AddPublisher(PublisherInfo publisher)

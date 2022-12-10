@@ -1,10 +1,7 @@
-﻿using Imi.Project.Api.Core.Dto.GameGenre;
-using Imi.Project.Api.Core.Dto.UserGame;
-using Imi.Project.Api.Core.Entities;
+﻿using Imi.Project.Api.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Interfaces.Repository
@@ -15,7 +12,6 @@ namespace Imi.Project.Api.Core.Interfaces.Repository
         Task<IEnumerable<UserGame>> ListAllAsync();
         Task<IEnumerable<UserGame>> GetByGameIdAsync(Guid id);
         Task<IEnumerable<UserGame>> GetByUserIdAsync(Guid id);
-
         Task<UserGame> AddAsync(UserGame entity);
         Task<UserGame> DeleteAsync(UserGame entity);
     }

@@ -1,23 +1,19 @@
 ﻿using FluentValidation;
 using FreshMvvm;
-using Imi.Project.Mobile.Domain.Models;
+using Imi.Project.Mobile.Domain.Model;
 using Imi.Project.Mobile.Domain.Services;
 using Imi.Project.Mobile.Domain.Validators;
-using Imi.Project.Mobile.Pages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Xml.Linq;
 using Xamarin.Essentials;
 using Xamarin.Forms;
-using Xamarin.Forms.PlatformConfiguration;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class GameInfoViewModel : FreshBasePageModel
+    public class GameInfoViewModel: FreshBasePageModel
     {
         private GamesInfo currentGameInfo;
         private readonly IValidator gameInfoValidator;
@@ -39,7 +35,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string title;
         public string Title
         {
-            get { return title; }
+            get => title;
             set
             {
                 title = value;
@@ -50,7 +46,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string gameName;
         public string GameName
         {
-            get { return gameName; }
+            get => gameName;
             set
             {
                 gameName = value;
@@ -62,7 +58,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string gamePrice;
         public string GamePrice
         {
-            get { return gamePrice; }
+            get => gamePrice;
             set
             {
                 gamePrice = value;
@@ -74,7 +70,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string gameError;
         public string GameError
         {
-            get { return gameError; }
+            get => gameError;
             set
             {
                 gameError = value;
@@ -83,15 +79,12 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        public bool GameErrorVisible
-        {
-            get { return !string.IsNullOrWhiteSpace(GameError); }
-        }
+        public bool GameErrorVisible => !string.IsNullOrWhiteSpace(GameError);
 
         private string publisherError;
         public string PublisherError
         {
-            get { return publisherError; }
+            get => publisherError;
             set
             {
                 publisherError = value;
@@ -100,15 +93,12 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        public bool PublisherErrorVisible
-        {
-            get { return !string.IsNullOrWhiteSpace(PublisherError); }
-        }
+        public bool PublisherErrorVisible => !string.IsNullOrWhiteSpace(PublisherError);
 
         private string gamePriceError;
         public string GamePriceError
         {
-            get { return gamePriceError; }
+            get => gamePriceError;
             set
             {
                 gamePriceError = value;
@@ -117,15 +107,12 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        public bool GamePriceErrorVisible
-        {
-            get { return !string.IsNullOrWhiteSpace(GamePriceError); }
-        }
+        public bool GamePriceErrorVisible => !string.IsNullOrWhiteSpace(GamePriceError);
 
         private bool visableAdd;
         public bool VisableAdd
         {
-            get { return visableAdd; }
+            get => visableAdd;
             set
             {
                 visableAdd = value;
@@ -136,7 +123,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visableCancel;
         public bool VisableCancel
         {
-            get { return visableCancel; }
+            get => visableCancel;
             set
             {
                 visableCancel = value;
@@ -147,7 +134,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visableEdit;
         public bool VisableEdit
         {
-            get { return visableEdit; }
+            get => visableEdit;
             set
             {
                 visableEdit = value;
@@ -158,7 +145,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visableDelete;
         public bool VisableDelete
         {
-            get { return visableDelete; }
+            get => visableDelete;
             set
             {
                 visableDelete = value;
@@ -169,7 +156,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visableSave;
         public bool VisableSave
         {
-            get { return visableSave; }
+            get => visableSave;
             set
             {
                 visableSave = value;
@@ -180,7 +167,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool enableFirstGenre;
         public bool EnableFirstGenre
         {
-            get { return enableFirstGenre; }
+            get => enableFirstGenre;
             set
             {
                 enableFirstGenre = value;
@@ -191,7 +178,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool enableSecondGenre;
         public bool EnableSecondGenre
         {
-            get { return enableSecondGenre; }
+            get => enableSecondGenre;
             set
             {
                 enableSecondGenre = value;
@@ -202,7 +189,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool enableThirdGenre;
         public bool EnableThirdGenre
         {
-            get { return enableThirdGenre; }
+            get => enableThirdGenre;
             set
             {
                 enableThirdGenre = value;
@@ -213,7 +200,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool enableEditData;
         public bool EnableEditData
         {
-            get { return enableEditData; }
+            get => enableEditData;
             set
             {
                 enableEditData = value;
@@ -224,7 +211,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool enablePublisher;
         public bool EnablePublisher
         {
-            get { return enablePublisher; }
+            get => enablePublisher;
             set
             {
                 enablePublisher = value;
@@ -235,7 +222,7 @@ namespace Imi.Project.Mobile.ViewModels
         private Guid publisherId;
         public Guid PublisherId
         {
-            get { return publisherId; }
+            get => publisherId;
             set
             {
                 publisherId = value;
@@ -246,7 +233,7 @@ namespace Imi.Project.Mobile.ViewModels
         private ICollection<Guid> genreId;
         public ICollection<Guid> GenreId
         {
-            get { return genreId; }
+            get => genreId;
             set
             {
                 genreId = value;
@@ -257,7 +244,7 @@ namespace Imi.Project.Mobile.ViewModels
         private ICollection<PublisherInfo> publishers;
         public ICollection<PublisherInfo> Publishers
         {
-            get { return publishers; }
+            get => publishers;
             set
             {
                 publishers = value;
@@ -268,7 +255,7 @@ namespace Imi.Project.Mobile.ViewModels
         private IEnumerable<GenreInfo> genres;
         public IEnumerable<GenreInfo> Genres
         {
-            get { return genres; }
+            get => genres;
             set
             {
                 genres = value;
@@ -279,7 +266,7 @@ namespace Imi.Project.Mobile.ViewModels
         private GenreInfo firstGenre;
         public GenreInfo FirstGenre
         {
-            get { return firstGenre; }
+            get => firstGenre;
             set
             {
                 firstGenre = value;
@@ -290,7 +277,7 @@ namespace Imi.Project.Mobile.ViewModels
         private GenreInfo secondGenre;
         public GenreInfo SecondGenre
         {
-            get { return secondGenre; }
+            get => secondGenre;
             set
             {
                 secondGenre = value;
@@ -301,7 +288,7 @@ namespace Imi.Project.Mobile.ViewModels
         private GenreInfo thirdGenre;
         public GenreInfo ThirdGenre
         {
-            get { return thirdGenre; }
+            get => thirdGenre;
             set
             {
                 thirdGenre = value;
@@ -312,7 +299,7 @@ namespace Imi.Project.Mobile.ViewModels
         private PublisherInfo chosenPublisher;
         public PublisherInfo ChosenPublisher
         {
-            get { return chosenPublisher; }
+            get => chosenPublisher;
             set
             {
                 chosenPublisher = value;
@@ -323,16 +310,15 @@ namespace Imi.Project.Mobile.ViewModels
 
         #endregion 
 
-        public async override void Init(object initData)
+        public override async void Init(object initData)
         {
-            if (initData != null)
+            if(initData != null)
             {
                 currentGameInfo = initData as GamesInfo;
 
                 await LoadGameStateAsync();
                 SetRead();
-            }
-            else
+            } else
             {
                 SetAdd();
             }
@@ -354,7 +340,7 @@ namespace Imi.Project.Mobile.ViewModels
 
                 List<Guid> gameGenreId = new List<Guid>();
 
-                foreach (var genre in allGenreId.Distinct())
+                foreach(GenreInfo genre in allGenreId.Distinct())
                 {
                     gameGenreId.Add(genre.Id);
                 }
@@ -368,12 +354,12 @@ namespace Imi.Project.Mobile.ViewModels
                     Price = 0
                 };
 
-                if (GamePrice != null && float.TryParse(GamePrice, out float isfloat))
+                if(GamePrice != null && float.TryParse(GamePrice, out float isfloat))
                 {
                     gameValidate.Price = float.Parse(GamePrice);
                 }
 
-                if (Validate(gameValidate))
+                if(Validate(gameValidate))
                 {
                     await gameService.UpdateGame(gameValidate);
                     await CoreMethods.PopPageModel(gameValidate, false, true);
@@ -383,7 +369,7 @@ namespace Imi.Project.Mobile.ViewModels
         public ICommand AddGameInfoCommand => new Command(
             async () =>
             {
-                if (GameName == null)
+                if(GameName == null)
                 {
                     GameName = "";
                 }
@@ -399,7 +385,7 @@ namespace Imi.Project.Mobile.ViewModels
 
                 List<Guid> gameGenreId = new List<Guid>();
 
-                foreach (var genre in allGenreId.Distinct())
+                foreach(GenreInfo genre in allGenreId.Distinct())
                 {
                     gameGenreId.Add(genre.Id);
                 }
@@ -413,12 +399,12 @@ namespace Imi.Project.Mobile.ViewModels
                     PublisherId = ChosenPublisher.Id
                 };
 
-                if (GamePrice != null && float.TryParse(GamePrice, out float isfloat))
+                if(GamePrice != null && float.TryParse(GamePrice, out float isfloat))
                 {
                     gameEdit.Price = float.Parse(GamePrice);
                 }
 
-                if (Validate(gameEdit))
+                if(Validate(gameEdit))
                 {
                     await gameService.AddGames(gameEdit);
                     await CoreMethods.PopPageModel(gameEdit, false, true);
@@ -438,7 +424,7 @@ namespace Imi.Project.Mobile.ViewModels
 
         public ICommand DeleteCommand => new Command(async () =>
         {
-            if (DeviceInfo.Platform == DevicePlatform.Android)
+            if(DeviceInfo.Platform == DevicePlatform.Android)
             {
                 Vibration.Vibrate(TimeSpan.FromSeconds(0.5));
             }
@@ -456,7 +442,7 @@ namespace Imi.Project.Mobile.ViewModels
                 Guid.Empty
             };
 
-            if (currentGameInfo != null)
+            if(currentGameInfo != null)
             {
                 GameName = currentGameInfo.Name;
                 GamePrice = currentGameInfo.Price.ToString();
@@ -469,7 +455,7 @@ namespace Imi.Project.Mobile.ViewModels
                     Name="Select a publisher"
                 }};
 
-                foreach (PublisherInfo publisher in await publisherService.GetAllPublisher())
+                foreach(PublisherInfo publisher in await publisherService.GetAllPublisher())
                 {
                     selectPublisher.Add(publisher);
                 }
@@ -478,7 +464,7 @@ namespace Imi.Project.Mobile.ViewModels
 
                 ChosenPublisher = Publishers.FirstOrDefault();
 
-                if (publisherId != null || !Publishers.Any(publisher => publisher.Id == PublisherId))
+                if(publisherId != null || !Publishers.Any(publisher => publisher.Id == PublisherId))
                 {
                     ChosenPublisher = Publishers.Where(publisher => publisher.Id == publisherId).Single();
                 }
@@ -489,7 +475,7 @@ namespace Imi.Project.Mobile.ViewModels
                     Name = "Select a genre"
                 }};
 
-                foreach (GenreInfo genre in await genreService.GetAllGenre())
+                foreach(GenreInfo genre in await genreService.GetAllGenre())
                 {
                     selectGenre.Add(genre);
                 }
@@ -500,13 +486,13 @@ namespace Imi.Project.Mobile.ViewModels
                 SecondGenre = Genres.FirstOrDefault();
                 ThirdGenre = Genres.FirstOrDefault();
 
-                if (GenreId.Count > 0)
+                if(GenreId.Count > 0)
                 {
                     FirstGenre = Genres.Where(allGenres => allGenres.Id == GenreId.ElementAt(0)).Single();
-                    if (GenreId.Count > 1)
+                    if(GenreId.Count > 1)
                     {
                         SecondGenre = Genres.Where(allGenres => allGenres.Id == GenreId.ElementAt(1)).Single();
-                        if (GenreId.Count > 2)
+                        if(GenreId.Count > 2)
                         {
                             ThirdGenre = Genres.Where(allGenres => allGenres.Id == GenreId.ElementAt(2)).Single();
                         }
@@ -517,12 +503,12 @@ namespace Imi.Project.Mobile.ViewModels
 
         private bool Validate(GamesInfo gamesInfo)
         {
-            var validationContext = new ValidationContext<GamesInfo>(gamesInfo);
-            var validationResult = gameInfoValidator.Validate(validationContext);
+            ValidationContext<GamesInfo> validationContext = new ValidationContext<GamesInfo>(gamesInfo);
+            FluentValidation.Results.ValidationResult validationResult = gameInfoValidator.Validate(validationContext);
 
-            foreach (var error in validationResult.Errors)
+            foreach(FluentValidation.Results.ValidationFailure error in validationResult.Errors)
             {
-                switch (error.PropertyName)
+                switch(error.PropertyName)
                 {
                     case nameof(gamesInfo.Name):
                         GameError = error.ErrorMessage;
@@ -565,7 +551,7 @@ namespace Imi.Project.Mobile.ViewModels
                 Name = "Select a genre"
             }};
 
-            foreach (GenreInfo genre in await genreService.GetAllGenre())
+            foreach(GenreInfo genre in await genreService.GetAllGenre())
             {
                 selectGenres.Add(genre);
             }
@@ -582,7 +568,7 @@ namespace Imi.Project.Mobile.ViewModels
                 Name="Select a publisher"
             }};
 
-            foreach (PublisherInfo publisher in await publisherService.GetAllPublisher())
+            foreach(PublisherInfo publisher in await publisherService.GetAllPublisher())
             {
                 selectPublisher.Add(publisher);
             }
@@ -594,7 +580,7 @@ namespace Imi.Project.Mobile.ViewModels
 
         private void SetRead()
         {
-            if (currentGameInfo != null)
+            if(currentGameInfo != null)
             {
                 Title = currentGameInfo.Name;
             }

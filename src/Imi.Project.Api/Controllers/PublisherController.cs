@@ -1,25 +1,18 @@
-﻿using Imi.Project.Api.Core.Dto.Game;
-using Imi.Project.Api.Core.Dto.Publisher;
-using Imi.Project.Api.Core.Entities;
-using Imi.Project.Api.Core.Interfaces.Repository;
+﻿using Imi.Project.Api.Core.Dto.Publisher;
 using Imi.Project.Api.Core.Interfaces.Sevices;
-using Imi.Project.Api.Core.Services;
-using Imi.Project.Api.Infrastructure.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Imi.Project.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PublisherController : ControllerBase
+    public class PublisherController: ControllerBase
     {
         protected readonly IPublisherService _publisherService;
-        private readonly IGameService _gameService;
 
-        public PublisherController(IPublisherService publisherService, IGameService gameService)
+        public PublisherController(IPublisherService publisherService)
         {
             _publisherService = publisherService;
-            _gameService = gameService;
         }
 
         [HttpGet]
@@ -39,7 +32,6 @@ namespace Imi.Project.Api.Controllers
         {
             return Ok(await _publisherService.SearchByCountryAsync(search));
         }
-
 
         [HttpPost]
         public async Task<IActionResult> Post(PublisherResponseDto publisherResponseDto)

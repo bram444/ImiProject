@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Imi.Project.Api.Core.Entities
 {
-    public class Game : BaseEntity
+    public class Game: BaseEntity
     {
         [Required]
         public string Name { get; set; }
@@ -14,6 +14,5 @@ namespace Imi.Project.Api.Core.Entities
         public Guid PublisherId { get; set; }
 
         public Publisher Publisher { get; set; }
-
     }
 }

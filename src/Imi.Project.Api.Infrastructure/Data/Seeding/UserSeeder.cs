@@ -2,10 +2,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Infrastructure.Data.Seeding
 {
@@ -185,7 +181,7 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                     }
                 };
 
-            foreach (ApplicationUser user in applicationUsers)
+            foreach(ApplicationUser user in applicationUsers)
             {
                 user.PasswordHash = passwordHasher.HashPassword(user, AdminUserPassword);
             }

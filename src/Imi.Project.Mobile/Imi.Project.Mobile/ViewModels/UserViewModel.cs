@@ -1,21 +1,17 @@
 ﻿using FreshMvvm;
-using Imi.Project.Mobile.Domain.Models;
+using Imi.Project.Mobile.Domain.Model;
 using Imi.Project.Mobile.Domain.Services;
-using Imi.Project.Mobile.Pages;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class UserViewModel : FreshBasePageModel
+    public class UserViewModel: FreshBasePageModel
     {
         private readonly IUserService userService;
-
         private UserInfo currentUserInfo;
 
         public UserViewModel(IUserService userService)
@@ -28,7 +24,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string userName;
         public string UserName
         {
-            get { return userName; }
+            get => userName;
             set
             {
                 userName = value;
@@ -39,7 +35,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string firstName;
         public string FirstName
         {
-            get { return firstName; }
+            get => firstName;
             set
             {
                 firstName = value;
@@ -50,7 +46,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string lastName;
         public string LastName
         {
-            get { return lastName; }
+            get => lastName;
             set
             {
                 lastName = value;
@@ -61,7 +57,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string email;
         public string Email
         {
-            get { return email; }
+            get => email;
             set
             {
                 email = value;
@@ -72,7 +68,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string title;
         public string Title
         {
-            get { return title; }
+            get => title;
             set
             {
                 title = value;
@@ -83,7 +79,7 @@ namespace Imi.Project.Mobile.ViewModels
         private ObservableCollection<UserInfo> userInfo;
         public ObservableCollection<UserInfo> UserInfo
         {
-            get { return userInfo; }
+            get => userInfo;
             set
             {
                 userInfo = value;
@@ -94,7 +90,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visableAdd;
         public bool VisableAdd
         {
-            get { return visableAdd; }
+            get => visableAdd;
             set
             {
                 visableAdd = value;
@@ -104,7 +100,7 @@ namespace Imi.Project.Mobile.ViewModels
 
         #endregion
 
-        public async override void Init(object initData)
+        public override async void Init(object initData)
         {
             base.Init(initData);
 
@@ -113,14 +109,15 @@ namespace Imi.Project.Mobile.ViewModels
             await RefreshUser();
         }
 
-        public async override void ReverseInit(object initData)
+        public override async void ReverseInit(object initData)
         {
             base.ReverseInit(initData);
 
-            if (initData is UserInfo)
+            if(initData is UserInfo)
             {
                 currentUserInfo = initData as UserInfo;
             }
+
             await RefreshUser();
         }
 
@@ -156,7 +153,7 @@ namespace Imi.Project.Mobile.ViewModels
         private void LoadUserState()
         {
             Email = currentUserInfo.Email;
-            FirstName=currentUserInfo.FirstName;
+            FirstName = currentUserInfo.FirstName;
             LastName = currentUserInfo.LastName;
             UserName = currentUserInfo.UserName;
         }

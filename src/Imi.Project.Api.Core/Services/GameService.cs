@@ -1,7 +1,4 @@
-﻿using Imi.Project.Api.Core.Dto;
-using Imi.Project.Api.Core.Dto.Game;
-using Imi.Project.Api.Core.Dto.GameGenre;
-using Imi.Project.Api.Core.Dto.Genre;
+﻿using Imi.Project.Api.Core.Dto.Game;
 using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Repository;
 using Imi.Project.Api.Core.Interfaces.Sevices;
@@ -12,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Services
 {
-    public class GameService : IGameService
+    public class GameService: IGameService
     {
         private readonly IGameRepository _gameRepository;
         private readonly IPublisherRepository _publisherRepository;
@@ -43,8 +40,7 @@ namespace Imi.Project.Api.Core.Services
 
             List<Guid> genreIds = new();
 
-
-            foreach (GameGenre gameGenre in gameGenres)
+            foreach(GameGenre gameGenre in gameGenres)
             {
                 genreIds.Add(gameGenre.GenreId);
             }
@@ -69,7 +65,7 @@ namespace Imi.Project.Api.Core.Services
         {
             ServiceResult<GameResponseDto> serviceResponse = new();
 
-            if (await _publisherRepository.GetByIdAsync(response.PublisherId) == null)
+            if(await _publisherRepository.GetByIdAsync(response.PublisherId) == null)
             {
                 serviceResponse.HasErrors = true;
                 serviceResponse.ErrorMessages.Add("Game has an unexisting publisher");
@@ -79,20 +75,19 @@ namespace Imi.Project.Api.Core.Services
             try
             {
                 serviceResponse.Result = CreateDto(await _gameRepository.AddAsync(CreateEntity(response)), await GetGenreList(response.Id));
-            }
-            catch (Exception ex)
+            } catch(Exception ex)
             {
                 serviceResponse.HasErrors = true;
                 serviceResponse.ErrorMessages.Add(ex.Message);
             }
-            return serviceResponse;
 
+            return serviceResponse;
         }
 
         public async Task<IEnumerable<GameResponseDto>> GetByPublisherIdAsync(Guid id)
         {
             List<GameResponseDto> gameResponseDtos = new();
-            foreach (Game entity in await _gameRepository.GetByPublisherIdAsync(id))
+            foreach(Game entity in await _gameRepository.GetByPublisherIdAsync(id))
             {
                 gameResponseDtos.Add(CreateDto(entity, await GetGenreList(id)));
             }
@@ -103,7 +98,7 @@ namespace Imi.Project.Api.Core.Services
         public async Task<IEnumerable<GameResponseDto>> SearchAsync(string search)
         {
             List<GameResponseDto> gameResponseDtos = new();
-            foreach (Game entity in await _gameRepository.SearchAsync(search))
+            foreach(Game entity in await _gameRepository.SearchAsync(search))
             {
                 gameResponseDtos.Add(CreateDto(entity, await GetGenreList(entity.Id)));
             }
@@ -114,13 +109,13 @@ namespace Imi.Project.Api.Core.Services
         public IQueryable<GameResponseDto> GetAll()
         {
             List<GameResponseDto> gameResponseDtos = new();
-            foreach (Game entity in _gameRepository.GetAll())
+            foreach(Game entity in _gameRepository.GetAll())
             {
                 IEnumerable<GameGenre> gameGenresIEnum = _gameGenreRepository.GetByGameIdAsync(entity.Id).Result;
 
                 List<Guid> genreIds = new();
 
-                foreach (GameGenre gameGenre in gameGenresIEnum)
+                foreach(GameGenre gameGenre in gameGenresIEnum)
                 {
                     genreIds.Add(gameGenre.GenreId);
                 }
@@ -134,7 +129,7 @@ namespace Imi.Project.Api.Core.Services
         public async Task<IEnumerable<GameResponseDto>> ListAllAsync()
         {
             List<GameResponseDto> gameResponseDtos = new();
-            foreach (Game entity in await _gameRepository.ListAllAsync())
+            foreach(Game entity in await _gameRepository.ListAllAsync())
             {
                 gameResponseDtos.Add(CreateDto(entity, await GetGenreList(entity.Id)));
             }
@@ -151,14 +146,14 @@ namespace Imi.Project.Api.Core.Services
         {
             ServiceResult<GameResponseDto> serviceResponse = new();
 
-            if (await _gameRepository.GetByIdAsync(response.Id) == null)
+            if(await _gameRepository.GetByIdAsync(response.Id) == null)
             {
                 serviceResponse.HasErrors = true;
                 serviceResponse.ErrorMessages.Add("Game does not exist");
                 return serviceResponse;
             }
 
-            if (await _publisherRepository.GetByIdAsync(response.PublisherId) == null)
+            if(await _publisherRepository.GetByIdAsync(response.PublisherId) == null)
             {
                 serviceResponse.HasErrors = true;
                 serviceResponse.ErrorMessages.Add("Game has an unexisting publisher");
@@ -168,21 +163,20 @@ namespace Imi.Project.Api.Core.Services
             try
             {
                 serviceResponse.Result = CreateDto(await _gameRepository.UpdateAsync(CreateEntity(response)), await GetGenreList(response.Id));
-            }
-            catch (Exception ex)
+            } catch(Exception ex)
             {
                 serviceResponse.HasErrors = true;
                 serviceResponse.ErrorMessages.Add(ex.Message);
             }
-            return serviceResponse;
 
+            return serviceResponse;
         }
 
         public async Task<ServiceResult<GameResponseDto>> DeleteAsync(Guid id)
         {
             ServiceResult<GameResponseDto> serviceResponse = new();
 
-            if (await _gameRepository.GetByIdAsync(id) == null)
+            if(await _gameRepository.GetByIdAsync(id) == null)
             {
                 serviceResponse.HasErrors = true;
                 serviceResponse.ErrorMessages.Add("Game does not exist");
@@ -192,12 +186,12 @@ namespace Imi.Project.Api.Core.Services
             try
             {
                 serviceResponse.Result = CreateDto(await _gameRepository.DeleteAsync(await _gameRepository.GetByIdAsync(id)), await GetGenreList(id));
-            }
-            catch (Exception ex)
+            } catch(Exception ex)
             {
                 serviceResponse.HasErrors = true;
                 serviceResponse.ErrorMessages.Add(ex.Message);
             }
+
             return serviceResponse;
         }
     }

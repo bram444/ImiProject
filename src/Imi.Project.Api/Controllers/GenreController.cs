@@ -1,17 +1,13 @@
-﻿using Imi.Project.Api.Core.Dto.Game;
-using Imi.Project.Api.Core.Dto.GameGenre;
+﻿using Imi.Project.Api.Core.Dto.GameGenre;
 using Imi.Project.Api.Core.Dto.Genre;
-using Imi.Project.Api.Core.Entities;
-using Imi.Project.Api.Core.Interfaces.Repository;
 using Imi.Project.Api.Core.Interfaces.Sevices;
-using Imi.Project.Api.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Imi.Project.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GenreController : ControllerBase
+    public class GenreController: ControllerBase
     {
         protected readonly IGenreService _genreService;
         protected readonly IGameGenreService _gameGenreService;
@@ -60,13 +56,12 @@ namespace Imi.Project.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            foreach (GameGenreResponseDto gg in await _gameGenreService.GetByGenreIdAsync(id))
+            foreach(GameGenreResponseDto gg in await _gameGenreService.GetByGenreIdAsync(id))
             {
                 await _gameGenreService.DeleteAsync(gg);
             }
 
             return Ok(await _genreService.DeleteAsync(id));
         }
-
     }
 }

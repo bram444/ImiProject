@@ -1,18 +1,15 @@
 ﻿using FreshMvvm;
-using Imi.Project.Mobile.Domain.Models;
+using Imi.Project.Mobile.Domain.Model;
 using Imi.Project.Mobile.Domain.Services;
-using Imi.Project.Mobile.Pages;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class GenreViewModel : FreshBasePageModel
+    public class GenreViewModel: FreshBasePageModel
     {
         private readonly IGenreService genreService;
 
@@ -28,7 +25,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string title;
         public string Title
         {
-            get { return title; }
+            get => title;
             set
             {
                 title = value;
@@ -39,7 +36,7 @@ namespace Imi.Project.Mobile.ViewModels
         private ObservableCollection<GenreInfo> genreInfo;
         public ObservableCollection<GenreInfo> GenreInfo
         {
-            get { return genreInfo; }
+            get => genreInfo;
             set
             {
                 genreInfo = value;
@@ -50,7 +47,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string genreName;
         public string GenreName
         {
-            get { return genreName; }
+            get => genreName;
             set
             {
                 genreName = value;
@@ -61,7 +58,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string genreDescription;
         public string GenreDescription
         {
-            get { return genreDescription; }
+            get => genreDescription;
             set
             {
                 genreDescription = value;
@@ -72,7 +69,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visableAdd;
         public bool VisableAdd
         {
-            get { return visableAdd; }
+            get => visableAdd;
             set
             {
                 visableAdd = value;
@@ -80,9 +77,9 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-#endregion
+        #endregion
 
-        public async override void Init(object initData)
+        public override async void Init(object initData)
         {
             base.Init(initData);
 
@@ -91,11 +88,11 @@ namespace Imi.Project.Mobile.ViewModels
             await RefreshGenre();
         }
 
-        public async override void ReverseInit(object initData)
+        public override async void ReverseInit(object initData)
         {
             base.ReverseInit(initData);
 
-            if (initData is GenreInfo)
+            if(initData is GenreInfo)
             {
                 currentGenreInfo = initData as GenreInfo;
             }

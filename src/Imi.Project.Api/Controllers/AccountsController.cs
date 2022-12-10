@@ -1,7 +1,6 @@
 ﻿using Imi.Project.Api.Core.Dto.User;
 using Imi.Project.Api.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -13,7 +12,7 @@ namespace Imi.Project.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountsController : ControllerBase
+    public class AccountsController: ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
@@ -29,7 +28,7 @@ namespace Imi.Project.Api.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserResponseDto registration)
         {
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -45,7 +44,7 @@ namespace Imi.Project.Api.Controllers
 
             IdentityResult result = await _userManager.CreateAsync(newUser, registration.Password);
 
-            if (!result.Succeeded)
+            if(!result.Succeeded)
             {
                 foreach (var error in result.Errors)
                 {

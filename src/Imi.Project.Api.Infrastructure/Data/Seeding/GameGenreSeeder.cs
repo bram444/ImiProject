@@ -1,10 +1,6 @@
 ﻿using Imi.Project.Api.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Infrastructure.Data.Seeding
 {
@@ -65,8 +61,7 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                           GameId=Guid.Parse("00000000-0000-0000-0000-000000000007"),
                           GenreId=Guid.Parse("00000000-0000-0000-0000-000000000002")
                      },
-                }
-                );
+                });
         }
     }
 }

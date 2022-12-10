@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Imi.Project.Api.Core.Entities
 {
-    public class Publisher : BaseEntity
+    public class Publisher: BaseEntity
     {
         [Required]
         public string Name { get; set; }

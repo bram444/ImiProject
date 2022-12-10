@@ -1,5 +1,4 @@
 ﻿using Imi.Project.Api.Core.Dto.User;
-using Imi.Project.Api.Core.Dto.UserGame;
 using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Repository;
 using Imi.Project.Api.Core.Interfaces.Sevices;
@@ -11,11 +10,10 @@ using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Services
 {
-    public class UserService : IUserService
+    public class UserService: IUserService
     {
         private readonly IUserRepository _userRepository;
         private readonly IUserGameRepository _userGameRepository;
-
         private readonly IPasswordHasher<ApplicationUser> passwordHasher = new PasswordHasher<ApplicationUser>();
 
         public UserService(IUserRepository userRepository, IUserGameRepository userGameRepository)
@@ -33,7 +31,7 @@ namespace Imi.Project.Api.Core.Services
                 FirstName = userResponseDto.FirstName,
                 LastName = userResponseDto.LastName,
                 UserName = userResponseDto.UserName,
-           };
+            };
 
             user.PasswordHash = passwordHasher.HashPassword(user, userResponseDto.Password);
 
@@ -53,6 +51,7 @@ namespace Imi.Project.Api.Core.Services
                 Password = user.PasswordHash,
                 ConfirmPassword = user.PasswordHash
             };
+
             return userResponseDto;
         }
 
@@ -62,7 +61,7 @@ namespace Imi.Project.Api.Core.Services
 
             List<Guid> gameIds = new();
 
-            foreach (UserGame userGame in userGames)
+            foreach(UserGame userGame in userGames)
             {
                 gameIds.Add(userGame.GameId);
             }
@@ -77,12 +76,12 @@ namespace Imi.Project.Api.Core.Services
             try
             {
                 serviceResponse.Result = CreateDto(await _userRepository.AddAsync(CreateEntity(response)), await GetGameList(response.Id));
-            }
-            catch (Exception ex)
+            } catch(Exception ex)
             {
                 serviceResponse.HasErrors = true;
                 serviceResponse.ErrorMessages.Add(ex.Message);
             }
+
             return serviceResponse;
         }
 
@@ -93,8 +92,7 @@ namespace Imi.Project.Api.Core.Services
             try
             {
                 serviceResponse.Result = CreateDto(await _userRepository.DeleteAsync(await _userRepository.GetByIdAsync(id)), await GetGameList(id));
-            }
-            catch (Exception ex)
+            } catch(Exception ex)
             {
                 serviceResponse.HasErrors = true;
                 serviceResponse.ErrorMessages.Add(ex.Message);
@@ -107,13 +105,13 @@ namespace Imi.Project.Api.Core.Services
         {
             List<UserResponseDto> userResponseDtos = new();
 
-            foreach (ApplicationUser entity in _userRepository.GetAll())
+            foreach(ApplicationUser entity in _userRepository.GetAll())
             {
                 IEnumerable<UserGame> userGames = _userGameRepository.GetByUserIdAsync(entity.Id).Result;
 
                 List<Guid> gameIds = new();
 
-                foreach (UserGame userGame in userGames)
+                foreach(UserGame userGame in userGames)
                 {
                     gameIds.Add(userGame.GameId);
                 }
@@ -132,7 +130,7 @@ namespace Imi.Project.Api.Core.Services
         public async Task<IEnumerable<UserResponseDto>> ListAllAsync()
         {
             List<UserResponseDto> userResponseDtos = new();
-            foreach (ApplicationUser entity in await _userRepository.ListAllAsync())
+            foreach(ApplicationUser entity in await _userRepository.ListAllAsync())
             {
                 userResponseDtos.Add(CreateDto(entity, await GetGameList(entity.Id)));
             }
@@ -143,18 +141,17 @@ namespace Imi.Project.Api.Core.Services
         public async Task<IEnumerable<UserResponseDto>> SearchFirstNameAsync(string search)
         {
             List<UserResponseDto> userResponseList = new();
-            foreach (ApplicationUser user in await _userRepository.SearchFirstNameAsync(search))
+            foreach(ApplicationUser user in await _userRepository.SearchFirstNameAsync(search))
             {
                 userResponseList.Add(CreateDto(user, await GetGameList(user.Id)));
             }
 
             return userResponseList;
-
         }
         public async Task<IEnumerable<UserResponseDto>> SearchLastNameAsync(string search)
         {
             List<UserResponseDto> userResponseList = new();
-            foreach (ApplicationUser user in await _userRepository.SearchLastNameAsync(search))
+            foreach(ApplicationUser user in await _userRepository.SearchLastNameAsync(search))
             {
                 userResponseList.Add(CreateDto(user, await GetGameList(user.Id)));
             }
@@ -165,7 +162,7 @@ namespace Imi.Project.Api.Core.Services
         public async Task<IEnumerable<UserResponseDto>> SearchUserNameAsync(string search)
         {
             List<UserResponseDto> userResponseList = new();
-            foreach (ApplicationUser user in await _userRepository.SearchUserNameAsync(search))
+            foreach(ApplicationUser user in await _userRepository.SearchUserNameAsync(search))
             {
                 userResponseList.Add(CreateDto(user, await GetGameList(user.Id)));
             }
@@ -188,8 +185,7 @@ namespace Imi.Project.Api.Core.Services
             try
             {
                 serviceResponse.Result = CreateDto(await _userRepository.UpdateAsync(editUser), await GetGameList(response.Id));
-            }
-            catch (Exception ex)
+            } catch(Exception ex)
             {
                 serviceResponse.HasErrors = true;
                 serviceResponse.ErrorMessages.Add(ex.Message);

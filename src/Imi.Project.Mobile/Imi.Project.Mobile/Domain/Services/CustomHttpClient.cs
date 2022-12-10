@@ -1,18 +1,14 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Formatting;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Imi.Project.Mobile.Domain.Services
 {
-    public class CustomHttpClient : HttpClient
+    public class CustomHttpClient: HttpClient
     {
         public CustomHttpClient() : base(CreateClientHandler())
         {
-
         }
 
         private JsonMediaTypeFormatter GetJsonFormatter()
@@ -57,8 +53,6 @@ namespace Imi.Project.Mobile.Domain.Services
 
         private async Task<TOut> CallApi<TOut, TIn>(string uri, TIn entity, HttpMethod httpMethod)
         {
-            TOut result = default;
-
             HttpResponseMessage response;
             if (httpMethod == HttpMethod.Post)
             {
@@ -72,8 +66,7 @@ namespace Imi.Project.Mobile.Domain.Services
             {
                 response = await DeleteAsync(uri);
             }
-            result = await response.Content.ReadAsAsync<TOut>();
-
+            TOut result = await response.Content.ReadAsAsync<TOut>();
             return result;
         }
     }

@@ -1,17 +1,14 @@
-﻿using Imi.Project.Api.Core.Dto.GameGenre;
-using Imi.Project.Api.Core.Entities;
+﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Repository;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace Imi.Project.Api.Infrastructure.Repository
 {
-    public class GameGenreRepository : IGameGenreRepository
+    public class GameGenreRepository: IGameGenreRepository
     {
 
         protected readonly ApplicationDbContext _dbContext;
@@ -30,13 +27,13 @@ namespace Imi.Project.Api.Infrastructure.Repository
         }
         public virtual async Task<IEnumerable<GameGenre>> GetByGameIdAsync(Guid id)
         {
-            var gameGenre = await ListAllAsync();
+            IEnumerable<GameGenre> gameGenre = await ListAllAsync();
             return gameGenre.Where(gg => gg.GameId == id);
         }
 
         public virtual async Task<IEnumerable<GameGenre>> GetByGenreIdAsync(Guid id)
         {
-            var gameGenre = await ListAllAsync();
+            IEnumerable<GameGenre> gameGenre = await ListAllAsync();
             return gameGenre.Where(gg => gg.GameId == id);
         }
 

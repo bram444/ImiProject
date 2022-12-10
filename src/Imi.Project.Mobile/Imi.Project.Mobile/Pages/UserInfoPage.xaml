@@ -9,8 +9,8 @@
              Style="{StaticResource PageStyle}"
              mc:Ignorable="d"
              Title="{Binding Title}">
-    <ContentPage.Content>
 
+    <ContentPage.Content>
         <ScrollView>
             <Grid  Padding="10">
                 <Grid.ColumnDefinitions>

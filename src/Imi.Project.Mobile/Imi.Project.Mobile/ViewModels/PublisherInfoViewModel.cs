@@ -1,20 +1,18 @@
 ﻿using FluentValidation;
 using FreshMvvm;
-using Imi.Project.Mobile.Domain.Models;
+using Imi.Project.Mobile.Domain.Model;
 using Imi.Project.Mobile.Domain.Services;
 using Imi.Project.Mobile.Domain.Validators;
-using Imi.Project.Mobile.Pages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows.Input;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class PublisherInfoViewModel : FreshBasePageModel
+    public class PublisherInfoViewModel: FreshBasePageModel
     {
         private PublisherInfo currentPublisherInfo;
         private readonly IValidator publisherInfoValidator;
@@ -34,7 +32,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string title;
         public string Title
         {
-            get { return title; }
+            get => title;
             set
             {
                 title = value;
@@ -45,7 +43,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string publisherName;
         public string PublisherName
         {
-            get { return publisherName; }
+            get => publisherName;
             set
             {
                 publisherName = value;
@@ -57,7 +55,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string publisherCountry;
         public string PublisherCountry
         {
-            get { return publisherCountry; }
+            get => publisherCountry;
             set
             {
                 publisherCountry = value;
@@ -69,7 +67,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string publisherNameError;
         public string PublisherNameError
         {
-            get { return publisherNameError; }
+            get => publisherNameError;
             set
             {
                 publisherNameError = value;
@@ -78,15 +76,12 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        public bool PublisherNameErrorVisible
-        {
-            get { return !string.IsNullOrWhiteSpace(PublisherNameError); }
-        }
+        public bool PublisherNameErrorVisible => !string.IsNullOrWhiteSpace(PublisherNameError);
 
         private string publisherDeleteError;
         public string PublisherDeleteError
         {
-            get { return publisherDeleteError; }
+            get => publisherDeleteError;
             set
             {
                 publisherDeleteError = value;
@@ -95,15 +90,12 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        public bool PublisherDeleteErrorVisible
-        {
-            get { return !string.IsNullOrWhiteSpace(PublisherDeleteError); }
-        }
+        public bool PublisherDeleteErrorVisible => !string.IsNullOrWhiteSpace(PublisherDeleteError);
 
         private string publisherCounryError;
         public string PublisherCountryError
         {
-            get { return publisherCounryError; }
+            get => publisherCounryError;
             set
             {
                 publisherCounryError = value;
@@ -112,15 +104,12 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        public bool PublisherCounryErrorVisible
-        {
-            get { return !string.IsNullOrWhiteSpace(PublisherCountryError); }
-        }
+        public bool PublisherCounryErrorVisible => !string.IsNullOrWhiteSpace(PublisherCountryError);
 
         private bool visableAdd;
         public bool VisableAdd
         {
-            get { return visableAdd; }
+            get => visableAdd;
             set
             {
                 visableAdd = value;
@@ -131,7 +120,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visableCancel;
         public bool VisableCancel
         {
-            get { return visableCancel; }
+            get => visableCancel;
             set
             {
                 visableCancel = value;
@@ -142,7 +131,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visableEdit;
         public bool VisableEdit
         {
-            get { return visableEdit; }
+            get => visableEdit;
             set
             {
                 visableEdit = value;
@@ -153,7 +142,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visableDelete;
         public bool VisableDelete
         {
-            get { return visableDelete; }
+            get => visableDelete;
             set
             {
                 visableDelete = value;
@@ -164,7 +153,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visableSave;
         public bool VisableSave
         {
-            get { return visableSave; }
+            get => visableSave;
             set
             {
                 visableSave = value;
@@ -175,7 +164,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool enableEditData;
         public bool EnableEditData
         {
-            get { return enableEditData; }
+            get => enableEditData;
             set
             {
                 enableEditData = value;
@@ -186,7 +175,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool enableGameList;
         public bool EnableGameList
         {
-            get { return enableGameList; }
+            get => enableGameList;
             set
             {
                 enableGameList = value;
@@ -197,7 +186,7 @@ namespace Imi.Project.Mobile.ViewModels
         private IEnumerable<GamesInfo> games;
         public IEnumerable<GamesInfo> Games
         {
-            get { return games; }
+            get => games;
             set
             {
                 games = value;
@@ -209,13 +198,12 @@ namespace Imi.Project.Mobile.ViewModels
 
         public override void Init(object initData)
         {
-            if (initData != null)
+            if(initData != null)
             {
                 currentPublisherInfo = initData as PublisherInfo;
 
                 SetRead();
-            }
-            else
+            } else
             {
                 SetAdd();
             }
@@ -226,14 +214,14 @@ namespace Imi.Project.Mobile.ViewModels
         public ICommand SavePublisherInfoCommand => new Command(
             async () =>
             {
-                var validatePublisher = new PublisherInfo
+                PublisherInfo validatePublisher = new PublisherInfo
                 {
                     Id = currentPublisherInfo.Id,
                     Country = PublisherCountry,
                     Name = PublisherName
                 };
 
-                if (Validate(validatePublisher))
+                if(Validate(validatePublisher))
                 {
                     await publisherService.UpdatePublisher(validatePublisher);
                     await CoreMethods.PopPageModel(validatePublisher, false, true);
@@ -243,12 +231,12 @@ namespace Imi.Project.Mobile.ViewModels
         public ICommand AddPublisherInfoCommand => new Command(
             async () =>
             {
-                if (PublisherName == null)
+                if(PublisherName == null)
                 {
                     PublisherName = "";
                 }
 
-                if (PublisherCountry == null)
+                if(PublisherCountry == null)
                 {
                     PublisherCountry = "";
                 }
@@ -260,7 +248,7 @@ namespace Imi.Project.Mobile.ViewModels
                     Country = PublisherCountry,
                 };
 
-                if (Validate(publisherEdit))
+                if(Validate(publisherEdit))
                 {
                     await publisherService.AddPublisher(publisherEdit);
                     await CoreMethods.PopPageModel(publisherEdit, false, true);
@@ -279,13 +267,12 @@ namespace Imi.Project.Mobile.ViewModels
 
         public ICommand DeleteCommand => new Command(async () =>
         {
-            if (Games.Count() > 0)
+            if(Games.Count() > 0)
             {
                 PublisherDeleteError = "Cannot delete while publisher has games";
-            }
-            else
+            } else
             {
-                if (DeviceInfo.Platform == DevicePlatform.Android)
+                if(DeviceInfo.Platform == DevicePlatform.Android)
                 {
                     Vibration.Vibrate(TimeSpan.FromSeconds(0.5));
                 }
@@ -297,12 +284,12 @@ namespace Imi.Project.Mobile.ViewModels
 
         private bool Validate(PublisherInfo publisherInfo)
         {
-            var validationContext = new ValidationContext<PublisherInfo>(publisherInfo);
-            var validationResult = publisherInfoValidator.Validate(validationContext);
+            ValidationContext<PublisherInfo> validationContext = new ValidationContext<PublisherInfo>(publisherInfo);
+            FluentValidation.Results.ValidationResult validationResult = publisherInfoValidator.Validate(validationContext);
 
-            foreach (var error in validationResult.Errors)
+            foreach(FluentValidation.Results.ValidationFailure error in validationResult.Errors)
             {
-                switch (error.PropertyName)
+                switch(error.PropertyName)
                 {
                     case nameof(publisherInfo.Name):
                         PublisherNameError = error.ErrorMessage;
@@ -318,6 +305,7 @@ namespace Imi.Project.Mobile.ViewModels
                         break;
                 }
             }
+
             return validationResult.IsValid;
         }
 
@@ -349,11 +337,11 @@ namespace Imi.Project.Mobile.ViewModels
             EnableGameList = true;
             EnableEditData = false;
 
-            var allGames = await gameService.GetAllGames();
+            IEnumerable<GamesInfo> allGames = await gameService.GetAllGames();
 
             Games = allGames.Where(gamess => gamess.PublisherId == currentPublisherInfo.Id).ToList();
 
-            if (Games.Count() == 0)
+            if(Games.Count() == 0)
             {
                 EnableGameList = false;
             }

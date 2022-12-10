@@ -1,21 +1,15 @@
-﻿using FluentValidation;
-using FreshMvvm;
-using Imi.Project.Mobile.Domain.Models;
+﻿using FreshMvvm;
+using Imi.Project.Mobile.Domain.Model;
 using Imi.Project.Mobile.Domain.Services;
-using Imi.Project.Mobile.Domain.Validators;
-using Imi.Project.Mobile.Pages;
-using Imi.Project.Mobile.ViewModels;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class GameViewModel : FreshBasePageModel
+    public class GameViewModel: FreshBasePageModel
     {
         private readonly IGameService gameService;
         private GamesInfo currentGameInfo;
@@ -30,7 +24,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string title;
         public string Title
         {
-            get { return title; }
+            get => title;
             set
             {
                 title = value;
@@ -41,7 +35,7 @@ namespace Imi.Project.Mobile.ViewModels
         private ObservableCollection<GamesInfo> gamesInfo;
         public ObservableCollection<GamesInfo> GamesInfo
         {
-            get { return gamesInfo; }
+            get => gamesInfo;
             set
             {
                 gamesInfo = value;
@@ -52,7 +46,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string gameName;
         public string GameName
         {
-            get { return gameName; }
+            get => gameName;
             set
             {
                 gameName = value;
@@ -63,7 +57,7 @@ namespace Imi.Project.Mobile.ViewModels
         private float gamePrice;
         public float GamePrice
         {
-            get { return gamePrice; }
+            get => gamePrice;
             set
             {
                 gamePrice = value;
@@ -74,7 +68,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visableAdd;
         public bool VisableAdd
         {
-            get { return visableAdd; }
+            get => visableAdd;
             set
             {
                 visableAdd = value;
@@ -84,7 +78,7 @@ namespace Imi.Project.Mobile.ViewModels
 
         #endregion
 
-        public async override void Init(object initData)
+        public override async void Init(object initData)
         {
             base.Init(initData);
 
@@ -94,11 +88,11 @@ namespace Imi.Project.Mobile.ViewModels
             await RefreshGame();
         }
 
-        public async override void ReverseInit(object initData)
+        public override async void ReverseInit(object initData)
         {
             base.ReverseInit(initData);
 
-            if (initData is GamesInfo)
+            if(initData is GamesInfo)
             {
                 currentGameInfo = initData as GamesInfo;
             }
@@ -113,7 +107,7 @@ namespace Imi.Project.Mobile.ViewModels
 
             GamesInfo = null;
 
-            GamesInfo = new ObservableCollection<GamesInfo>( await gameService.GetAllGames());
+            GamesInfo = new ObservableCollection<GamesInfo>(await gameService.GetAllGames());
 
             VisableAdd = true;
 

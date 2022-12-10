@@ -1,20 +1,13 @@
-﻿using Imi.Project.Api.Core.Dto.Game;
-using Imi.Project.Api.Core.Dto.GameGenre;
-using Imi.Project.Api.Core.Dto.Publisher;
-using Imi.Project.Api.Core.Dto.User;
+﻿using Imi.Project.Api.Core.Dto.User;
 using Imi.Project.Api.Core.Dto.UserGame;
-using Imi.Project.Api.Core.Interfaces.Repository;
 using Imi.Project.Api.Core.Interfaces.Sevices;
-using Imi.Project.Api.Core.Services;
-using Imi.Project.Api.Infrastructure.Repository;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Imi.Project.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController: ControllerBase
     {
         protected readonly IUserService _userService;
         protected readonly IUserGameService _userGameService;
@@ -50,16 +43,16 @@ namespace Imi.Project.Api.Controllers
             return Ok(await _userService.SearchUserNameAsync(search));
         }
 
-                //[Authorize(Policy = "OnlyLoyalMembers")]
+        //[Authorize(Policy = "OnlyLoyalMembers")]
         [HttpPost]
         public async Task<IActionResult> Post(UserResponseDto userResponseDto)
         {
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            foreach (Guid gameId in userResponseDto.GameId)
+            foreach(Guid gameId in userResponseDto.GameId)
             {
                 UserGameResponseDto userGameResponseDto = new() { UserId = userResponseDto.Id, GameId = gameId };
                 await _userGameService.AddAsync(userGameResponseDto);
@@ -71,7 +64,7 @@ namespace Imi.Project.Api.Controllers
         [HttpPut]
         public async Task<IActionResult> Put(UserResponseDto userResponseDto)
         {
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -84,7 +77,7 @@ namespace Imi.Project.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            foreach (UserGameResponseDto ug in await _userGameService.GetByUserIdAsync(id))
+            foreach(UserGameResponseDto ug in await _userGameService.GetByUserIdAsync(id))
             {
                 await _userGameService.DeleteAsync(ug);
             }

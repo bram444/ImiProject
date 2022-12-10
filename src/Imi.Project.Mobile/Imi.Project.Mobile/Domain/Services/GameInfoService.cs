@@ -1,17 +1,13 @@
-﻿using System;
+﻿using Imi.Project.Mobile.Domain.Model;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using FreshMvvm;
-using Imi.Project.Mobile.Domain.Models;
 
 namespace Imi.Project.Mobile.Domain.Services
 {
     public class GameInfoService: IGameService
     {
-        string baseUrl = Constants.baseUrl;
-
+        private readonly string baseUrl = Constants.baseUrl;
         private readonly CustomHttpClient _httpClient = new CustomHttpClient();
 
         public GameInfoService(CustomHttpClient customHttpClient)
@@ -37,7 +33,6 @@ namespace Imi.Project.Mobile.Domain.Services
         public async Task<GamesInfo> DeleteGame(Guid id)
         {
             return await _httpClient.DeleteCallApi<GamesInfo>($"{baseUrl}/api/Game/{id}");
-
         }
 
         public async Task<GamesInfo> AddGames(GamesInfo game)

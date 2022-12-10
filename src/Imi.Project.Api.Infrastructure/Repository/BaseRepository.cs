@@ -4,12 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Infrastructure.Repository
 {
-    public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
+    public class BaseRepository<T>: IBaseRepository<T> where T : BaseEntity
     {
         protected readonly ApplicationDbContext _dbContext;
         public BaseRepository(ApplicationDbContext dbContext)
@@ -55,7 +54,6 @@ namespace Imi.Project.Api.Infrastructure.Repository
         {
             _dbContext.Set<T>().Remove(entity);
             _dbContext.Entry(entity).State = EntityState.Deleted;
-
             await _dbContext.SaveChangesAsync();
             return entity;
         }

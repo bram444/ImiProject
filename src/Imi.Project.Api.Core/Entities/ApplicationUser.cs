@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Imi.Project.Api.Core.Entities
 {
-    public class ApplicationUser : IdentityUser<Guid>
+    public class ApplicationUser: IdentityUser<Guid>
     {
 
         [Required]
@@ -12,6 +12,5 @@ namespace Imi.Project.Api.Core.Entities
 
         [Required]
         public string LastName { get; set; }
-
     }
 }

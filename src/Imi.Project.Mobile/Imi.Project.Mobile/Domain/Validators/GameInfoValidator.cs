@@ -1,12 +1,9 @@
 ﻿using FluentValidation;
-using Imi.Project.Mobile.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Imi.Project.Mobile.Domain.Model;
 
 namespace Imi.Project.Mobile.Domain.Validators
 {
-    public class GameInfoValidator : AbstractValidator<GamesInfo>
+    public class GameInfoValidator: AbstractValidator<GamesInfo>
     {
         public GameInfoValidator()
         {

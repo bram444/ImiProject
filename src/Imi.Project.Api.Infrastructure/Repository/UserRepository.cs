@@ -4,12 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Infrastructure.Repository
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository: IUserRepository
     {
 
         protected readonly ApplicationDbContext _dbContext;
@@ -21,7 +20,7 @@ namespace Imi.Project.Api.Infrastructure.Repository
 
         public virtual async Task<IEnumerable<ApplicationUser>> SearchFirstNameAsync(string search)
         {
-            var user = await GetAll()
+            List<ApplicationUser> user = await GetAll()
                 .Where(g => g.FirstName.Contains(search.Trim().ToUpper()))
                 .ToListAsync();
 
@@ -30,7 +29,7 @@ namespace Imi.Project.Api.Infrastructure.Repository
 
         public virtual async Task<IEnumerable<ApplicationUser>> SearchLastNameAsync(string search)
         {
-            var user = await GetAll()
+            List<ApplicationUser> user = await GetAll()
                 .Where(g => g.LastName.Contains(search.Trim().ToUpper()))
                 .ToListAsync();
 
@@ -39,7 +38,7 @@ namespace Imi.Project.Api.Infrastructure.Repository
 
         public virtual async Task<IEnumerable<ApplicationUser>> SearchUserNameAsync(string search)
         {
-            var user = await GetAll()
+            List<ApplicationUser> user = await GetAll()
                 .Where(g => g.UserName.Contains(search.Trim().ToUpper()))
                 .ToListAsync();
 
@@ -82,7 +81,6 @@ namespace Imi.Project.Api.Infrastructure.Repository
         {
             _dbContext.Set<ApplicationUser>().Remove(entity);
             _dbContext.Entry(entity).State = EntityState.Deleted;
-
             await _dbContext.SaveChangesAsync();
             return entity;
         }

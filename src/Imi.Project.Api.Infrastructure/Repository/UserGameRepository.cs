@@ -1,16 +1,14 @@
-﻿using Imi.Project.Api.Core.Dto.UserGame;
-using Imi.Project.Api.Core.Entities;
+﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Repository;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Infrastructure.Repository
 {
-    public class UserGameRepository : IUserGameRepository
+    public class UserGameRepository: IUserGameRepository
     {
         protected readonly ApplicationDbContext _dbContext;
         public UserGameRepository(ApplicationDbContext dbContext)

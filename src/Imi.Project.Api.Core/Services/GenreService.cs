@@ -1,19 +1,15 @@
-﻿using Imi.Project.Api.Core.Dto.Game;
-using Imi.Project.Api.Core.Dto.Genre;
-using Imi.Project.Api.Core.Dto.Publisher;
-using Imi.Project.Api.Core.Dto.User;
+﻿using Imi.Project.Api.Core.Dto.Genre;
 using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Repository;
 using Imi.Project.Api.Core.Interfaces.Sevices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Services
 {
-    public class GenreService : IGenreService
+    public class GenreService: IGenreService
     {
         private readonly IGenreRepository _genreRepository;
 
@@ -22,7 +18,7 @@ namespace Imi.Project.Api.Core.Services
             _genreRepository = genreRepository;
         }
 
-        private Genre CreateEntity(GenreResponseDto genreResponseDto)
+        private static Genre CreateEntity(GenreResponseDto genreResponseDto)
         {
             Genre genre = new()
             {
@@ -30,10 +26,11 @@ namespace Imi.Project.Api.Core.Services
                 Name = genreResponseDto.Name,
                 Description = genreResponseDto.Description,
             };
+
             return genre;
         }
 
-        private GenreResponseDto CreateDto(Genre genre)
+        private static GenreResponseDto CreateDto(Genre genre)
         {
             GenreResponseDto genreDto = new()
             {
@@ -41,31 +38,31 @@ namespace Imi.Project.Api.Core.Services
                 Name = genre.Name,
                 Description = genre.Description,
             };
+
             return genreDto;
         }
 
         public async Task<ServiceResult<GenreResponseDto>> AddAsync(GenreResponseDto response)
         {
-            var serviceResponse = new ServiceResult<GenreResponseDto>();
+            ServiceResult<GenreResponseDto> serviceResponse = new();
 
             try
             {
                 serviceResponse.Result = CreateDto(await _genreRepository.AddAsync(CreateEntity(response)));
-            }
-            catch (Exception ex)
+            } catch(Exception ex)
             {
                 serviceResponse.HasErrors = true;
                 serviceResponse.ErrorMessages.Add(ex.Message);
             }
-            return serviceResponse;
 
+            return serviceResponse;
         }
 
         public async Task<ServiceResult<GenreResponseDto>> DeleteAsync(Guid id)
         {
-            var serviceResponse = new ServiceResult<GenreResponseDto>();
+            ServiceResult<GenreResponseDto> serviceResponse = new();
 
-            if (await _genreRepository.GetByIdAsync(id) == null)
+            if(await _genreRepository.GetByIdAsync(id) == null)
             {
                 serviceResponse.HasErrors = true;
                 serviceResponse.ErrorMessages.Add("Genre does not exist");
@@ -75,19 +72,19 @@ namespace Imi.Project.Api.Core.Services
             try
             {
                 serviceResponse.Result = CreateDto(await _genreRepository.DeleteAsync(await _genreRepository.GetByIdAsync(id)));
-            }
-            catch (Exception ex)
+            } catch(Exception ex)
             {
                 serviceResponse.HasErrors = true;
                 serviceResponse.ErrorMessages.Add(ex.Message);
             }
+
             return serviceResponse;
         }
 
         public IQueryable<GenreResponseDto> GetAll()
         {
             List<GenreResponseDto> genreResponseDtos = new();
-            foreach (Genre entity in _genreRepository.GetAll())
+            foreach(Genre entity in _genreRepository.GetAll())
             {
                 genreResponseDtos.Add(CreateDto(entity));
             }
@@ -103,7 +100,7 @@ namespace Imi.Project.Api.Core.Services
         public async Task<IEnumerable<GenreResponseDto>> ListAllAsync()
         {
             List<GenreResponseDto> genreResponseDtos = new();
-            foreach (Genre entity in await _genreRepository.ListAllAsync())
+            foreach(Genre entity in await _genreRepository.ListAllAsync())
             {
                 genreResponseDtos.Add(CreateDto(entity));
             }
@@ -114,7 +111,7 @@ namespace Imi.Project.Api.Core.Services
         public async Task<IEnumerable<GenreResponseDto>> SearchAsync(string search)
         {
             List<GenreResponseDto> genreResponseDtos = new();
-            foreach (Genre entity in await _genreRepository.SearchAsync(search))
+            foreach(Genre entity in await _genreRepository.SearchAsync(search))
             {
                 genreResponseDtos.Add(CreateDto(entity));
             }
@@ -124,9 +121,9 @@ namespace Imi.Project.Api.Core.Services
 
         public async Task<ServiceResult<GenreResponseDto>> UpdateAsync(GenreResponseDto response)
         {
-            var serviceResponse = new ServiceResult<GenreResponseDto>();
+            ServiceResult<GenreResponseDto> serviceResponse = new();
 
-            if (await _genreRepository.GetByIdAsync(response.Id) == null)
+            if(await _genreRepository.GetByIdAsync(response.Id) == null)
             {
                 serviceResponse.HasErrors = true;
                 serviceResponse.ErrorMessages.Add("Genre does not exist");
@@ -136,8 +133,7 @@ namespace Imi.Project.Api.Core.Services
             try
             {
                 serviceResponse.Result = CreateDto(await _genreRepository.UpdateAsync(CreateEntity(response)));
-            }
-            catch (Exception ex)
+            } catch(Exception ex)
             {
                 serviceResponse.HasErrors = true;
                 serviceResponse.ErrorMessages.Add(ex.Message);

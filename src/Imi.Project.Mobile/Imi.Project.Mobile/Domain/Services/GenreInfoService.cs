@@ -1,16 +1,13 @@
-﻿using System;
+﻿using Imi.Project.Mobile.Domain.Model;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Imi.Project.Mobile.Domain.Models;
 
 namespace Imi.Project.Mobile.Domain.Services
 {
-    public class GenreInfoService : IGenreService
+    public class GenreInfoService: IGenreService
     {
-        string baseUrl = Constants.baseUrl;
-
+        private readonly string baseUrl = Constants.baseUrl;
         private readonly CustomHttpClient _httpClient = new CustomHttpClient();
 
         public GenreInfoService(CustomHttpClient customHttpClient)
@@ -31,13 +28,11 @@ namespace Imi.Project.Mobile.Domain.Services
         public async Task<GenreInfo> UpdateGenre(GenreInfo genre)
         {
             return await _httpClient.PutCallApi<GenreInfo, GenreInfo>($"{baseUrl}/api/Genre/", genre);
-
         }
 
         public async Task<GenreInfo> DeleteGenre(Guid id)
         {
             return await _httpClient.DeleteCallApi<GenreInfo>($"{baseUrl}/api/Genre/{id}");
-
         }
 
         public async Task<GenreInfo> AddGenre(GenreInfo genre)

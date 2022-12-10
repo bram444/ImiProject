@@ -1,11 +1,6 @@
 ﻿using Imi.Project.Api.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Infrastructure.Data.Seeding
 {
@@ -24,7 +19,6 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         PublisherId=Guid.Parse("00000000-0000-0000-0000-000000000001"),
                         CreatedOn=DateTime.Now,
                         LastEditedOn=DateTime.Now
-
                     },
                     new Game
                     {

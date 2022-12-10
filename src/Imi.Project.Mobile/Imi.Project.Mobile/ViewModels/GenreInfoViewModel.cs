@@ -1,20 +1,18 @@
 ﻿using FluentValidation;
 using FreshMvvm;
-using Imi.Project.Mobile.Domain.Models;
+using Imi.Project.Mobile.Domain.Model;
 using Imi.Project.Mobile.Domain.Services;
 using Imi.Project.Mobile.Domain.Validators;
-using Imi.Project.Mobile.Pages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows.Input;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class GenreInfoViewModel : FreshBasePageModel
+    public class GenreInfoViewModel: FreshBasePageModel
     {
         private GenreInfo currentGenreInfo;
         private readonly IValidator genreInfoValidator;
@@ -34,7 +32,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string title;
         public string Title
         {
-            get { return title; }
+            get => title;
             set
             {
                 title = value;
@@ -45,7 +43,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string genreName;
         public string GenreName
         {
-            get { return genreName; }
+            get => genreName;
             set
             {
                 genreName = value;
@@ -57,7 +55,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string genreDescription;
         public string GenreDescription
         {
-            get { return genreDescription; }
+            get => genreDescription;
             set
             {
                 genreDescription = value;
@@ -68,25 +66,21 @@ namespace Imi.Project.Mobile.ViewModels
         private string genreNameError;
         public string GenreNameError
         {
-            get { return genreNameError; }
+            get => genreNameError;
             set
             {
                 genreNameError = value;
                 RaisePropertyChanged(nameof(GenreNameError));
                 RaisePropertyChanged(nameof(GenreNameErrorVisible));
-
             }
         }
 
-        public bool GenreNameErrorVisible
-        {
-            get { return !string.IsNullOrWhiteSpace(GenreNameError); }
-        }
+        public bool GenreNameErrorVisible => !string.IsNullOrWhiteSpace(GenreNameError);
 
         private bool visableAdd;
         public bool VisableAdd
         {
-            get { return visableAdd; }
+            get => visableAdd;
             set
             {
                 visableAdd = value;
@@ -97,7 +91,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visableCancel;
         public bool VisableCancel
         {
-            get { return visableCancel; }
+            get => visableCancel;
             set
             {
                 visableCancel = value;
@@ -108,7 +102,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visableEdit;
         public bool VisableEdit
         {
-            get { return visableEdit; }
+            get => visableEdit;
             set
             {
                 visableEdit = value;
@@ -119,7 +113,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visableDelete;
         public bool VisableDelete
         {
-            get { return visableDelete; }
+            get => visableDelete;
             set
             {
                 visableDelete = value;
@@ -130,7 +124,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visableSave;
         public bool VisableSave
         {
-            get { return visableSave; }
+            get => visableSave;
             set
             {
                 visableSave = value;
@@ -141,7 +135,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool enableEditData;
         public bool EnableEditData
         {
-            get { return enableEditData; }
+            get => enableEditData;
             set
             {
                 enableEditData = value;
@@ -152,7 +146,7 @@ namespace Imi.Project.Mobile.ViewModels
         private IEnumerable<GamesInfo> games;
         public IEnumerable<GamesInfo> Games
         {
-            get { return games; }
+            get => games;
             set
             {
                 games = value;
@@ -163,7 +157,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool enableGameList;
         public bool EnableGameList
         {
-            get { return enableGameList; }
+            get => enableGameList;
             set
             {
                 enableGameList = value;
@@ -175,13 +169,12 @@ namespace Imi.Project.Mobile.ViewModels
 
         public override void Init(object initData)
         {
-            if (initData != null)
+            if(initData != null)
             {
                 currentGenreInfo = initData as GenreInfo;
 
                 SetRead();
-            }
-            else
+            } else
             {
                 SetAdd();
             }
@@ -199,7 +192,7 @@ namespace Imi.Project.Mobile.ViewModels
                     Description = GenreDescription,
                 };
 
-                if (Validate(validateGenre))
+                if(Validate(validateGenre))
                 {
                     await genreService.UpdateGenre(validateGenre);
                     await CoreMethods.PopPageModel(validateGenre, false, true);
@@ -209,12 +202,12 @@ namespace Imi.Project.Mobile.ViewModels
         public ICommand AddGenreInfoCommand => new Command(
             async () =>
             {
-                if (GenreName == null)
+                if(GenreName == null)
                 {
                     GenreName = "";
                 }
 
-                if (GenreDescription == null)
+                if(GenreDescription == null)
                 {
                     GenreDescription = "";
                 }
@@ -226,7 +219,7 @@ namespace Imi.Project.Mobile.ViewModels
                     Description = GenreDescription
                 };
 
-                if (Validate(genreEdit))
+                if(Validate(genreEdit))
                 {
                     await genreService.AddGenre(genreEdit);
                     await CoreMethods.PopPageModel(genreEdit, false, true);
@@ -245,7 +238,7 @@ namespace Imi.Project.Mobile.ViewModels
 
         public ICommand DeleteCommand => new Command(async () =>
         {
-            if (DeviceInfo.Platform == DevicePlatform.Android)
+            if(DeviceInfo.Platform == DevicePlatform.Android)
             {
                 Vibration.Vibrate(TimeSpan.FromSeconds(0.5));
             }
@@ -256,12 +249,12 @@ namespace Imi.Project.Mobile.ViewModels
 
         private bool Validate(GenreInfo genreInfo)
         {
-            var validationContext = new ValidationContext<GenreInfo>(genreInfo);
-            var validationResult = genreInfoValidator.Validate(validationContext);
+            ValidationContext<GenreInfo> validationContext = new ValidationContext<GenreInfo>(genreInfo);
+            FluentValidation.Results.ValidationResult validationResult = genreInfoValidator.Validate(validationContext);
 
-            foreach (var error in validationResult.Errors)
+            foreach(FluentValidation.Results.ValidationFailure error in validationResult.Errors)
             {
-                if (error.PropertyName == nameof(genreInfo.Name))
+                if(error.PropertyName == nameof(genreInfo.Name))
                 {
                     GenreNameError = error.ErrorMessage;
                 }
@@ -299,11 +292,11 @@ namespace Imi.Project.Mobile.ViewModels
             EnableGameList = true;
             EnableEditData = false;
 
-            var allGames = await gameService.GetAllGames();
+            IEnumerable<GamesInfo> allGames = await gameService.GetAllGames();
 
             Games = allGames.Where(gamess => gamess.GenreId.Contains(currentGenreInfo.Id)).ToList();
 
-            if(Games.Count()==0)
+            if(Games.Count() == 0)
             {
                 EnableGameList = false;
             }

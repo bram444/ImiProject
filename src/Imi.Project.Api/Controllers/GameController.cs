@@ -8,7 +8,7 @@ namespace Imi.Project.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GameController : ControllerBase
+    public class GameController: ControllerBase
     {
         protected readonly IGameService _gameService;
         private readonly IGameGenreService _gameGenreService;
@@ -41,12 +41,12 @@ namespace Imi.Project.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(GameResponseDto gameResponseDto)
         {
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            foreach (Guid genreId in gameResponseDto.GenreId)
+            foreach(Guid genreId in gameResponseDto.GenreId)
             {
                 GameGenreResponseDto gameGenreResponseDto = new() { GenreId = genreId, GameId = gameResponseDto.Id };
                 await _gameGenreService.AddAsync(gameGenreResponseDto);
@@ -58,7 +58,7 @@ namespace Imi.Project.Api.Controllers
         [HttpPut]
         public async Task<IActionResult> Put(GameResponseDto gameResponseDto)
         {
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -72,18 +72,17 @@ namespace Imi.Project.Api.Controllers
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
 
-            foreach (GameGenreResponseDto gg in await _gameGenreService.GetByGameIdAsync(id))
+            foreach(GameGenreResponseDto gg in await _gameGenreService.GetByGameIdAsync(id))
             {
                 await _gameGenreService.DeleteAsync(gg);
             }
 
-            foreach (UserGameResponseDto ug in await _userGameService.GetByGameIdAsync(id))
+            foreach(UserGameResponseDto ug in await _userGameService.GetByGameIdAsync(id))
             {
                 await _userGameService.DeleteAsync(ug);
             }
 
             return Ok(await _gameService.DeleteAsync(id));
         }
-
     }
 }

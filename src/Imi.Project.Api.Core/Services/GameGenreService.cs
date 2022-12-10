@@ -8,10 +8,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-
 namespace Imi.Project.Api.Core.Services
 {
-    public class GameGenreService : IGameGenreService
+    public class GameGenreService: IGameGenreService
     {
         private readonly IGameGenreRepository _gameGenreRepository;
 
@@ -47,8 +46,7 @@ namespace Imi.Project.Api.Core.Services
             try
             {
                 serviceResponse.Result = CreateDto(await _gameGenreRepository.AddAsync(CreateEntity(response)));
-            }
-            catch (Exception ex)
+            } catch(Exception ex)
             {
                 serviceResponse.HasErrors = true;
                 serviceResponse.ErrorMessages.Add(ex.Message);
@@ -60,7 +58,7 @@ namespace Imi.Project.Api.Core.Services
         {
             ServiceResult<GameGenreResponseDto> serviceResponse = new();
 
-            if (!_gameGenreRepository.ListAllAsync().Result.Any(gg => gg.GenreId == response.GenreId && gg.GameId == response.GameId))
+            if(!_gameGenreRepository.ListAllAsync().Result.Any(gg => gg.GenreId == response.GenreId && gg.GameId == response.GameId))
             {
                 serviceResponse.HasErrors = true;
                 serviceResponse.ErrorMessages.Add($"Many to many relationship does not exist");
@@ -71,19 +69,19 @@ namespace Imi.Project.Api.Core.Services
             try
             {
                 serviceResponse.Result = CreateDto(await _gameGenreRepository.DeleteAsync(CreateEntity(response)));
-            }
-            catch (Exception ex)
+            } catch(Exception ex)
             {
                 serviceResponse.HasErrors = true;
                 serviceResponse.ErrorMessages.Add(ex.Message);
             }
+
             return serviceResponse;
         }
 
         public IQueryable<GameGenreResponseDto> GetAll()
         {
             List<GameGenreResponseDto> gameResponseDtos = new();
-            foreach (GameGenre entity in _gameGenreRepository.GetAll())
+            foreach(GameGenre entity in _gameGenreRepository.GetAll())
             {
                 gameResponseDtos.Add(CreateDto(entity));
             }
@@ -95,7 +93,7 @@ namespace Imi.Project.Api.Core.Services
         {
             List<GameGenreResponseDto> gameGenreResponseDtos = new();
 
-            foreach (GameGenre entity in await _gameGenreRepository.GetByGameIdAsync(id))
+            foreach(GameGenre entity in await _gameGenreRepository.GetByGameIdAsync(id))
             {
                 gameGenreResponseDtos.Add(CreateDto(entity));
             }
@@ -106,7 +104,7 @@ namespace Imi.Project.Api.Core.Services
         public async Task<IEnumerable<GameGenreResponseDto>> GetByGenreIdAsync(Guid id)
         {
             List<GameGenreResponseDto> gameGenreResponseDtos = new();
-            foreach (GameGenre entity in await _gameGenreRepository.GetByGenreIdAsync(id))
+            foreach(GameGenre entity in await _gameGenreRepository.GetByGenreIdAsync(id))
             {
                 gameGenreResponseDtos.Add(CreateDto(entity));
             }
@@ -117,7 +115,7 @@ namespace Imi.Project.Api.Core.Services
         public async Task<IEnumerable<GameGenreResponseDto>> ListAllAsync()
         {
             List<GameGenreResponseDto> gameGenreResponseDtos = new();
-            foreach (GameGenre entity in await _gameGenreRepository.ListAllAsync())
+            foreach(GameGenre entity in await _gameGenreRepository.ListAllAsync())
             {
                 gameGenreResponseDtos.Add(CreateDto(entity));
             }
@@ -133,7 +131,7 @@ namespace Imi.Project.Api.Core.Services
 
             ServiceResult<GameGenreResponseDto> serviceResponse = new();
 
-            foreach (Guid genreId in gameResponseDto.GenreId)
+            foreach(Guid genreId in gameResponseDto.GenreId)
             {
                 updateGameGenre.Add(new GameGenreResponseDto
                 {
@@ -143,14 +141,13 @@ namespace Imi.Project.Api.Core.Services
             }
 
             List<GameGenreResponseDto> toDeleteGenre = gameGenreResponseDtos.Except(updateGameGenre).ToList();
-            foreach (GameGenreResponseDto deleteGenre in toDeleteGenre)
+            foreach(GameGenreResponseDto deleteGenre in toDeleteGenre)
             {
                 await DeleteAsync(deleteGenre);
             }
 
             List<GameGenreResponseDto> toAddGenre = updateGameGenre.Except(gameGenreResponseDtos).ToList();
-
-            foreach (GameGenreResponseDto addGenre in toAddGenre)
+            foreach(GameGenreResponseDto addGenre in toAddGenre)
             {
                 serviceResponse = await AddAsync(addGenre);
             }

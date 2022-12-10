@@ -1,22 +1,19 @@
 ﻿using FluentValidation;
 using FreshMvvm;
-using Imi.Project.Mobile.Domain.Models;
+using Imi.Project.Mobile.Domain.Model;
 using Imi.Project.Mobile.Domain.Services;
 using Imi.Project.Mobile.Domain.Validators;
-using Imi.Project.Mobile.Pages;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Windows.Input;
 using Xamarin.Essentials;
 using Xamarin.Forms;
-using Xamarin.Forms.Internals;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class UserInfoViewModel : FreshBasePageModel
+    public class UserInfoViewModel: FreshBasePageModel
     {
         private UserInfo currentUserInfo;
         private readonly IValidator userInfoValidator;
@@ -36,7 +33,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string userName;
         public string UserName
         {
-            get { return userName; }
+            get => userName;
             set
             {
                 userName = value;
@@ -48,7 +45,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string firstName;
         public string FirstName
         {
-            get { return firstName; }
+            get => firstName;
             set
             {
                 firstName = value;
@@ -60,7 +57,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string lastName;
         public string LastName
         {
-            get { return lastName; }
+            get => lastName;
             set
             {
                 lastName = value;
@@ -72,7 +69,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string email;
         public string Email
         {
-            get { return email; }
+            get => email;
             set
             {
                 email = value;
@@ -84,25 +81,21 @@ namespace Imi.Project.Mobile.ViewModels
         private string userEmailError;
         public string UserEmailError
         {
-            get { return userEmailError; }
+            get => userEmailError;
             set
             {
                 userEmailError = value;
                 RaisePropertyChanged(nameof(UserEmailError));
                 RaisePropertyChanged(nameof(UserEmailErrorVisible));
-
             }
         }
 
-        public bool UserEmailErrorVisible
-        {
-            get { return !string.IsNullOrWhiteSpace(UserEmailError); }
-        }
+        public bool UserEmailErrorVisible => !string.IsNullOrWhiteSpace(UserEmailError);
 
         private string password;
         public string Password
         {
-            get { return password; }
+            get => password;
             set
             {
                 password = value;
@@ -114,7 +107,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string userPasswordError;
         public string UserPasswordError
         {
-            get { return userPasswordError; }
+            get => userPasswordError;
             set
             {
                 userPasswordError = value;
@@ -126,7 +119,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string passwordConfirm;
         public string PasswordConfirm
         {
-            get { return passwordConfirm; }
+            get => passwordConfirm;
             set
             {
                 passwordConfirm = value;
@@ -138,7 +131,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string userPasswordConfirmError;
         public string UserPasswordConfirmError
         {
-            get { return userPasswordConfirmError; }
+            get => userPasswordConfirmError;
             set
             {
                 userPasswordConfirmError = value;
@@ -147,15 +140,12 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        public bool PasswordConfirmVisible
-        {
-            get { return !string.IsNullOrWhiteSpace(UserUserNameError); }
-        }
+        public bool PasswordConfirmVisible => !string.IsNullOrWhiteSpace(UserUserNameError);
 
         private string userUserNameError;
         public string UserUserNameError
         {
-            get { return userUserNameError; }
+            get => userUserNameError;
             set
             {
                 userUserNameError = value;
@@ -164,15 +154,12 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        public bool UserUserNameErrorVisible
-        {
-            get { return !string.IsNullOrWhiteSpace(UserUserNameError); }
-        }
+        public bool UserUserNameErrorVisible => !string.IsNullOrWhiteSpace(UserUserNameError);
 
         private string userFirstNameError;
         public string UserFirstNameError
         {
-            get { return userFirstNameError; }
+            get => userFirstNameError;
             set
             {
                 userFirstNameError = value;
@@ -181,15 +168,12 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        public bool UserFirstNameErrorVisible
-        {
-            get { return !string.IsNullOrWhiteSpace(UserFirstNameError); }
-        }
+        public bool UserFirstNameErrorVisible => !string.IsNullOrWhiteSpace(UserFirstNameError);
 
         private string userLastNameError;
         public string UserLastNameError
         {
-            get { return userLastNameError; }
+            get => userLastNameError;
             set
             {
                 userLastNameError = value;
@@ -198,15 +182,12 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        public bool UserLastNameErrorVisible
-        {
-            get { return !string.IsNullOrWhiteSpace(UserLastNameError); }
-        }
+        public bool UserLastNameErrorVisible => !string.IsNullOrWhiteSpace(UserLastNameError);
 
         private string title;
         public string Title
         {
-            get { return title; }
+            get => title;
             set
             {
                 title = value;
@@ -217,7 +198,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string listAddOrDelete;
         public string ListAddOrDelete
         {
-            get { return listAddOrDelete; }
+            get => listAddOrDelete;
             set
             {
                 listAddOrDelete = value;
@@ -228,7 +209,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visableAdd;
         public bool VisableAdd
         {
-            get { return visableAdd; }
+            get => visableAdd;
             set
             {
                 visableAdd = value;
@@ -239,7 +220,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visableCancel;
         public bool VisableCancel
         {
-            get { return visableCancel; }
+            get => visableCancel;
             set
             {
                 visableCancel = value;
@@ -250,7 +231,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visableEdit;
         public bool VisableEdit
         {
-            get { return visableEdit; }
+            get => visableEdit;
             set
             {
                 visableEdit = value;
@@ -261,7 +242,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visableDelete;
         public bool VisableDelete
         {
-            get { return visableDelete; }
+            get => visableDelete;
             set
             {
                 visableDelete = value;
@@ -272,7 +253,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visableSave;
         public bool VisableSave
         {
-            get { return visableSave; }
+            get => visableSave;
             set
             {
                 visableSave = value;
@@ -283,7 +264,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool enableEditData;
         public bool EnableEditData
         {
-            get { return enableEditData; }
+            get => enableEditData;
             set
             {
                 enableEditData = value;
@@ -294,7 +275,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool enableGameList;
         public bool EnableGameList
         {
-            get { return enableGameList; }
+            get => enableGameList;
             set
             {
                 enableGameList = value;
@@ -305,7 +286,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool enableGameAddDeleteList;
         public bool EnableGameAddDeleteList
         {
-            get { return enableGameAddDeleteList; }
+            get => enableGameAddDeleteList;
             set
             {
                 enableGameAddDeleteList = value;
@@ -316,7 +297,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visableSaveGames;
         public bool VisableSaveGames
         {
-            get { return visableSaveGames; }
+            get => visableSaveGames;
             set
             {
                 visableSaveGames = value;
@@ -327,20 +308,13 @@ namespace Imi.Project.Mobile.ViewModels
         private ObservableCollection<GamesInfo> gamesPlayed;
         public ObservableCollection<GamesInfo> GamesPlayed
         {
-            get { return gamesPlayed; }
+            get => gamesPlayed;
             set
             {
                 gamesPlayed = value;
                 HeightListGames = gamesPlayed.Count() * 20;
 
-                if (GamesPlayed.Count() > 0)
-                {
-                    EnableGameList = true;
-                }
-                else
-                {
-                    EnableGameList = false;
-                }
+                EnableGameList = GamesPlayed.Count() > 0;
 
                 RaisePropertyChanged(nameof(GamesPlayed));
             }
@@ -349,7 +323,7 @@ namespace Imi.Project.Mobile.ViewModels
         private ObservableCollection<GamesInfo> gamesToAddDelete;
         public ObservableCollection<GamesInfo> GamesToAddDelete
         {
-            get { return gamesToAddDelete; }
+            get => gamesToAddDelete;
             set
             {
                 gamesToAddDelete = value;
@@ -361,7 +335,7 @@ namespace Imi.Project.Mobile.ViewModels
         private ObservableCollection<GamesInfo> gamesAddDeleteList;
         public ObservableCollection<GamesInfo> GamesToAddDeleteList
         {
-            get { return gamesAddDeleteList; }
+            get => gamesAddDeleteList;
             set
             {
                 gamesAddDeleteList = value;
@@ -372,7 +346,7 @@ namespace Imi.Project.Mobile.ViewModels
         private ICollection<Guid> gameId;
         public ICollection<Guid> GameId
         {
-            get { return gameId; }
+            get => gameId;
             set
             {
                 gameId = value;
@@ -383,7 +357,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool addGame;
         public bool AddGame
         {
-            get { return addGame; }
+            get => addGame;
             set
             {
                 addGame = value;
@@ -394,10 +368,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string gameListText;
         public string GameListText
         {
-            get
-            {
-                return gameListText;
-            }
+            get => gameListText;
             set
             {
                 gameListText = value;
@@ -408,7 +379,7 @@ namespace Imi.Project.Mobile.ViewModels
         private int heightListGames;
         public int HeightListGames
         {
-            get { return heightListGames; }
+            get => heightListGames;
             set
             {
                 heightListGames = value;
@@ -419,7 +390,7 @@ namespace Imi.Project.Mobile.ViewModels
         private int heightListGamesAddDelete;
         public int HeightListGamesAddDelete
         {
-            get { return heightListGamesAddDelete; }
+            get => heightListGamesAddDelete;
             set
             {
                 heightListGamesAddDelete = value;
@@ -430,7 +401,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visableButtonsUsers;
         public bool VisableButtonsUsers
         {
-            get { return visableButtonsUsers; }
+            get => visableButtonsUsers;
             set
             {
                 visableButtonsUsers = value;
@@ -441,7 +412,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visableAddGame;
         public bool VisableAddGame
         {
-            get { return visableAddGame; }
+            get => visableAddGame;
             set
             {
                 visableAddGame = value;
@@ -452,7 +423,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visableDeleteGames;
         public bool VisableDeleteGames
         {
-            get { return visableDeleteGames; }
+            get => visableDeleteGames;
             set
             {
                 visableDeleteGames = value;
@@ -463,7 +434,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visableGamesCancel;
         public bool VisableGamesCancel
         {
-            get { return visableGamesCancel; }
+            get => visableGamesCancel;
             set
             {
                 visableGamesCancel = value;
@@ -474,7 +445,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visablePassword;
         public bool VisablePassword
         {
-            get { return visablePassword; }
+            get => visablePassword;
             set
             {
                 visablePassword = value;
@@ -486,14 +457,13 @@ namespace Imi.Project.Mobile.ViewModels
 
         public override void Init(object initData)
         {
-            if (initData != null)
+            if(initData != null)
             {
                 currentUserInfo = initData as UserInfo;
 
                 LoadUserState();
                 SetRead();
-            }
-            else
+            } else
             {
                 SetAdd();
             }
@@ -524,7 +494,7 @@ namespace Imi.Project.Mobile.ViewModels
             {
                 SaveUserState();
 
-                if (Validate(currentUserInfo))
+                if(Validate(currentUserInfo))
                 {
                     await userService.UpdateUser(currentUserInfo);
                     await CoreMethods.PopPageModel(currentUserInfo, false, true);
@@ -545,22 +515,22 @@ namespace Imi.Project.Mobile.ViewModels
         public ICommand AddUserInfoCommand => new Command(
             async () =>
             {
-                if (FirstName == null)
+                if(FirstName == null)
                 {
                     FirstName = "";
                 }
 
-                if (LastName == null)
+                if(LastName == null)
                 {
                     LastName = "";
                 }
 
-                if (UserName == null)
+                if(UserName == null)
                 {
                     UserName = "";
                 }
 
-                if (Email == null)
+                if(Email == null)
                 {
                     Email = "";
                 }
@@ -570,7 +540,7 @@ namespace Imi.Project.Mobile.ViewModels
                     Password = "";
                 }
 
-                if(PasswordConfirm==null)
+                if(PasswordConfirm == null)
                 {
                     PasswordConfirm = "";
                 }
@@ -578,27 +548,26 @@ namespace Imi.Project.Mobile.ViewModels
                 UserInfo userEdit = new UserInfo
                 {
                     Id = Guid.NewGuid(),
-                    FirstName = this.FirstName,
-                    LastName = this.LastName,
-                    UserName = this.UserName,
-                    Email = this.Email,
-                    GameId = new List<Guid>{},
-                    Password = this.Password,
-                    ConfirmPassword = this.PasswordConfirm
+                    FirstName = FirstName,
+                    LastName = LastName,
+                    UserName = UserName,
+                    Email = Email,
+                    GameId = new List<Guid> { },
+                    Password = Password,
+                    ConfirmPassword = PasswordConfirm
                 };
 
-                foreach (var a in GamesPlayed)
+                foreach(GamesInfo a in GamesPlayed)
                 {
                     userEdit.GameId.Add(a.Id);
                 }
 
-                if (Validate(userEdit))
+                if(Validate(userEdit))
                 {
-                    if (userEdit.Password != userEdit.ConfirmPassword)
+                    if(userEdit.Password != userEdit.ConfirmPassword)
                     {
                         UserPasswordConfirmError = "Password and confirm password aren't the same";
-                    }
-                    else
+                    } else
                     {
                         await userService.AddUser(userEdit);
                         await CoreMethods.PopPageModel(userEdit, false, true);
@@ -619,7 +588,7 @@ namespace Imi.Project.Mobile.ViewModels
 
         public ICommand AddGamesInfoCommand => new Command(async () =>
         {
-            var allGames = await gameService.GetAllGames();
+            IEnumerable<GamesInfo> allGames = await gameService.GetAllGames();
 
             GamesToAddDelete = new ObservableCollection<GamesInfo>(allGames.Where(gamess => !currentUserInfo.GameId.Contains(gamess.Id)));
             GamesToAddDeleteList = new ObservableCollection<GamesInfo>();
@@ -639,7 +608,8 @@ namespace Imi.Project.Mobile.ViewModels
             ListAddOrDelete = "Delete";
 
             AddGame = false;
-            var allGames = await gameService.GetAllGames();
+
+            IEnumerable<GamesInfo> allGames = await gameService.GetAllGames();
 
             GamesToAddDelete = new ObservableCollection<GamesInfo>(allGames.Where(gamess => currentUserInfo.GameId.Contains(gamess.Id)));
 
@@ -665,7 +635,7 @@ namespace Imi.Project.Mobile.ViewModels
 
         public ICommand GameAddDelete => new Command<GamesInfo>((GamesInfo game) =>
         {
-            if (GamesToAddDeleteList == null)
+            if(GamesToAddDeleteList == null)
             {
                 GamesToAddDeleteList = new ObservableCollection<GamesInfo>();
             }
@@ -678,35 +648,32 @@ namespace Imi.Project.Mobile.ViewModels
 
         public ICommand SaveGamesCommand => new Command(() =>
         {
-            if (AddGame)
+            if(AddGame)
             {
 
                 ObservableCollection<GamesInfo> gamesPlayed = GamesPlayed;
-                foreach (GamesInfo newGames in GamesToAddDeleteList)
+                foreach(GamesInfo newGames in GamesToAddDeleteList)
                 {
-
                     gamesPlayed.Add(newGames);
                 }
-                GamesPlayed = new ObservableCollection<GamesInfo>(gamesPlayed.OrderBy(game => game.Id));
 
-            }
-            else
+                GamesPlayed = new ObservableCollection<GamesInfo>(gamesPlayed.OrderBy(game => game.Id));
+            } else
             {
                 ObservableCollection<GamesInfo> gamesPlayed = GamesPlayed;
-                foreach (GamesInfo removeGames in GamesToAddDeleteList)
+                foreach(GamesInfo removeGames in GamesToAddDeleteList)
                 {
-
                     gamesPlayed.Remove(gamesPlayed.Where(gaga => gaga.Id == removeGames.Id).Single());
                 }
 
                 GamesPlayed = gamesPlayed;
             }
+
             GamesToAddDeleteList = new ObservableCollection<GamesInfo>();
             currentUserInfo.GameId = new List<Guid> { };
 
-            foreach (GamesInfo gamePlayed in GamesPlayed)
+            foreach(GamesInfo gamePlayed in GamesPlayed)
             {
-
                 currentUserInfo.GameId.Add(gamePlayed.Id);
             }
 
@@ -722,7 +689,7 @@ namespace Imi.Project.Mobile.ViewModels
 
         public ICommand DeleteCommand => new Command(async () =>
         {
-            if (Xamarin.Essentials.DeviceInfo.Platform == DevicePlatform.Android)
+            if(DeviceInfo.Platform == DevicePlatform.Android)
             {
                 Vibration.Vibrate(TimeSpan.FromSeconds(0.5));
             }
@@ -734,12 +701,12 @@ namespace Imi.Project.Mobile.ViewModels
 
         private bool Validate(UserInfo userInfo)
         {
-            var validationContext = new ValidationContext<UserInfo>(userInfo);
-            var validationResult = userInfoValidator.Validate(validationContext);
+            ValidationContext<UserInfo> validationContext = new ValidationContext<UserInfo>(userInfo);
+            FluentValidation.Results.ValidationResult validationResult = userInfoValidator.Validate(validationContext);
 
-            foreach (var error in validationResult.Errors)
+            foreach(FluentValidation.Results.ValidationFailure error in validationResult.Errors)
             {
-                switch (error.PropertyName)
+                switch(error.PropertyName)
                 {
                     case nameof(userInfo.Email):
                         UserEmailError = error.ErrorMessage;
@@ -769,6 +736,7 @@ namespace Imi.Project.Mobile.ViewModels
                         break;
                 }
             }
+
             return validationResult.IsValid;
         }
 
@@ -791,7 +759,7 @@ namespace Imi.Project.Mobile.ViewModels
             currentUserInfo = new UserInfo
             {
                 Id = Guid.Empty,
-                GameId = new List<Guid>{}
+                GameId = new List<Guid> { }
             };
 
             GamesPlayed = new ObservableCollection<GamesInfo>();
@@ -814,11 +782,11 @@ namespace Imi.Project.Mobile.ViewModels
             EnableEditData = false;
             EnableGameList = false;
 
-            var allGames = await gameService.GetAllGames();
+            IEnumerable<GamesInfo> allGames = await gameService.GetAllGames();
 
             GamesPlayed = new ObservableCollection<GamesInfo>(allGames.Where(gamess => currentUserInfo.GameId.Contains(gamess.Id)));
 
-            if (GamesPlayed.Count() > 0)
+            if(GamesPlayed.Count() > 0)
             {
                 EnableGameList = true;
             }

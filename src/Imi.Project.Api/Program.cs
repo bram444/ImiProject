@@ -5,7 +5,6 @@ using Imi.Project.Api.Core.Services;
 using Imi.Project.Api.Infrastructure;
 using Imi.Project.Api.Infrastructure.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -67,7 +66,7 @@ options.AddPolicy("OnlyLoyalMembers", policy =>
     {
         var registrationClaimValue = context.User.Claims
                      .SingleOrDefault(c => c.Type == "registration-date")?.Value;
-        if (DateTime.TryParseExact(registrationClaimValue, "yy-MM-dd",
+        if(DateTime.TryParseExact(registrationClaimValue, "yy-MM-dd",
            CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal,
            out var registrationTime))
         {
@@ -82,7 +81,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+if(app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();

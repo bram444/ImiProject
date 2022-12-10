@@ -1,25 +1,23 @@
 ﻿using FreshMvvm;
-using Imi.Project.Mobile.Domain.Services;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows.Input;
-using Xamarin.Forms;
 using Xamarin.Essentials;
+using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class MainViewModel:FreshBasePageModel
+    public class MainViewModel: FreshBasePageModel
     {
-        private readonly IGameService gameService;
-        private readonly IGenreService genreService;
-        private readonly IPublisherService publisherService;
-        private readonly IUserService userService;
+        public MainViewModel()
+        {
+            AppName = AppInfo.Name;
+
+            AppVersion = AppInfo.VersionString;
+        }
 
         public string appName;
         public string AppName
         {
-            get { return appName; }
+            get => appName;
             set
             {
                 appName = value;
@@ -30,7 +28,7 @@ namespace Imi.Project.Mobile.ViewModels
         public string appVersion;
         public string AppVersion
         {
-            get { return appVersion; }
+            get => appVersion;
             set
             {
                 appVersion = value;
@@ -38,25 +36,12 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        public MainViewModel(IGameService gameService, IGenreService genreService, IPublisherService publisherService, IUserService userService)
-        {
-            this.gameService = gameService;
-            this.genreService = genreService;
-            this.publisherService = publisherService;
-            this.userService = userService;
-
-            AppName = AppInfo.Name;
-
-            AppVersion = AppInfo.VersionString;
-
-        }
-
         public ICommand OpenGame => new Command(async () =>
         {
             await CoreMethods.PushPageModel<GameViewModel>(true);
         });
 
-        public ICommand OpenUser=> new Command(async () =>
+        public ICommand OpenUser => new Command(async () =>
         {
             await CoreMethods.PushPageModel<UserViewModel>(true);
         });
@@ -66,7 +51,7 @@ namespace Imi.Project.Mobile.ViewModels
             await CoreMethods.PushPageModel<PublisherViewModel>(true);
         });
 
-        public ICommand OpenGenre=> new Command(async () =>
+        public ICommand OpenGenre => new Command(async () =>
         {
             await CoreMethods.PushPageModel<GenreViewModel>(true);
         });

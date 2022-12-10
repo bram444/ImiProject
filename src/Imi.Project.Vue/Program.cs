@@ -11,7 +11,7 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultDatabase"
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IGameGenreRepository, GameGenreRepository>();
-builder.Services.AddScoped<IGameRepository,GameRepository>();
+builder.Services.AddScoped<IGameRepository, GameRepository>();
 builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
 builder.Services.AddScoped<IUserGameRepository, UserGameRepository>();
@@ -21,7 +21,7 @@ builder.Services.AddCors();
 
 var app = builder.Build();
 
-if (!app.Environment.IsDevelopment())
+if(!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
     app.UseHsts();

@@ -1,17 +1,13 @@
 ﻿using FreshMvvm;
 using Imi.Project.Mobile.Domain.Services;
-using Imi.Project.Mobile.Pages;
 using Imi.Project.Mobile.ViewModels;
 using Plugin.FirebasePushNotification;
-using System;
-using System.Net;
 using Xamarin.Essentials;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
 namespace Imi.Project.Mobile
 {
-    public partial class App : Application
+    public partial class App: Application
     {
         public App()
         {
@@ -19,12 +15,11 @@ namespace Imi.Project.Mobile
 
             FreshIOC.Container.Register<IGameService, GameInfoService>();
             FreshIOC.Container.Register<IUserService, UserInfoService>();
-            FreshIOC.Container.Register<IGenreService,GenreInfoService>();
+            FreshIOC.Container.Register<IGenreService, GenreInfoService>();
             FreshIOC.Container.Register<IPublisherService, PublisherInfoService>();
 
-
             MainPage = new FreshNavigationContainer(FreshPageModelResolver.ResolvePageModel<MainViewModel>());
-            if (DeviceInfo.Platform == DevicePlatform.Android)
+            if(DeviceInfo.Platform == DevicePlatform.Android)
             {
                 CrossFirebasePushNotification.Current.OnTokenRefresh += Current_OnTokenFresh;
             }

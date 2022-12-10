@@ -1,18 +1,15 @@
 ﻿using FreshMvvm;
-using Imi.Project.Mobile.Domain.Models;
+using Imi.Project.Mobile.Domain.Model;
 using Imi.Project.Mobile.Domain.Services;
-using Imi.Project.Mobile.Pages;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class PublisherViewModel : FreshBasePageModel
+    public class PublisherViewModel: FreshBasePageModel
     {
         private PublisherInfo currentPublisherInfo;
         private readonly IPublisherService publisherService;
@@ -27,7 +24,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string title;
         public string Title
         {
-            get { return title; }
+            get => title;
             set
             {
                 title = value;
@@ -38,7 +35,7 @@ namespace Imi.Project.Mobile.ViewModels
         private ObservableCollection<PublisherInfo> publisherInfo;
         public ObservableCollection<PublisherInfo> PublisherInfo
         {
-            get { return publisherInfo; }
+            get => publisherInfo;
             set
             {
                 publisherInfo = value;
@@ -49,7 +46,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string publisherName;
         public string PublisherName
         {
-            get { return publisherName; }
+            get => publisherName;
             set
             {
                 publisherName = value;
@@ -60,7 +57,7 @@ namespace Imi.Project.Mobile.ViewModels
         private string publisherCountry;
         public string PublisherCountry
         {
-            get { return publisherCountry; }
+            get => publisherCountry;
             set
             {
                 publisherCountry = value;
@@ -71,7 +68,7 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visableAdd;
         public bool VisableAdd
         {
-            get { return visableAdd; }
+            get => visableAdd;
             set
             {
                 visableAdd = value;
@@ -81,7 +78,7 @@ namespace Imi.Project.Mobile.ViewModels
 
         #endregion
 
-        public async override void Init(object initData)
+        public override async void Init(object initData)
         {
             base.Init(initData);
 
@@ -90,11 +87,11 @@ namespace Imi.Project.Mobile.ViewModels
             await RefreshPublisher();
         }
 
-        public async override void ReverseInit(object initData)
+        public override async void ReverseInit(object initData)
         {
             base.ReverseInit(initData);
 
-            if (initData is PublisherInfo)
+            if(initData is PublisherInfo)
             {
                 currentPublisherInfo = initData as PublisherInfo;
             }
