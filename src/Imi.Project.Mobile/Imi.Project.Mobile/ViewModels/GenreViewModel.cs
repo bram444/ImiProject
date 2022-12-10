@@ -59,7 +59,6 @@ namespace Imi.Project.Mobile.ViewModels
         }
 
         private string genreDescription;
-
         public string GenreDescription
         {
             get { return genreDescription; }
@@ -126,11 +125,11 @@ namespace Imi.Project.Mobile.ViewModels
         }
 
         public ICommand AddGenreItem => new Command<GenreInfo>(
-                async (GenreInfo genreInfo) =>
-                {
-                    SaveGenreState();
-                    await CoreMethods.PushPageModel<GenreInfoViewModel>(genreInfo);
-                });
+            async (GenreInfo genreInfo) =>
+            {
+                SaveGenreState();
+                await CoreMethods.PushPageModel<GenreInfoViewModel>(genreInfo);
+            });
 
         private void LoadGenreState()
         {

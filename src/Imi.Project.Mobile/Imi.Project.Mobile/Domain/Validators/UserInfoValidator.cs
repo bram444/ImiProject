@@ -27,6 +27,14 @@ namespace Imi.Project.Mobile.Domain.Validators
             RuleFor(userInfo => userInfo.LastName)
                 .NotEmpty()
                 .WithMessage("Lastname cannot be empty");
+
+            RuleFor(userinfo => userinfo.Password)
+                .NotEmpty()
+                .WithMessage("Password cannot be empty")
+                .MinimumLength(6)
+                .WithMessage("Password must be longer than 6")
+                .MaximumLength(100)
+                .WithMessage("Password must be shorter than 100");
         }
     }
 }

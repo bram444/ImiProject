@@ -5,7 +5,7 @@
              x:Class="Imi.Project.Mobile.Pages.UserPage"
              xmlns:bhv="clr-namespace:Imi.Project.Mobile.Behaviors"
              Title="{Binding Title}">
-    
+
     <ContentPage.Content>
         <StackLayout>
             <Button x:Name="btnAdd" Text="Add" Command="{Binding AddUserItem}" Style="{StaticResource Add}" IsVisible="{Binding VisableAdd}"/>
@@ -14,19 +14,19 @@
                     <bhv:EventToCommandBehavior
                         EventName="ItemTapped"
                         Command="{Binding AddUserItem}"
-                        EventArgsConverter="{StaticResource ItemTappedEventArgsConv}" />
+                        EventArgsConverter="{StaticResource ItemTappedEventArgsConv}"/>
                 </ListView.Behaviors>
                 <ListView.ItemTemplate>
-                        <DataTemplate>
+                    <DataTemplate>
                         <ViewCell>
                             <FlexLayout Style="{StaticResource AlignItems}">
                                 <Label Text="{Binding UserName}" Style="{StaticResource Title}"/>
                                 <Label Text="{Binding Email}"/>
                             </FlexLayout>
-                            </ViewCell>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

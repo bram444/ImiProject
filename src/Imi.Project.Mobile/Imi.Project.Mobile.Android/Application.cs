@@ -42,10 +42,6 @@ namespace Imi.Project.Mobile.Droid
             {
 
             };
-
-
         }
-
-
     }
 }

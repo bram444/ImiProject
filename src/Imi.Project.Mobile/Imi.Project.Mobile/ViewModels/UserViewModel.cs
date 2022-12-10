@@ -18,8 +18,14 @@ namespace Imi.Project.Mobile.ViewModels
 
         private UserInfo currentUserInfo;
 
-        private string userName;
+        public UserViewModel(IUserService userService)
+        {
+            this.userService = userService;
+        }
 
+        #region Properties
+
+        private string userName;
         public string UserName
         {
             get { return userName; }
@@ -30,9 +36,7 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-
         private string firstName;
-
         public string FirstName
         {
             get { return firstName; }
@@ -44,7 +48,6 @@ namespace Imi.Project.Mobile.ViewModels
         }
 
         private string lastName;
-
         public string LastName
         {
             get { return lastName; }
@@ -56,7 +59,6 @@ namespace Imi.Project.Mobile.ViewModels
         }
 
         private string email;
-
         public string Email
         {
             get { return email; }
@@ -100,10 +102,7 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        public UserViewModel(IUserService userService)
-        {
-            this.userService = userService;
-        }
+        #endregion
 
         public async override void Init(object initData)
         {
@@ -133,28 +132,17 @@ namespace Imi.Project.Mobile.ViewModels
 
             Title = "Loading";
 
-            UserInfo = new ObservableCollection<UserInfo>( await userService.GetAllUser());
+            UserInfo = new ObservableCollection<UserInfo>(await userService.GetAllUser());
 
             VisableAdd = true;
 
-                Title = "Users";
+            Title = "Users";
 
             currentUserInfo = new UserInfo
             {
                 Id = Guid.NewGuid()
             };
 
-            //if (currentUserInfo != null && currentUserInfo.Id != Guid.Empty)
-            //{
-            //    currentUserInfo = await userService.UserById(currentUserInfo.Id);
-            //}
-            //else
-            //{
-            //    currentUserInfo = new UserInfo
-            //    {
-            //        Id = Guid.NewGuid()
-            //    };
-            //}
             LoadUserState();
         }
 

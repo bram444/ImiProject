@@ -3,53 +3,103 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:bhv="clr-namespace:Imi.Project.Mobile.Behaviors"
              xmlns:views="clr-namespace:Imi.Project.Mobile.Pages"
              x:Class="Imi.Project.Mobile.Pages.UserInfoPage"
              Style="{StaticResource PageStyle}"
              mc:Ignorable="d"
              Title="{Binding Title}">
-    
     <ContentPage.Content>
+
         <ScrollView>
-            <StackLayout Padding="10">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <StackLayout Grid.Row="0" Grid.Column="0">
-                        <Label Text="Username"/>
-                        <Entry x:Name="txtUserName" Keyboard="Text" Text="{Binding UserName}" IsEnabled="{Binding EnableEditData}"/>
-                        <Label x:Name="lblUserNameError" Style="{StaticResource ErrorLabel}" Text="{Binding UserUserNameError}"/>
-                    </StackLayout>
-                    <StackLayout  Grid.Row="0" Grid.Column="1">
-                        <Label Text="Firstname"/>
-                        <Entry x:Name="txtFirstName" Keyboard="Text" Text="{Binding FirstName}" IsEnabled="{Binding EnableEditData}"/>
-                        <Label x:Name="lblFirstNameError" Style="{StaticResource ErrorLabel}" Text="{Binding UserFirstNameError}"/>
-                    </StackLayout>
-                    <StackLayout  Grid.Row="1" Grid.Column="0">
-                        <Label Text="Lastname"/>
-                        <Entry x:Name="txtLastName" Keyboard="Text" Text="{Binding LastName}" IsEnabled="{Binding EnableEditData}"/>
-                        <Label x:Name="lblLastNameError" Style="{StaticResource ErrorLabel}" Text="{Binding UserLastNameError}"/>
-                    </StackLayout>
-                    <StackLayout  Grid.Row="1" Grid.Column="1">
-                        <Label Text="E-mail"/>
-                        <Entry x:Name="txtEmail" Keyboard="Email" Text="{Binding Email}" IsEnabled="{Binding EnableEditData}"/>
-                        <Label x:Name="lblEmailError" Style="{StaticResource ErrorLabel}" Text="{Binding UserEmailError}"/>
-                    </StackLayout>
-                </Grid>
-                <FlexLayout Style="{StaticResource ButtonAlign}">
+            <Grid  Padding="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <StackLayout Grid.Row="0" Grid.Column="0">
+                    <Label Text="Username"/>
+                    <Entry x:Name="txtUserName" Keyboard="Text" Text="{Binding UserName}" IsEnabled="{Binding EnableEditData}"/>
+                    <Label x:Name="lblUserNameError" Style="{StaticResource ErrorLabel}" Text="{Binding UserUserNameError}"/>
+                </StackLayout>
+                <StackLayout  Grid.Row="0" Grid.Column="1">
+                    <Label Text="Firstname"/>
+                    <Entry x:Name="txtFirstName" Keyboard="Text" Text="{Binding FirstName}" IsEnabled="{Binding EnableEditData}"/>
+                    <Label x:Name="lblFirstNameError" Style="{StaticResource ErrorLabel}" Text="{Binding UserFirstNameError}"/>
+                </StackLayout>
+                <StackLayout  Grid.Row="1" Grid.Column="0">
+                    <Label Text="Lastname"/>
+                    <Entry x:Name="txtLastName" Keyboard="Text" Text="{Binding LastName}" IsEnabled="{Binding EnableEditData}"/>
+                    <Label x:Name="lblLastNameError" Style="{StaticResource ErrorLabel}" Text="{Binding UserLastNameError}"/>
+                </StackLayout>
+                <StackLayout  Grid.Row="1" Grid.Column="1">
+                    <Label Text="E-mail"/>
+                    <Entry x:Name="txtEmail" Keyboard="Email" Text="{Binding Email}" IsEnabled="{Binding EnableEditData}"/>
+                    <Label x:Name="lblEmailError" Style="{StaticResource ErrorLabel}" Text="{Binding UserEmailError}"/>
+                </StackLayout>
+                <StackLayout  Grid.Row="2" Grid.Column="0" IsVisible="{Binding VisablePassword}">
+                    <Label Text="Password"/>
+                    <Entry Keyboard="Text" Text="{Binding Password}" IsPassword="True"/>
+                    <Label Style="{StaticResource ErrorLabel}" Text="{Binding UserPasswordError}"/>
+                </StackLayout>
+                <StackLayout  Grid.Row="2" Grid.Column="1" IsVisible="{Binding VisablePassword}">
+                    <Label Text="Password confirm"/>
+                    <Entry Keyboard="Text" Text="{Binding PasswordConfirm}" IsPassword="True"/>
+                    <Label Style="{StaticResource ErrorLabel}" Text="{Binding UserPasswordConfirmError}"/>
+                </StackLayout>
+                <StackLayout Grid.Row="3" Grid.ColumnSpan="2" IsVisible="{Binding EnableGameList}" VerticalOptions="EndAndExpand">
+                    <Label Text="All Games from the user plays:"/>
+                    <ListView ItemsSource="{Binding GamesPlayed}" HeightRequest="{Binding HeightListGames}" RowHeight="20">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <TextCell Text="{Binding Name}"/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackLayout>
+                <Button Grid.Row="4" Grid.Column="0" Text="Add games" Command="{Binding AddGamesInfoCommand}" IsVisible="{Binding VisableAddGame}" Style="{StaticResource Add}"/>
+                <Button Grid.Row="4" Grid.Column="1" Text="Delete games" Command="{Binding DeleteGamesCommand}" IsVisible="{Binding VisableDeleteGames}" Style="{StaticResource Delete}"/>
+                <Button Grid.Row="5" Grid.Column="0" Text="Save games list" Command="{Binding SaveGamesCommand}" IsVisible="{Binding VisableSaveGames}" Style="{StaticResource Save}"/>
+                <Button Grid.Row="5" Grid.Column="1" Text="Cancel games list" Command="{Binding CancelGamesCommand}" IsVisible="{Binding VisableGamesCancel}" Style="{StaticResource Cancel}"/>
+                <StackLayout IsVisible="{Binding EnableGameAddDeleteList}" Grid.Row="6" Grid.ColumnSpan="2" VerticalOptions="EndAndExpand">
+                    <Label Text="{Binding ListAddOrDelete}"/>
+                    <ListView ItemsSource="{Binding GamesToAddDelete}" HeightRequest="{Binding HeightListGamesAddDelete}" RowHeight="125">
+                        <ListView.Behaviors>
+                            <bhv:EventToCommandBehavior
+                                EventName="ItemTapped"
+                                Command="{Binding GameAddDelete}"
+                                EventArgsConverter="{StaticResource ItemTappedEventArgsConv}"/>
+                        </ListView.Behaviors>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <FlexLayout Style="{StaticResource AlignItems}">
+                                        <Label Text="{Binding Name}" Style="{StaticResource Title}"/>
+                                        <Label Text="{Binding Price}"/>
+                                    </FlexLayout>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackLayout>
+                <FlexLayout Style="{StaticResource ButtonAlign}" Grid.Row="7" Grid.ColumnSpan="2" IsVisible="{Binding VisableButtonsUsers}">
                     <Button x:Name="btnAdd" Text="Add" HorizontalOptions="Center" Command="{Binding AddUserInfoCommand}" IsVisible="{Binding VisableAdd}" Style="{StaticResource Add}"/>
                     <Button x:Name="btnEdit" Text="Edit" HorizontalOptions="Center" Command="{Binding EditCommand}" IsVisible="{Binding VisableEdit}" Style="{StaticResource Edit}"/>
                     <Button x:Name="btnSave" Text="Save" HorizontalOptions="Center" Command="{Binding SaveUserInfoCommand}" IsVisible="{Binding VisableSave}" Style="{StaticResource Save}"/>
                     <Button x:Name="btnCancel" Text="Cancel" HorizontalOptions="Center" Command="{Binding CancelCommand}" IsVisible="{Binding VisableCancel}" Style="{StaticResource Cancel}"/>
                     <Button x:Name="btnDelete" Text="Delete" HorizontalOptions="Center" Command="{Binding DeleteCommand}" IsVisible="{Binding VisableDelete}" Style="{StaticResource Delete}"/>
                 </FlexLayout>
-            </StackLayout>
+            </Grid>
         </ScrollView>
     </ContentPage.Content>
 </ContentPage>

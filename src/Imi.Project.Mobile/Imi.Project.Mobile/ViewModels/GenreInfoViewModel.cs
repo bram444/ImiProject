@@ -18,9 +18,7 @@ namespace Imi.Project.Mobile.ViewModels
     {
         private GenreInfo currentGenreInfo;
         private readonly IValidator genreInfoValidator;
-
         private readonly IGenreService genreService;
-
         private readonly IGameService gameService;
 
         public GenreInfoViewModel(IGenreService genreService, IGameService gameService)
@@ -215,6 +213,7 @@ namespace Imi.Project.Mobile.ViewModels
                 {
                     GenreName = "";
                 }
+
                 if (GenreDescription == null)
                 {
                     GenreDescription = "";

@@ -50,7 +50,6 @@ namespace Imi.Project.Mobile.ViewModels
         }
 
         private string gameName;
-
         public string GameName
         {
             get { return gameName; }
@@ -62,7 +61,6 @@ namespace Imi.Project.Mobile.ViewModels
         }
 
         private float gamePrice;
-
         public float GamePrice
         {
             get { return gamePrice; }
