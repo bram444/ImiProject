@@ -53,6 +53,8 @@ namespace Imi.Project.Mobile.Domain.Services
 
         private async Task<TOut> CallApi<TOut, TIn>(string uri, TIn entity, HttpMethod httpMethod)
         {
+            TOut result = default;
+
             HttpResponseMessage response;
             if (httpMethod == HttpMethod.Post)
             {
@@ -66,7 +68,7 @@ namespace Imi.Project.Mobile.Domain.Services
             {
                 response = await DeleteAsync(uri);
             }
-            TOut result = await response.Content.ReadAsAsync<TOut>();
+            result = await response.Content.ReadAsAsync<TOut>();
             return result;
         }
     }

@@ -9,73 +9,16 @@ using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class UserViewModel: FreshBasePageModel
+    public class UserViewModel: BaseViewModel
     {
         private readonly IUserService userService;
-        private UserInfo currentUserInfo;
 
-        public UserViewModel(IUserService userService)
+        public UserViewModel(IUserService userService) : base()
         {
             this.userService = userService;
         }
 
         #region Properties
-
-        private string userName;
-        public string UserName
-        {
-            get => userName;
-            set
-            {
-                userName = value;
-                RaisePropertyChanged(nameof(UserName));
-            }
-        }
-
-        private string firstName;
-        public string FirstName
-        {
-            get => firstName;
-            set
-            {
-                firstName = value;
-                RaisePropertyChanged(nameof(FirstName));
-            }
-        }
-
-        private string lastName;
-        public string LastName
-        {
-            get => lastName;
-            set
-            {
-                lastName = value;
-                RaisePropertyChanged(nameof(LastName));
-            }
-        }
-
-        private string email;
-        public string Email
-        {
-            get => email;
-            set
-            {
-                email = value;
-                RaisePropertyChanged(nameof(Email));
-            }
-        }
-
-        private string title;
-        public string Title
-        {
-            get => title;
-            set
-            {
-                title = value;
-                RaisePropertyChanged(nameof(Title));
-            }
-        }
-
         private ObservableCollection<UserInfo> userInfo;
         public ObservableCollection<UserInfo> UserInfo
         {
@@ -86,42 +29,24 @@ namespace Imi.Project.Mobile.ViewModels
                 RaisePropertyChanged(nameof(UserInfo));
             }
         }
-
-        private bool visableAdd;
-        public bool VisableAdd
-        {
-            get => visableAdd;
-            set
-            {
-                visableAdd = value;
-                RaisePropertyChanged(nameof(VisableAdd));
-            }
-        }
-
         #endregion
 
         public override async void Init(object initData)
         {
             base.Init(initData);
 
-            currentUserInfo = initData as UserInfo;
 
-            await RefreshUser();
+            await Refresh();
         }
 
         public override async void ReverseInit(object initData)
         {
             base.ReverseInit(initData);
 
-            if(initData is UserInfo)
-            {
-                currentUserInfo = initData as UserInfo;
-            }
-
-            await RefreshUser();
+            await Refresh();
         }
 
-        private async Task RefreshUser()
+        public override async Task Refresh()
         {
             UserInfo = null;
 
@@ -134,36 +59,12 @@ namespace Imi.Project.Mobile.ViewModels
             VisableAdd = true;
 
             Title = "Users";
-
-            currentUserInfo = new UserInfo
-            {
-                Id = Guid.NewGuid()
-            };
-
-            LoadUserState();
         }
 
         public ICommand AddUserItem => new Command<UserInfo>(
             async (UserInfo userInfo) =>
             {
-                SaveUserState();
                 await CoreMethods.PushPageModel<UserInfoViewModel>(userInfo, false, true);
             });
-
-        private void LoadUserState()
-        {
-            Email = currentUserInfo.Email;
-            FirstName = currentUserInfo.FirstName;
-            LastName = currentUserInfo.LastName;
-            UserName = currentUserInfo.UserName;
-        }
-
-        private void SaveUserState()
-        {
-            currentUserInfo.Email = Email;
-            currentUserInfo.FirstName = FirstName;
-            currentUserInfo.LastName = LastName;
-            currentUserInfo.UserName = UserName;
-        }
     }
 }

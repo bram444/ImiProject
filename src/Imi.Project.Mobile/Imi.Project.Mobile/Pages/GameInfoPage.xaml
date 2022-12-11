@@ -26,8 +26,8 @@
                     </Grid.RowDefinitions>
                     <StackLayout Grid.Column="0">
                         <Label Text="Name"/>
-                        <Entry x:Name="txtName" Keyboard="Text" Text="{Binding GameName}" IsEnabled="{Binding EnableEditData}"/>
-                        <Label x:Name="lblNameError" Text="{Binding GameError}" Style="{StaticResource ErrorLabel}"/>
+                        <Entry x:Name="txtName" Keyboard="Text" Text="{Binding Name}" IsEnabled="{Binding EnableEditData}"/>
+                        <Label x:Name="lblNameError" Text="{Binding NameError}" Style="{StaticResource ErrorLabel}"/>
                     </StackLayout>
                     <StackLayout Grid.Column="1">
                         <Label Text="Price"/>

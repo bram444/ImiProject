@@ -13,48 +13,22 @@ using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class GameInfoViewModel: FreshBasePageModel
+    public class GameInfoViewModel: BaseInfoViewModel
     {
         private GamesInfo currentGameInfo;
-        private readonly IValidator gameInfoValidator;
-        private readonly IGameService gameService;
         private readonly IGenreService genreService;
         private readonly IPublisherService publisherService;
 
         public GameInfoViewModel(IGameService gameService, IGenreService genreService, IPublisherService publisherService)
+            :base(gameService)
         {
-            this.gameService = gameService;
             this.genreService = genreService;
             this.publisherService = publisherService;
 
-            gameInfoValidator = new GameInfoValidator();
+            InfoValidator = new GameInfoValidator();
         }
 
         #region Properties
-
-        private string title;
-        public string Title
-        {
-            get => title;
-            set
-            {
-                title = value;
-                RaisePropertyChanged(nameof(Title));
-            }
-        }
-
-        private string gameName;
-        public string GameName
-        {
-            get => gameName;
-            set
-            {
-                gameName = value;
-                GameError = null;
-                RaisePropertyChanged(nameof(GameName));
-            }
-        }
-
         private string gamePrice;
         public string GamePrice
         {
@@ -66,20 +40,6 @@ namespace Imi.Project.Mobile.ViewModels
                 RaisePropertyChanged(nameof(GamePrice));
             }
         }
-
-        private string gameError;
-        public string GameError
-        {
-            get => gameError;
-            set
-            {
-                gameError = value;
-                RaisePropertyChanged(nameof(GameError));
-                RaisePropertyChanged(nameof(GameErrorVisible));
-            }
-        }
-
-        public bool GameErrorVisible => !string.IsNullOrWhiteSpace(GameError);
 
         private string publisherError;
         public string PublisherError
@@ -108,61 +68,6 @@ namespace Imi.Project.Mobile.ViewModels
         }
 
         public bool GamePriceErrorVisible => !string.IsNullOrWhiteSpace(GamePriceError);
-
-        private bool visableAdd;
-        public bool VisableAdd
-        {
-            get => visableAdd;
-            set
-            {
-                visableAdd = value;
-                RaisePropertyChanged(nameof(VisableAdd));
-            }
-        }
-
-        private bool visableCancel;
-        public bool VisableCancel
-        {
-            get => visableCancel;
-            set
-            {
-                visableCancel = value;
-                RaisePropertyChanged(nameof(VisableCancel));
-            }
-        }
-
-        private bool visableEdit;
-        public bool VisableEdit
-        {
-            get => visableEdit;
-            set
-            {
-                visableEdit = value;
-                RaisePropertyChanged(nameof(VisableEdit));
-            }
-        }
-
-        private bool visableDelete;
-        public bool VisableDelete
-        {
-            get => visableDelete;
-            set
-            {
-                visableDelete = value;
-                RaisePropertyChanged(nameof(VisableDelete));
-            }
-        }
-
-        private bool visableSave;
-        public bool VisableSave
-        {
-            get => visableSave;
-            set
-            {
-                visableSave = value;
-                RaisePropertyChanged(nameof(VisableSave));
-            }
-        }
 
         private bool enableFirstGenre;
         public bool EnableFirstGenre
@@ -194,17 +99,6 @@ namespace Imi.Project.Mobile.ViewModels
             {
                 enableThirdGenre = value;
                 RaisePropertyChanged(nameof(EnableThirdGenre));
-            }
-        }
-
-        private bool enableEditData;
-        public bool EnableEditData
-        {
-            get => enableEditData;
-            set
-            {
-                enableEditData = value;
-                RaisePropertyChanged(nameof(EnableEditData));
             }
         }
 
@@ -350,7 +244,7 @@ namespace Imi.Project.Mobile.ViewModels
                     Id = currentGameInfo.Id,
                     GenreId = gameGenreId,
                     PublisherId = ChosenPublisher.Id,
-                    Name = GameName,
+                    Name = this.Name,
                     Price = 0
                 };
 
@@ -361,7 +255,7 @@ namespace Imi.Project.Mobile.ViewModels
 
                 if(Validate(gameValidate))
                 {
-                    await gameService.UpdateGame(gameValidate);
+                    await GameService.UpdateGame(gameValidate);
                     await CoreMethods.PopPageModel(gameValidate, false, true);
                 }
             });
@@ -369,9 +263,9 @@ namespace Imi.Project.Mobile.ViewModels
         public ICommand AddGameInfoCommand => new Command(
             async () =>
             {
-                if(GameName == null)
+                if(Name == null)
                 {
-                    GameName = "";
+                    Name = "";
                 }
 
                 List<GenreInfo> allGenreId = new List<GenreInfo>
@@ -393,7 +287,7 @@ namespace Imi.Project.Mobile.ViewModels
                 GamesInfo gameEdit = new GamesInfo
                 {
                     Id = Guid.NewGuid(),
-                    Name = GameName,
+                    Name = this.Name,
                     Price = 0.0f,
                     GenreId = gameGenreId,
                     PublisherId = ChosenPublisher.Id
@@ -406,7 +300,7 @@ namespace Imi.Project.Mobile.ViewModels
 
                 if(Validate(gameEdit))
                 {
-                    await gameService.AddGames(gameEdit);
+                    await GameService.AddGames(gameEdit);
                     await CoreMethods.PopPageModel(gameEdit, false, true);
                 }
             });
@@ -429,7 +323,7 @@ namespace Imi.Project.Mobile.ViewModels
                 Vibration.Vibrate(TimeSpan.FromSeconds(0.5));
             }
 
-            await gameService.DeleteGame(currentGameInfo.Id);
+            await GameService.DeleteGame(currentGameInfo.Id);
             await CoreMethods.PopPageModel(new GamesInfo(), false, true);
         });
 
@@ -444,7 +338,7 @@ namespace Imi.Project.Mobile.ViewModels
 
             if(currentGameInfo != null)
             {
-                GameName = currentGameInfo.Name;
+                Name = currentGameInfo.Name;
                 GamePrice = currentGameInfo.Price.ToString();
                 PublisherId = currentGameInfo.PublisherId;
                 GenreId = currentGameInfo.GenreId;
@@ -504,14 +398,14 @@ namespace Imi.Project.Mobile.ViewModels
         private bool Validate(GamesInfo gamesInfo)
         {
             ValidationContext<GamesInfo> validationContext = new ValidationContext<GamesInfo>(gamesInfo);
-            FluentValidation.Results.ValidationResult validationResult = gameInfoValidator.Validate(validationContext);
+            FluentValidation.Results.ValidationResult validationResult = InfoValidator.Validate(validationContext);
 
             foreach(FluentValidation.Results.ValidationFailure error in validationResult.Errors)
             {
                 switch(error.PropertyName)
                 {
                     case nameof(gamesInfo.Name):
-                        GameError = error.ErrorMessage;
+                        Name = error.ErrorMessage;
                         break;
 
                     case nameof(gamesInfo.PublisherId):
@@ -529,21 +423,15 @@ namespace Imi.Project.Mobile.ViewModels
             return validationResult.IsValid;
         }
 
-        private async void SetAdd()
+        public override async void SetAdd()
         {
             Title = "New game";
 
-            EnableEditData = true;
             EnableFirstGenre = true;
             EnableSecondGenre = true;
             EnableThirdGenre = true;
             EnablePublisher = true;
 
-            VisableAdd = true;
-            VisableCancel = false;
-            VisableEdit = false;
-            VisableDelete = false;
-            VisableSave = false;
 
             List<GenreInfo> selectGenres = new List<GenreInfo> { new GenreInfo
             {
@@ -576,43 +464,35 @@ namespace Imi.Project.Mobile.ViewModels
             Publishers = selectPublisher;
 
             ChosenPublisher = Publishers.FirstOrDefault();
+
+            base.SetAdd();
         }
 
-        private void SetRead()
+        public override void SetRead()
         {
             if(currentGameInfo != null)
             {
                 Title = currentGameInfo.Name;
             }
 
-            EnableEditData = false;
             EnableFirstGenre = false;
             EnableSecondGenre = false;
             EnableThirdGenre = false;
             EnablePublisher = false;
 
-            VisableAdd = false;
-            VisableCancel = false;
-            VisableEdit = true;
-            VisableDelete = true;
-            VisableSave = false;
+            base.SetRead();
         }
 
-        private void SetEdit()
+        public override void SetEdit()
         {
             Title = "Edit " + currentGameInfo.Name;
 
-            EnableEditData = true;
             EnableFirstGenre = true;
             EnableSecondGenre = true;
             EnableThirdGenre = true;
             EnablePublisher = true;
-
-            VisableAdd = false;
-            VisableCancel = true;
-            VisableEdit = false;
-            VisableDelete = false;
-            VisableSave = true;
+            
+            base.SetEdit();
         }
     }
 }

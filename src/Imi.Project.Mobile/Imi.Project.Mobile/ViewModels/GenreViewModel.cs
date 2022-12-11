@@ -9,29 +9,16 @@ using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class GenreViewModel: FreshBasePageModel
+    public class GenreViewModel: BaseViewModel
     {
         private readonly IGenreService genreService;
 
-        private GenreInfo currentGenreInfo;
-
-        public GenreViewModel(IGenreService genreService)
+        public GenreViewModel(IGenreService genreService) : base()
         {
             this.genreService = genreService;
         }
 
         #region Properties
-
-        private string title;
-        public string Title
-        {
-            get => title;
-            set
-            {
-                title = value;
-                RaisePropertyChanged(nameof(Title));
-            }
-        }
 
         private ObservableCollection<GenreInfo> genreInfo;
         public ObservableCollection<GenreInfo> GenreInfo
@@ -43,63 +30,24 @@ namespace Imi.Project.Mobile.ViewModels
                 RaisePropertyChanged(nameof(GenreInfo));
             }
         }
-
-        private string genreName;
-        public string GenreName
-        {
-            get => genreName;
-            set
-            {
-                genreName = value;
-                RaisePropertyChanged(nameof(GenreName));
-            }
-        }
-
-        private string genreDescription;
-        public string GenreDescription
-        {
-            get => genreDescription;
-            set
-            {
-                genreDescription = value;
-                RaisePropertyChanged(nameof(GenreDescription));
-            }
-        }
-
-        private bool visableAdd;
-        public bool VisableAdd
-        {
-            get => visableAdd;
-            set
-            {
-                visableAdd = value;
-                RaisePropertyChanged(nameof(VisableAdd));
-            }
-        }
-
         #endregion
 
         public override async void Init(object initData)
         {
             base.Init(initData);
 
-            currentGenreInfo = initData as GenreInfo;
 
-            await RefreshGenre();
+            await Refresh();
         }
 
         public override async void ReverseInit(object initData)
         {
             base.ReverseInit(initData);
 
-            if(initData is GenreInfo)
-            {
-                currentGenreInfo = initData as GenreInfo;
-            }
-            await RefreshGenre();
+            await Refresh();
         }
 
-        private async Task RefreshGenre()
+        public override async Task Refresh()
         {
             GenreInfo = null;
 
@@ -112,32 +60,12 @@ namespace Imi.Project.Mobile.ViewModels
             VisableAdd = true;
 
             Title = "Genres";
-
-            currentGenreInfo = new GenreInfo
-            {
-                Id = Guid.NewGuid()
-            };
-
-            LoadGenreState();
         }
 
         public ICommand AddGenreItem => new Command<GenreInfo>(
             async (GenreInfo genreInfo) =>
             {
-                SaveGenreState();
                 await CoreMethods.PushPageModel<GenreInfoViewModel>(genreInfo);
             });
-
-        private void LoadGenreState()
-        {
-            GenreName = currentGenreInfo.Name;
-            GenreDescription = currentGenreInfo.Description;
-        }
-
-        private void SaveGenreState()
-        {
-            currentGenreInfo.Description = GenreDescription;
-            currentGenreInfo.Name = GenreName;
-        }
     }
 }

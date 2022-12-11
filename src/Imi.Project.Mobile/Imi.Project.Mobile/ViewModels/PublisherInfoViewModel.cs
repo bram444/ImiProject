@@ -12,45 +12,19 @@ using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class PublisherInfoViewModel: FreshBasePageModel
+    public class PublisherInfoViewModel: BaseInfoViewModel
     {
         private PublisherInfo currentPublisherInfo;
-        private readonly IValidator publisherInfoValidator;
         private readonly IPublisherService publisherService;
-        private readonly IGameService gameService;
 
-        public PublisherInfoViewModel(IPublisherService publisherService, IGameService gameService)
+        public PublisherInfoViewModel(IPublisherService publisherService, IGameService gameService):base(gameService)
         {
             this.publisherService = publisherService;
-            this.gameService = gameService;
 
-            publisherInfoValidator = new PublisherInfoValidator();
+            InfoValidator = new PublisherInfoValidator();
         }
 
         #region Properties
-
-        private string title;
-        public string Title
-        {
-            get => title;
-            set
-            {
-                title = value;
-                RaisePropertyChanged(nameof(Title));
-            }
-        }
-
-        private string publisherName;
-        public string PublisherName
-        {
-            get => publisherName;
-            set
-            {
-                publisherName = value;
-                PublisherNameError = null;
-                RaisePropertyChanged(nameof(PublisherName));
-            }
-        }
 
         private string publisherCountry;
         public string PublisherCountry
@@ -63,20 +37,6 @@ namespace Imi.Project.Mobile.ViewModels
                 RaisePropertyChanged(nameof(PublisherCountry));
             }
         }
-
-        private string publisherNameError;
-        public string PublisherNameError
-        {
-            get => publisherNameError;
-            set
-            {
-                publisherNameError = value;
-                RaisePropertyChanged(nameof(PublisherNameError));
-                RaisePropertyChanged(nameof(PublisherNameErrorVisible));
-            }
-        }
-
-        public bool PublisherNameErrorVisible => !string.IsNullOrWhiteSpace(PublisherNameError);
 
         private string publisherDeleteError;
         public string PublisherDeleteError
@@ -105,72 +65,6 @@ namespace Imi.Project.Mobile.ViewModels
         }
 
         public bool PublisherCounryErrorVisible => !string.IsNullOrWhiteSpace(PublisherCountryError);
-
-        private bool visableAdd;
-        public bool VisableAdd
-        {
-            get => visableAdd;
-            set
-            {
-                visableAdd = value;
-                RaisePropertyChanged(nameof(VisableAdd));
-            }
-        }
-
-        private bool visableCancel;
-        public bool VisableCancel
-        {
-            get => visableCancel;
-            set
-            {
-                visableCancel = value;
-                RaisePropertyChanged(nameof(VisableCancel));
-            }
-        }
-
-        private bool visableEdit;
-        public bool VisableEdit
-        {
-            get => visableEdit;
-            set
-            {
-                visableEdit = value;
-                RaisePropertyChanged(nameof(VisableEdit));
-            }
-        }
-
-        private bool visableDelete;
-        public bool VisableDelete
-        {
-            get => visableDelete;
-            set
-            {
-                visableDelete = value;
-                RaisePropertyChanged(nameof(VisableDelete));
-            }
-        }
-
-        private bool visableSave;
-        public bool VisableSave
-        {
-            get => visableSave;
-            set
-            {
-                visableSave = value;
-                RaisePropertyChanged(nameof(VisableSave));
-            }
-        }
-
-        private bool enableEditData;
-        public bool EnableEditData
-        {
-            get => enableEditData;
-            set
-            {
-                enableEditData = value;
-                RaisePropertyChanged(nameof(EnableEditData));
-            }
-        }
 
         private bool enableGameList;
         public bool EnableGameList
@@ -218,7 +112,7 @@ namespace Imi.Project.Mobile.ViewModels
                 {
                     Id = currentPublisherInfo.Id,
                     Country = PublisherCountry,
-                    Name = PublisherName
+                    Name = this.Name
                 };
 
                 if(Validate(validatePublisher))
@@ -231,9 +125,9 @@ namespace Imi.Project.Mobile.ViewModels
         public ICommand AddPublisherInfoCommand => new Command(
             async () =>
             {
-                if(PublisherName == null)
+                if(Name == null)
                 {
-                    PublisherName = "";
+                    Name = "";
                 }
 
                 if(PublisherCountry == null)
@@ -244,7 +138,7 @@ namespace Imi.Project.Mobile.ViewModels
                 PublisherInfo publisherEdit = new PublisherInfo
                 {
                     Id = Guid.NewGuid(),
-                    Name = PublisherName,
+                    Name = this.Name,
                     Country = PublisherCountry,
                 };
 
@@ -285,14 +179,14 @@ namespace Imi.Project.Mobile.ViewModels
         private bool Validate(PublisherInfo publisherInfo)
         {
             ValidationContext<PublisherInfo> validationContext = new ValidationContext<PublisherInfo>(publisherInfo);
-            FluentValidation.Results.ValidationResult validationResult = publisherInfoValidator.Validate(validationContext);
+            FluentValidation.Results.ValidationResult validationResult = InfoValidator.Validate(validationContext);
 
             foreach(FluentValidation.Results.ValidationFailure error in validationResult.Errors)
             {
                 switch(error.PropertyName)
                 {
                     case nameof(publisherInfo.Name):
-                        PublisherNameError = error.ErrorMessage;
+                        NameError = error.ErrorMessage;
                         break;
 
                     case nameof(publisherInfo.Country):
@@ -300,8 +194,8 @@ namespace Imi.Project.Mobile.ViewModels
                         break;
 
                     default:
-                        PublisherCountryError = "";
-                        PublisherNameError = "";
+                        PublisherCountryError = "Unknown error";
+                        NameError = "Unknown error";
                         break;
                 }
             }
@@ -309,35 +203,22 @@ namespace Imi.Project.Mobile.ViewModels
             return validationResult.IsValid;
         }
 
-        private void SetAdd()
+        public override void SetAdd()
         {
             Title = "New publisher";
 
-            VisableAdd = true;
-            VisableCancel = false;
-            VisableEdit = false;
-            VisableDelete = false;
-            VisableSave = false;
-
-            EnableEditData = true;
+            base.SetAdd();
         }
 
-        private async void SetRead()
+        public override async void SetRead()
         {
             Title = currentPublisherInfo.Name;
             PublisherCountry = currentPublisherInfo.Country;
-            PublisherName = currentPublisherInfo.Name;
-
-            VisableAdd = false;
-            VisableCancel = false;
-            VisableEdit = true;
-            VisableDelete = true;
-            VisableSave = false;
+            Name = currentPublisherInfo.Name;
 
             EnableGameList = true;
-            EnableEditData = false;
 
-            IEnumerable<GamesInfo> allGames = await gameService.GetAllGames();
+            IEnumerable<GamesInfo> allGames = await GameService.GetAllGames();
 
             Games = allGames.Where(gamess => gamess.PublisherId == currentPublisherInfo.Id).ToList();
 
@@ -345,21 +226,17 @@ namespace Imi.Project.Mobile.ViewModels
             {
                 EnableGameList = false;
             }
+
+            base.SetRead();
         }
 
-        private void SetEdit()
+        public override void SetEdit()
         {
             Title = "Edit " + currentPublisherInfo.Name;
 
-            VisableAdd = false;
-            VisableCancel = true;
-            VisableEdit = false;
-            VisableDelete = false;
-            VisableSave = true;
-
-            EnableEditData = true;
-
             PublisherDeleteError = null;
+
+            base.SetEdit();
         }
     }
 }
