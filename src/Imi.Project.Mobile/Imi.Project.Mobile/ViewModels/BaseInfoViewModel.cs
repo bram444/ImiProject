@@ -43,11 +43,8 @@ namespace Imi.Project.Mobile.ViewModels
             {
                 nameError = value;
                 RaisePropertyChanged(nameof(NameError));
-                RaisePropertyChanged(nameof(NameErrorVisible));
             }
         }
-
-        public bool NameErrorVisible => !string.IsNullOrWhiteSpace(NameError);
 
         private bool visableAdd;
         public bool VisableAdd

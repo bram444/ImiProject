@@ -8,16 +8,19 @@
              Style="{StaticResource PageStyle}"
              mc:Ignorable="d"
              Title="{Binding Title}">
-
+    
     <ContentPage.Content>
         <ScrollView>
             <StackLayout Padding="10">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
@@ -34,23 +37,35 @@
                         <Entry x:Name="txtPrice" Keyboard="Numeric" Text="{Binding GamePrice}" IsEnabled="{Binding EnableEditData}"/>
                         <Label x:Name="lblPriceError" Text="{Binding GamePriceError}" Style="{StaticResource ErrorLabel}"/>
                     </StackLayout>
-                    <StackLayout Grid.Row="1" Grid.Column="0">
-                        <Label Text="Genres"/>
-                        <Picker ItemsSource="{Binding Genres}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding FirstGenre}" IsEnabled="{Binding EnableFirstGenre}"/>
-                    </StackLayout>
-                    <StackLayout Grid.Row="1" Grid.Column="1">
-                        <Label/>
-                        <Picker ItemsSource="{Binding Genres}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SecondGenre}" IsEnabled="{Binding EnableSecondGenre}"/>
-                    </StackLayout>
-                    <StackLayout Grid.Row="2" Grid.Column="0">
-                        <Picker ItemsSource="{Binding Genres}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding ThirdGenre}" IsEnabled="{Binding EnableThirdGenre}"/>
-                    </StackLayout>
-                    <StackLayout Grid.Row="3">
+                    
+                    <StackLayout Grid.Row="2" Grid.ColumnSpan="2">
                         <Label Text="Publisher"/>
                         <Picker ItemsSource="{Binding Publishers}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding ChosenPublisher}" IsEnabled="{Binding EnablePublisher}"/>
                         <Label x:Name="lblPublisherError" Text="{Binding PublisherError}" Style="{StaticResource ErrorLabel}"/>
                     </StackLayout>
-                    <FlexLayout Style="{StaticResource ButtonAlign}" Grid.Row="4" Grid.ColumnSpan="2">
+                    
+                    <StackLayout Grid.Row="3" Grid.ColumnSpan="2" IsVisible="{Binding EnableGenreList}" VerticalOptions="EndAndExpand">
+                        <Label Text="All the genres of the game:"/>
+                        <ListView ItemsSource="{Binding Genres}" HeightRequest="{Binding HeightListGenres}" RowHeight="20">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <TextCell Text="{Binding Name}"/>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </StackLayout>
+                    <Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="{Binding ColumnSpanAdd}" Text="Add genres" Command="{Binding AddGameGenre}" IsVisible="{Binding VisableAddGenre}" Style="{StaticResource Add}"/>
+                    <Button Grid.Row="4" Grid.Column="{Binding ColumnDelete}" Grid.ColumnSpan="{Binding ColumnSpanDelete}" Text="Delete genres" Command="{Binding DeleteGameGenre}" IsVisible="{Binding VisableDeleteGenre}" Style="{StaticResource Delete}"/>
+                    
+                    <StackLayout Grid.Row="5" Grid.ColumnSpan="2" IsVisible="{Binding VisibleGenreList}">
+                        <Label Text="{Binding TextPicker}"/>
+                        <Picker ItemsSource="{Binding GenrePickList}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding ChosenGenre}" />
+                        <Label Text="{Binding ListError}" Style="{StaticResource ErrorLabel}"/>
+                    </StackLayout>
+                    <Button Grid.Row="6" Grid.Column="0" Text="{Binding TextPicker}" Command="{Binding SaveDeleteGameGenre}" IsVisible="{Binding VisableGenreSave}" Style="{StaticResource Save}"/>
+                    <Button Grid.Row="6" Grid.Column="1" Text="Cancel" Command="{Binding CancelDeleteGameGenre}" IsVisible="{Binding VisableGenreSave}" Style="{StaticResource Cancel}"/>
+                    
+                    <FlexLayout Style="{StaticResource ButtonAlign}" Grid.Row="7" Grid.ColumnSpan="2">
                         <Button x:Name="btnAdd" Text="Add" HorizontalOptions="Center" Command="{Binding AddGameInfoCommand}" IsVisible="{Binding VisableAdd}" Style="{StaticResource Add}"/>
                         <Button x:Name="btnEdit" Text="Edit" HorizontalOptions="Center" Command="{Binding EditCommand}" IsVisible="{Binding VisableEdit}" Style="{StaticResource Edit}"/>
                         <Button x:Name="btnSave" Text="Save" HorizontalOptions="Center" Command="{Binding SaveGameInfoCommand}" IsVisible="{Binding VisableSave}" Style="{StaticResource Save}"/>

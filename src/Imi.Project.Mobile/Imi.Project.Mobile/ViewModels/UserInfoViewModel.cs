@@ -27,8 +27,6 @@ namespace Imi.Project.Mobile.ViewModels
 
         #region Properties
 
-        public bool PasswordConfirmVisible => !string.IsNullOrWhiteSpace(NameError);
-
         private string firstName;
         public string FirstName
         {
@@ -73,11 +71,8 @@ namespace Imi.Project.Mobile.ViewModels
             {
                 userEmailError = value;
                 RaisePropertyChanged(nameof(UserEmailError));
-                RaisePropertyChanged(nameof(UserEmailErrorVisible));
             }
         }
-
-        public bool UserEmailErrorVisible => !string.IsNullOrWhiteSpace(UserEmailError);
 
         private string password;
         public string Password
@@ -135,11 +130,8 @@ namespace Imi.Project.Mobile.ViewModels
             {
                 userFirstNameError = value;
                 RaisePropertyChanged(nameof(UserFirstNameError));
-                RaisePropertyChanged(nameof(UserFirstNameErrorVisible));
             }
         }
-
-        public bool UserFirstNameErrorVisible => !string.IsNullOrWhiteSpace(UserFirstNameError);
 
         private string userLastNameError;
         public string UserLastNameError
@@ -149,11 +141,8 @@ namespace Imi.Project.Mobile.ViewModels
             {
                 userLastNameError = value;
                 RaisePropertyChanged(nameof(UserLastNameError));
-                RaisePropertyChanged(nameof(UserLastNameErrorVisible));
             }
         }
-
-        public bool UserLastNameErrorVisible => !string.IsNullOrWhiteSpace(UserLastNameError);
 
         private string listAddOrDelete;
         public string ListAddOrDelete

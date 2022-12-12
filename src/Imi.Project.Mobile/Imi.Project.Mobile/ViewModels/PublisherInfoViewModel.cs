@@ -46,11 +46,8 @@ namespace Imi.Project.Mobile.ViewModels
             {
                 publisherDeleteError = value;
                 RaisePropertyChanged(nameof(PublisherDeleteError));
-                RaisePropertyChanged(nameof(PublisherDeleteErrorVisible));
             }
         }
-
-        public bool PublisherDeleteErrorVisible => !string.IsNullOrWhiteSpace(PublisherDeleteError);
 
         private string publisherCounryError;
         public string PublisherCountryError
@@ -60,11 +57,9 @@ namespace Imi.Project.Mobile.ViewModels
             {
                 publisherCounryError = value;
                 RaisePropertyChanged(nameof(PublisherCountryError));
-                RaisePropertyChanged(nameof(PublisherCounryErrorVisible));
             }
         }
 
-        public bool PublisherCounryErrorVisible => !string.IsNullOrWhiteSpace(PublisherCountryError);
 
         private bool enableGameList;
         public bool EnableGameList
