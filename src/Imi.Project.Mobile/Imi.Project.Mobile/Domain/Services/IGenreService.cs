@@ -5,12 +5,7 @@ using System.Threading.Tasks;
 
 namespace Imi.Project.Mobile.Domain.Services
 {
-    public interface IGenreService
+    public interface IGenreService:IBaseService<GenreInfo>
     {
-        Task<IEnumerable<GenreInfo>> GetAllGenre();
-        Task<GenreInfo> GenreById(Guid id);
-        Task<GenreInfo> UpdateGenre(GenreInfo genre);
-        Task<GenreInfo> DeleteGenre(Guid id);
-        Task<GenreInfo> AddGenre(GenreInfo genre);
     }
 }

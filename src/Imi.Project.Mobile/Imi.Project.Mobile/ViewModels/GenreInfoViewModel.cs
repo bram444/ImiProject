@@ -12,9 +12,8 @@ using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class GenreInfoViewModel: BaseInfoViewModel
+    public class GenreInfoViewModel: BaseInfoViewModel<GenreInfo>
     {
-        private GenreInfo currentGenreInfo;
         private readonly IGenreService genreService;
 
         public GenreInfoViewModel(IGenreService genreService, IGameService gameService)
@@ -66,7 +65,7 @@ namespace Imi.Project.Mobile.ViewModels
         {
             if(initData != null)
             {
-                currentGenreInfo = initData as GenreInfo;
+                CurrentItem = initData as GenreInfo;
 
                 SetRead();
             } else
@@ -82,14 +81,14 @@ namespace Imi.Project.Mobile.ViewModels
             {
                 GenreInfo validateGenre = new GenreInfo
                 {
-                    Id = currentGenreInfo.Id,
+                    Id = CurrentItem.Id,
                     Name = Name,
                     Description = GenreDescription,
                 };
 
                 if(Validate(validateGenre))
                 {
-                    await genreService.UpdateGenre(validateGenre);
+                    await genreService.Update(validateGenre);
                     await CoreMethods.PopPageModel(validateGenre, false, true);
                 }
             });
@@ -116,33 +115,20 @@ namespace Imi.Project.Mobile.ViewModels
 
                 if(Validate(genreEdit))
                 {
-                    await genreService.AddGenre(genreEdit);
+                    await genreService.Add(genreEdit);
                     await CoreMethods.PopPageModel(genreEdit, false, true);
                 }
             });
 
-        public ICommand EditCommand => new Command(() =>
+        public override ICommand DeleteCommand => new Command(async () =>
         {
-            SetEdit();
-        });
+            base.DeleteCommand.Execute(null);
 
-        public ICommand CancelCommand => new Command(() =>
-        {
-            SetRead();
-        });
-
-        public ICommand DeleteCommand => new Command(async () =>
-        {
-            if(DeviceInfo.Platform == DevicePlatform.Android)
-            {
-                Vibration.Vibrate(TimeSpan.FromSeconds(0.5));
-            }
-
-            await genreService.DeleteGenre(currentGenreInfo.Id);
+            await genreService.Delete(CurrentItem.Id);
             await CoreMethods.PopPageModel(new GenreInfo(), false, true);
         });
 
-        private bool Validate(GenreInfo genreInfo)
+        public override bool Validate(GenreInfo genreInfo)
         {
             ValidationContext<GenreInfo> validationContext = new ValidationContext<GenreInfo>(genreInfo);
             FluentValidation.Results.ValidationResult validationResult = InfoValidator.Validate(validationContext);
@@ -168,16 +154,16 @@ namespace Imi.Project.Mobile.ViewModels
 
         public override async void SetRead()
         {
-            GenreDescription = currentGenreInfo.Description;
-            Name = currentGenreInfo.Name;
+            GenreDescription = CurrentItem.Description;
+            Name = CurrentItem.Name;
 
-            Title = currentGenreInfo.Name;
+            Title = CurrentItem.Name;
 
             EnableGameList = true;
 
-            IEnumerable<GamesInfo> allGames = await GameService.GetAllGames();
+            IEnumerable<GamesInfo> allGames = await GameService.GetAll();
 
-            Games = allGames.Where(gamess => gamess.GenreId.Contains(currentGenreInfo.Id)).ToList();
+            Games = allGames.Where(gamess => gamess.GenreId.Contains(CurrentItem.Id)).ToList();
 
             if(Games.Count() == 0)
             {
@@ -189,7 +175,7 @@ namespace Imi.Project.Mobile.ViewModels
 
         public override void SetEdit()
         {
-            Title = "Edit " + currentGenreInfo.Name;
+            Title = "Edit " + CurrentItem.Name;
 
             base.SetEdit();
         }

@@ -9,53 +9,15 @@ using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class GameViewModel: BaseViewModel
+    public class GameViewModel: BaseViewModel<GamesInfo, IGameService>
     {
-        private readonly IGameService gameService;
-
-        public GameViewModel(IGameService gameService)
+        public GameViewModel(IGameService gameService):base(gameService)
         {
-            this.gameService = gameService;
-        }
-
-        #region Properties
-        private ObservableCollection<GamesInfo> gamesInfo;
-        public ObservableCollection<GamesInfo> GamesInfo
-        {
-            get => gamesInfo;
-            set
-            {
-                gamesInfo = value;
-                RaisePropertyChanged(nameof(GamesInfo));
-            }
-        }
-        #endregion
-
-        public override async void Init(object initData)
-        {
-            base.Init(initData);
-
-            await Refresh();
-        }
-
-        public override async void ReverseInit(object initData)
-        {
-            base.ReverseInit(initData);
-
-            await Refresh();
         }
 
         public override async Task Refresh()
         {
-            VisableAdd = false;
-
-            Title = "Loading";
-
-            GamesInfo = null;
-
-            GamesInfo = new ObservableCollection<GamesInfo>(await gameService.GetAllGames());
-
-            VisableAdd = true;
+            await base.Refresh();
 
             Title = "Games";
         }

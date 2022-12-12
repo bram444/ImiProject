@@ -1,15 +1,34 @@
 ﻿using FreshMvvm;
 using Imi.Project.Mobile.Domain.Model;
+using Imi.Project.Mobile.Domain.Services;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public abstract class BaseViewModel: FreshBasePageModel
+    public abstract class BaseViewModel<C,I>: FreshBasePageModel  where I: IBaseService<C>//class, interface
     {
-        public BaseViewModel()
-        {}
+        public I Service;
+
+        public IUserService userService;
+
+        public BaseViewModel(I service)
+        {
+            Service = service;
+        }
+
+        private ObservableCollection<C> collection;
+        public ObservableCollection<C> Collection
+        {
+            get => collection;
+            set
+            {
+                collection = value;
+                RaisePropertyChanged(nameof(Collection));
+            }
+        }
 
         private string title;
         public string Title
@@ -33,6 +52,31 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        public abstract Task Refresh();
+        public override async void Init(object initData)
+        {
+            base.Init(initData);
+
+            await Refresh();
+        }
+
+        public override async void ReverseInit(object initData)
+        {
+            base.ReverseInit(initData);
+
+            await Refresh();
+        }
+
+        public virtual async Task Refresh()
+        {
+            Collection = null;
+
+            VisableAdd = false;
+
+            Title = "Loading";
+
+            Collection = new ObservableCollection<C>(await Service.GetAll());
+
+            VisableAdd = true;
+        }
     }
 }

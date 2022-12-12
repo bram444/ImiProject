@@ -13,9 +13,8 @@ using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class GameInfoViewModel: BaseInfoViewModel
+    public class GameInfoViewModel: BaseInfoViewModel<GamesInfo>
     {
-        private GamesInfo currentGameInfo;
         private readonly IGenreService genreService;
         private readonly IPublisherService publisherService;
 
@@ -268,7 +267,7 @@ namespace Imi.Project.Mobile.ViewModels
 
         public bool EnableGenreList => Genres.Any();
 
-        public bool EnableAddGenre => (Task.Run(async () => await genreService.GetAllGenre()).Result.Count() != GenreId.Count());
+        public bool EnableAddGenre => (Task.Run(async () => await genreService.GetAll()).Result.Count() != GenreId.Count());
 
         private ObservableCollection<GenreInfo> genrePickList;
         public ObservableCollection<GenreInfo> GenrePickList
@@ -321,7 +320,7 @@ namespace Imi.Project.Mobile.ViewModels
         {
             if(initData != null)
             {
-                currentGameInfo = initData as GamesInfo;
+                CurrentItem = initData as GamesInfo;
 
                 LoadGameState();
                 SetRead();
@@ -347,7 +346,7 @@ namespace Imi.Project.Mobile.ViewModels
 
                 GamesInfo gameValidate = new GamesInfo
                 {
-                    Id = currentGameInfo.Id,
+                    Id = CurrentItem.Id,
                     GenreId = gameGenreId,
                     PublisherId = ChosenPublisher.Id,
                     Name = this.Name,
@@ -361,7 +360,7 @@ namespace Imi.Project.Mobile.ViewModels
 
                 if(Validate(gameValidate))
                 {
-                    await GameService.UpdateGame(gameValidate);
+                    await GameService.Update(gameValidate);
                     await CoreMethods.PopPageModel(gameValidate, false, true);
                 }
             });
@@ -403,30 +402,23 @@ namespace Imi.Project.Mobile.ViewModels
 
                 if(Validate(gameEdit))
                 {
-                    await GameService.AddGames(gameEdit);
+                    await GameService.Add(gameEdit);
                     await CoreMethods.PopPageModel(gameEdit, false, true);
                 }
             });
 
-        public ICommand EditCommand => new Command(() =>
-        {
-            SetEdit();
-        });
-
-        public ICommand CancelCommand => new Command(() =>
+        public override ICommand CancelCommand => new Command(() =>
         {
             LoadGameState();
-            SetRead();
+
+            base.CancelCommand.Execute(null);
         });
 
-        public ICommand DeleteCommand => new Command(async () =>
+        public override ICommand DeleteCommand => new Command(async () =>
         {
-            if(DeviceInfo.Platform == DevicePlatform.Android)
-            {
-                Vibration.Vibrate(TimeSpan.FromSeconds(0.5));
-            }
+            base.DeleteCommand.Execute(null);
 
-            await GameService.DeleteGame(currentGameInfo.Id);
+            await GameService.Delete(CurrentItem.Id);
             await CoreMethods.PopPageModel(new GamesInfo(), false, true);
         });
 
@@ -443,7 +435,7 @@ namespace Imi.Project.Mobile.ViewModels
                 }
             };
             
-            foreach(GenreInfo genre in Task.Run(async () => await genreService.GetAllGenre()).Result)
+            foreach(GenreInfo genre in Task.Run(async () => await genreService.GetAll()).Result)
             {
                 if(!GenreId.Contains(genre.Id))
                 {
@@ -478,7 +470,7 @@ namespace Imi.Project.Mobile.ViewModels
                     }
                 };
 
-                foreach(GenreInfo genre in Task.Run(async () => await genreService.GetAllGenre()).Result)
+                foreach(GenreInfo genre in Task.Run(async () => await genreService.GetAll()).Result)
                 {
                     if(GenreId.Contains(genre.Id))
                     {
@@ -540,7 +532,7 @@ namespace Imi.Project.Mobile.ViewModels
 
         public ICommand CancelDeleteGameGenre => new Command(() =>
         {
-            GenreId = new ObservableCollection<Guid>(currentGameInfo.GenreId);
+            GenreId = new ObservableCollection<Guid>(CurrentItem.GenreId);
             VisibleGenreList = false;
             VisableSave = true;
             VisableAddGenre = EnableAddGenre;
@@ -566,12 +558,12 @@ namespace Imi.Project.Mobile.ViewModels
                 Guid.Empty
             };
 
-            if(currentGameInfo != null)
+            if(CurrentItem != null)
             {
-                Name = currentGameInfo.Name;
-                GamePrice = currentGameInfo.Price.ToString();
-                PublisherId = currentGameInfo.PublisherId;
-                GenreId = new ObservableCollection<Guid>( currentGameInfo.GenreId);
+                Name = CurrentItem.Name;
+                GamePrice = CurrentItem.Price.ToString();
+                PublisherId = CurrentItem.PublisherId;
+                GenreId = new ObservableCollection<Guid>(CurrentItem.GenreId);
 
                 List<PublisherInfo> selectPublisher = new List<PublisherInfo> { new PublisherInfo
                 {
@@ -579,7 +571,7 @@ namespace Imi.Project.Mobile.ViewModels
                     Name="Select a publisher"
                 }};
 
-                foreach(PublisherInfo publisher in Task.Run(async () => await publisherService.GetAllPublisher()).Result)
+                foreach(PublisherInfo publisher in Task.Run(async () => await publisherService.GetAll()).Result)
                 {
                     selectPublisher.Add(publisher);
                 }
@@ -600,7 +592,7 @@ namespace Imi.Project.Mobile.ViewModels
                 }};
 
 
-                foreach(GenreInfo genre in Task.Run(async () => await genreService.GetAllGenre()).Result)
+                foreach(GenreInfo genre in Task.Run(async () => await genreService.GetAll()).Result)
                 {
                     selectGenre.Add(genre);
                 }
@@ -609,7 +601,7 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        private bool Validate(GamesInfo gamesInfo)
+        public override bool Validate(GamesInfo gamesInfo)
         {
             ValidationContext<GamesInfo> validationContext = new ValidationContext<GamesInfo>(gamesInfo);
             FluentValidation.Results.ValidationResult validationResult = InfoValidator.Validate(validationContext);
@@ -651,7 +643,7 @@ namespace Imi.Project.Mobile.ViewModels
                 Name="Select a publisher"
             }};
 
-            foreach(PublisherInfo publisher in Task.Run(async () => await publisherService.GetAllPublisher()).Result)
+            foreach(PublisherInfo publisher in Task.Run(async () => await publisherService.GetAll()).Result)
             {
                 selectPublisher.Add(publisher);
             }
@@ -667,16 +659,8 @@ namespace Imi.Project.Mobile.ViewModels
                 Guid.Empty
             };
 
-            GamePrice = string.Empty;
-            PublisherError = string.Empty;
-            GamePriceError = string.Empty;
-            GenreEditList = new ObservableCollection<GenreInfo>();
             ChosenGenre = new GenreInfo();
-            GenrePickList = new ObservableCollection<GenreInfo>();
             Genres = new ObservableCollection<GenreInfo>();
-            ListError = string.Empty;
-            ListSave = string.Empty;
-            TextPicker = string.Empty;
             VisableDeleteGenre = EnableGenreList;
             VisableAddGenre = EnableAddGenre;
             CreateItem = true;
@@ -686,9 +670,9 @@ namespace Imi.Project.Mobile.ViewModels
 
         public override void SetRead()
         {
-            if(currentGameInfo != null)
+            if(CurrentItem != null)
             {
-                Title = currentGameInfo.Name;
+                Title = CurrentItem.Name;
             }
 
             VisibleGenreList = false;
@@ -703,7 +687,7 @@ namespace Imi.Project.Mobile.ViewModels
 
         public override void SetEdit()
         {
-            Title = "Edit " + currentGameInfo.Name;
+            Title = "Edit " + CurrentItem.Name;
             VisibleGenreList = false;
             VisableDeleteGenre = EnableGenreList;
             VisableAddGenre = EnableAddGenre;

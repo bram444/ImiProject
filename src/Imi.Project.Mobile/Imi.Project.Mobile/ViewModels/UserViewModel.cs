@@ -9,54 +9,14 @@ using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class UserViewModel: BaseViewModel
+    public class UserViewModel: BaseViewModel<UserInfo, IUserService>
     {
-        private readonly IUserService userService;
-
-        public UserViewModel(IUserService userService) : base()
-        {
-            this.userService = userService;
-        }
-
-        #region Properties
-        private ObservableCollection<UserInfo> userInfo;
-        public ObservableCollection<UserInfo> UserInfo
-        {
-            get => userInfo;
-            set
-            {
-                userInfo = value;
-                RaisePropertyChanged(nameof(UserInfo));
-            }
-        }
-        #endregion
-
-        public override async void Init(object initData)
-        {
-            base.Init(initData);
-
-
-            await Refresh();
-        }
-
-        public override async void ReverseInit(object initData)
-        {
-            base.ReverseInit(initData);
-
-            await Refresh();
-        }
+        public UserViewModel(IUserService userService) : base(userService)
+        {}
 
         public override async Task Refresh()
         {
-            UserInfo = null;
-
-            VisableAdd = false;
-
-            Title = "Loading";
-
-            UserInfo = new ObservableCollection<UserInfo>(await userService.GetAllUser());
-
-            VisableAdd = true;
+            await base.Refresh();
 
             Title = "Users";
         }

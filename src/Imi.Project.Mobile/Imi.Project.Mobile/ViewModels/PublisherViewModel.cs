@@ -9,55 +9,15 @@ using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class PublisherViewModel: BaseViewModel
+    public class PublisherViewModel: BaseViewModel<PublisherInfo, IPublisherService>
     {
-        private readonly IPublisherService publisherService;
 
-        public PublisherViewModel(IPublisherService publisherService) : base()
-        {
-            this.publisherService = publisherService;
-        }
-
-        #region Properties
-
-        private ObservableCollection<PublisherInfo> publisherInfo;
-        public ObservableCollection<PublisherInfo> PublisherInfo
-        {
-            get => publisherInfo;
-            set
-            {
-                publisherInfo = value;
-                RaisePropertyChanged(nameof(PublisherInfo));
-            }
-        }
-
-        #endregion
-
-        public override async void Init(object initData)
-        {
-            base.Init(initData);
-
-            await Refresh();
-        }
-
-        public override async void ReverseInit(object initData)
-        {
-            base.ReverseInit(initData);
-
-            await Refresh();
-        }
+        public PublisherViewModel(IPublisherService publisherService) : base(publisherService)
+        {}
 
         public override async Task Refresh()
         {
-            PublisherInfo = null;
-
-            VisableAdd = false;
-
-            Title = "Loading";
-
-            PublisherInfo = new ObservableCollection<PublisherInfo>(await publisherService.GetAllPublisher());
-
-            VisableAdd = true;
+            await base.Refresh();
 
             Title = "Publishers";
         }

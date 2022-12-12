@@ -13,9 +13,8 @@ using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class UserInfoViewModel: BaseInfoViewModel
+    public class UserInfoViewModel: BaseInfoViewModel<UserInfo>
     {
-        private UserInfo currentUserInfo;
         private readonly IUserService userService;
 
         public UserInfoViewModel(IUserService userService, IGameService gameService):base(gameService)
@@ -335,14 +334,13 @@ namespace Imi.Project.Mobile.ViewModels
                 RaisePropertyChanged(nameof(VisablePassword));
             }
         }
-
         #endregion
 
         public override void Init(object initData)
         {
             if(initData != null)
             {
-                currentUserInfo = initData as UserInfo;
+                CurrentItem = initData as UserInfo;
 
                 LoadUserState();
                 SetRead();
@@ -363,13 +361,13 @@ namespace Imi.Project.Mobile.ViewModels
             GameId = new List<Guid> { };
             Password = null;
 
-            Name = currentUserInfo.UserName;
-            FirstName = currentUserInfo.FirstName;
-            LastName = currentUserInfo.LastName;
-            Email = currentUserInfo.Email;
-            GameId = currentUserInfo.GameId;
-            Password = currentUserInfo.Password;
-            PasswordConfirm = currentUserInfo.ConfirmPassword;
+            Name = CurrentItem.UserName;
+            FirstName = CurrentItem.FirstName;
+            LastName = CurrentItem.LastName;
+            Email = CurrentItem.Email;
+            GameId = CurrentItem.GameId;
+            Password = CurrentItem.Password;
+            PasswordConfirm = CurrentItem.ConfirmPassword;
         }
 
         public ICommand SaveUserInfoCommand => new Command(
@@ -377,22 +375,22 @@ namespace Imi.Project.Mobile.ViewModels
             {
                 SaveUserState();
 
-                if(Validate(currentUserInfo))
+                if(Validate(CurrentItem))
                 {
-                    await userService.UpdateUser(currentUserInfo);
-                    await CoreMethods.PopPageModel(currentUserInfo, false, true);
+                    await userService.Update(CurrentItem);
+                    await CoreMethods.PopPageModel(CurrentItem, false, true);
                 }
             });
 
         private void SaveUserState()
         {
-            currentUserInfo.UserName = Name;
-            currentUserInfo.LastName = LastName;
-            currentUserInfo.FirstName = FirstName;
-            currentUserInfo.Email = Email;
-            currentUserInfo.GameId = GameId;
-            currentUserInfo.Password = Password;
-            currentUserInfo.ConfirmPassword = PasswordConfirm;
+            CurrentItem.UserName = Name;
+            CurrentItem.LastName = LastName;
+            CurrentItem.FirstName = FirstName;
+            CurrentItem.Email = Email;
+            CurrentItem.GameId = GameId;
+            CurrentItem.Password = Password;
+            CurrentItem.ConfirmPassword = PasswordConfirm;
         }
 
         public ICommand AddUserInfoCommand => new Command(
@@ -400,7 +398,7 @@ namespace Imi.Project.Mobile.ViewModels
             {
                 if(FirstName == null)
                 {
-                    FirstName = "";
+                    FirstName = string.Empty;
                 }
 
                 if(LastName == null)
@@ -452,28 +450,24 @@ namespace Imi.Project.Mobile.ViewModels
                         UserPasswordConfirmError = "Password and confirm password aren't the same";
                     } else
                     {
-                        await userService.AddUser(userEdit);
+                        await userService.Add(userEdit);
                         await CoreMethods.PopPageModel(userEdit, false, true);
                     }
                 }
             });
 
-        public ICommand EditCommand => new Command(() =>
-        {
-            SetEdit();
-        });
-
-        public ICommand CancelCommand => new Command(() =>
+        public override ICommand CancelCommand => new Command(() =>
         {
             LoadUserState();
-            SetRead();
+
+            base.CancelCommand.Execute(null);
         });
 
         public ICommand AddGamesInfoCommand => new Command(async () =>
         {
-            IEnumerable<GamesInfo> allGames = await GameService.GetAllGames();
+            IEnumerable<GamesInfo> allGames = await GameService.GetAll();
 
-            GamesToAddDelete = new ObservableCollection<GamesInfo>(allGames.Where(gamess => !currentUserInfo.GameId.Contains(gamess.Id)));
+            GamesToAddDelete = new ObservableCollection<GamesInfo>(allGames.Where(gamess => !CurrentItem.GameId.Contains(gamess.Id)));
             GamesToAddDeleteList = new ObservableCollection<GamesInfo>();
 
             ListAddOrDelete = "Add";
@@ -492,9 +486,9 @@ namespace Imi.Project.Mobile.ViewModels
 
             AddGame = false;
 
-            IEnumerable<GamesInfo> allGames = await GameService.GetAllGames();
+            IEnumerable<GamesInfo> allGames = await GameService.GetAll();
 
-            GamesToAddDelete = new ObservableCollection<GamesInfo>(allGames.Where(gamess => currentUserInfo.GameId.Contains(gamess.Id)));
+            GamesToAddDelete = new ObservableCollection<GamesInfo>(allGames.Where(gamess => CurrentItem.GameId.Contains(gamess.Id)));
 
             GamesToAddDeleteList = new ObservableCollection<GamesInfo>();
             VisableGamesCancel = true;
@@ -553,14 +547,14 @@ namespace Imi.Project.Mobile.ViewModels
             }
 
             GamesToAddDeleteList = new ObservableCollection<GamesInfo>();
-            currentUserInfo.GameId = new List<Guid> { };
+            CurrentItem.GameId = new List<Guid> { };
 
             foreach(GamesInfo gamePlayed in GamesPlayed)
             {
-                currentUserInfo.GameId.Add(gamePlayed.Id);
+                CurrentItem.GameId.Add(gamePlayed.Id);
             }
 
-            GameId = currentUserInfo.GameId;
+            GameId = CurrentItem.GameId;
 
             EnableGameAddDeleteList = false;
             VisableSaveGames = false;
@@ -570,19 +564,16 @@ namespace Imi.Project.Mobile.ViewModels
             VisableGamesCancel = false;
         });
 
-        public ICommand DeleteCommand => new Command(async () =>
+        public override ICommand DeleteCommand => new Command(async () =>
         {
-            if(DeviceInfo.Platform == DevicePlatform.Android)
-            {
-                Vibration.Vibrate(TimeSpan.FromSeconds(0.5));
-            }
+            base.DeleteCommand.Execute(null);
 
-            await userService.DeleteUser(currentUserInfo.Id);
+            await userService.Delete(CurrentItem.Id);
 
             await CoreMethods.PopPageModel(new UserInfo(), false, true);
         });
 
-        private bool Validate(UserInfo userInfo)
+        public override bool Validate(UserInfo userInfo)
         {
             ValidationContext<UserInfo> validationContext = new ValidationContext<UserInfo>(userInfo);
             FluentValidation.Results.ValidationResult validationResult = InfoValidator.Validate(validationContext);
@@ -632,7 +623,7 @@ namespace Imi.Project.Mobile.ViewModels
             VisableAddGame = true;
             VisableButtonsUsers = true;
 
-            currentUserInfo = new UserInfo
+            CurrentItem = new UserInfo
             {
                 Id = Guid.Empty,
                 GameId = new List<Guid> { }
@@ -645,7 +636,7 @@ namespace Imi.Project.Mobile.ViewModels
 
         public override async void SetRead()
         {
-            Title = currentUserInfo.UserName;
+            Title = CurrentItem.UserName;
 
             VisablePassword = false;
             VisableDeleteGames = false;
@@ -654,9 +645,9 @@ namespace Imi.Project.Mobile.ViewModels
 
             EnableGameList = false;
 
-            IEnumerable<GamesInfo> allGames = await GameService.GetAllGames();
+            IEnumerable<GamesInfo> allGames = await GameService.GetAll();
 
-            GamesPlayed = new ObservableCollection<GamesInfo>(allGames.Where(gamess => currentUserInfo.GameId.Contains(gamess.Id)));
+            GamesPlayed = new ObservableCollection<GamesInfo>(allGames.Where(gamess => CurrentItem.GameId.Contains(gamess.Id)));
 
             if(GamesPlayed.Count() > 0)
             {
@@ -667,7 +658,7 @@ namespace Imi.Project.Mobile.ViewModels
 
         public override void SetEdit()
         {
-            Title = "Edit " + currentUserInfo.UserName;
+            Title = "Edit " + CurrentItem.UserName;
 
             VisablePassword = false;
             VisableDeleteGames = true;

@@ -1,12 +1,18 @@
 ﻿using FluentValidation;
 using FreshMvvm;
+using Imi.Project.Mobile.Domain.Model;
 using Imi.Project.Mobile.Domain.Services;
+using System;
+using System.Windows.Input;
+using Xamarin.Essentials;
+using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public abstract class BaseInfoViewModel: FreshBasePageModel
+    public abstract class BaseInfoViewModel<T> : FreshBasePageModel
     {
         protected IGameService GameService;
+        protected T CurrentItem;
 
         public BaseInfoViewModel(IGameService gameService)
         {
@@ -103,6 +109,8 @@ namespace Imi.Project.Mobile.ViewModels
 
         protected IValidator InfoValidator;
 
+        public abstract bool Validate(T validate);
+
         private bool enableEditData;
         public bool EnableEditData
         {
@@ -114,15 +122,21 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        public virtual void SetEdit()
+        public virtual ICommand DeleteCommand => new Command(() => {
+            if(DeviceInfo.Platform == DevicePlatform.Android)
+            {
+                Vibration.Vibrate(TimeSpan.FromSeconds(0.5));
+            }
+        });
+
+        public virtual ICommand EditCommand => new Command(() => {
+            SetEdit();
+        });
+
+        public virtual ICommand CancelCommand => new Command(() =>
         {
-            EnableEditData = true;
-            VisableAdd = false;
-            VisableCancel = true;
-            VisableEdit = false;
-            VisableDelete = false;
-            VisableSave = true;
-        }
+            SetRead();
+        });
 
         public virtual void SetRead()
         {
@@ -146,5 +160,14 @@ namespace Imi.Project.Mobile.ViewModels
             VisableSave = false;
         }
 
+        public virtual void SetEdit()
+        {
+            EnableEditData = true;
+            VisableAdd = false;
+            VisableCancel = true;
+            VisableEdit = false;
+            VisableDelete = false;
+            VisableSave = true;
+        }
     }
 }

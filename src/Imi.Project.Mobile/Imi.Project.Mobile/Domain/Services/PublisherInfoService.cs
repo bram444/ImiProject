@@ -5,39 +5,10 @@ using System.Threading.Tasks;
 
 namespace Imi.Project.Mobile.Domain.Services
 {
-    public class PublisherInfoService: IPublisherService
+    public class PublisherInfoService: BaseService<PublisherInfo>, IPublisherService
     {
-        private readonly string baseUrl = Constants.baseUrl;
-        private readonly CustomHttpClient _httpClient = new CustomHttpClient();
-
-        public PublisherInfoService(CustomHttpClient customHttpClient)
+        public PublisherInfoService(CustomHttpClient customHttpClient):base(customHttpClient, "/api/Publisher")
         {
-            _httpClient = customHttpClient;
-        }
-
-        public async Task<IEnumerable<PublisherInfo>> GetAllPublisher()
-        {
-            return await _httpClient.GetApiResult<List<PublisherInfo>>($"{baseUrl}/api/Publisher/");
-        }
-
-        public async Task<PublisherInfo> PublisherById(Guid id)
-        {
-            return await _httpClient.GetApiResult<PublisherInfo>($"{baseUrl}/api/Publisher/{id}");
-        }
-
-        public async Task<PublisherInfo> UpdatePublisher(PublisherInfo publisher)
-        {
-            return await _httpClient.PutCallApi<PublisherInfo, PublisherInfo>($"{baseUrl}/api/Publisher/", publisher);
-        }
-
-        public async Task<PublisherInfo> DeletePublisher(Guid id)
-        {
-            return await _httpClient.DeleteCallApi<PublisherInfo>($"{baseUrl}/api/Publisher/{id}");
-        }
-
-        public async Task<PublisherInfo> AddPublisher(PublisherInfo publisher)
-        {
-            return await _httpClient.PostCallApi<PublisherInfo, PublisherInfo>($"{baseUrl}/api/Publisher", publisher);
         }
     }
 }

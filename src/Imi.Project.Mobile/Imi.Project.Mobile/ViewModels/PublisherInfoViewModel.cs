@@ -12,9 +12,8 @@ using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class PublisherInfoViewModel: BaseInfoViewModel
+    public class PublisherInfoViewModel: BaseInfoViewModel<PublisherInfo>
     {
-        private PublisherInfo currentPublisherInfo;
         private readonly IPublisherService publisherService;
 
         public PublisherInfoViewModel(IPublisherService publisherService, IGameService gameService):base(gameService)
@@ -89,7 +88,7 @@ namespace Imi.Project.Mobile.ViewModels
         {
             if(initData != null)
             {
-                currentPublisherInfo = initData as PublisherInfo;
+                CurrentItem = initData as PublisherInfo;
 
                 SetRead();
             } else
@@ -105,14 +104,14 @@ namespace Imi.Project.Mobile.ViewModels
             {
                 PublisherInfo validatePublisher = new PublisherInfo
                 {
-                    Id = currentPublisherInfo.Id,
+                    Id = CurrentItem.Id,
                     Country = PublisherCountry,
                     Name = this.Name
                 };
 
                 if(Validate(validatePublisher))
                 {
-                    await publisherService.UpdatePublisher(validatePublisher);
+                    await publisherService.Update(validatePublisher);
                     await CoreMethods.PopPageModel(validatePublisher, false, true);
                 }
             });
@@ -139,39 +138,27 @@ namespace Imi.Project.Mobile.ViewModels
 
                 if(Validate(publisherEdit))
                 {
-                    await publisherService.AddPublisher(publisherEdit);
+                    await publisherService.Add(publisherEdit);
                     await CoreMethods.PopPageModel(publisherEdit, false, true);
                 }
             });
 
-        public ICommand EditCommand => new Command(() =>
-        {
-            SetEdit();
-        });
-
-        public ICommand CancelCommand => new Command(() =>
-        {
-            SetRead();
-        });
-
-        public ICommand DeleteCommand => new Command(async () =>
+        public override ICommand DeleteCommand => new Command(async () =>
         {
             if(Games.Count() > 0)
             {
                 PublisherDeleteError = "Cannot delete while publisher has games";
             } else
             {
-                if(DeviceInfo.Platform == DevicePlatform.Android)
-                {
-                    Vibration.Vibrate(TimeSpan.FromSeconds(0.5));
-                }
 
-                await publisherService.DeletePublisher(currentPublisherInfo.Id);
+                base.DeleteCommand.Execute(null);
+
+                await publisherService.Delete(CurrentItem.Id);
                 await CoreMethods.PopPageModel(new PublisherInfo(), false, true);
             }
         });
 
-        private bool Validate(PublisherInfo publisherInfo)
+        public override bool Validate(PublisherInfo publisherInfo)
         {
             ValidationContext<PublisherInfo> validationContext = new ValidationContext<PublisherInfo>(publisherInfo);
             FluentValidation.Results.ValidationResult validationResult = InfoValidator.Validate(validationContext);
@@ -207,15 +194,15 @@ namespace Imi.Project.Mobile.ViewModels
 
         public override async void SetRead()
         {
-            Title = currentPublisherInfo.Name;
-            PublisherCountry = currentPublisherInfo.Country;
-            Name = currentPublisherInfo.Name;
+            Title = CurrentItem.Name;
+            PublisherCountry = CurrentItem.Country;
+            Name = CurrentItem.Name;
 
             EnableGameList = true;
 
-            IEnumerable<GamesInfo> allGames = await GameService.GetAllGames();
+            IEnumerable<GamesInfo> allGames = await GameService.GetAll();
 
-            Games = allGames.Where(gamess => gamess.PublisherId == currentPublisherInfo.Id).ToList();
+            Games = allGames.Where(gamess => gamess.PublisherId == CurrentItem.Id).ToList();
 
             if(Games.Count() == 0)
             {
@@ -227,7 +214,7 @@ namespace Imi.Project.Mobile.ViewModels
 
         public override void SetEdit()
         {
-            Title = "Edit " + currentPublisherInfo.Name;
+            Title = "Edit " + CurrentItem.Name;
 
             PublisherDeleteError = null;
 

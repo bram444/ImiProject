@@ -9,7 +9,7 @@
     <ContentPage.Content>
         <StackLayout IsVisible="{Binding VisableAdd}">
             <Button x:Name="btnAdd" Text="Add" Command="{Binding AddGameItem}" HorizontalOptions="FillAndExpand" Style="{StaticResource Add}"/>
-            <ListView ItemsSource="{Binding GamesInfo}" HeightRequest="-1" RowHeight="100">
+            <ListView ItemsSource="{Binding Collection}" HeightRequest="-1" RowHeight="100">
                 <ListView.Behaviors>
                     <bhv:EventToCommandBehavior
                         EventName="ItemTapped"
