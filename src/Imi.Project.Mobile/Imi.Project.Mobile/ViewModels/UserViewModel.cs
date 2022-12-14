@@ -9,7 +9,7 @@ using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class UserViewModel: BaseViewModel<UserInfo, IUserService>
+    public class UserViewModel: BaseViewModel<UserInfo, IUserService, UserInfoViewModel>
     {
         public UserViewModel(IUserService userService) : base(userService)
         {}
@@ -20,11 +20,5 @@ namespace Imi.Project.Mobile.ViewModels
 
             Title = "Users";
         }
-
-        public ICommand AddUserItem => new Command<UserInfo>(
-            async (UserInfo userInfo) =>
-            {
-                await CoreMethods.PushPageModel<UserInfoViewModel>(userInfo, false, true);
-            });
     }
 }

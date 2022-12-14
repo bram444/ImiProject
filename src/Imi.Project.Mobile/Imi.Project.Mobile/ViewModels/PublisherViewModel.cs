@@ -9,7 +9,7 @@ using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class PublisherViewModel: BaseViewModel<PublisherInfo, IPublisherService>
+    public class PublisherViewModel: BaseViewModel<PublisherInfo, IPublisherService, PublisherInfoViewModel>
     {
 
         public PublisherViewModel(IPublisherService publisherService) : base(publisherService)
@@ -21,11 +21,5 @@ namespace Imi.Project.Mobile.ViewModels
 
             Title = "Publishers";
         }
-
-        public ICommand AddPublisherItem => new Command<PublisherInfo>(
-            async (PublisherInfo publisher) =>
-            {
-                await CoreMethods.PushPageModel<PublisherInfoViewModel>(publisher);
-            });
     }
 }

@@ -9,7 +9,7 @@ using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class GameViewModel: BaseViewModel<GamesInfo, IGameService>
+    public class GameViewModel: BaseViewModel<GamesInfo, IGameService, GameInfoViewModel>
     {
         public GameViewModel(IGameService gameService):base(gameService)
         {
@@ -21,11 +21,5 @@ namespace Imi.Project.Mobile.ViewModels
 
             Title = "Games";
         }
-
-        public ICommand AddGameItem => new Command<GamesInfo>(
-            async (GamesInfo game) =>
-            {
-                await CoreMethods.PushPageModel<GameInfoViewModel>(game);
-            });
     }
 }

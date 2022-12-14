@@ -9,7 +9,7 @@ using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class GenreViewModel: BaseViewModel<GenreInfo, IGenreService>
+    public class GenreViewModel: BaseViewModel<GenreInfo, IGenreService, GenreInfoViewModel>
     {
 
         public GenreViewModel(IGenreService genreService) : base(genreService)
@@ -22,11 +22,5 @@ namespace Imi.Project.Mobile.ViewModels
 
             Title = "Genres";
         }
-
-        public ICommand AddGenreItem => new Command<GenreInfo>(
-            async (GenreInfo genreInfo) =>
-            {
-                await CoreMethods.PushPageModel<GenreInfoViewModel>(genreInfo);
-            });
     }
 }

@@ -108,7 +108,6 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-
         private string textPicker;
         public string TextPicker
         {
