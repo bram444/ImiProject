@@ -62,7 +62,6 @@ namespace Imi.Project.Api.Infrastructure.Repository
 
         public async Task<ApplicationUser> AddAsync(ApplicationUser entity)
         {
-            entity.Id = Guid.NewGuid();
             _dbContext.Set<ApplicationUser>().Add(entity);
             _dbContext.Entry(entity).State = EntityState.Added;
             await _dbContext.SaveChangesAsync();

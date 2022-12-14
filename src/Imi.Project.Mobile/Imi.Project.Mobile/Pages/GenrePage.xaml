@@ -7,7 +7,7 @@
              Title="{Binding Title}">
 
     <ContentPage.Content>
-        <StackLayout>
+        <StackLayout IsVisible="{Binding VisableAdd}">
             <Button x:Name="btnAdd" Text="Add" Command="{Binding AddGenreItem}" Style="{StaticResource Add}"/>
             <ListView ItemsSource="{Binding Collection}" HeightRequest="-1" RowHeight="100">
                 <ListView.Behaviors>

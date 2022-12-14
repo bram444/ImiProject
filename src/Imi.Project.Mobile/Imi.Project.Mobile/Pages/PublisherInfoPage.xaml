@@ -25,7 +25,7 @@
                         </Grid.RowDefinitions>
                         <StackLayout Grid.Column="0" Grid.Row="0">
                             <Label Text="Name"/>
-                            <Entry x:Name="txtName" Keyboard="Text" Text="{Binding PublisherName}" IsEnabled="{Binding EnableEditData}"/>
+                            <Entry x:Name="txtName" Keyboard="Text" Text="{Binding Name}" IsEnabled="{Binding EnableEditData}"/>
                             <Label x:Name="lblNameError" Text="{Binding PublisherNameError}" Style="{StaticResource ErrorLabel}"/>
                         </StackLayout>
                         <StackLayout Grid.Column="1" Grid.Row="0">

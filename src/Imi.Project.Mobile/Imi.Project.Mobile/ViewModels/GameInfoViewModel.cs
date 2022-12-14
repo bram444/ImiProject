@@ -28,16 +28,6 @@ namespace Imi.Project.Mobile.ViewModels
         }
 
         #region Properties
-        private int columnSpanAdd;
-        public int ColumnSpanAdd
-        {
-            get => columnSpanAdd;
-            set
-            {
-                columnSpanAdd = value;
-                RaisePropertyChanged(nameof(ColumnSpanAdd));
-            }
-        }
 
         private string gamePrice;
         public string GamePrice
@@ -73,6 +63,52 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
+        private PublisherInfo chosenPublisher;
+        public PublisherInfo ChosenPublisher
+        {
+            get => chosenPublisher;
+            set
+            {
+                chosenPublisher = value;
+                PublisherError = null;
+                RaisePropertyChanged(nameof(ChosenPublisher));
+            }
+        }
+
+        private ObservableCollection<PublisherInfo> publishers;
+        public ObservableCollection<PublisherInfo> Publishers
+        {
+            get => publishers;
+            set
+            {
+                publishers = value;
+                RaisePropertyChanged(nameof(Publishers));
+            }
+        }
+
+        private bool enablePublisher;
+        public bool EnablePublisher
+        {
+            get => enablePublisher;
+            set
+            {
+                enablePublisher = value;
+                RaisePropertyChanged(nameof(EnablePublisher));
+            }
+        }
+
+        private Guid publisherId;
+        public Guid PublisherId
+        {
+            get => publisherId;
+            set
+            {
+                publisherId = value;
+                RaisePropertyChanged(nameof(PublisherId));
+            }
+        }
+
+
         private string textPicker;
         public string TextPicker
         {
@@ -81,17 +117,6 @@ namespace Imi.Project.Mobile.ViewModels
             {
                 textPicker = value;
                 RaisePropertyChanged(nameof(TextPicker));
-            }
-        }
-
-        private string listSave;
-        public string ListSave
-        {
-            get => listSave;
-            set
-            {
-                listSave = value;
-                RaisePropertyChanged(nameof(ListSave));
             }
         }
 
@@ -116,15 +141,15 @@ namespace Imi.Project.Mobile.ViewModels
                 RaisePropertyChanged(nameof(CreateItem));
             }
         }
-
-        private bool enablePublisher;
-        public bool EnablePublisher
+        
+        private bool addGenre;
+        public bool AddGenre
         {
-            get => enablePublisher;
+            get => addGenre;
             set
             {
-                enablePublisher = value;
-                RaisePropertyChanged(nameof(EnablePublisher));
+                addGenre = value;
+                RaisePropertyChanged(nameof(AddGenre));
             }
         }
 
@@ -139,17 +164,6 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        private bool addGenre;
-        public bool AddGenre
-        {
-            get => addGenre;
-            set
-            {
-                addGenre = value;
-                RaisePropertyChanged(nameof(AddGenre));
-            }
-        }
-
         private bool visableAddGenre;
         public bool VisableAddGenre
         {
@@ -160,28 +174,6 @@ namespace Imi.Project.Mobile.ViewModels
                 ColumnDelete = VisableAddGenre ? 1 : 0;
                 ColumnSpanDelete = VisableAddGenre ? 1 : 2;
                 RaisePropertyChanged(nameof(VisableAddGenre));
-            }
-        }
-
-        private int columnSpanDelete;
-        public int ColumnSpanDelete
-        {
-            get => columnSpanDelete;
-            set
-            {
-                columnSpanDelete = value;
-                RaisePropertyChanged(nameof(ColumnSpanDelete));
-            }
-        }
-
-        private int columnDelete;
-        public int ColumnDelete
-        {
-            get => columnDelete;
-            set
-            {
-                columnDelete = value;
-                RaisePropertyChanged(nameof(ColumnDelete));
             }
         }
 
@@ -208,14 +200,36 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        private Guid publisherId;
-        public Guid PublisherId
+        private int columnSpanAdd;
+        public int ColumnSpanAdd
         {
-            get => publisherId;
+            get => columnSpanAdd;
             set
             {
-                publisherId = value;
-                RaisePropertyChanged(nameof(PublisherId));
+                columnSpanAdd = value;
+                RaisePropertyChanged(nameof(ColumnSpanAdd));
+            }
+        }
+
+        private int columnDelete;
+        public int ColumnDelete
+        {
+            get => columnDelete;
+            set
+            {
+                columnDelete = value;
+                RaisePropertyChanged(nameof(ColumnDelete));
+            }
+        }
+
+        private int columnSpanDelete;
+        public int ColumnSpanDelete
+        {
+            get => columnSpanDelete;
+            set
+            {
+                columnSpanDelete = value;
+                RaisePropertyChanged(nameof(ColumnSpanDelete));
             }
         }
 
@@ -230,17 +244,6 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        private ObservableCollection<PublisherInfo> publishers;
-        public ObservableCollection<PublisherInfo> Publishers
-        {
-            get => publishers;
-            set
-            {
-                publishers = value;
-                RaisePropertyChanged(nameof(Publishers));
-            }
-        }
-
         private ObservableCollection<GenreInfo> genres;
         public ObservableCollection<GenreInfo> Genres
         {
@@ -251,6 +254,40 @@ namespace Imi.Project.Mobile.ViewModels
                 HeightListGenres = Genres.Count() * 20;
                 RaisePropertyChanged(nameof(Genres));
                 RaisePropertyChanged(nameof(EnableGenreList));
+            }
+        }
+
+        private ObservableCollection<GenreInfo> genrePickList;
+        public ObservableCollection<GenreInfo> GenrePickList
+        {
+            get => genrePickList;
+            set
+            {
+                genrePickList = new ObservableCollection<GenreInfo>(value);
+                RaisePropertyChanged(nameof(GenrePickList));
+            }
+        }
+
+        private ObservableCollection<GenreInfo> genreEditList;
+        public ObservableCollection<GenreInfo> GenreEditList
+        {
+            get => genreEditList;
+            set
+            {
+                genreEditList = new ObservableCollection<GenreInfo>(value);
+                RaisePropertyChanged(nameof(GenreEditList));
+            }
+        }
+
+        private GenreInfo chosenGenre;
+        public GenreInfo ChosenGenre
+        {
+            get => chosenGenre;
+            set
+            {
+                chosenGenre = value;
+                RaisePropertyChanged(nameof(ChosenGenre));
+                ListError = "";
             }
         }
 
@@ -268,52 +305,6 @@ namespace Imi.Project.Mobile.ViewModels
         public bool EnableGenreList => Genres.Any();
 
         public bool EnableAddGenre => (Task.Run(async () => await genreService.GetAll()).Result.Count() != GenreId.Count());
-
-        private ObservableCollection<GenreInfo> genrePickList;
-        public ObservableCollection<GenreInfo> GenrePickList
-        {
-            get => genrePickList;
-            set
-            {
-                genrePickList = new ObservableCollection<GenreInfo>(value);
-                RaisePropertyChanged(nameof(GenrePickList));
-            }
-        }
-
-        private GenreInfo chosenGenre;
-        public GenreInfo ChosenGenre
-        {
-            get => chosenGenre;
-            set
-            {
-                chosenGenre = value;
-                RaisePropertyChanged(nameof(ChosenGenre));
-                ListError = "";
-            }
-        }
-
-        private ObservableCollection<GenreInfo> genreEditList;
-        public ObservableCollection<GenreInfo> GenreEditList
-        {
-            get => genreEditList;
-            set
-            {
-                genreEditList = new ObservableCollection<GenreInfo>(value);
-                RaisePropertyChanged(nameof(GenreEditList));
-            }
-        }
-
-        private PublisherInfo chosenPublisher;
-        public PublisherInfo ChosenPublisher
-        {
-            get => chosenPublisher;
-            set
-            {
-                chosenPublisher = value;
-                PublisherError = null;
-                RaisePropertyChanged(nameof(ChosenPublisher));
-            }
-        }
         #endregion 
 
         public override void Init(object initData)
@@ -332,8 +323,98 @@ namespace Imi.Project.Mobile.ViewModels
             base.Init(initData);
         }
 
-        public ICommand SaveGameInfoCommand => new Command(
-            async () =>
+        private void LoadGameState()
+        {
+            PublisherId = Guid.Empty;
+
+            GenreId = new ObservableCollection<Guid>();
+
+            Name = CurrentItem.Name;
+            GamePrice = CurrentItem.Price.ToString();
+            PublisherId = CurrentItem.PublisherId;
+            GenreId = new ObservableCollection<Guid>(CurrentItem.GenreId);
+
+            List<PublisherInfo> selectPublisher = new List<PublisherInfo> { new PublisherInfo
+                {
+                    Id= Guid.Empty,
+                    Name="Select a publisher"
+                }};
+
+            foreach(PublisherInfo publisher in Task.Run(async () => await publisherService.GetAll()).Result)
+            {
+                selectPublisher.Add(publisher);
+            }
+
+            Publishers = new ObservableCollection<PublisherInfo>(selectPublisher);
+
+            ChosenPublisher = Publishers.FirstOrDefault();
+
+            if(publisherId != null || !Publishers.Any(publisher => publisher.Id == PublisherId))
+            {
+                ChosenPublisher = Publishers.Where(publisher => publisher.Id == publisherId).Single();
+            }
+
+            List<GenreInfo> selectGenre = new List<GenreInfo> { new GenreInfo
+                {
+                    Id = Guid.Empty,
+                    Name = "Select a genre"
+                }};
+
+
+            foreach(GenreInfo genre in Task.Run(async () => await genreService.GetAll()).Result)
+            {
+                selectGenre.Add(genre);
+            }
+
+            Genres = new ObservableCollection<GenreInfo>(selectGenre.Where(genre => GenreId.Contains(genre.Id)));
+        }
+
+        public ICommand AddCommand => new Command(async () =>
+            {
+                if(Name == null)
+                {
+                    Name = string.Empty;
+                }
+
+                var allGenre = Genres;
+
+                List<Guid> gameGenreId = new List<Guid>();
+
+                foreach(GenreInfo genre in allGenre.Distinct())
+                {
+                    gameGenreId.Add(genre.Id);
+                }
+
+                GamesInfo gameEdit = new GamesInfo
+                {
+                    Id = Guid.NewGuid(),
+                    Name = Name,
+                    Price = 0.0f,
+                    GenreId = gameGenreId,
+                    PublisherId = ChosenPublisher.Id
+                };
+
+                if(GamePrice != null && float.TryParse(GamePrice, out float isfloat))
+                {
+                    gameEdit.Price = float.Parse(GamePrice);
+                }
+
+                if(Validate(gameEdit))
+                {
+                    await GameService.Add(gameEdit);
+                    await CoreMethods.PopPageModel(gameEdit, false, true);
+                }
+            });
+
+        public override ICommand DeleteCommand => new Command(async () =>
+        {
+            base.DeleteCommand.Execute(null);
+
+            await GameService.Delete(CurrentItem.Id);
+            await CoreMethods.PopPageModel(new GamesInfo(), false, true);
+        });
+
+        public ICommand SaveCommand => new Command(async () =>
             {
                 var allGenre = Genres;
 
@@ -365,61 +446,11 @@ namespace Imi.Project.Mobile.ViewModels
                 }
             });
 
-        public ICommand AddGameInfoCommand => new Command(
-            async () =>
-            {
-                if(Name == null)
-                {
-                    Name = "";
-                }
-
-                List<GenreInfo> allGenreId = new List<GenreInfo>
-                {
-                };
-
-                allGenreId.RemoveAll(selectGenre => selectGenre.Id == Guid.Empty);
-
-                List<Guid> gameGenreId = new List<Guid>();
-
-                foreach(GenreInfo genre in allGenreId.Distinct())
-                {
-                    gameGenreId.Add(genre.Id);
-                }
-
-                GamesInfo gameEdit = new GamesInfo
-                {
-                    Id = Guid.NewGuid(),
-                    Name = this.Name,
-                    Price = 0.0f,
-                    GenreId = gameGenreId,
-                    PublisherId = ChosenPublisher.Id
-                };
-
-                if(GamePrice != null && float.TryParse(GamePrice, out float isfloat))
-                {
-                    gameEdit.Price = float.Parse(GamePrice);
-                }
-
-                if(Validate(gameEdit))
-                {
-                    await GameService.Add(gameEdit);
-                    await CoreMethods.PopPageModel(gameEdit, false, true);
-                }
-            });
-
         public override ICommand CancelCommand => new Command(() =>
         {
             LoadGameState();
 
             base.CancelCommand.Execute(null);
-        });
-
-        public override ICommand DeleteCommand => new Command(async () =>
-        {
-            base.DeleteCommand.Execute(null);
-
-            await GameService.Delete(CurrentItem.Id);
-            await CoreMethods.PopPageModel(new GamesInfo(), false, true);
         });
 
         public ICommand AddGameGenre => new Command(() =>
@@ -458,7 +489,7 @@ namespace Imi.Project.Mobile.ViewModels
         });
 
         public ICommand DeleteGameGenre => new Command(() =>
-            {
+        {
                 TextPicker = "Delete genre";
 
                 List<GenreInfo> genres = new List<GenreInfo>
@@ -492,11 +523,11 @@ namespace Imi.Project.Mobile.ViewModels
                 VisableDeleteGenre = false;
             });
 
-        public ICommand SaveDeleteGameGenre => new Command(()=>
+        public ICommand SaveGameGenre => new Command(()=>
             {
                 if(ChosenGenre.Id != Guid.Empty)
                 {
-                        var genrePlayedList = Genres;
+                    var genrePlayedList = Genres;
                     if(AddGenre)
                     {
                         genrePlayedList.Add(ChosenGenre);
@@ -504,37 +535,33 @@ namespace Imi.Project.Mobile.ViewModels
 
                     } else
                     {
-                        genrePlayedList.Remove(genrePlayedList.Where(genre=>genre.Id==ChosenGenre.Id).Single());
+                        genrePlayedList.Remove(genrePlayedList.Where(genre => genre.Id == ChosenGenre.Id).Single());
                         GenreId.Remove(ChosenGenre.Id);
                     }
 
-                    Genres = new ObservableCollection<GenreInfo>(genrePlayedList.OrderBy(genre=>genre.Id));
+                    Genres = new ObservableCollection<GenreInfo>(genrePlayedList.OrderBy(genre => genre.Id));
 
-                if(CreateItem)
+                    if(CreateItem)
                     {
                         VisableAdd = true;
                     } else
                     {
-                    VisableCancel = true;
-                    VisableSave = true;
+                        VisableCancel = true;
+                        VisableSave = true;
                     }
                     VisibleGenreList = false;
-                    VisableGenreSave=false;
+                    VisableGenreSave = false;
                     VisableAddGenre = EnableAddGenre;
                     VisableDeleteGenre = EnableGenreList;
                 } else
                 {
                     ListError = "Pick a valid genre";
                 }
-
-
             });
 
-        public ICommand CancelDeleteGameGenre => new Command(() =>
+        public ICommand CancelGameGenre => new Command(() =>
         {
-            GenreId = new ObservableCollection<Guid>(CurrentItem.GenreId);
             VisibleGenreList = false;
-            VisableSave = true;
             VisableAddGenre = EnableAddGenre;
             VisableDeleteGenre = true;
             VisableGenreSave = false;
@@ -548,59 +575,6 @@ namespace Imi.Project.Mobile.ViewModels
             }
         });
 
-
-        private void LoadGameState()
-        {
-            PublisherId = Guid.Empty;
-
-            GenreId = new ObservableCollection<Guid>
-            {
-                Guid.Empty
-            };
-
-            if(CurrentItem != null)
-            {
-                Name = CurrentItem.Name;
-                GamePrice = CurrentItem.Price.ToString();
-                PublisherId = CurrentItem.PublisherId;
-                GenreId = new ObservableCollection<Guid>(CurrentItem.GenreId);
-
-                List<PublisherInfo> selectPublisher = new List<PublisherInfo> { new PublisherInfo
-                {
-                    Id= Guid.Empty,
-                    Name="Select a publisher"
-                }};
-
-                foreach(PublisherInfo publisher in Task.Run(async () => await publisherService.GetAll()).Result)
-                {
-                    selectPublisher.Add(publisher);
-                }
-
-                Publishers =new ObservableCollection<PublisherInfo>( selectPublisher);
-
-                ChosenPublisher = Publishers.FirstOrDefault();
-
-                if(publisherId != null || !Publishers.Any(publisher => publisher.Id == PublisherId))
-                {
-                    ChosenPublisher = Publishers.Where(publisher => publisher.Id == publisherId).Single();
-                }
-
-                List<GenreInfo> selectGenre = new List<GenreInfo> { new GenreInfo
-                {
-                    Id = Guid.Empty,
-                    Name = "Select a genre"
-                }};
-
-
-                foreach(GenreInfo genre in Task.Run(async () => await genreService.GetAll()).Result)
-                {
-                    selectGenre.Add(genre);
-                }
-
-                Genres = new ObservableCollection<GenreInfo>(selectGenre.Where(genre => GenreId.Contains(genre.Id)));
-            }
-        }
-
         public override bool Validate(GamesInfo gamesInfo)
         {
             ValidationContext<GamesInfo> validationContext = new ValidationContext<GamesInfo>(gamesInfo);
@@ -611,7 +585,7 @@ namespace Imi.Project.Mobile.ViewModels
                 switch(error.PropertyName)
                 {
                     case nameof(gamesInfo.Name):
-                        Name = error.ErrorMessage;
+                        NameError = error.ErrorMessage;
                         break;
 
                     case nameof(gamesInfo.PublisherId):
@@ -670,10 +644,7 @@ namespace Imi.Project.Mobile.ViewModels
 
         public override void SetRead()
         {
-            if(CurrentItem != null)
-            {
                 Title = CurrentItem.Name;
-            }
 
             VisibleGenreList = false;
             VisableAddGenre = false;

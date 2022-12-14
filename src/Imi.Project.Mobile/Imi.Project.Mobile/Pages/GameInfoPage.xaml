@@ -62,13 +62,13 @@
                         <Picker ItemsSource="{Binding GenrePickList}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding ChosenGenre}" />
                         <Label Text="{Binding ListError}" Style="{StaticResource ErrorLabel}"/>
                     </StackLayout>
-                    <Button Grid.Row="6" Grid.Column="0" Text="{Binding TextPicker}" Command="{Binding SaveDeleteGameGenre}" IsVisible="{Binding VisableGenreSave}" Style="{StaticResource Save}"/>
-                    <Button Grid.Row="6" Grid.Column="1" Text="Cancel" Command="{Binding CancelDeleteGameGenre}" IsVisible="{Binding VisableGenreSave}" Style="{StaticResource Cancel}"/>
+                    <Button Grid.Row="6" Grid.Column="0" Text="{Binding TextPicker}" Command="{Binding SaveGameGenre}" IsVisible="{Binding VisableGenreSave}" Style="{StaticResource Save}"/>
+                    <Button Grid.Row="6" Grid.Column="1" Text="Cancel" Command="{Binding CancelGameGenre}" IsVisible="{Binding VisableGenreSave}" Style="{StaticResource Cancel}"/>
                     
                     <FlexLayout Style="{StaticResource ButtonAlign}" Grid.Row="7" Grid.ColumnSpan="2">
-                        <Button x:Name="btnAdd" Text="Add" HorizontalOptions="Center" Command="{Binding AddGameInfoCommand}" IsVisible="{Binding VisableAdd}" Style="{StaticResource Add}"/>
+                        <Button x:Name="btnAdd" Text="Add" HorizontalOptions="Center" Command="{Binding AddCommand}" IsVisible="{Binding VisableAdd}" Style="{StaticResource Add}"/>
                         <Button x:Name="btnEdit" Text="Edit" HorizontalOptions="Center" Command="{Binding EditCommand}" IsVisible="{Binding VisableEdit}" Style="{StaticResource Edit}"/>
-                        <Button x:Name="btnSave" Text="Save" HorizontalOptions="Center" Command="{Binding SaveGameInfoCommand}" IsVisible="{Binding VisableSave}" Style="{StaticResource Save}"/>
+                        <Button x:Name="btnSave" Text="Save" HorizontalOptions="Center" Command="{Binding SaveCommand}" IsVisible="{Binding VisableSave}" Style="{StaticResource Save}"/>
                         <Button x:Name="btnCancel" Text="Cancel" HorizontalOptions="Center" Command="{Binding CancelCommand}" IsVisible="{Binding VisableCancel}" Style="{StaticResource Cancel}"/>
                         <Button x:Name="btnDelete" Text="Delete" HorizontalOptions="Center" Command="{Binding DeleteCommand}" IsVisible="{Binding VisableDelete}" Style="{StaticResource Delete}"/>
                     </FlexLayout>

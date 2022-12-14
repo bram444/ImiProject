@@ -20,7 +20,7 @@
                     </Grid.RowDefinitions>
                     <StackLayout Grid.Column="0" Grid.Row="0">
                         <Label Text="Name"/>
-                        <Entry x:Name="txtName" Text="{Binding GenreName}" IsEnabled="{Binding EnableEditData}" Keyboard="Text"/>
+                        <Entry x:Name="txtName" Text="{Binding Name}" IsEnabled="{Binding EnableEditData}" Keyboard="Text"/>
                         <Label x:Name="lblNameError" Text="{Binding GenreNameError}" Style="{StaticResource ErrorLabel}"/>
                     </StackLayout>
                     <StackLayout Grid.Column="1" Grid.Row="0">
