@@ -1,20 +1,18 @@
 ﻿using FreshMvvm;
-using Imi.Project.Mobile.Domain.Model;
 using Imi.Project.Mobile.Domain.Services;
-using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public abstract class BaseViewModel<C,I,VM>: FreshBasePageModel where I: IBaseService<C> where VM: BaseInfoViewModel<C>//class, interface, ViewModel
+    public abstract class BaseViewModel<C,I,VM>: FreshBasePageModel
+        where I: IBaseService<C>
+        where VM : FreshBasePageModel
+        //class, interface, ViewModel
     {
         public I Service;
-
-        public IUserService userService;
 
         public BaseViewModel(I service)
         {
@@ -83,7 +81,6 @@ namespace Imi.Project.Mobile.ViewModels
 
         public virtual ICommand AddItem => new Command<C>(async (C item) => {
             await CoreMethods.PushPageModel<VM>(item);
-
         });
     }
 }

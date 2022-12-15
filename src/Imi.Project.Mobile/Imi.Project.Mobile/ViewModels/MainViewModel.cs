@@ -1,5 +1,4 @@
 ﻿using FreshMvvm;
-using Imi.Project.Mobile.Domain.Services;
 using System.Windows.Input;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -8,20 +7,9 @@ namespace Imi.Project.Mobile.ViewModels
 {
     public class MainViewModel: FreshBasePageModel
     {
-        private readonly IGameService gameService;
-        private readonly IGenreService genreService;
-        private readonly IPublisherService publisherService;
-        private readonly IUserService userService;
-
-        public MainViewModel(IGameService gameService, IGenreService genreService, IPublisherService publisherService, IUserService userService)
+        public MainViewModel()
         {
-            this.gameService = gameService;
-            this.genreService = genreService;
-            this.publisherService = publisherService;
-            this.userService = userService;
-
             AppName = AppInfo.Name;
-
             AppVersion = AppInfo.VersionString;
         }
 

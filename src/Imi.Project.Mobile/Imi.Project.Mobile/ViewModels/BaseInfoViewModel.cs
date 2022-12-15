@@ -9,14 +9,20 @@ using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public abstract class BaseInfoViewModel<T> : FreshBasePageModel
+    public abstract class BaseInfoViewModel<C,CS,LS>: FreshBasePageModel
+                where CS : IBaseService<C>
+                where C :BaseInfo,new()
     {
-        protected IGameService GameService;
-        protected T CurrentItem;
+        protected CS CurrentService;
+        protected LS ListService;
+        protected IValidator InfoValidator;
+        protected C CurrentItem;
 
-        public BaseInfoViewModel(IGameService gameService)
+        public BaseInfoViewModel(CS currentService, LS listService, IValidator validator)
         {
-            GameService = gameService;
+            CurrentService = currentService;
+            ListService = listService;
+            InfoValidator = validator;
         }
 
         private string title;
@@ -37,6 +43,7 @@ namespace Imi.Project.Mobile.ViewModels
             set
             {
                 name = value;
+                NameError = null;
                 RaisePropertyChanged(nameof(Name));
             }
         }
@@ -107,10 +114,6 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        protected IValidator InfoValidator;
-
-        public abstract bool Validate(T validate);
-
         private bool enableEditData;
         public bool EnableEditData
         {
@@ -122,21 +125,38 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        public virtual ICommand DeleteCommand => new Command(() => {
+        public virtual ICommand AddCommand => new Command(() =>
+        {
+            if(Name == null)
+            {
+                Name = string.Empty;
+            }
+        });
+
+        public virtual ICommand EditCommand => new Command(() =>
+        {
+            SetEdit();
+        });
+
+        public virtual ICommand DeleteCommand => new Command(async() =>
+        {
             if(DeviceInfo.Platform == DevicePlatform.Android)
             {
                 Vibration.Vibrate(TimeSpan.FromSeconds(0.5));
             }
+
+            await CurrentService.Delete(CurrentItem.Id);
+            await CoreMethods.PopPageModel(new C(), false, true);
         });
 
-        public virtual ICommand EditCommand => new Command(() => {
-            SetEdit();
-        });
+        public abstract ICommand SaveCommand { get; }
 
         public virtual ICommand CancelCommand => new Command(() =>
         {
             SetRead();
         });
+
+        public abstract bool Validate(C validate);
 
         public virtual void SetRead()
         {
@@ -163,11 +183,30 @@ namespace Imi.Project.Mobile.ViewModels
         public virtual void SetEdit()
         {
             EnableEditData = true;
+
             VisableAdd = false;
             VisableCancel = true;
             VisableEdit = false;
             VisableDelete = false;
             VisableSave = true;
+        }
+
+        protected async void AddItem(C item)
+        {
+            if(Validate(item))
+            {
+                await CurrentService.Add(item);
+                await CoreMethods.PopPageModel(item, false, true);
+            }
+        }
+
+        protected async void SaveItem(C item)
+        {
+            if(Validate(item))
+            {
+                await CurrentService.Update(item);
+                await CoreMethods.PopPageModel(item, false, true);
+            }
         }
     }
 }

@@ -9,13 +9,13 @@
              Title="Home">
 
     <FlexLayout Style="{StaticResource ButtonAlign}" Margin="0,0,0,0">
-        <Button x:Name="btnGame" Text="Games" Command="{Binding OpenGame}" Style="{StaticResource HomeButtons}"/>
-        <Button x:Name="btnGenre" Text="Genre" Command="{Binding OpenGenre}" Style="{StaticResource HomeButtons}"/>
-        <Button x:Name="btnPublisher" Text="Publisher" Command="{Binding OpenPublisher}" Style="{StaticResource HomeButtons}"/>
-        <Button x:Name="btnUser" Text="User" Command="{Binding OpenUser}" Style="{StaticResource HomeButtons}"/>
+        <Button Text="Games" Command="{Binding OpenGame}" Style="{StaticResource HomeButtons}"/>
+        <Button Text="Genre" Command="{Binding OpenGenre}" Style="{StaticResource HomeButtons}"/>
+        <Button Text="Publisher" Command="{Binding OpenPublisher}" Style="{StaticResource HomeButtons}"/>
+        <Button Text="User" Command="{Binding OpenUser}" Style="{StaticResource HomeButtons}"/>
         <StackLayout>
-            <Label HorizontalOptions="Center" Text="{Binding AppName}"/>
-            <Label HorizontalOptions="Center" Text="{Binding AppVersion}"/>
+            <Label Text="{Binding AppName}" HorizontalOptions="Center"/>
+            <Label Text="{Binding AppVersion}" HorizontalOptions="Center"/>
         </StackLayout>
     </FlexLayout>
 </ContentPage>

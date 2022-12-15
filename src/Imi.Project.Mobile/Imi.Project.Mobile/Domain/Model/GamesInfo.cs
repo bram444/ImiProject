@@ -3,9 +3,8 @@ using System.Collections.Generic;
 
 namespace Imi.Project.Mobile.Domain.Model
 {
-    public class GamesInfo
+    public class GamesInfo:BaseInfo
     {
-        public Guid Id { get; set; }
         public string Name { get; set; }
         public float Price { get; set; }
         public Guid PublisherId { get; set; }

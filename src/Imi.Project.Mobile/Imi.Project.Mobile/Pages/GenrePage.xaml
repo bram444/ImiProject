@@ -8,7 +8,7 @@
 
     <ContentPage.Content>
         <StackLayout IsVisible="{Binding VisableAdd}">
-            <Button x:Name="btnAdd" Text="Add" Command="{Binding AddItem}" Style="{StaticResource Add}"/>
+            <Button Text="Add" Command="{Binding AddItem}" Style="{StaticResource Add}"/>
             <ListView ItemsSource="{Binding Collection}" HeightRequest="-1" RowHeight="100">
                 <ListView.Behaviors>
                     <bhv:EventToCommandBehavior

@@ -2,9 +2,8 @@
 
 namespace Imi.Project.Mobile.Domain.Model
 {
-    public class PublisherInfo
+    public class PublisherInfo: BaseInfo
     {
-        public Guid Id { get; set; }
         public string Name { get; set; }
         public string Country { get; set; }
     }

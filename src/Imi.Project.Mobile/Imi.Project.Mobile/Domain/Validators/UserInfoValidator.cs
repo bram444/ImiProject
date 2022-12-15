@@ -32,6 +32,12 @@ namespace Imi.Project.Mobile.Domain.Validators
                 .WithMessage("Password must be longer than 6")
                 .MaximumLength(100)
                 .WithMessage("Password must be shorter than 100");
+
+            RuleFor(userInfo => userInfo.ConfirmPassword)
+                .Equal(userinfo => userinfo.Password)
+                .WithMessage("Password must be the same as confirm password");
+
+
         }
     }
 }

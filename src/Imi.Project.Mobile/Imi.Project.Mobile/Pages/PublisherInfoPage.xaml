@@ -25,13 +25,13 @@
                         </Grid.RowDefinitions>
                         <StackLayout Grid.Column="0" Grid.Row="0">
                             <Label Text="Name"/>
-                            <Entry x:Name="txtName" Keyboard="Text" Text="{Binding Name}" IsEnabled="{Binding EnableEditData}"/>
-                            <Label x:Name="lblNameError" Text="{Binding PublisherNameError}" Style="{StaticResource ErrorLabel}"/>
+                            <Entry Text="{Binding Name}" IsEnabled="{Binding EnableEditData}" Keyboard="Text"/>
+                            <Label Text="{Binding NameError}" Style="{StaticResource ErrorLabel}"/>
                         </StackLayout>
                         <StackLayout Grid.Column="1" Grid.Row="0">
                             <Label Text="Country"/>
-                            <Entry x:Name="txtCountry" Text="{Binding PublisherCountry}" Keyboard="Text" IsEnabled="{Binding EnableEditData}"/>
-                            <Label x:Name="lblCountryError" Text="{Binding PublisherCountryError}" Style="{StaticResource ErrorLabel}"/>
+                            <Entry Text="{Binding PublisherCountry}" Keyboard="Text" IsEnabled="{Binding EnableEditData}"/>
+                            <Label Text="{Binding PublisherCountryError}" Style="{StaticResource ErrorLabel}"/>
                         </StackLayout>
                         <StackLayout Grid.Row="1" Grid.ColumnSpan="2" IsVisible="{Binding EnableGameList}">
                             <Label Text="All Games from company:"/>
@@ -42,14 +42,14 @@
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>
-                            <Label x:Name="lblDeleteError" Text="{Binding PublisherDeleteError}" Style="{StaticResource ErrorLabel}"/>
+                            <Label Text="{Binding PublisherDeleteError}" Style="{StaticResource ErrorLabel}"/>
                         </StackLayout>
                         <FlexLayout Style="{StaticResource ButtonAlign}" Grid.Row="2" Grid.ColumnSpan="2">
-                            <Button x:Name="btnAdd" Text="Add" HorizontalOptions="Center" Command="{Binding AddPublisherInfoCommand}" IsVisible="{Binding VisableAdd}" Style="{StaticResource Add}"/>
-                            <Button x:Name="btnEdit" Text="Edit" HorizontalOptions="Center" Command="{Binding EditCommand}" IsVisible="{Binding VisableEdit}" Style="{StaticResource Edit}"/>
-                            <Button x:Name="btnSave" Text="Save" HorizontalOptions="Center" Command="{Binding SavePublisherInfoCommand}" IsVisible="{Binding VisableSave}" Style="{StaticResource Save}"/>
-                            <Button x:Name="btnCancel" Text="Cancel" HorizontalOptions="Center" Command="{Binding CancelCommand}" IsVisible="{Binding VisableCancel}" Style="{StaticResource Cancel}"/>
-                            <Button x:Name="btnDelete" Text="Delete" HorizontalOptions="Center" Command="{Binding DeleteCommand}" IsVisible="{Binding VisableDelete}" Style="{StaticResource Delete}"/>
+                            <Button Text="Add" HorizontalOptions="Center" Command="{Binding AddCommand}" IsVisible="{Binding VisableAdd}" Style="{StaticResource Add}"/>
+                            <Button Text="Edit" HorizontalOptions="Center" Command="{Binding EditCommand}" IsVisible="{Binding VisableEdit}" Style="{StaticResource Edit}"/>
+                            <Button Text="Save" HorizontalOptions="Center" Command="{Binding SaveCommand}" IsVisible="{Binding VisableSave}" Style="{StaticResource Save}"/>
+                            <Button Text="Cancel" HorizontalOptions="Center" Command="{Binding CancelCommand}" IsVisible="{Binding VisableCancel}" Style="{StaticResource Cancel}"/>
+                            <Button Text="Delete" HorizontalOptions="Center" Command="{Binding DeleteCommand}" IsVisible="{Binding VisableDelete}" Style="{StaticResource Delete}"/>
                         </FlexLayout>
                     </Grid>
                 </StackLayout>

@@ -2,9 +2,8 @@
 
 namespace Imi.Project.Mobile.Domain.Model
 {
-    public class GenreInfo
+    public class GenreInfo: BaseInfo
     {
-        public Guid Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
     }

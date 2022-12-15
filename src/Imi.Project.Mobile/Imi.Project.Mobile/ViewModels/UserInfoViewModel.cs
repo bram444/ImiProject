@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using FreshMvvm;
 using Imi.Project.Mobile.Domain.Model;
 using Imi.Project.Mobile.Domain.Services;
 using Imi.Project.Mobile.Domain.Validators;
@@ -7,23 +6,16 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class UserInfoViewModel: BaseInfoViewModel<UserInfo>
+    public class UserInfoViewModel: BaseEditListViewModel<UserInfo, GamesInfo, IUserService, IGameService>
     {
-        private readonly IUserService userService;
-
-        public UserInfoViewModel(IUserService userService, IGameService gameService):base(gameService)
-        {
-            this.userService = userService;
-
-            InfoValidator = new UserInfoValidator();
-        }
+        public UserInfoViewModel(IUserService userService, IGameService gameService)
+            : base(userService, gameService, new UserInfoValidator())
+        { }
 
         #region Properties
         private string firstName;
@@ -153,259 +145,31 @@ namespace Imi.Project.Mobile.ViewModels
                 RaisePropertyChanged(nameof(VisablePassword));
             }
         }
-
-        
-        private string textPicker;
-        public string TextPicker
-        {
-            get => textPicker;
-            set
-            {
-                textPicker = value;
-                RaisePropertyChanged(nameof(TextPicker));
-            }
-        }
-
-        private string listError;
-        public string ListError
-        {
-            get => listError;
-            set
-            {
-                listError = value;
-                RaisePropertyChanged(nameof(ListError));
-            }
-        }
-
-        private bool createItem;
-        public bool CreateItem
-        {
-            get => createItem;
-            set
-            {
-                createItem = value;
-                RaisePropertyChanged(nameof(CreateItem));
-            }
-        }
-
-        private bool addGame;
-        public bool AddGame
-        {
-            get => addGame;
-            set
-            {
-                addGame = value;
-                RaisePropertyChanged(nameof(AddGame));
-            }
-        }
-
-        private bool visibleGameList;
-        public bool VisibleGameList
-        {
-            get => visibleGameList;
-            set
-            {
-                visibleGameList = value;
-                RaisePropertyChanged(nameof(VisibleGameList));
-            }
-        }
-
-        private bool visableAddGame;
-        public bool VisableAddGame
-        {
-            get => visableAddGame;
-            set
-            {
-                visableAddGame = value;
-                ColumnDelete = VisableAddGame ? 1 : 0;
-                ColumnSpanDelete = VisableAddGame ? 1 : 2;
-                RaisePropertyChanged(nameof(VisableAddGame));
-            }
-        }
-
-        private bool visableDeleteGame;
-        public bool VisableDeleteGame
-        {
-            get => visableDeleteGame;
-            set
-            {
-                visableDeleteGame = value;
-                ColumnSpanAdd = VisableDeleteGame ? 1 : 2;
-                RaisePropertyChanged(nameof(VisableDeleteGame));
-            }
-        }
-
-        private bool visableGameSave;
-        public bool VisableGameSave
-        {
-            get => visableGameSave;
-            set
-            {
-                visableGameSave = value;
-                RaisePropertyChanged(nameof(VisableGameSave));
-            }
-        }
-
-        private int columnSpanAdd;
-        public int ColumnSpanAdd
-        {
-            get => columnSpanAdd;
-            set
-            {
-                columnSpanAdd = value;
-                RaisePropertyChanged(nameof(ColumnSpanAdd));
-            }
-        }
-
-        private int columnDelete;
-        public int ColumnDelete
-        {
-            get => columnDelete;
-            set
-            {
-                columnDelete = value;
-                RaisePropertyChanged(nameof(ColumnDelete));
-            }
-        }
-
-        private int columnSpanDelete;
-        public int ColumnSpanDelete
-        {
-            get => columnSpanDelete;
-            set
-            {
-                columnSpanDelete = value;
-                RaisePropertyChanged(nameof(ColumnSpanDelete));
-            }
-        }
-
-        private ObservableCollection<Guid> gameId;
-        public ObservableCollection<Guid> GameId
-        {
-            get => gameId;
-            set
-            {
-                gameId = value;
-                RaisePropertyChanged(nameof(GameId));
-            }
-        }
-
-        private ObservableCollection<GamesInfo> games;
-        public ObservableCollection<GamesInfo> Games
-        {
-            get => games;
-            set
-            {
-                games = value;
-                HeightListGames = games.Count() * 20;
-                RaisePropertyChanged(nameof(Games));
-                RaisePropertyChanged(nameof(EnableGameList));
-            }
-        }
-
-        private ObservableCollection<GamesInfo> gamePickList;
-        public ObservableCollection<GamesInfo> GamePickList
-        {
-            get => gamePickList;
-            set
-            {
-                gamePickList = new ObservableCollection<GamesInfo>(value);
-                RaisePropertyChanged(nameof(GamePickList));
-            }
-        }
-
-        private ObservableCollection<GamesInfo> gameEditList;
-        public ObservableCollection<GamesInfo> GameEditList
-        {
-            get => gameEditList;
-            set
-            {
-                gameEditList = value;
-                RaisePropertyChanged(nameof(GameEditList));
-            }
-        }
-
-        private GamesInfo chosenGame;
-        public GamesInfo ChosenGame
-        {
-            get => chosenGame;
-            set
-            {
-                chosenGame = value;
-                RaisePropertyChanged(nameof(ChosenGame));
-                ListError = "";
-            }
-        }
-
-        private int heightListGames;
-        public int HeightListGames
-        {
-            get => heightListGames;
-            set
-            {
-                heightListGames = value;
-                RaisePropertyChanged(nameof(HeightListGames));
-            }
-        }
-
-        public bool EnableGameList => Games.Any();
-
-        public bool EnableAddGame => (Task.Run(async () => await GameService.GetAll()).Result.Count() != GameId.Count());
-
         #endregion
 
-        public override void Init(object initData)
+        public override void LoadState()
         {
-            if(initData != null)
-            {
-                CurrentItem = initData as UserInfo;
-
-                LoadUserState();
-                SetRead();
-            } else
-            {
-                SetAdd();
-            }
-
-            base.Init(initData);
-        }
-
-        private void LoadUserState()
-        {
-            Name = null;
-            FirstName = null;
-            LastName = null;
-            Email = null;
-            Password = null;
-
-            GameId = new ObservableCollection<Guid>();
-
             Name = CurrentItem.UserName;
             FirstName = CurrentItem.FirstName;
             LastName = CurrentItem.LastName;
             Email = CurrentItem.Email;
-            GameId = new ObservableCollection<Guid>(CurrentItem.GameId);
             Password = CurrentItem.Password;
             PasswordConfirm = CurrentItem.ConfirmPassword;
+            CurrentItemIdList = new ObservableCollection<Guid>(CurrentItem.GameId);
 
-            List<GamesInfo> selectGame = new List<GamesInfo>
-            {
-                new GamesInfo
+            List<GamesInfo> selectGame = new List<GamesInfo> { new GamesInfo
                 {
                     Id = Guid.Empty,
                     Name = "Select a game"
                 }};
 
-            foreach(GamesInfo game in Task.Run(async () => await GameService.GetAll()).Result)
-            {
-                selectGame.Add(game);
-            }
-
-            Games = new ObservableCollection<GamesInfo>(selectGame.Where(game=> GameId.Contains(game.Id)));
+            LoadList(selectGame);
         }
 
-        public ICommand AddCommand => new Command(async () =>
+        public override ICommand AddCommand => new Command(() =>
             {
+                base.AddCommand.Execute(null);
+
                 if(FirstName == null)
                 {
                     FirstName = string.Empty;
@@ -414,11 +178,6 @@ namespace Imi.Project.Mobile.ViewModels
                 if(LastName == null)
                 {
                     LastName = string.Empty;
-                }
-
-                if(Name == null)
-                {
-                    Name = string.Empty;
                 }
 
                 if(Email == null)
@@ -436,7 +195,7 @@ namespace Imi.Project.Mobile.ViewModels
                     PasswordConfirm = string.Empty;
                 }
 
-                var allGames = Games;
+                var allGames = CurrentItemList;
 
                 List<Guid> gameId = new List<Guid>();
 
@@ -457,30 +216,12 @@ namespace Imi.Project.Mobile.ViewModels
                     ConfirmPassword = PasswordConfirm
                 };
 
-                if(Validate(userEdit))
-                {
-                    if(userEdit.Password != userEdit.ConfirmPassword)
-                    {
-                        UserPasswordConfirmError = "Password and confirm password aren't the same";
-                    } else
-                    {
-                        await userService.Add(userEdit);
-                        await CoreMethods.PopPageModel(userEdit, false, true);
-                    }
-                }
+                AddItem(userEdit);
             });
 
-        public override ICommand DeleteCommand => new Command(async () =>
-        {
-            base.DeleteCommand.Execute(null);
-
-            await userService.Delete(CurrentItem.Id);
-            await CoreMethods.PopPageModel(new UserInfo(), false, true);
-        });
-
-        public ICommand SaveCommand => new Command(async () =>
+        public override ICommand SaveCommand => new Command(() =>
             {
-                var allGames = Games;
+                var allGames = CurrentItemList;
 
                 List<Guid> gameId = new List<Guid>();
 
@@ -489,7 +230,7 @@ namespace Imi.Project.Mobile.ViewModels
                     gameId.Add(game.Id);
                 }
 
-                UserInfo userEdit = new UserInfo
+                UserInfo userValidate = new UserInfo
                 {
                     Id = CurrentItem.Id,
                     FirstName = FirstName,
@@ -501,21 +242,10 @@ namespace Imi.Project.Mobile.ViewModels
                     ConfirmPassword = PasswordConfirm
                 };
 
-                if(Validate(userEdit))
-                {
-                    await userService.Update(userEdit);
-                    await CoreMethods.PopPageModel(userEdit, false, true);
-                }
+                SaveItem(userValidate);
             });
 
-        public override ICommand CancelCommand => new Command(() =>
-        {
-            LoadUserState();
-
-            base.CancelCommand.Execute(null);
-        });
-
-        public ICommand AddUserGame => new Command(() =>
+        public override ICommand AddPickerItem => new Command(() =>
         {
             TextPicker = "Add game";
 
@@ -528,29 +258,10 @@ namespace Imi.Project.Mobile.ViewModels
                 }
             };
 
-            foreach(GamesInfo game in Task.Run(async () => await GameService.GetAll()).Result)
-            {
-                if(!GameId.Contains(game.Id))
-                {
-                    games.Add(game);
-                }
-            }
-
-            GamePickList = new ObservableCollection<GamesInfo>(games);
-
-            ChosenGame = games.First();
-
-            VisibleGameList = true;
-            VisableAdd = false;
-            VisableCancel = false;
-            VisableSave = false;
-            VisableGameSave = true;
-            AddGame = true;
-            VisableDeleteGame = false;
-            VisableAddGame = false;
+            base.AddPickerItem.Execute(games);
         });
 
-        public ICommand DeleteUserGame => new Command(() =>
+        public override ICommand DeletePickerItem => new Command(() =>
         {
             TextPicker = "Delete game";
 
@@ -563,78 +274,7 @@ namespace Imi.Project.Mobile.ViewModels
                     }
                 };
 
-            foreach(GamesInfo game in Task.Run(async () => await GameService.GetAll()).Result)
-            {
-                if(GameId.Contains(game.Id))
-                {
-                    games.Add(game);
-                }
-            }
-
-            GamePickList = new ObservableCollection<GamesInfo>(games);
-
-            ChosenGame = games.First();
-
-            VisableAdd = false;
-            VisibleGameList = true;
-            VisableGameSave = true;
-            AddGame = false;
-            VisableCancel = false;
-            VisableSave = false;
-            VisableAddGame= false;
-            VisableDeleteGame = false;
-        });
-
-        public ICommand SaveUserGame => new Command(() =>
-        {
-            if(ChosenGame.Id != Guid.Empty)
-            {
-                var gamePlayedList = Games;
-                if(AddGame)
-                {
-                    gamePlayedList.Add(ChosenGame);
-                    GameId.Add(ChosenGame.Id);
-
-                } else
-                {
-                    gamePlayedList.Remove(gamePlayedList.Where(game=> game.Id == ChosenGame.Id).Single());
-                    GameId.Remove(ChosenGame.Id);
-                }
-
-                Games = new ObservableCollection<GamesInfo>(gamePlayedList.OrderBy(game => game.Id));
-
-                if(CreateItem)
-                {
-                    VisableAdd = true;
-                } else
-                {
-                    VisableCancel = true;
-                    VisableSave = true;
-                }
-                VisibleGameList = false;
-                VisableGameSave = false;
-                VisableAddGame= EnableAddGame;
-                VisableDeleteGame= EnableGameList;
-            } else
-            {
-                ListError = "Pick a valid game";
-            }
-        });
-
-        public ICommand CancelUserGame => new Command(() =>
-        {
-            VisibleGameList = false;
-            VisableAddGame= EnableAddGame;
-            VisableDeleteGame = true;
-            VisableGameSave = false;
-            if(CreateItem)
-            {
-                VisableAdd = true;
-            } else
-            {
-                VisableCancel = true;
-                VisableSave = true;
-            }
+            base.DeletePickerItem.Execute(games);
         });
 
         public override bool Validate(UserInfo userInfo)
@@ -666,8 +306,12 @@ namespace Imi.Project.Mobile.ViewModels
                         UserPasswordError = error.ErrorMessage;
                         break;
 
+                    case nameof(userInfo.ConfirmPassword):
+                        UserPasswordConfirmError = error.ErrorMessage;
+                        break;
+
                     default:
-                        UserEmailError = "Unknown Error";
+                        NameError = "Unknown Error";
                         UserFirstNameError = "Unknown Error";
                         UserLastNameError = "Unknown Error";
                         UserEmailError = "Unknown Error";
@@ -681,23 +325,7 @@ namespace Imi.Project.Mobile.ViewModels
         public override void SetAdd()
         {
             Title = "New User";
-
-            GameId = new ObservableCollection<Guid>();
-
-
-
-
-
-
-
-            VisibleGameList = false;
-            VisableGameSave = false;
             VisablePassword = true;
-            ChosenGame = new GamesInfo();
-            Games = new ObservableCollection<GamesInfo>();
-            VisableDeleteGame = EnableGameList;
-            VisableAddGame = EnableAddGame;
-            CreateItem = true;
 
             CurrentItem = new UserInfo
             {
@@ -711,22 +339,7 @@ namespace Imi.Project.Mobile.ViewModels
         public override void SetRead()
         {
             Title = CurrentItem.UserName;
-
             VisablePassword = false;
-            VisibleGameList = false;
-            VisableAddGame= false;
-            VisableDeleteGame= false;
-            VisableGameSave = false;
-            CreateItem = false;
-
-
-
-            //Games = new ObservableCollection<GamesInfo>();
-
-
-            //IEnumerable<GamesInfo> allGames = await GameService.GetAll();
-
-            //Games = new ObservableCollection<GamesInfo>(allGames.Where(gamess => CurrentItem.GameId.Contains(gamess.Id)));
 
             base.SetRead();
         }
@@ -734,12 +347,7 @@ namespace Imi.Project.Mobile.ViewModels
         public override void SetEdit()
         {
             Title = "Edit " + CurrentItem.UserName;
-
             VisablePassword = false;
-            VisibleGameList = false;
-            VisableDeleteGame= EnableGameList;
-            VisableAddGame = EnableAddGame;
-            VisableGameSave = false;
 
             base.SetEdit();
         }

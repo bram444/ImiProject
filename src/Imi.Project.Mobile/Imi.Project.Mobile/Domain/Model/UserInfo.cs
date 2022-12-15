@@ -3,9 +3,8 @@ using System.Collections.Generic;
 
 namespace Imi.Project.Mobile.Domain.Model
 {
-    public class UserInfo
+    public class UserInfo: BaseInfo
     {
-        public Guid Id { get; set; }
         public string UserName { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

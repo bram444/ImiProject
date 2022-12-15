@@ -13,6 +13,10 @@
         <ScrollView>
             <StackLayout Padding="10">
                 <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
@@ -20,12 +24,12 @@
                     </Grid.RowDefinitions>
                     <StackLayout Grid.Column="0" Grid.Row="0">
                         <Label Text="Name"/>
-                        <Entry x:Name="txtName" Text="{Binding Name}" IsEnabled="{Binding EnableEditData}" Keyboard="Text"/>
-                        <Label x:Name="lblNameError" Text="{Binding GenreNameError}" Style="{StaticResource ErrorLabel}"/>
+                        <Entry Text="{Binding Name}" IsEnabled="{Binding EnableEditData}" Keyboard="Text"/>
+                        <Label Text="{Binding NameError}" Style="{StaticResource ErrorLabel}"/>
                     </StackLayout>
                     <StackLayout Grid.Column="1" Grid.Row="0">
                         <Label Text="Description"/>
-                        <Entry x:Name="txtDescription" Keyboard="Text" Text="{Binding GenreDescription}" IsEnabled="{Binding EnableEditData}"/>
+                        <Entry Text="{Binding GenreDescription}" IsEnabled="{Binding EnableEditData}" Keyboard="Text"/>
                     </StackLayout>
                     <StackLayout Grid.Row="1" Grid.ColumnSpan="2" IsVisible="{Binding EnableGameList}">
                         <Label Text="All Games with this genre:"/>
@@ -38,11 +42,11 @@
                         </ListView>
                     </StackLayout>
                     <FlexLayout Style="{StaticResource ButtonAlign}" Grid.Row="2" Grid.ColumnSpan="2">
-                        <Button x:Name="btnAdd" Text="Add" HorizontalOptions="Center" Command="{Binding AddGenreInfoCommand}" IsVisible="{Binding VisableAdd}" Style="{StaticResource Add}"/>
-                        <Button x:Name="btnEdit" Text="Edit" HorizontalOptions="Center" Command="{Binding EditCommand}" IsVisible="{Binding VisableEdit}" Style="{StaticResource Edit}"/>
-                        <Button x:Name="btnSave" Text="Save" HorizontalOptions="Center" Command="{Binding SaveGenreInfoCommand}" IsVisible="{Binding VisableSave}" Style="{StaticResource Save}"/>
-                        <Button x:Name="btnCancel" Text="Cancel" HorizontalOptions="Center" Command="{Binding CancelCommand}" IsVisible="{Binding VisableCancel}" Style="{StaticResource Cancel}"/>
-                        <Button x:Name="btnDelete" Text="Delete" HorizontalOptions="Center" Command="{Binding DeleteCommand}" IsVisible="{Binding VisableDelete}" Style="{StaticResource Delete}"/>
+                        <Button Text="Add" HorizontalOptions="Center" Command="{Binding AddCommand}" IsVisible="{Binding VisableAdd}" Style="{StaticResource Add}"/>
+                        <Button Text="Edit" HorizontalOptions="Center" Command="{Binding EditCommand}" IsVisible="{Binding VisableEdit}" Style="{StaticResource Edit}"/>
+                        <Button Text="Save" HorizontalOptions="Center" Command="{Binding SaveCommand}" IsVisible="{Binding VisableSave}" Style="{StaticResource Save}"/>
+                        <Button Text="Cancel" HorizontalOptions="Center" Command="{Binding CancelCommand}" IsVisible="{Binding VisableCancel}" Style="{StaticResource Cancel}"/>
+                        <Button Text="Delete" HorizontalOptions="Center" Command="{Binding DeleteCommand}" IsVisible="{Binding VisableDelete}" Style="{StaticResource Delete}"/>
                     </FlexLayout>
                 </Grid>
             </StackLayout>

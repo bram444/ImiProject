@@ -29,38 +29,38 @@
                 </Grid.RowDefinitions>
                 <StackLayout Grid.Row="0" Grid.Column="0">
                     <Label Text="Username"/>
-                    <Entry x:Name="txtUserName" Keyboard="Text" Text="{Binding Name}" IsEnabled="{Binding EnableEditData}"/>
-                    <Label x:Name="lblUserNameError" Style="{StaticResource ErrorLabel}" Text="{Binding UserUserNameError}"/>
+                    <Entry Text="{Binding Name}" IsEnabled="{Binding EnableEditData}" Keyboard="Text"/>
+                    <Label Text="{Binding NameError}" Style="{StaticResource ErrorLabel}"/>
                 </StackLayout>
                 <StackLayout  Grid.Row="0" Grid.Column="1">
                     <Label Text="Firstname"/>
-                    <Entry x:Name="txtFirstName" Keyboard="Text" Text="{Binding FirstName}" IsEnabled="{Binding EnableEditData}"/>
-                    <Label x:Name="lblFirstNameError" Style="{StaticResource ErrorLabel}" Text="{Binding UserFirstNameError}"/>
+                    <Entry Text="{Binding FirstName}" IsEnabled="{Binding EnableEditData}" Keyboard="Text"/>
+                    <Label Text="{Binding UserFirstNameError}" Style="{StaticResource ErrorLabel}"/>
                 </StackLayout>
                 <StackLayout  Grid.Row="1" Grid.Column="0">
                     <Label Text="Lastname"/>
-                    <Entry x:Name="txtLastName" Keyboard="Text" Text="{Binding LastName}" IsEnabled="{Binding EnableEditData}"/>
-                    <Label x:Name="lblLastNameError" Style="{StaticResource ErrorLabel}" Text="{Binding UserLastNameError}"/>
+                    <Entry Text="{Binding LastName}" IsEnabled="{Binding EnableEditData}" Keyboard="Text"/>
+                    <Label Text="{Binding UserLastNameError}" Style="{StaticResource ErrorLabel}"/>
                 </StackLayout>
                 <StackLayout  Grid.Row="1" Grid.Column="1">
                     <Label Text="E-mail"/>
-                    <Entry x:Name="txtEmail" Keyboard="Email" Text="{Binding Email}" IsEnabled="{Binding EnableEditData}"/>
-                    <Label x:Name="lblEmailError" Style="{StaticResource ErrorLabel}" Text="{Binding UserEmailError}"/>
+                    <Entry Text="{Binding Email}" IsEnabled="{Binding EnableEditData}" Keyboard="Email"/>
+                    <Label Text="{Binding UserEmailError}" Style="{StaticResource ErrorLabel}"/>
                 </StackLayout>
                 <StackLayout  Grid.Row="2" Grid.Column="0" IsVisible="{Binding VisablePassword}">
                     <Label Text="Password"/>
-                    <Entry Keyboard="Text" Text="{Binding Password}" IsPassword="True"/>
-                    <Label Style="{StaticResource ErrorLabel}" Text="{Binding UserPasswordError}"/>
+                    <Entry Text="{Binding Password}" Keyboard="Text" IsPassword="True"/>
+                    <Label Text="{Binding UserPasswordError}" Style="{StaticResource ErrorLabel}"/>
                 </StackLayout>
                 <StackLayout  Grid.Row="2" Grid.Column="1" IsVisible="{Binding VisablePassword}">
                     <Label Text="Password confirm"/>
-                    <Entry Keyboard="Text" Text="{Binding PasswordConfirm}" IsPassword="True"/>
-                    <Label Style="{StaticResource ErrorLabel}" Text="{Binding UserPasswordConfirmError}"/>
+                    <Entry Text="{Binding PasswordConfirm}" Keyboard="Text" IsPassword="True"/>
+                    <Label Text="{Binding UserPasswordConfirmError}" Style="{StaticResource ErrorLabel}"/>
                 </StackLayout>
                 
-                <StackLayout Grid.Row="3" Grid.ColumnSpan="2" IsVisible="{Binding EnableGameList}" VerticalOptions="EndAndExpand">
+                <StackLayout Grid.Row="3" Grid.ColumnSpan="2" IsVisible="{Binding EnableList}" VerticalOptions="EndAndExpand">
                     <Label Text="All the games of the user:"/>
-                    <ListView ItemsSource="{Binding Games}" HeightRequest="{Binding HeightListGames}" RowHeight="20">
+                    <ListView ItemsSource="{Binding CurrentItemList}" HeightRequest="{Binding HeightList}" RowHeight="20">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <TextCell Text="{Binding Name}"/>
@@ -68,23 +68,23 @@
                         </ListView.ItemTemplate>
                     </ListView>
                 </StackLayout>
-                <Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="{Binding ColumnSpanAdd}" Text="Add games" Command="{Binding AddUserGame}" IsVisible="{Binding VisableAddGame}" Style="{StaticResource Add}"/>
-                <Button Grid.Row="4" Grid.Column="{Binding ColumnDelete}" Grid.ColumnSpan="{Binding ColumnSpanDelete}" Text="Delete games" Command="{Binding DeleteUserGame}" IsVisible="{Binding VisableDeleteGame}" Style="{StaticResource Delete}"/>
+                <Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="{Binding ColumnSpanAdd}" Text="Add games" Command="{Binding AddPickerItem}" IsVisible="{Binding VisibleAddList}" Style="{StaticResource Add}"/>
+                <Button Grid.Row="4" Grid.Column="{Binding ColumnDelete}" Grid.ColumnSpan="{Binding ColumnSpanDelete}" Text="Delete games" Command="{Binding DeletePickerItem}" IsVisible="{Binding VisibleDeleteList}" Style="{StaticResource Delete}"/>
                 
-                <StackLayout Grid.Row="5" Grid.ColumnSpan="2" IsVisible="{Binding VisibleGameList}">
+                <StackLayout Grid.Row="5" Grid.ColumnSpan="2" IsVisible="{Binding VisibleList}">
                     <Label Text="{Binding TextPicker}"/>
-                    <Picker ItemsSource="{Binding GamePickList}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding ChosenGame}" />
+                    <Picker ItemsSource="{Binding PickListItem}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding ChosenListItem}" />
                     <Label Text="{Binding ListError}" Style="{StaticResource ErrorLabel}"/>
                 </StackLayout>
-                <Button Grid.Row="6" Grid.Column="0" Text="{Binding TextPicker}" Command="{Binding SaveUserGame}" IsVisible="{Binding VisableGameSave}" Style="{StaticResource Save}"/>
-                <Button Grid.Row="6" Grid.Column="1" Text="Cancel" Command="{Binding CancelUserGame}" IsVisible="{Binding VisableGameSave}" Style="{StaticResource Cancel}"/>
+                <Button Grid.Row="6" Grid.Column="0" Text="{Binding TextPicker}" Command="{Binding SavePickerItem}" IsVisible="{Binding VisibleSaveList}" Style="{StaticResource Save}"/>
+                <Button Grid.Row="6" Grid.Column="1" Text="Cancel" Command="{Binding CancelPickerItem}" IsVisible="{Binding VisibleSaveList}" Style="{StaticResource Cancel}"/>
                 
                 <FlexLayout Style="{StaticResource ButtonAlign}" Grid.Row="7" Grid.ColumnSpan="2">
-                    <Button x:Name="btnAdd" Text="Add" HorizontalOptions="Center" Command="{Binding AddCommand}" IsVisible="{Binding VisableAdd}" Style="{StaticResource Add}"/>
-                    <Button x:Name="btnEdit" Text="Edit" HorizontalOptions="Center" Command="{Binding EditCommand}" IsVisible="{Binding VisableEdit}" Style="{StaticResource Edit}"/>
-                    <Button x:Name="btnSave" Text="Save" HorizontalOptions="Center" Command="{Binding SaveCommand}" IsVisible="{Binding VisableSave}" Style="{StaticResource Save}"/>
-                    <Button x:Name="btnCancel" Text="Cancel" HorizontalOptions="Center" Command="{Binding CancelCommand}" IsVisible="{Binding VisableCancel}" Style="{StaticResource Cancel}"/>
-                    <Button x:Name="btnDelete" Text="Delete" HorizontalOptions="Center" Command="{Binding DeleteCommand}" IsVisible="{Binding VisableDelete}" Style="{StaticResource Delete}"/>
+                    <Button Text="Add" HorizontalOptions="Center" Command="{Binding AddCommand}" IsVisible="{Binding VisableAdd}" Style="{StaticResource Add}"/>
+                    <Button Text="Edit" HorizontalOptions="Center" Command="{Binding EditCommand}" IsVisible="{Binding VisableEdit}" Style="{StaticResource Edit}"/>
+                    <Button Text="Save" HorizontalOptions="Center" Command="{Binding SaveCommand}" IsVisible="{Binding VisableSave}" Style="{StaticResource Save}"/>
+                    <Button Text="Cancel" HorizontalOptions="Center" Command="{Binding CancelCommand}" IsVisible="{Binding VisableCancel}" Style="{StaticResource Cancel}"/>
+                    <Button Text="Delete" HorizontalOptions="Center" Command="{Binding DeleteCommand}" IsVisible="{Binding VisableDelete}" Style="{StaticResource Delete}"/>
                 </FlexLayout>
             </Grid>
         </ScrollView>
