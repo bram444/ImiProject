@@ -1,10 +1,12 @@
 ﻿using Imi.Project.Api.Core.Dto.User;
 using Imi.Project.Api.Core.Dto.UserGame;
 using Imi.Project.Api.Core.Interfaces.Sevices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Imi.Project.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController: ControllerBase
@@ -18,7 +20,6 @@ namespace Imi.Project.Api.Controllers
             _userGameService = userGameService;
         }
 
-        //[Authorize(Policy = "OnlyLoyalMembers")]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -43,7 +44,7 @@ namespace Imi.Project.Api.Controllers
             return Ok(await _userService.SearchUserNameAsync(search));
         }
 
-        //[Authorize(Policy = "OnlyLoyalMembers")]
+        [Authorize(Policy = "adminOnly")]
         [HttpPost]
         public async Task<IActionResult> Post(UserResponseDto userResponseDto)
         {

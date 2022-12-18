@@ -3,8 +3,6 @@ using Imi.Project.Mobile.Domain.Model;
 using Imi.Project.Mobile.Domain.Services;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Input;
-using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {

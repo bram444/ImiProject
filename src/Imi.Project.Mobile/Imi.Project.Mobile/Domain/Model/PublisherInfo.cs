@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Imi.Project.Mobile.Domain.Model
+﻿namespace Imi.Project.Mobile.Domain.Model
 {
     public class PublisherInfo: BaseInfo
     {

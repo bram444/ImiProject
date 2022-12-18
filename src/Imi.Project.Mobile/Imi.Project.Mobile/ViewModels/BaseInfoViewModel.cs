@@ -9,9 +9,9 @@ using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public abstract class BaseInfoViewModel<C,CS,LS>: FreshBasePageModel
+    public abstract class BaseInfoViewModel<C, CS, LS>: FreshBasePageModel
                 where CS : IBaseService<C>
-                where C :BaseInfo,new()
+                where C : BaseInfo, new()
     {
         protected CS CurrentService;
         protected LS ListService;
@@ -138,7 +138,7 @@ namespace Imi.Project.Mobile.ViewModels
             SetEdit();
         });
 
-        public virtual ICommand DeleteCommand => new Command(async() =>
+        public virtual ICommand DeleteCommand => new Command(async () =>
         {
             if(DeviceInfo.Platform == DevicePlatform.Android)
             {

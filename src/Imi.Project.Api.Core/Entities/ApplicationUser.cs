@@ -12,5 +12,11 @@ namespace Imi.Project.Api.Core.Entities
 
         [Required]
         public string LastName { get; set; }
+
+        [Required]
+        public bool ApprovedTerms { get; set; }
+
+        [Required]
+        public DateTime BirthDay { get; set; }
     }
 }

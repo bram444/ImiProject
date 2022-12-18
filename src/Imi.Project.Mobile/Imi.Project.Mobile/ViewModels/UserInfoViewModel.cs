@@ -195,7 +195,7 @@ namespace Imi.Project.Mobile.ViewModels
                     PasswordConfirm = string.Empty;
                 }
 
-                var allGames = CurrentItemList;
+                ObservableCollection<GamesInfo> allGames = CurrentItemList;
 
                 List<Guid> gameId = new List<Guid>();
 
@@ -213,7 +213,9 @@ namespace Imi.Project.Mobile.ViewModels
                     Email = Email,
                     GameId = gameId,
                     Password = Password,
-                    ConfirmPassword = PasswordConfirm
+                    ConfirmPassword = PasswordConfirm,
+                    ApprovedTerms = true,
+                    BirthDay = DateTime.Now
                 };
 
                 AddItem(userEdit);
@@ -221,7 +223,7 @@ namespace Imi.Project.Mobile.ViewModels
 
         public override ICommand SaveCommand => new Command(() =>
             {
-                var allGames = CurrentItemList;
+                ObservableCollection<GamesInfo> allGames = CurrentItemList;
 
                 List<Guid> gameId = new List<Guid>();
 
@@ -239,7 +241,10 @@ namespace Imi.Project.Mobile.ViewModels
                     Email = Email,
                     GameId = gameId,
                     Password = Password,
-                    ConfirmPassword = PasswordConfirm
+                    ConfirmPassword = PasswordConfirm,
+                    ApprovedTerms =true,
+                    BirthDay = DateTime.Now
+
                 };
 
                 SaveItem(userValidate);

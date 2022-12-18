@@ -7,8 +7,8 @@ using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public abstract class BaseViewModel<C,I,VM>: FreshBasePageModel
-        where I: IBaseService<C>
+    public abstract class BaseViewModel<C, I, VM>: FreshBasePageModel
+        where I : IBaseService<C>
         where VM : FreshBasePageModel
         //class, interface, ViewModel
     {
@@ -79,7 +79,8 @@ namespace Imi.Project.Mobile.ViewModels
             VisableAdd = true;
         }
 
-        public virtual ICommand AddItem => new Command<C>(async (C item) => {
+        public virtual ICommand AddItem => new Command<C>(async (C item) =>
+        {
             await CoreMethods.PushPageModel<VM>(item);
         });
     }

@@ -31,6 +31,12 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<bool>("ApprovedTerms")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("BirthDay")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -100,6 +106,8 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000001"),
                             AccessFailedCount = 0,
+                            ApprovedTerms = true,
+                            BirthDay = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5518),
                             ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc58",
                             Email = "FirstUser@gmail.com",
                             EmailConfirmed = true,
@@ -108,7 +116,7 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "FIRSTUSER@GMAIL.COM",
                             NormalizedUserName = "FIRSTGUY",
-                            PasswordHash = "AQAAAAIAAYagAAAAEF9LWVyNjgdTRKLpa41oZT1u6mXsWcehL/9FobM6ObUeb6hUQOdkF8DP6HxUMm2JoQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMLdOA7e7RW28TGYpNRYlHvtnJR19PXVSwRp1UfWOh8pMqGj3WK1P2AzjyBmwr/2OQ==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINA",
                             TwoFactorEnabled = false,
@@ -118,6 +126,8 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000002"),
                             AccessFailedCount = 0,
+                            ApprovedTerms = true,
+                            BirthDay = new DateTime(2010, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc59",
                             Email = "SecondUser@gmail.com",
                             EmailConfirmed = true,
@@ -126,7 +136,7 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "SECONDUSER@GMAIL.COM",
                             NormalizedUserName = "TIMTHEDESTROYERXX400",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHoT7ddMX2eP08ADT/qVyH07gpiAGdqtAQsOd9sSAXgyXynsRlZC3NkZtsD5vUyAdg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIeykz2GXnah5JSTNnikOof8/53g5wZsRN4yiEaMDHIp0TZxrzaM3CaoNBNKg6J/FA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINB",
                             TwoFactorEnabled = false,
@@ -136,6 +146,8 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000003"),
                             AccessFailedCount = 0,
+                            ApprovedTerms = true,
+                            BirthDay = new DateTime(2010, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc50",
                             Email = "ThirdUser@gmail.com",
                             EmailConfirmed = true,
@@ -144,7 +156,7 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "THIRDUSER@GMAIL.COM",
                             NormalizedUserName = "USERTHETHIRD",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFqgsfkTPGH3IFiY/YxfH2DJD2OUE1oTHKBvBnoVL+16ctamZDkziJB7QqqkUto7mA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKjt/t1jTypoj1/lgTo2IqSM61OgIdIvMeY/T+C/UOIj1DR2UfUc/t9EWp/YqncsIw==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINC",
                             TwoFactorEnabled = false,
@@ -154,6 +166,8 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000004"),
                             AccessFailedCount = 0,
+                            ApprovedTerms = true,
+                            BirthDay = new DateTime(2010, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc51",
                             Email = "FourthUser@gmail.com",
                             EmailConfirmed = true,
@@ -162,7 +176,7 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "FOURTHUSER@GMAIL.COM",
                             NormalizedUserName = "USERTHEFOURTH",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHIgACn99gbqn1oJJY0RA2qH7YiAJ8t5ykpj4hwJpZv9akUwi4kO/oue4fBfztBGOw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENwoJh23NytgaVudcEagRsbUemf03jKivwhSZSBlVHt3sVeSJgD3d30ldZ9z5hexiw==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZIND",
                             TwoFactorEnabled = false,
@@ -172,6 +186,8 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000005"),
                             AccessFailedCount = 0,
+                            ApprovedTerms = true,
+                            BirthDay = new DateTime(2010, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc52",
                             Email = "FifthUser@gmail.com",
                             EmailConfirmed = true,
@@ -180,7 +196,7 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "FIFTHUSER@GMAIL.COM",
                             NormalizedUserName = "USERTHEFIFTH",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJzIMZ7+PuwJH4n/HlS64NtVeLM9mIamY6rY7266LFtJW+cVQtUtG89uAKy4bYMrrg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEO9C/uL9RDdM8HLIgNadtIKLieR848pu40RfNKibpfzUr367F3h2Ma2jDxl2g7zWFg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINE",
                             TwoFactorEnabled = false,
@@ -190,6 +206,8 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000006"),
                             AccessFailedCount = 0,
+                            ApprovedTerms = true,
+                            BirthDay = new DateTime(2010, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc53",
                             Email = "SixUser@gmail.com",
                             EmailConfirmed = true,
@@ -198,7 +216,7 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "SIXUSER@GMAIL.COM",
                             NormalizedUserName = "USERTHESITH",
-                            PasswordHash = "AQAAAAIAAYagAAAAEO/C3unPrVxnl+DTmh6n5oydfKPLcYoerdUAdO7cXeZhBD8Sibwd67na9SnqajNRwg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFQpJx3s5g9VEr7pztdIm9PTHCYCzpi0qP4Goit5WHscWXaCNjG5X56+nXnYDSzsPw==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINF",
                             TwoFactorEnabled = false,
@@ -208,6 +226,8 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000007"),
                             AccessFailedCount = 0,
+                            ApprovedTerms = true,
+                            BirthDay = new DateTime(2010, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc54",
                             Email = "SevenUser@gmail.com",
                             EmailConfirmed = true,
@@ -216,7 +236,7 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "SEVENUSER@GMAIL.COM",
                             NormalizedUserName = "USERTHESEVEN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJH50qqVl6NZYAv2cJ+PFwLD3HULOA8V1nKJI4c8mGf2w9ILDa2X2+XKI6Mk4miEXA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKyJuWMjWCqkx0tuzV9dOcfrApz2jCIwJhHGnKnvbSinTEQpfssn+MairG4ykCnQow==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZING",
                             TwoFactorEnabled = false,
@@ -226,6 +246,8 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000008"),
                             AccessFailedCount = 0,
+                            ApprovedTerms = true,
+                            BirthDay = new DateTime(2010, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc55",
                             Email = "EigthUser@gmail.com",
                             EmailConfirmed = true,
@@ -234,7 +256,7 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "EIGTHUSER@GMAIL.COM",
                             NormalizedUserName = "USERTHEEIGTH",
-                            PasswordHash = "AQAAAAIAAYagAAAAEND4S6e2/NKM/sbHfEC+ici/d96Z7JTlm5iC0aT4rom0Jtvpn+Krbpyb7X/3cixsgA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAELY618A8BgKYjCRLZAb5wKYHyNFSMs4lJAxT94bWm2GffkB0v8XiJWst4oS1JDi9xw==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINH",
                             TwoFactorEnabled = false,
@@ -244,6 +266,8 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000009"),
                             AccessFailedCount = 0,
+                            ApprovedTerms = true,
+                            BirthDay = new DateTime(2010, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc56",
                             Email = "NinthUser@gmail.com",
                             EmailConfirmed = true,
@@ -252,7 +276,7 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "NINTHUSER@GMAIL.COM",
                             NormalizedUserName = "USERTHENINTH",
-                            PasswordHash = "AQAAAAIAAYagAAAAEOPHrSulki2OJwjyX1oxaWskM5dedzZpBloc34o/q1zjW1oeksqZDMZTbynz84FWaA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEM9Ozib9ItPSY6pZjkZSPHCdvn7Ehfz+pF1wYkzgTKIOb9DO9SkS2N8r58VNn+OOIQ==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINI",
                             TwoFactorEnabled = false,
@@ -262,6 +286,8 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000010"),
                             AccessFailedCount = 0,
+                            ApprovedTerms = true,
+                            BirthDay = new DateTime(2010, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc57",
                             Email = "XUser@gmail.com",
                             EmailConfirmed = true,
@@ -270,7 +296,7 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "XUSER@GMAIL.COM",
                             NormalizedUserName = "USERX",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMTsksRucBFWuoyn58/X/ZLZ2AoLPSm7zg8EdnxodIPb1+iv+brksgXkBaQD9htbmQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMGDHrlQTyk81P+HOEUJv8eFF7Wob5e6vZZqgM4uqtvIQuj8A24o2oOE7jFWYN3LCA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINJ",
                             TwoFactorEnabled = false,
@@ -310,8 +336,8 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1459),
-                            LastEditedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1495),
+                            CreatedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5014),
+                            LastEditedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5054),
                             Name = "Fallout New Vegas",
                             Price = 14.99f,
                             PublisherId = new Guid("00000000-0000-0000-0000-000000000001")
@@ -319,8 +345,8 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000002"),
-                            CreatedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1499),
-                            LastEditedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1501),
+                            CreatedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5058),
+                            LastEditedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5060),
                             Name = "Splatoon 3",
                             Price = 59.99f,
                             PublisherId = new Guid("00000000-0000-0000-0000-000000000002")
@@ -328,8 +354,8 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000003"),
-                            CreatedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1504),
-                            LastEditedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1505),
+                            CreatedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5063),
+                            LastEditedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5065),
                             Name = "Animal Crossing",
                             Price = 59.99f,
                             PublisherId = new Guid("00000000-0000-0000-0000-000000000002")
@@ -337,8 +363,8 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000004"),
-                            CreatedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1513),
-                            LastEditedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1515),
+                            CreatedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5072),
+                            LastEditedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5073),
                             Name = "Fallout 3",
                             Price = 14.99f,
                             PublisherId = new Guid("00000000-0000-0000-0000-000000000001")
@@ -346,8 +372,8 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000005"),
-                            CreatedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1534),
-                            LastEditedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1536),
+                            CreatedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5093),
+                            LastEditedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5095),
                             Name = "Fallout 4",
                             Price = 14.99f,
                             PublisherId = new Guid("00000000-0000-0000-0000-000000000001")
@@ -355,8 +381,8 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000006"),
-                            CreatedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1545),
-                            LastEditedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1547),
+                            CreatedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5104),
+                            LastEditedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5106),
                             Name = "Splatoon 2",
                             Price = 59.99f,
                             PublisherId = new Guid("00000000-0000-0000-0000-000000000002")
@@ -364,8 +390,8 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000007"),
-                            CreatedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1550),
-                            LastEditedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1551),
+                            CreatedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5109),
+                            LastEditedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5110),
                             Name = "Splatoon",
                             Price = 59.99f,
                             PublisherId = new Guid("00000000-0000-0000-0000-000000000002")
@@ -373,8 +399,8 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000008"),
-                            CreatedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1594),
-                            LastEditedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1620),
+                            CreatedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5113),
+                            LastEditedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5137),
                             Name = "Rabbits",
                             Price = 59.99f,
                             PublisherId = new Guid("00000000-0000-0000-0000-000000000003")
@@ -382,8 +408,8 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000009"),
-                            CreatedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1623),
-                            LastEditedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1625),
+                            CreatedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5141),
+                            LastEditedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5142),
                             Name = "Rayman",
                             Price = 59.99f,
                             PublisherId = new Guid("00000000-0000-0000-0000-000000000003")
@@ -391,8 +417,8 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000010"),
-                            CreatedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1628),
-                            LastEditedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1629),
+                            CreatedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5145),
+                            LastEditedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5146),
                             Name = "Assassins creed",
                             Price = 59.99f,
                             PublisherId = new Guid("00000000-0000-0000-0000-000000000003")
@@ -493,73 +519,73 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1657),
+                            CreatedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5176),
                             Description = "Fist person shooter",
-                            LastEditedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1654),
+                            LastEditedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5173),
                             Name = "FPS"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000002"),
-                            CreatedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1661),
+                            CreatedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5180),
                             Description = "Fist person shooter but in the third person",
-                            LastEditedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1659),
+                            LastEditedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5179),
                             Name = "Third person shooter"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000003"),
-                            CreatedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1665),
-                            LastEditedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1663),
+                            CreatedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5184),
+                            LastEditedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5182),
                             Name = "Simulation"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000004"),
-                            CreatedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1671),
-                            LastEditedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1670),
+                            CreatedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5191),
+                            LastEditedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5190),
                             Name = "Platformer"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000005"),
-                            CreatedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1677),
-                            LastEditedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1674),
+                            CreatedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5197),
+                            LastEditedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5195),
                             Name = "Party game"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000006"),
-                            CreatedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1704),
-                            LastEditedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1702),
+                            CreatedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5237),
+                            LastEditedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5235),
                             Name = "Story driven"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000007"),
-                            CreatedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1708),
-                            LastEditedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1706),
+                            CreatedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5240),
+                            LastEditedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5239),
                             Name = "Open Word"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000008"),
-                            CreatedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1712),
-                            LastEditedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1710),
+                            CreatedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5244),
+                            LastEditedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5243),
                             Name = "Nonlinear gameplay"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000009"),
-                            CreatedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1715),
-                            LastEditedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1714),
+                            CreatedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5248),
+                            LastEditedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5246),
                             Name = "Action-adventure"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000010"),
-                            CreatedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1719),
-                            LastEditedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1718),
+                            CreatedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5252),
+                            LastEditedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5250),
                             Name = "Stealth"
                         });
                 });
@@ -592,80 +618,80 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000001"),
                             Country = "America",
-                            CreatedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1743),
-                            LastEditedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1746),
+                            CreatedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5276),
+                            LastEditedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5279),
                             Name = "Bethesda"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000002"),
                             Country = "Japan",
-                            CreatedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1748),
-                            LastEditedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1750),
+                            CreatedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5281),
+                            LastEditedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5283),
                             Name = "Nintendo"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000003"),
                             Country = "America",
-                            CreatedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1752),
-                            LastEditedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1754),
+                            CreatedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5285),
+                            LastEditedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5286),
                             Name = "Ubisoft"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000004"),
                             Country = "Japan",
-                            CreatedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1756),
-                            LastEditedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1758),
+                            CreatedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5289),
+                            LastEditedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5290),
                             Name = "Square inex"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000005"),
                             Country = "America",
-                            CreatedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1760),
-                            LastEditedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1762),
+                            CreatedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5377),
+                            LastEditedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5379),
                             Name = "Sony"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000006"),
                             Country = "America",
-                            CreatedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1764),
-                            LastEditedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1765),
+                            CreatedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5382),
+                            LastEditedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5383),
                             Name = "Microsoft"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000007"),
                             Country = "Japan",
-                            CreatedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1768),
-                            LastEditedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1769),
+                            CreatedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5386),
+                            LastEditedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5387),
                             Name = "The pokemon company"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000008"),
                             Country = "Sweden",
-                            CreatedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1772),
-                            LastEditedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1773),
+                            CreatedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5390),
+                            LastEditedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5391),
                             Name = "CD project"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000009"),
                             Country = "Japan",
-                            CreatedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1775),
-                            LastEditedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1777),
+                            CreatedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5394),
+                            LastEditedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5395),
                             Name = "Arc System Works"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000010"),
                             Country = "America",
-                            CreatedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1779),
-                            LastEditedOn = new DateTime(2022, 11, 19, 13, 23, 42, 309, DateTimeKind.Local).AddTicks(1781),
+                            CreatedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5398),
+                            LastEditedOn = new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5399),
                             Name = "Interplay Entertainment"
                         });
                 });
@@ -775,6 +801,12 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                             Id = new Guid("00000000-0000-0000-0000-000000000001"),
                             Name = "Admin",
                             NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000002"),
+                            Name = "User",
+                            NormalizedName = "USER"
                         });
                 });
 
@@ -824,6 +856,148 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("AspNetUserClaims", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ClaimType = "birthday",
+                            ClaimValue = "18/12/2022 19:02:14",
+                            UserId = new Guid("00000000-0000-0000-0000-000000000001")
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ClaimType = "approved",
+                            ClaimValue = "True",
+                            UserId = new Guid("00000000-0000-0000-0000-000000000001")
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ClaimType = "birthday",
+                            ClaimValue = "19/08/2010 0:00:00",
+                            UserId = new Guid("00000000-0000-0000-0000-000000000002")
+                        },
+                        new
+                        {
+                            Id = 4,
+                            ClaimType = "approved",
+                            ClaimValue = "True",
+                            UserId = new Guid("00000000-0000-0000-0000-000000000002")
+                        },
+                        new
+                        {
+                            Id = 5,
+                            ClaimType = "birthday",
+                            ClaimValue = "19/08/2010 0:00:00",
+                            UserId = new Guid("00000000-0000-0000-0000-000000000003")
+                        },
+                        new
+                        {
+                            Id = 6,
+                            ClaimType = "approved",
+                            ClaimValue = "True",
+                            UserId = new Guid("00000000-0000-0000-0000-000000000003")
+                        },
+                        new
+                        {
+                            Id = 7,
+                            ClaimType = "birthday",
+                            ClaimValue = "19/08/2010 0:00:00",
+                            UserId = new Guid("00000000-0000-0000-0000-000000000004")
+                        },
+                        new
+                        {
+                            Id = 8,
+                            ClaimType = "approved",
+                            ClaimValue = "True",
+                            UserId = new Guid("00000000-0000-0000-0000-000000000004")
+                        },
+                        new
+                        {
+                            Id = 9,
+                            ClaimType = "birthday",
+                            ClaimValue = "19/08/2010 0:00:00",
+                            UserId = new Guid("00000000-0000-0000-0000-000000000005")
+                        },
+                        new
+                        {
+                            Id = 10,
+                            ClaimType = "approved",
+                            ClaimValue = "True",
+                            UserId = new Guid("00000000-0000-0000-0000-000000000005")
+                        },
+                        new
+                        {
+                            Id = 11,
+                            ClaimType = "birthday",
+                            ClaimValue = "19/08/2010 0:00:00",
+                            UserId = new Guid("00000000-0000-0000-0000-000000000006")
+                        },
+                        new
+                        {
+                            Id = 12,
+                            ClaimType = "approved",
+                            ClaimValue = "True",
+                            UserId = new Guid("00000000-0000-0000-0000-000000000006")
+                        },
+                        new
+                        {
+                            Id = 13,
+                            ClaimType = "birthday",
+                            ClaimValue = "19/08/2010 0:00:00",
+                            UserId = new Guid("00000000-0000-0000-0000-000000000007")
+                        },
+                        new
+                        {
+                            Id = 14,
+                            ClaimType = "approved",
+                            ClaimValue = "True",
+                            UserId = new Guid("00000000-0000-0000-0000-000000000007")
+                        },
+                        new
+                        {
+                            Id = 15,
+                            ClaimType = "birthday",
+                            ClaimValue = "19/08/2010 0:00:00",
+                            UserId = new Guid("00000000-0000-0000-0000-000000000008")
+                        },
+                        new
+                        {
+                            Id = 16,
+                            ClaimType = "approved",
+                            ClaimValue = "True",
+                            UserId = new Guid("00000000-0000-0000-0000-000000000008")
+                        },
+                        new
+                        {
+                            Id = 17,
+                            ClaimType = "birthday",
+                            ClaimValue = "19/08/2010 0:00:00",
+                            UserId = new Guid("00000000-0000-0000-0000-000000000009")
+                        },
+                        new
+                        {
+                            Id = 18,
+                            ClaimType = "approved",
+                            ClaimValue = "True",
+                            UserId = new Guid("00000000-0000-0000-0000-000000000009")
+                        },
+                        new
+                        {
+                            Id = 19,
+                            ClaimType = "birthday",
+                            ClaimValue = "19/08/2010 0:00:00",
+                            UserId = new Guid("00000000-0000-0000-0000-000000000010")
+                        },
+                        new
+                        {
+                            Id = 20,
+                            ClaimType = "approved",
+                            ClaimValue = "True",
+                            UserId = new Guid("00000000-0000-0000-0000-000000000010")
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
@@ -864,13 +1038,53 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            RoleId = new Guid("00000000-0000-0000-0000-000000000001"),
+                            RoleId = new Guid("00000000-0000-0000-0000-000000000002"),
                             UserId = new Guid("00000000-0000-0000-0000-000000000001")
                         },
                         new
                         {
                             RoleId = new Guid("00000000-0000-0000-0000-000000000001"),
+                            UserId = new Guid("00000000-0000-0000-0000-000000000002")
+                        },
+                        new
+                        {
+                            RoleId = new Guid("00000000-0000-0000-0000-000000000002"),
+                            UserId = new Guid("00000000-0000-0000-0000-000000000003")
+                        },
+                        new
+                        {
+                            RoleId = new Guid("00000000-0000-0000-0000-000000000002"),
+                            UserId = new Guid("00000000-0000-0000-0000-000000000004")
+                        },
+                        new
+                        {
+                            RoleId = new Guid("00000000-0000-0000-0000-000000000001"),
                             UserId = new Guid("00000000-0000-0000-0000-000000000005")
+                        },
+                        new
+                        {
+                            RoleId = new Guid("00000000-0000-0000-0000-000000000002"),
+                            UserId = new Guid("00000000-0000-0000-0000-000000000006")
+                        },
+                        new
+                        {
+                            RoleId = new Guid("00000000-0000-0000-0000-000000000002"),
+                            UserId = new Guid("00000000-0000-0000-0000-000000000007")
+                        },
+                        new
+                        {
+                            RoleId = new Guid("00000000-0000-0000-0000-000000000002"),
+                            UserId = new Guid("00000000-0000-0000-0000-000000000008")
+                        },
+                        new
+                        {
+                            RoleId = new Guid("00000000-0000-0000-0000-000000000002"),
+                            UserId = new Guid("00000000-0000-0000-0000-000000000009")
+                        },
+                        new
+                        {
+                            RoleId = new Guid("00000000-0000-0000-0000-000000000002"),
+                            UserId = new Guid("00000000-0000-0000-0000-000000000010")
                         });
                 });
 

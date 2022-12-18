@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Globalization;
 using System.Text;
 
@@ -24,21 +25,22 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
 
 builder.WebHost.UseUrls("https://0.0.0.0:5001");
 
+builder.Services.AddCors();
+
 builder.Services.AddScoped<IGameGenreRepository, GameGenreRepository>();
+builder.Services.AddScoped<IUserGameRepository, UserGameRepository>();
+builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
 builder.Services.AddScoped<IGenreRepository, GenreRepository>();
-builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
-builder.Services.AddScoped<IUserGameRepository, UserGameRepository>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<IGameGenreService, GameGenreService>();
+builder.Services.AddScoped<IUserGameService, UserGameService>();
+builder.Services.AddScoped<IPublisherService, PublisherService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<IGenreService, GenreService>();
-builder.Services.AddScoped<IPublisherService, PublisherService>();
-builder.Services.AddScoped<IUserGameService, UserGameService>();
-builder.Services.AddScoped<IUserService, UserService>();
 
-builder.Services.AddCors();
 
 builder.Services.AddControllers();
 
@@ -60,25 +62,60 @@ builder.Services.AddAuthentication(option =>
   });
 
 builder.Services.AddAuthorization(options =>
-options.AddPolicy("OnlyLoyalMembers", policy =>
 {
-    policy.RequireAssertion(context =>
+    options.AddPolicy("onlyAdults", policy =>
     {
-        var registrationClaimValue = context.User.Claims
-                     .SingleOrDefault(c => c.Type == "registration-date")?.Value;
-        if(DateTime.TryParseExact(registrationClaimValue, "yy-MM-dd",
-           CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal,
-           out var registrationTime))
+        policy.RequireAssertion(context =>
         {
-            return registrationTime.AddYears(1) < DateTime.UtcNow;
-        }
-        return false;
+            var adultClaimValue = context.User.Claims
+                         .SingleOrDefault(c => c.Type == "birthday")?.Value;
+            if(DateTime.TryParseExact(adultClaimValue, "yy-MM-dd",
+               CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal,
+               out var birthDay))
+            {
+                return birthDay.AddYears(18) < DateTime.UtcNow;
+            }
+            return false;
+        });
     });
-}));
+    options.AddPolicy("approved", policy =>
+    {
+        policy.RequireAssertion(context => Convert.ToBoolean(context.User.Claims.SingleOrDefault(claim => claim.Type == "approved")?.Value));
+    });
+    options.AddPolicy("adminOnly", policy =>
+    {
+        policy.RequireRole("Admin");
+    });
+});
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
+builder.Services.AddSwaggerGen(option =>
+{
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "IMI.Project", Version = "v1" });
+    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter a valid token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
 var app = builder.Build();
 
 if(app.Environment.IsDevelopment())
@@ -94,7 +131,6 @@ if(app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
-
 app.UseAuthorization();
 
 app.MapControllers();

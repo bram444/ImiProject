@@ -12,7 +12,7 @@ using Xamarin.Forms;
 namespace Imi.Project.Mobile.ViewModels
 {
     public abstract class BaseEditListViewModel<C, LI, CS, LS>: BaseInfoViewModel<C, CS, LS>
-        where C : BaseInfo,new()
+        where C : BaseInfo, new()
         where LI : BaseInfo, new()
         where CS : IBaseService<C>
         where LS : IBaseService<LI>
@@ -206,7 +206,7 @@ namespace Imi.Project.Mobile.ViewModels
 
         public bool EnableList => CurrentItemList.Any();
 
-        public bool EnableAddListItem => (Task.Run(async () => await ListService.GetAll()).Result.Count() != CurrentItemIdList.Count());
+        public bool EnableAddListItem => Task.Run(async () => await ListService.GetAll()).Result.Count() != CurrentItemIdList.Count();
         #endregion
 
         public override void Init(object initData)
@@ -300,7 +300,7 @@ namespace Imi.Project.Mobile.ViewModels
         {
             if(ChosenListItem.Id != Guid.Empty)
             {
-                var listItems = CurrentItemList;
+                ObservableCollection<LI> listItems = CurrentItemList;
                 if(AddListItem)
                 {
                     listItems.Add(ChosenListItem);

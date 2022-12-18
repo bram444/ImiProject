@@ -31,6 +31,7 @@ namespace Imi.Project.Api.Core.Services
                 FirstName = userResponseDto.FirstName,
                 LastName = userResponseDto.LastName,
                 UserName = userResponseDto.UserName,
+                ApprovedTerms = userResponseDto.ApprovedTerms,
             };
 
             user.PasswordHash = passwordHasher.HashPassword(user, userResponseDto.Password);
@@ -49,7 +50,8 @@ namespace Imi.Project.Api.Core.Services
                 UserName = user.UserName,
                 GameId = gameId,
                 Password = user.PasswordHash,
-                ConfirmPassword = user.PasswordHash
+                ConfirmPassword = user.PasswordHash,
+                ApprovedTerms = user.ApprovedTerms
             };
 
             return userResponseDto;

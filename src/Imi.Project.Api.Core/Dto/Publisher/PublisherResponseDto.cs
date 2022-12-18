@@ -4,6 +4,5 @@
     {
         public string Name { get; set; }
         public string Country { get; set; }
-        //public ICollection<GameResponseDto> Games { get; set; }
     }
 }

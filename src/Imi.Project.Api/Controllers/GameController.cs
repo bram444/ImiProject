@@ -2,10 +2,14 @@
 using Imi.Project.Api.Core.Dto.GameGenre;
 using Imi.Project.Api.Core.Dto.UserGame;
 using Imi.Project.Api.Core.Interfaces.Sevices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Imi.Project.Api.Controllers
 {
+
+    [Authorize]
+    [Authorize(Policy = "approved")]
     [Route("api/[controller]")]
     [ApiController]
     public class GameController: ControllerBase
@@ -26,18 +30,21 @@ namespace Imi.Project.Api.Controllers
             return Ok(await _gameService.ListAllAsync());
         }
 
+        [Authorize(Policy = "onlyAdults")]
         [HttpGet("{search}/name")]
         public async Task<IActionResult> GetGamesByName(string search)
         {
             return Ok(await _gameService.SearchAsync(search));
         }
 
+        [Authorize(Policy = "onlyAdults")]
         [HttpGet("{id}/publishers")]
         public async Task<IActionResult> GetGamesByPublisher(Guid id)
         {
             return Ok(await _gameService.GetByPublisherIdAsync(id));
         }
 
+        [Authorize(Policy = "adminOnly")]
         [HttpPost]
         public async Task<IActionResult> Post(GameResponseDto gameResponseDto)
         {
@@ -55,6 +62,7 @@ namespace Imi.Project.Api.Controllers
             return Ok(await _gameService.AddAsync(gameResponseDto));
         }
 
+        [Authorize(Policy = "adminOnly")]
         [HttpPut]
         public async Task<IActionResult> Put(GameResponseDto gameResponseDto)
         {
@@ -68,6 +76,7 @@ namespace Imi.Project.Api.Controllers
             return Ok(await _gameService.UpdateAsync(gameResponseDto));
         }
 
+        [Authorize(Policy = "adminOnly")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {

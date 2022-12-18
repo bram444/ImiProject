@@ -10,7 +10,7 @@ using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class GenreInfoViewModel: BaseListInfoViewModel<GenreInfo, IGenreService,IGameService>
+    public class GenreInfoViewModel: BaseListInfoViewModel<GenreInfo, IGenreService, IGameService>
     {
         public GenreInfoViewModel(IGenreService genreService, IGameService gameService)
             : base(genreService, gameService, new GenreInfoValidator())

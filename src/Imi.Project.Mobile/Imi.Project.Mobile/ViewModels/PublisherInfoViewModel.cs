@@ -10,7 +10,7 @@ using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class PublisherInfoViewModel: BaseListInfoViewModel<PublisherInfo,IPublisherService,IGameService>
+    public class PublisherInfoViewModel: BaseListInfoViewModel<PublisherInfo, IPublisherService, IGameService>
     {
         public PublisherInfoViewModel(IPublisherService publisherService, IGameService gameService)
             : base(publisherService, gameService, new PublisherInfoValidator())

@@ -1,9 +1,12 @@
 ﻿using Imi.Project.Api.Core.Dto.Publisher;
 using Imi.Project.Api.Core.Interfaces.Sevices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Imi.Project.Api.Controllers
 {
+    [Authorize]
+    [Authorize(Policy = "approved")]
     [Route("api/[controller]")]
     [ApiController]
     public class PublisherController: ControllerBase
@@ -33,6 +36,7 @@ namespace Imi.Project.Api.Controllers
             return Ok(await _publisherService.SearchByCountryAsync(search));
         }
 
+        [Authorize(Policy = "adminOnly")]
         [HttpPost]
         public async Task<IActionResult> Post(PublisherResponseDto publisherResponseDto)
         {
@@ -44,6 +48,7 @@ namespace Imi.Project.Api.Controllers
             return Ok(await _publisherService.AddAsync(publisherResponseDto));
         }
 
+        [Authorize(Policy = "adminOnly")]
         [HttpPut]
         public async Task<IActionResult> Put(PublisherResponseDto publisherResponseDto)
         {
@@ -55,6 +60,7 @@ namespace Imi.Project.Api.Controllers
             return Ok(await _publisherService.UpdateAsync(publisherResponseDto));
         }
 
+        [Authorize(Policy = "adminOnly")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {

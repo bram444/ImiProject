@@ -25,10 +25,7 @@ namespace Imi.Project.Mobile
             }
         }
 
-        private void Current_OnTokenFresh(object source,FirebasePushNotificationTokenEventArgs e)
-        {
-            System.Diagnostics.Debug.WriteLine($"Token: {e.Token}");
-        }
+        private void Current_OnTokenFresh(object source, FirebasePushNotificationTokenEventArgs e) => System.Diagnostics.Debug.WriteLine($"Token: {e.Token}");
 
         protected override void OnStart()
         {

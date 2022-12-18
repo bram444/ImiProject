@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Dto.User
 {
-    public class UserResponseDto
+    public class RegisterDto
     {
         [Required]
         public Guid Id { get; set; }
@@ -29,8 +32,6 @@ namespace Imi.Project.Api.Core.Dto.User
 
         [Required]
         public string Email { get; set; }
-
-        public ICollection<Guid> GameId { get; set; }
 
         [Required]
         public bool ApprovedTerms { get; set; }

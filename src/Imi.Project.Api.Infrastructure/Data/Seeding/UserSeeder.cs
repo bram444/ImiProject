@@ -12,6 +12,9 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
             Guid AdminRoleId = Guid.Parse("00000000-0000-0000-0000-000000000001");
             const string AdminRoleName = "Admin";
 
+            Guid UserRoleId = Guid.Parse("00000000-0000-0000-0000-000000000002");
+            const string UserRoleName = "User";
+
             const string firstUserName = "FirstGuy";
             const string firstEmail = "FirstUser@gmail.com";
 
@@ -61,6 +64,8 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         EmailConfirmed = true,
                         SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINA",
                         ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc58",
+                        ApprovedTerms = true,
+                        BirthDay = DateTime.Now
                     },
                     new ApplicationUser
                     {
@@ -74,6 +79,8 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc59",
                         NormalizedEmail = secondEmail.ToUpper(),
                         NormalizedUserName = secondUserName.ToUpper(),
+                        ApprovedTerms = true,
+                        BirthDay = DateTime.Parse("19/08/2010")
                     },
                     new ApplicationUser
                     {
@@ -87,6 +94,8 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc50",
                         NormalizedEmail = thirdEmail.ToUpper(),
                         NormalizedUserName = thirdUserName.ToUpper(),
+                        ApprovedTerms = true,
+                        BirthDay = DateTime.Parse("19/08/2010")
                     },
                     new ApplicationUser
                     {
@@ -100,6 +109,8 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc51",
                         NormalizedEmail = forthEmail.ToUpper(),
                         NormalizedUserName = forthUserName.ToUpper(),
+                        ApprovedTerms = true,
+                        BirthDay = DateTime.Parse("19/08/2010")
                     },
                     new ApplicationUser
                     {
@@ -113,6 +124,8 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc52",
                         NormalizedEmail = fifthEmail.ToUpper(),
                         NormalizedUserName = fifthUserName.ToUpper(),
+                        ApprovedTerms = true,
+                        BirthDay = DateTime.Parse("19/08/2010")
                     },
                     new ApplicationUser
                     {
@@ -126,6 +139,8 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc53",
                         NormalizedEmail = sixEmail.ToUpper(),
                         NormalizedUserName = sixUserName.ToUpper(),
+                        ApprovedTerms = true,
+                        BirthDay = DateTime.Parse("19/08/2010")
                     },
                     new ApplicationUser
                     {
@@ -139,6 +154,8 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc54",
                         NormalizedEmail = seventhEmail.ToUpper(),
                         NormalizedUserName = seventhUserName.ToUpper(),
+                        ApprovedTerms = true,
+                        BirthDay = DateTime.Parse("19/08/2010")
                     },
                     new ApplicationUser
                     {
@@ -152,6 +169,8 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc55",
                         NormalizedEmail = eigthEmail.ToUpper(),
                         NormalizedUserName = eigthUserName.ToUpper(),
+                        ApprovedTerms = true,
+                        BirthDay = DateTime.Parse("19/08/2010")
                     },
                     new ApplicationUser
                     {
@@ -165,6 +184,8 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc56",
                         NormalizedEmail = ninthEmail.ToUpper(),
                         NormalizedUserName = ninthUserName.ToUpper(),
+                        ApprovedTerms = true,
+                        BirthDay = DateTime.Parse("19/08/2010")
                     },
                     new ApplicationUser
                     {
@@ -178,6 +199,8 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc57",
                         NormalizedEmail = xEmail.ToUpper(),
                         NormalizedUserName = xUserName.ToUpper(),
+                        ApprovedTerms = true,
+                        BirthDay = DateTime.Parse("19/08/2010")
                     }
                 };
 
@@ -186,28 +209,101 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                 user.PasswordHash = passwordHasher.HashPassword(user, AdminUserPassword);
             }
 
-            modelBuilder.Entity<IdentityRole<Guid>>().HasData(new IdentityRole<Guid>
-            {
-                Id = AdminRoleId,
-                Name = AdminRoleName,
-                NormalizedName = AdminRoleName.ToUpper()
+            modelBuilder.Entity<IdentityRole<Guid>>().HasData(new[] {
+                new IdentityRole<Guid>
+                {
+                    Id = AdminRoleId,
+                    Name = AdminRoleName,
+                    NormalizedName = AdminRoleName.ToUpper()
+                },
+                new IdentityRole<Guid>()
+                {
+                    Id=UserRoleId,
+                    Name=UserRoleName,
+                    NormalizedName=UserRoleName.ToUpper()
+                }
             });
 
             modelBuilder.Entity<ApplicationUser>().HasData(applicationUsers);
+
 
             modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(new[]
             {
                 new IdentityUserRole<Guid>
                 {
-                RoleId = AdminRoleId,
+                RoleId = UserRoleId,
                 UserId = applicationUsers[0].Id,
                 },
                 new IdentityUserRole<Guid>
                 {
                 RoleId = AdminRoleId,
+                UserId = applicationUsers[1].Id,
+                },
+                new IdentityUserRole<Guid>
+                {
+                RoleId = UserRoleId,
+                UserId = applicationUsers[2].Id,
+                },
+                new IdentityUserRole<Guid>
+                {
+                RoleId = UserRoleId,
+                UserId = applicationUsers[3].Id,
+                },
+                new IdentityUserRole<Guid>
+                {
+                RoleId = AdminRoleId,
                 UserId = applicationUsers[4].Id,
+                },
+                new IdentityUserRole<Guid>
+                {
+                RoleId = UserRoleId,
+                UserId = applicationUsers[5].Id,
+                },
+                new IdentityUserRole<Guid>
+                {
+                RoleId = UserRoleId,
+                UserId = applicationUsers[6].Id,
+                },
+                new IdentityUserRole<Guid>
+                {
+                RoleId = UserRoleId,
+                UserId = applicationUsers[7].Id,
+                },
+                new IdentityUserRole<Guid>
+                {
+                RoleId = UserRoleId,
+                UserId = applicationUsers[8].Id,
+                },
+                new IdentityUserRole<Guid>
+                {
+                RoleId = UserRoleId,
+                UserId = applicationUsers[9].Id,
                 }
             });
+
+            int id = 0;
+
+            foreach(var user in applicationUsers)
+            {
+                modelBuilder.Entity<IdentityUserClaim<Guid>>().HasData(new[]
+                {
+                    new IdentityUserClaim<Guid>
+                    {
+
+                        UserId =user.Id,
+                        ClaimType ="birthday",
+                        ClaimValue = user.BirthDay.ToString(),
+                        Id = ++id
+                    },
+                    new IdentityUserClaim<Guid>
+                    {
+                        UserId =user.Id,
+                        ClaimType ="approved",
+                        ClaimValue = "True",
+                        Id = ++id
+                    },
+                });
+            }
         }
     }
 }

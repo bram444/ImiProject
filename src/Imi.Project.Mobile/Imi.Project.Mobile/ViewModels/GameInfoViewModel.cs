@@ -143,7 +143,7 @@ namespace Imi.Project.Mobile.ViewModels
             {
                 base.AddCommand.Execute(null);
 
-                var allGenre = CurrentItemList;
+                ObservableCollection<GenreInfo> allGenre = CurrentItemList;
 
                 List<Guid> gameGenreId = new List<Guid>();
 
@@ -171,7 +171,7 @@ namespace Imi.Project.Mobile.ViewModels
 
         public override ICommand SaveCommand => new Command(() =>
             {
-                var allGenre = CurrentItemList;
+                ObservableCollection<GenreInfo> allGenre = CurrentItemList;
 
                 List<Guid> gameGenreId = new List<Guid>();
 

@@ -1,10 +1,13 @@
 ﻿using Imi.Project.Api.Core.Dto.GameGenre;
 using Imi.Project.Api.Core.Dto.Genre;
 using Imi.Project.Api.Core.Interfaces.Sevices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Imi.Project.Api.Controllers
 {
+    [Authorize]
+    [Authorize(Policy = "approved")]
     [Route("api/[controller]")]
     [ApiController]
     public class GenreController: ControllerBase
@@ -30,6 +33,7 @@ namespace Imi.Project.Api.Controllers
             return Ok(await _genreService.SearchAsync(search));
         }
 
+        [Authorize(Policy = "adminOnly")]
         [HttpPost]
         public async Task<IActionResult> Post(GenreResponseDto genreResponseDto)
         {
@@ -41,6 +45,7 @@ namespace Imi.Project.Api.Controllers
             return Ok(await _genreService.AddAsync(genreResponseDto));
         }
 
+        [Authorize(Policy = "adminOnly")]
         [HttpPut]
         public async Task<IActionResult> Put(GenreResponseDto genreResponseDto)
         {
@@ -52,7 +57,7 @@ namespace Imi.Project.Api.Controllers
             return Ok(await _genreService.UpdateAsync(genreResponseDto));
         }
 
-
+        [Authorize(Policy = "adminOnly")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {

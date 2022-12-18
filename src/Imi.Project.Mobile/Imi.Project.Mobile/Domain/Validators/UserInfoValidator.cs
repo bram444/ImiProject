@@ -37,7 +37,6 @@ namespace Imi.Project.Mobile.Domain.Validators
                 .Equal(userinfo => userinfo.Password)
                 .WithMessage("Password must be the same as confirm password");
 
-
         }
     }
 }
