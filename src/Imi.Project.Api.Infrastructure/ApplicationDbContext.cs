@@ -27,8 +27,6 @@ namespace Imi.Project.Api.Infrastructure
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-
             modelBuilder.Entity<Game>().HasKey(g => g.Id);
 
             modelBuilder.Entity<Genre>().HasKey(g => g.Id);
@@ -55,6 +53,9 @@ namespace Imi.Project.Api.Infrastructure
             PublisherSeeder.Seed(modelBuilder);
             UserGameSeeder.Seed(modelBuilder);
             UserSeeder.Seed(modelBuilder);
+
+            base.OnModelCreating(modelBuilder);
+
         }
     }
 }

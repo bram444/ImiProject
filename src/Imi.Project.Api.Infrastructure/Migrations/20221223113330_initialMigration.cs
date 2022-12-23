@@ -153,7 +153,7 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.RoleId, x.UserId });
+                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.UserId, x.RoleId });
                     table.ForeignKey(
                         name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
                         column: x => x.RoleId,
@@ -272,16 +272,16 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ApprovedTerms", "BirthDay", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { new Guid("00000000-0000-0000-0000-000000000001"), 0, true, new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5518), "c8554266-b401-4519-9aeb-a9283053fc58", "FirstUser@gmail.com", true, "First", "User", false, null, "FIRSTUSER@GMAIL.COM", "FIRSTGUY", "AQAAAAIAAYagAAAAEMLdOA7e7RW28TGYpNRYlHvtnJR19PXVSwRp1UfWOh8pMqGj3WK1P2AzjyBmwr/2OQ==", null, false, "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINA", false, "FirstGuy" },
-                    { new Guid("00000000-0000-0000-0000-000000000002"), 0, true, new DateTime(2010, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), "c8554266-b401-4519-9aeb-a9283053fc59", "SecondUser@gmail.com", true, "Second", "User", false, null, "SECONDUSER@GMAIL.COM", "TIMTHEDESTROYERXX400", "AQAAAAIAAYagAAAAEIeykz2GXnah5JSTNnikOof8/53g5wZsRN4yiEaMDHIp0TZxrzaM3CaoNBNKg6J/FA==", null, false, "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINB", false, "TimTheDestroyerXx400" },
-                    { new Guid("00000000-0000-0000-0000-000000000003"), 0, true, new DateTime(2010, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), "c8554266-b401-4519-9aeb-a9283053fc50", "ThirdUser@gmail.com", true, "Third", "User", false, null, "THIRDUSER@GMAIL.COM", "USERTHETHIRD", "AQAAAAIAAYagAAAAEKjt/t1jTypoj1/lgTo2IqSM61OgIdIvMeY/T+C/UOIj1DR2UfUc/t9EWp/YqncsIw==", null, false, "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINC", false, "UserTheThird" },
-                    { new Guid("00000000-0000-0000-0000-000000000004"), 0, true, new DateTime(2010, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), "c8554266-b401-4519-9aeb-a9283053fc51", "FourthUser@gmail.com", true, "Fourth", "User", false, null, "FOURTHUSER@GMAIL.COM", "USERTHEFOURTH", "AQAAAAIAAYagAAAAENwoJh23NytgaVudcEagRsbUemf03jKivwhSZSBlVHt3sVeSJgD3d30ldZ9z5hexiw==", null, false, "VVPCRDAS3MJWQD5CSW2GWPRADBXEZIND", false, "UserTheFourth" },
-                    { new Guid("00000000-0000-0000-0000-000000000005"), 0, true, new DateTime(2010, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), "c8554266-b401-4519-9aeb-a9283053fc52", "FifthUser@gmail.com", true, "Fifth", "User", false, null, "FIFTHUSER@GMAIL.COM", "USERTHEFIFTH", "AQAAAAIAAYagAAAAEO9C/uL9RDdM8HLIgNadtIKLieR848pu40RfNKibpfzUr367F3h2Ma2jDxl2g7zWFg==", null, false, "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINE", false, "UserTheFifth" },
-                    { new Guid("00000000-0000-0000-0000-000000000006"), 0, true, new DateTime(2010, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), "c8554266-b401-4519-9aeb-a9283053fc53", "SixUser@gmail.com", true, "Six", "User", false, null, "SIXUSER@GMAIL.COM", "USERTHESITH", "AQAAAAIAAYagAAAAEFQpJx3s5g9VEr7pztdIm9PTHCYCzpi0qP4Goit5WHscWXaCNjG5X56+nXnYDSzsPw==", null, false, "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINF", false, "UserTheSith" },
-                    { new Guid("00000000-0000-0000-0000-000000000007"), 0, true, new DateTime(2010, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), "c8554266-b401-4519-9aeb-a9283053fc54", "SevenUser@gmail.com", true, "Seven", "User", false, null, "SEVENUSER@GMAIL.COM", "USERTHESEVEN", "AQAAAAIAAYagAAAAEKyJuWMjWCqkx0tuzV9dOcfrApz2jCIwJhHGnKnvbSinTEQpfssn+MairG4ykCnQow==", null, false, "VVPCRDAS3MJWQD5CSW2GWPRADBXEZING", false, "UserTheSeven" },
-                    { new Guid("00000000-0000-0000-0000-000000000008"), 0, true, new DateTime(2010, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), "c8554266-b401-4519-9aeb-a9283053fc55", "EigthUser@gmail.com", true, "Eigth", "User", false, null, "EIGTHUSER@GMAIL.COM", "USERTHEEIGTH", "AQAAAAIAAYagAAAAELY618A8BgKYjCRLZAb5wKYHyNFSMs4lJAxT94bWm2GffkB0v8XiJWst4oS1JDi9xw==", null, false, "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINH", false, "UserTheEigth" },
-                    { new Guid("00000000-0000-0000-0000-000000000009"), 0, true, new DateTime(2010, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), "c8554266-b401-4519-9aeb-a9283053fc56", "NinthUser@gmail.com", true, "Ninth", "User", false, null, "NINTHUSER@GMAIL.COM", "USERTHENINTH", "AQAAAAIAAYagAAAAEM9Ozib9ItPSY6pZjkZSPHCdvn7Ehfz+pF1wYkzgTKIOb9DO9SkS2N8r58VNn+OOIQ==", null, false, "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINI", false, "UserTheNinth" },
-                    { new Guid("00000000-0000-0000-0000-000000000010"), 0, true, new DateTime(2010, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), "c8554266-b401-4519-9aeb-a9283053fc57", "XUser@gmail.com", true, "X", "User", false, null, "XUSER@GMAIL.COM", "USERX", "AQAAAAIAAYagAAAAEMGDHrlQTyk81P+HOEUJv8eFF7Wob5e6vZZqgM4uqtvIQuj8A24o2oOE7jFWYN3LCA==", null, false, "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINJ", false, "UserX" }
+                    { new Guid("00000000-0000-0000-0000-000000000001"), 0, true, new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7716), "c8554266-b401-4519-9aeb-a9283053fc58", "FirstUser@gmail.com", true, "First", "User", false, null, "FIRSTUSER@GMAIL.COM", "FIRSTGUY", "AQAAAAIAAYagAAAAEN9xEedrdJgV3ElBmhrHAe5qLECTlGKQod1hFXo9etb5Qa/fgyhwfUPn8e2cfweiNw==", null, false, "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINA", false, "FirstGuy" },
+                    { new Guid("00000000-0000-0000-0000-000000000002"), 0, true, new DateTime(2010, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), "c8554266-b401-4519-9aeb-a9283053fc59", "SecondUser@gmail.com", true, "Second", "User", false, null, "SECONDUSER@GMAIL.COM", "TIMTHEDESTROYERXX400", "AQAAAAIAAYagAAAAEFyIylZNsRS2XWlnfZYhICG8gkh6saCuOTvQdi2KAWQrqzgG4hFIrrmkZ08AfGfuDw==", null, false, "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINB", false, "TimTheDestroyerXx400" },
+                    { new Guid("00000000-0000-0000-0000-000000000003"), 0, true, new DateTime(2010, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), "c8554266-b401-4519-9aeb-a9283053fc50", "ThirdUser@gmail.com", true, "Third", "User", false, null, "THIRDUSER@GMAIL.COM", "USERTHETHIRD", "AQAAAAIAAYagAAAAEKS+wlcVW0P7ztz6R11UFs+DgOSBQCp1mp8RZiiCpJWWEjttM7Z6WETFASLTbOm20g==", null, false, "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINC", false, "UserTheThird" },
+                    { new Guid("00000000-0000-0000-0000-000000000004"), 0, true, new DateTime(2010, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), "c8554266-b401-4519-9aeb-a9283053fc51", "FourthUser@gmail.com", true, "Fourth", "User", false, null, "FOURTHUSER@GMAIL.COM", "USERTHEFOURTH", "AQAAAAIAAYagAAAAEHgL1qfOaNGTmMGFVgM/kCHFKdWrHHzG0i5/EtWwv9r/FtgkydO8WtgcWDCBxV0QzA==", null, false, "VVPCRDAS3MJWQD5CSW2GWPRADBXEZIND", false, "UserTheFourth" },
+                    { new Guid("00000000-0000-0000-0000-000000000005"), 0, true, new DateTime(2010, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), "c8554266-b401-4519-9aeb-a9283053fc52", "FifthUser@gmail.com", true, "Fifth", "User", false, null, "FIFTHUSER@GMAIL.COM", "USERTHEFIFTH", "AQAAAAIAAYagAAAAEMOliz4lCaioM6s8pctj4jbL/jWNQkH1KrvPEtUvBFpIp9lpDOEKLMPcAKnyESypww==", null, false, "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINE", false, "UserTheFifth" },
+                    { new Guid("00000000-0000-0000-0000-000000000006"), 0, true, new DateTime(2010, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), "c8554266-b401-4519-9aeb-a9283053fc53", "SixUser@gmail.com", true, "Six", "User", false, null, "SIXUSER@GMAIL.COM", "USERTHESITH", "AQAAAAIAAYagAAAAEHT5vb1Q/5hXndWzpHsG3CSjprruFazIhW1Y0TZ8KLDW8udDa7k0PAML9nnMOPDHkw==", null, false, "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINF", false, "UserTheSith" },
+                    { new Guid("00000000-0000-0000-0000-000000000007"), 0, true, new DateTime(2010, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), "c8554266-b401-4519-9aeb-a9283053fc54", "SevenUser@gmail.com", true, "Seven", "User", false, null, "SEVENUSER@GMAIL.COM", "USERTHESEVEN", "AQAAAAIAAYagAAAAEMkqcj3LmfzDySlIBKg+zreR81uzPPYHuldeo7N4izh+or8j8twpck0jY1Baj4CkEQ==", null, false, "VVPCRDAS3MJWQD5CSW2GWPRADBXEZING", false, "UserTheSeven" },
+                    { new Guid("00000000-0000-0000-0000-000000000008"), 0, true, new DateTime(2010, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), "c8554266-b401-4519-9aeb-a9283053fc55", "EigthUser@gmail.com", true, "Eigth", "User", false, null, "EIGTHUSER@GMAIL.COM", "USERTHEEIGTH", "AQAAAAIAAYagAAAAEFCoxdhA1+TlhWAp0M9Owp7gkk9T8QAKkUPMJ+fQjZGQCiBOfhXo7TTc3WwFkWWzpA==", null, false, "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINH", false, "UserTheEigth" },
+                    { new Guid("00000000-0000-0000-0000-000000000009"), 0, true, new DateTime(2010, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), "c8554266-b401-4519-9aeb-a9283053fc56", "NinthUser@gmail.com", true, "Ninth", "User", false, null, "NINTHUSER@GMAIL.COM", "USERTHENINTH", "AQAAAAIAAYagAAAAEKebHUpzHuvoFcvHgmR87kGzpQoRXVIp5cLdSBsbNizFXdMYeZ0ztawoycPY/AG9bw==", null, false, "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINI", false, "UserTheNinth" },
+                    { new Guid("00000000-0000-0000-0000-000000000010"), 0, true, new DateTime(2010, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), "c8554266-b401-4519-9aeb-a9283053fc57", "XUser@gmail.com", true, "X", "User", false, null, "XUSER@GMAIL.COM", "USERX", "AQAAAAIAAYagAAAAEHhcuJhRpOcrNHKqA/JYBU3JLB+QPBLAgEeRGSvRNpHYE3/MuycRUrm5aMDouqSjwg==", null, false, "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINJ", false, "UserX" }
                 });
 
             migrationBuilder.InsertData(
@@ -289,16 +289,16 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                 columns: new[] { "Id", "CreatedOn", "Description", "LastEditedOn", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("00000000-0000-0000-0000-000000000001"), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5176), "Fist person shooter", new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5173), "FPS" },
-                    { new Guid("00000000-0000-0000-0000-000000000002"), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5180), "Fist person shooter but in the third person", new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5179), "Third person shooter" },
-                    { new Guid("00000000-0000-0000-0000-000000000003"), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5184), null, new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5182), "Simulation" },
-                    { new Guid("00000000-0000-0000-0000-000000000004"), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5191), null, new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5190), "Platformer" },
-                    { new Guid("00000000-0000-0000-0000-000000000005"), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5197), null, new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5195), "Party game" },
-                    { new Guid("00000000-0000-0000-0000-000000000006"), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5237), null, new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5235), "Story driven" },
-                    { new Guid("00000000-0000-0000-0000-000000000007"), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5240), null, new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5239), "Open Word" },
-                    { new Guid("00000000-0000-0000-0000-000000000008"), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5244), null, new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5243), "Nonlinear gameplay" },
-                    { new Guid("00000000-0000-0000-0000-000000000009"), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5248), null, new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5246), "Action-adventure" },
-                    { new Guid("00000000-0000-0000-0000-000000000010"), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5252), null, new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5250), "Stealth" }
+                    { new Guid("00000000-0000-0000-0000-000000000001"), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7427), "Fist person shooter", new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7424), "FPS" },
+                    { new Guid("00000000-0000-0000-0000-000000000002"), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7431), "Fist person shooter but in the third person", new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7429), "Third person shooter" },
+                    { new Guid("00000000-0000-0000-0000-000000000003"), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7435), null, new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7433), "Simulation" },
+                    { new Guid("00000000-0000-0000-0000-000000000004"), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7442), null, new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7441), "Platformer" },
+                    { new Guid("00000000-0000-0000-0000-000000000005"), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7448), null, new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7445), "Party game" },
+                    { new Guid("00000000-0000-0000-0000-000000000006"), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7485), null, new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7483), "Story driven" },
+                    { new Guid("00000000-0000-0000-0000-000000000007"), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7489), null, new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7487), "Open Word" },
+                    { new Guid("00000000-0000-0000-0000-000000000008"), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7493), null, new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7491), "Nonlinear gameplay" },
+                    { new Guid("00000000-0000-0000-0000-000000000009"), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7497), null, new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7495), "Action-adventure" },
+                    { new Guid("00000000-0000-0000-0000-000000000010"), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7501), null, new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7499), "Stealth" }
                 });
 
             migrationBuilder.InsertData(
@@ -306,16 +306,16 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                 columns: new[] { "Id", "Country", "CreatedOn", "LastEditedOn", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("00000000-0000-0000-0000-000000000001"), "America", new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5276), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5279), "Bethesda" },
-                    { new Guid("00000000-0000-0000-0000-000000000002"), "Japan", new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5281), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5283), "Nintendo" },
-                    { new Guid("00000000-0000-0000-0000-000000000003"), "America", new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5285), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5286), "Ubisoft" },
-                    { new Guid("00000000-0000-0000-0000-000000000004"), "Japan", new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5289), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5290), "Square inex" },
-                    { new Guid("00000000-0000-0000-0000-000000000005"), "America", new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5377), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5379), "Sony" },
-                    { new Guid("00000000-0000-0000-0000-000000000006"), "America", new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5382), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5383), "Microsoft" },
-                    { new Guid("00000000-0000-0000-0000-000000000007"), "Japan", new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5386), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5387), "The pokemon company" },
-                    { new Guid("00000000-0000-0000-0000-000000000008"), "Sweden", new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5390), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5391), "CD project" },
-                    { new Guid("00000000-0000-0000-0000-000000000009"), "Japan", new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5394), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5395), "Arc System Works" },
-                    { new Guid("00000000-0000-0000-0000-000000000010"), "America", new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5398), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5399), "Interplay Entertainment" }
+                    { new Guid("00000000-0000-0000-0000-000000000001"), "America", new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7524), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7526), "Bethesda" },
+                    { new Guid("00000000-0000-0000-0000-000000000002"), "Japan", new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7529), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7531), "Nintendo" },
+                    { new Guid("00000000-0000-0000-0000-000000000003"), "America", new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7533), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7535), "Ubisoft" },
+                    { new Guid("00000000-0000-0000-0000-000000000004"), "Japan", new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7537), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7538), "Square inex" },
+                    { new Guid("00000000-0000-0000-0000-000000000005"), "America", new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7581), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7583), "Sony" },
+                    { new Guid("00000000-0000-0000-0000-000000000006"), "America", new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7586), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7587), "Microsoft" },
+                    { new Guid("00000000-0000-0000-0000-000000000007"), "Japan", new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7590), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7591), "The pokemon company" },
+                    { new Guid("00000000-0000-0000-0000-000000000008"), "Sweden", new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7594), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7595), "CD project" },
+                    { new Guid("00000000-0000-0000-0000-000000000009"), "Japan", new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7597), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7599), "Arc System Works" },
+                    { new Guid("00000000-0000-0000-0000-000000000010"), "America", new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7601), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7603), "Interplay Entertainment" }
                 });
 
             migrationBuilder.InsertData(
@@ -323,7 +323,7 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                 columns: new[] { "Id", "ClaimType", "ClaimValue", "UserId" },
                 values: new object[,]
                 {
-                    { 1, "birthday", "18/12/2022 19:02:14", new Guid("00000000-0000-0000-0000-000000000001") },
+                    { 1, "birthday", "23/12/2022 12:33:29", new Guid("00000000-0000-0000-0000-000000000001") },
                     { 2, "approved", "True", new Guid("00000000-0000-0000-0000-000000000001") },
                     { 3, "birthday", "19/08/2010 0:00:00", new Guid("00000000-0000-0000-0000-000000000002") },
                     { 4, "approved", "True", new Guid("00000000-0000-0000-0000-000000000002") },
@@ -350,11 +350,11 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
-                    { new Guid("00000000-0000-0000-0000-000000000001"), new Guid("00000000-0000-0000-0000-000000000002") },
-                    { new Guid("00000000-0000-0000-0000-000000000001"), new Guid("00000000-0000-0000-0000-000000000005") },
                     { new Guid("00000000-0000-0000-0000-000000000002"), new Guid("00000000-0000-0000-0000-000000000001") },
+                    { new Guid("00000000-0000-0000-0000-000000000001"), new Guid("00000000-0000-0000-0000-000000000002") },
                     { new Guid("00000000-0000-0000-0000-000000000002"), new Guid("00000000-0000-0000-0000-000000000003") },
                     { new Guid("00000000-0000-0000-0000-000000000002"), new Guid("00000000-0000-0000-0000-000000000004") },
+                    { new Guid("00000000-0000-0000-0000-000000000001"), new Guid("00000000-0000-0000-0000-000000000005") },
                     { new Guid("00000000-0000-0000-0000-000000000002"), new Guid("00000000-0000-0000-0000-000000000006") },
                     { new Guid("00000000-0000-0000-0000-000000000002"), new Guid("00000000-0000-0000-0000-000000000007") },
                     { new Guid("00000000-0000-0000-0000-000000000002"), new Guid("00000000-0000-0000-0000-000000000008") },
@@ -367,16 +367,16 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                 columns: new[] { "Id", "CreatedOn", "LastEditedOn", "Name", "Price", "PublisherId" },
                 values: new object[,]
                 {
-                    { new Guid("00000000-0000-0000-0000-000000000001"), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5014), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5054), "Fallout New Vegas", 14.99f, new Guid("00000000-0000-0000-0000-000000000001") },
-                    { new Guid("00000000-0000-0000-0000-000000000002"), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5058), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5060), "Splatoon 3", 59.99f, new Guid("00000000-0000-0000-0000-000000000002") },
-                    { new Guid("00000000-0000-0000-0000-000000000003"), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5063), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5065), "Animal Crossing", 59.99f, new Guid("00000000-0000-0000-0000-000000000002") },
-                    { new Guid("00000000-0000-0000-0000-000000000004"), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5072), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5073), "Fallout 3", 14.99f, new Guid("00000000-0000-0000-0000-000000000001") },
-                    { new Guid("00000000-0000-0000-0000-000000000005"), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5093), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5095), "Fallout 4", 14.99f, new Guid("00000000-0000-0000-0000-000000000001") },
-                    { new Guid("00000000-0000-0000-0000-000000000006"), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5104), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5106), "Splatoon 2", 59.99f, new Guid("00000000-0000-0000-0000-000000000002") },
-                    { new Guid("00000000-0000-0000-0000-000000000007"), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5109), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5110), "Splatoon", 59.99f, new Guid("00000000-0000-0000-0000-000000000002") },
-                    { new Guid("00000000-0000-0000-0000-000000000008"), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5113), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5137), "Rabbits", 59.99f, new Guid("00000000-0000-0000-0000-000000000003") },
-                    { new Guid("00000000-0000-0000-0000-000000000009"), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5141), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5142), "Rayman", 59.99f, new Guid("00000000-0000-0000-0000-000000000003") },
-                    { new Guid("00000000-0000-0000-0000-000000000010"), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5145), new DateTime(2022, 12, 18, 19, 2, 14, 225, DateTimeKind.Local).AddTicks(5146), "Assassins creed", 59.99f, new Guid("00000000-0000-0000-0000-000000000003") }
+                    { new Guid("00000000-0000-0000-0000-000000000001"), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7259), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7299), "Fallout New Vegas", 14.99f, new Guid("00000000-0000-0000-0000-000000000001") },
+                    { new Guid("00000000-0000-0000-0000-000000000002"), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7305), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7306), "Splatoon 3", 59.99f, new Guid("00000000-0000-0000-0000-000000000002") },
+                    { new Guid("00000000-0000-0000-0000-000000000003"), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7310), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7312), "Animal Crossing", 59.99f, new Guid("00000000-0000-0000-0000-000000000002") },
+                    { new Guid("00000000-0000-0000-0000-000000000004"), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7319), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7321), "Fallout 3", 14.99f, new Guid("00000000-0000-0000-0000-000000000001") },
+                    { new Guid("00000000-0000-0000-0000-000000000005"), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7339), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7341), "Fallout 4", 14.99f, new Guid("00000000-0000-0000-0000-000000000001") },
+                    { new Guid("00000000-0000-0000-0000-000000000006"), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7350), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7351), "Splatoon 2", 59.99f, new Guid("00000000-0000-0000-0000-000000000002") },
+                    { new Guid("00000000-0000-0000-0000-000000000007"), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7354), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7356), "Splatoon", 59.99f, new Guid("00000000-0000-0000-0000-000000000002") },
+                    { new Guid("00000000-0000-0000-0000-000000000008"), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7359), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7385), "Rabbits", 59.99f, new Guid("00000000-0000-0000-0000-000000000003") },
+                    { new Guid("00000000-0000-0000-0000-000000000009"), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7389), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7391), "Rayman", 59.99f, new Guid("00000000-0000-0000-0000-000000000003") },
+                    { new Guid("00000000-0000-0000-0000-000000000010"), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7393), new DateTime(2022, 12, 23, 12, 33, 29, 309, DateTimeKind.Local).AddTicks(7395), "Assassins creed", 59.99f, new Guid("00000000-0000-0000-0000-000000000003") }
                 });
 
             migrationBuilder.InsertData(
@@ -437,9 +437,9 @@ namespace Imi.Project.Api.Infrastructure.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserRoles_UserId",
+                name: "IX_AspNetUserRoles_RoleId",
                 table: "AspNetUserRoles",
-                column: "UserId");
+                column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",

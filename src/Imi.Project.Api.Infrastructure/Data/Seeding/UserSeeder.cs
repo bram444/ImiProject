@@ -200,7 +200,7 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         NormalizedEmail = xEmail.ToUpper(),
                         NormalizedUserName = xUserName.ToUpper(),
                         ApprovedTerms = true,
-                        BirthDay = DateTime.Parse("19/08/2010")
+                        BirthDay = DateTime.Parse("19/08/2010"),
                     }
                 };
 
@@ -283,7 +283,7 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
 
             int id = 0;
 
-            foreach(var user in applicationUsers)
+            foreach(ApplicationUser user in applicationUsers)
             {
                 modelBuilder.Entity<IdentityUserClaim<Guid>>().HasData(new[]
                 {

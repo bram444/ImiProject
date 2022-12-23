@@ -3,9 +3,14 @@ using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Repository;
 using Imi.Project.Api.Core.Interfaces.Sevices;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Services
@@ -15,11 +20,18 @@ namespace Imi.Project.Api.Core.Services
         private readonly IUserRepository _userRepository;
         private readonly IUserGameRepository _userGameRepository;
         private readonly IPasswordHasher<ApplicationUser> passwordHasher = new PasswordHasher<ApplicationUser>();
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IConfiguration _configuration;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public UserService(IUserRepository userRepository, IUserGameRepository userGameRepository)
+        public UserService(IUserRepository userRepository, IUserGameRepository userGameRepository, 
+            UserManager<ApplicationUser> userManager, IConfiguration configuration, SignInManager<ApplicationUser> signInManager)
         {
             _userRepository = userRepository;
             _userGameRepository = userGameRepository;
+            _userManager = userManager;
+            _configuration = configuration;
+            _signInManager = signInManager;
         }
 
         private ApplicationUser CreateEntity(UserResponseDto userResponseDto)
@@ -195,5 +207,89 @@ namespace Imi.Project.Api.Core.Services
 
             return serviceResponse;
         }
+        public async Task<bool> RegisterAsync(RegisterDto registration)
+        {
+            ApplicationUser newUser = new()
+            {
+                ApprovedTerms = registration.ApprovedTerms,
+                Email = registration.Email,
+                UserName = registration.UserName,
+                FirstName = registration.FirstName,
+                LastName = registration.LastName,
+                Id = Guid.NewGuid(),
+                BirthDay = registration.BirthDay,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                ConcurrencyStamp = Guid.NewGuid().ToString()
+            };
+
+            IdentityResult result = await _userManager.CreateAsync(newUser, registration.Password);
+
+            if(!result.Succeeded)
+            {
+                return false;
+            }
+
+            newUser = await _userManager.FindByEmailAsync(registration.Email);
+            await _userManager.AddClaimAsync(newUser, new Claim("birthday", registration.BirthDay.ToString()));
+            await _userManager.AddClaimAsync(newUser, new Claim("approved", registration.ApprovedTerms.ToString()));
+            await _userManager.AddToRoleAsync(newUser, "User");
+
+            return true;
+        }
+
+        public async Task<string> Login(LoginUserRequestDto loginUser)
+        {
+            //check if user exists
+            var user = await _signInManager.PasswordSignInAsync(loginUser.UserName, loginUser.Password, true, false);
+
+            ApplicationUser applicationUser = await _userManager.FindByNameAsync(loginUser.UserName);
+
+            JwtSecurityToken token = await GenerateTokenAsync(applicationUser!);
+            return new JwtSecurityTokenHandler().WriteToken(token); //serialize the token 
+        }
+
+        private async Task<JwtSecurityToken> GenerateTokenAsync(ApplicationUser user)
+        {
+            List<Claim> claims = new();
+
+            // Loading the user Claims 
+            IList<Claim> userClaims = await _userManager.GetClaimsAsync(user);
+
+            claims.AddRange(userClaims);
+
+            // Loading the roles and put them in a claim of a Role ClaimType 
+            IList<string> roleClaims = await _userManager.GetRolesAsync(user);
+            foreach(string roleClaim in roleClaims)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, roleClaim));
+            }
+
+            claims.Add(new Claim(ClaimTypes.NameIdentifier, await _userManager.GetUserIdAsync(user)));
+
+            claims.Add(new Claim(ClaimTypes.Name, (await _userManager.GetUserNameAsync(user))!));
+
+            claims.Add(new Claim(ClaimTypes.Email, (await _userManager.GetEmailAsync(user))!));
+
+            claims.Add(new Claim(ClaimTypes.DateOfBirth, value: user.BirthDay.ToShortDateString()));
+
+            claims.Add(new Claim(type: "approved", value: user.ApprovedTerms.ToString()));
+
+            claims.AddRange(userClaims);
+            var expirationDays = int.Parse(_configuration["JWTConfiguration:TokenExpirationDays"]);
+            var signinKey = _configuration["JWTConfiguration:SigninKey"];
+            var token = new JwtSecurityToken
+            (
+                issuer: _configuration["JWTConfiguration:Issuer"],
+                audience: _configuration["JWTConfiguration:Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.Add(TimeSpan.FromDays(expirationDays)),
+                notBefore: DateTime.UtcNow,
+                signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signinKey))
+                , SecurityAlgorithms.HmacSha256)
+            );
+
+            return token;
+        }
+
     }
 }

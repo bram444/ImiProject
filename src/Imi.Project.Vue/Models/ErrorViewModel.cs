@@ -1,5 +1,3 @@
-using System;
-
 namespace Imi.Project.Vue.Models
 {
     public class ErrorViewModel

@@ -18,5 +18,8 @@ namespace Imi.Project.Api.Core.Interfaces.Sevices
         Task<ServiceResult<UserResponseDto>> UpdateAsync(UserResponseDto response);
         Task<ServiceResult<UserResponseDto>> AddAsync(UserResponseDto response);
         Task<ServiceResult<UserResponseDto>> DeleteAsync(Guid id);
+
+        Task<string> Login(LoginUserRequestDto loginUser);
+        Task<bool> RegisterAsync(RegisterDto registration);
     }
 }

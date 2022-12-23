@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Globalization;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,46 +21,29 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultDatabase"
 builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
 {
     options.SignIn.RequireConfirmedEmail = false;
-}).AddRoles<IdentityRole<Guid>>()
+    options.SignIn.RequireConfirmedPhoneNumber = false;
+    options.SignIn.RequireConfirmedAccount = false;
+    options.User.RequireUniqueEmail = true;
+
+})/*.AddRoles<IdentityRole<Guid>>()*/
     .AddEntityFrameworkStores<ApplicationDbContext>();
-
-builder.WebHost.UseUrls("https://0.0.0.0:5001");
-
-builder.Services.AddCors();
-
-builder.Services.AddScoped<IGameGenreRepository, GameGenreRepository>();
-builder.Services.AddScoped<IUserGameRepository, UserGameRepository>();
-builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IGameRepository, GameRepository>();
-builder.Services.AddScoped<IGenreRepository, GenreRepository>();
-
-builder.Services.AddScoped<IGameGenreService, GameGenreService>();
-builder.Services.AddScoped<IUserGameService, UserGameService>();
-builder.Services.AddScoped<IPublisherService, PublisherService>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IGameService, GameService>();
-builder.Services.AddScoped<IGenreService, GenreService>();
-
-
-builder.Services.AddControllers();
 
 builder.Services.AddAuthentication(option =>
 {
     option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(jwtOptions =>
-  {
-      jwtOptions.TokenValidationParameters = new TokenValidationParameters()
-      {
-          ValidateActor = true,
-          ValidateAudience = true,
-          ValidateLifetime = true,
-          ValidIssuer = builder.Configuration["JWTConfiguration:Issuer"],
-          ValidAudience = builder.Configuration["JWTConfiguration:Audience"],
-          IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWTConfiguration:SigningKey"]))
-      };
-  });
+{
+    jwtOptions.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateActor = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidIssuer = builder.Configuration["JWTConfiguration:Issuer"],
+        ValidAudience = builder.Configuration["JWTConfiguration:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWTConfiguration:SigninKey"]))
+    };
+});
 
 builder.Services.AddAuthorization(options =>
 {
@@ -68,7 +52,7 @@ builder.Services.AddAuthorization(options =>
         policy.RequireAssertion(context =>
         {
             var adultClaimValue = context.User.Claims
-                         .SingleOrDefault(c => c.Type == "birthday")?.Value;
+                         .SingleOrDefault(c => c.Type == ClaimTypes.DateOfBirth)?.Value;
             if(DateTime.TryParseExact(adultClaimValue, "yy-MM-dd",
                CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal,
                out var birthDay))
@@ -87,6 +71,30 @@ builder.Services.AddAuthorization(options =>
         policy.RequireRole("Admin");
     });
 });
+
+//builder.WebHost.UseUrls("https://0.0.0.0:5001");
+
+
+//builder.Services.AddCors();
+
+//builder.AddSignInManager<SignInManager<ApplicationUser>>();
+
+builder.Services.AddScoped<IGameGenreService, GameGenreService>();
+builder.Services.AddScoped<IUserGameService, UserGameService>();
+builder.Services.AddScoped<IPublisherService, PublisherService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<IGenreService, GenreService>();
+
+builder.Services.AddScoped<IGameGenreRepository, GameGenreRepository>();
+builder.Services.AddScoped<IUserGameRepository, UserGameRepository>();
+builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IGameRepository, GameRepository>();
+builder.Services.AddScoped<IGenreRepository, GenreRepository>();
+
+
+builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
@@ -116,6 +124,10 @@ builder.Services.AddSwaggerGen(option =>
         }
     });
 });
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddCors();
+
 var app = builder.Build();
 
 if(app.Environment.IsDevelopment())
