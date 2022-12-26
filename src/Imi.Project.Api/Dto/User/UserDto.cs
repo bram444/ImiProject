@@ -1,9 +1,8 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Imi.Project.Api.Core.Dto.User
+namespace Imi.Project.Api.Dto.User
 {
-    public class RegisterDto
+    public class UserDto
     {
         [Required]
         public Guid Id { get; set; }
@@ -29,6 +28,8 @@ namespace Imi.Project.Api.Core.Dto.User
         [Required]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
+
+        public ICollection<Guid> GameId { get; set; }
 
         [Required]
         public bool ApprovedTerms { get; set; }

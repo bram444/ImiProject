@@ -23,31 +23,59 @@ namespace Imi.Project.Api.Infrastructure.Repository
 
         public virtual async Task<IEnumerable<UserGame>> ListAllAsync()
         {
-            return await _dbContext.Set<UserGame>().AsNoTracking().ToListAsync();
+            try
+            {
+                return await _dbContext.Set<UserGame>().AsNoTracking().ToListAsync();
+            } catch(Exception ex)
+            {
+                throw new Exception("Something went wrong when getting all UserGame", ex.InnerException);
+            }
         }
 
         public virtual async Task<IEnumerable<UserGame>> GetByGameIdAsync(Guid id)
         {
-            return await _dbContext.Set<UserGame>().AsNoTracking().Where(ug => ug.GameId == id).ToListAsync();
+            try
+            {
+                return await _dbContext.Set<UserGame>().AsNoTracking().Where(ug => ug.GameId == id).ToListAsync();
+            } catch(Exception ex)
+            {
+                throw new Exception($"Something went wrong when getting all UserGame with Game Id {id}", ex.InnerException);
+            }
         }
 
         public virtual async Task<IEnumerable<UserGame>> GetByUserIdAsync(Guid id)
         {
-            return await _dbContext.Set<UserGame>().AsNoTracking().Where(ug => ug.UserId == id).ToListAsync();
+            try
+            {
+                return await _dbContext.Set<UserGame>().AsNoTracking().Where(ug => ug.UserId == id).ToListAsync();
+            } catch(Exception ex)
+            {
+                throw new Exception($"Something went wrong when getting all UserGame with User Id {id}", ex.InnerException);
+            }
         }
 
-        public async Task<UserGame> AddAsync(UserGame entity)
+        public async Task AddAsync(UserGame entity)
         {
-            _dbContext.Set<UserGame>().Add(entity);
-            await _dbContext.SaveChangesAsync();
-            return entity;
+            try
+            {
+                _dbContext.Set<UserGame>().Add(entity);
+                await _dbContext.SaveChangesAsync();
+            } catch(Exception ex)
+            {
+                throw new Exception($"Something went wrong while adding {typeof(UserGame).Name}", ex.InnerException);
+            }
         }
 
-        public async Task<UserGame> DeleteAsync(UserGame entity)
+        public async Task DeleteAsync(UserGame entity)
         {
-            _dbContext.Set<UserGame>().Remove(entity);
-            await _dbContext.SaveChangesAsync();
-            return entity;
+            try
+            {
+                _dbContext.Set<UserGame>().Remove(entity);
+                await _dbContext.SaveChangesAsync();
+            } catch(Exception ex)
+            {
+                throw new Exception($"Something went wrong while removing {typeof(UserGame).Name}", ex.InnerException);
+            }
         }
     }
 }

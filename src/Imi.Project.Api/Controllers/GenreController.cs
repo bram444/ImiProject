@@ -1,6 +1,8 @@
-﻿using Imi.Project.Api.Core.Dto.GameGenre;
-using Imi.Project.Api.Core.Dto.Genre;
+﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Sevices;
+using Imi.Project.Api.Core.Services.Models;
+using Imi.Project.Api.Dto.Game;
+using Imi.Project.Api.Dto.Genre;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,49 +26,122 @@ namespace Imi.Project.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            return Ok(await _genreService.ListAllAsync());
+            var result = await _genreService.ListAllAsync();
+
+            if(!result.IsSuccess)
+            {
+                return BadRequest(result.ValidationErrors);
+            }
+
+            return Ok(result.Data);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var result = await _genreService.GetByIdAsync(id);
+
+            if(!result.IsSuccess)
+            {
+                return BadRequest(result.ValidationErrors);
+            }
+
+            return Ok(result.Data);
         }
 
         [HttpGet("{search}/genre")]
         public async Task<IActionResult> GetByName(string search)
         {
-            return Ok(await _genreService.SearchAsync(search));
+            var result = await _genreService.SearchAsync(search);
+
+            if(!result.IsSuccess)
+            {
+                return BadRequest(result.ValidationErrors);
+            }
+
+            return Ok(result.Data);
         }
 
         [Authorize(Policy = "adminOnly")]
         [HttpPost]
-        public async Task<IActionResult> Post(GenreResponseDto genreResponseDto)
+        public async Task<IActionResult> Post(GenreDto genreDto)
         {
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            return Ok(await _genreService.AddAsync(genreResponseDto));
+            var result = await _genreService.AddAsync(new GenreModel
+            {
+                Id = genreDto.Id,
+                Description = genreDto.Description,
+                Name = genreDto.Name
+            });
+
+            if(!result.IsSuccess)
+            {
+                return BadRequest(result.ValidationErrors);
+            }
+
+            return CreatedAtAction(nameof(GetById), new { id = genreDto.Id }, result.Data);
         }
 
         [Authorize(Policy = "adminOnly")]
         [HttpPut]
-        public async Task<IActionResult> Put(GenreResponseDto genreResponseDto)
+        public async Task<IActionResult> Put(GenreDto genreDto)
         {
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            return Ok(await _genreService.UpdateAsync(genreResponseDto));
+            var result = await _genreService.UpdateAsync(new GenreModel
+            {
+                Id = genreDto.Id,
+                Description = genreDto.Description,
+                Name = genreDto.Name
+            });
+
+            if(!result.IsSuccess)
+            {
+                return BadRequest(result.ValidationErrors);
+            }
+
+            return Ok(result.Data);
         }
 
         [Authorize(Policy = "adminOnly")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            foreach(GameGenreResponseDto gg in await _gameGenreService.GetByGenreIdAsync(id))
+            var x = await _gameGenreService.GetByGenreIdAsync(id);
+            if(!x.IsSuccess)
             {
-                await _gameGenreService.DeleteAsync(gg);
+                return BadRequest(x.ValidationErrors);
             }
 
-            return Ok(await _genreService.DeleteAsync(id));
+            foreach(GameGenre gg in x.Data)
+            {
+                var res = await _gameGenreService.DeleteAsync(new GameGenreModel
+                {
+                    GameId = gg.GameId,
+                    GenreId = gg.GenreId
+                });
+
+                if(!res.IsSuccess)
+                {
+                    return BadRequest(res.ValidationErrors);
+                }
+            }
+
+            var result = await _genreService.DeleteAsync(id);
+
+            if(!result.IsSuccess)
+            {
+                return BadRequest(result.ValidationErrors);
+            }
+
+            return Ok();
         }
     }
 }

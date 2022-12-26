@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Imi.Project.Api.Core.Dto.User
+namespace Imi.Project.Api.Dto.Authentication
 {
-    public class UserResponseDto
+    public class RegisterDto
     {
-        [Required]
-        public Guid Id { get; set; }
-
         [Required]
         [StringLength(100, MinimumLength = 6)]
         [DataType(DataType.Password)]
@@ -28,9 +23,8 @@ namespace Imi.Project.Api.Core.Dto.User
         public string LastName { get; set; }
 
         [Required]
+        [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
-
-        public ICollection<Guid> GameId { get; set; }
 
         [Required]
         public bool ApprovedTerms { get; set; }

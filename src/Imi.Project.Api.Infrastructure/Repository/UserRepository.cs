@@ -20,29 +20,30 @@ namespace Imi.Project.Api.Infrastructure.Repository
 
         public virtual async Task<IEnumerable<ApplicationUser>> SearchFirstNameAsync(string search)
         {
-            List<ApplicationUser> user = await GetAll()
-                .Where(g => g.FirstName.Contains(search.Trim().ToUpper()))
+            return await GetAll()
+                .Where(g => g.FirstName.Contains(search.Trim().ToUpper())).AsNoTracking()
                 .ToListAsync();
-
-            return user;
         }
 
         public virtual async Task<IEnumerable<ApplicationUser>> SearchLastNameAsync(string search)
         {
-            List<ApplicationUser> user = await GetAll()
-                .Where(g => g.LastName.Contains(search.Trim().ToUpper()))
+            return await GetAll()
+                .Where(g => g.LastName.Contains(search.Trim().ToUpper())).AsNoTracking()
                 .ToListAsync();
+        }
 
-            return user;
+        public virtual async Task<IEnumerable<ApplicationUser>> SearchEmailAsync(string search)
+        {
+            return await GetAll()
+                .Where(g => g.Email.Contains(search.Trim().ToUpper())).AsNoTracking()
+                .ToListAsync();
         }
 
         public virtual async Task<IEnumerable<ApplicationUser>> SearchUserNameAsync(string search)
         {
-            List<ApplicationUser> user = await GetAll()
-                .Where(g => g.UserName.Contains(search.Trim().ToUpper()))
+            return await GetAll()
+                .Where(g => g.UserName.Contains(search.Trim().ToUpper())).AsNoTracking()
                 .ToListAsync();
-
-            return user;
         }
 
         public virtual IQueryable<ApplicationUser> GetAll()
@@ -60,28 +61,44 @@ namespace Imi.Project.Api.Infrastructure.Repository
             return await _dbContext.Set<ApplicationUser>().AsNoTracking().SingleOrDefaultAsync(t => t.Id == id);
         }
 
-        public async Task<ApplicationUser> AddAsync(ApplicationUser entity)
+        public async Task AddAsync(ApplicationUser entity)
         {
-            _dbContext.Set<ApplicationUser>().Add(entity);
-            _dbContext.Entry(entity).State = EntityState.Added;
-            await _dbContext.SaveChangesAsync();
-            return entity;
+            try
+            {
+                _dbContext.Set<ApplicationUser>().Add(entity);
+                _dbContext.Entry(entity).State = EntityState.Added;
+                await _dbContext.SaveChangesAsync();
+            } catch(Exception ex)
+            {
+                throw new Exception($"Something went wrong while adding {typeof(ApplicationUser).Name}", ex.InnerException);
+            }
         }
 
-        public async Task<ApplicationUser> UpdateAsync(ApplicationUser entity)
+        public async Task UpdateAsync(ApplicationUser entity)
         {
-            _dbContext.Set<ApplicationUser>().Update(entity);
-            _dbContext.Entry(entity).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
-            return entity;
+            try
+            {
+                _dbContext.Set<ApplicationUser>().Update(entity);
+                _dbContext.Entry(entity).State = EntityState.Modified;
+                await _dbContext.SaveChangesAsync();
+            } catch(Exception ex)
+            {
+                throw new Exception($"Something went wrong while updating {typeof(ApplicationUser).Name}", ex.InnerException);
+            }
         }
 
-        public async Task<ApplicationUser> DeleteAsync(ApplicationUser entity)
+        public async Task DeleteAsync(ApplicationUser entity)
         {
-            _dbContext.Set<ApplicationUser>().Remove(entity);
-            _dbContext.Entry(entity).State = EntityState.Deleted;
-            await _dbContext.SaveChangesAsync();
-            return entity;
+            try
+            {
+                _dbContext.Set<ApplicationUser>().Remove(entity);
+                _dbContext.Entry(entity).State = EntityState.Deleted;
+                await _dbContext.SaveChangesAsync();
+
+            } catch(Exception ex)
+            {
+                throw new Exception($"Something went wrong while removing {typeof(ApplicationUser).Name}", ex.InnerException);
+            }
         }
     }
 }

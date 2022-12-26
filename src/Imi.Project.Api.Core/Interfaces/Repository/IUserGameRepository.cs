@@ -12,7 +12,7 @@ namespace Imi.Project.Api.Core.Interfaces.Repository
         Task<IEnumerable<UserGame>> ListAllAsync();
         Task<IEnumerable<UserGame>> GetByGameIdAsync(Guid id);
         Task<IEnumerable<UserGame>> GetByUserIdAsync(Guid id);
-        Task<UserGame> AddAsync(UserGame entity);
-        Task<UserGame> DeleteAsync(UserGame entity);
+        Task AddAsync(UserGame entity);
+        Task DeleteAsync(UserGame entity);
     }
 }

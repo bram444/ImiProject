@@ -242,7 +242,7 @@ namespace Imi.Project.Mobile.ViewModels
                     GameId = gameId,
                     Password = Password,
                     ConfirmPassword = PasswordConfirm,
-                    ApprovedTerms =true,
+                    ApprovedTerms = true,
                     BirthDay = DateTime.Now
 
                 };

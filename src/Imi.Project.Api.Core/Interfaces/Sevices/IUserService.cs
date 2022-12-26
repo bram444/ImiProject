@@ -1,25 +1,20 @@
-﻿using Imi.Project.Api.Core.Dto.User;
-using Imi.Project.Api.Core.Services;
+﻿using Imi.Project.Api.Core.Entities;
+using Imi.Project.Api.Core.Services.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Interfaces.Sevices
 {
     public interface IUserService
     {
-        Task<IEnumerable<UserResponseDto>> SearchUserNameAsync(string search);
-        Task<IEnumerable<UserResponseDto>> SearchFirstNameAsync(string search);
-        Task<IEnumerable<UserResponseDto>> SearchLastNameAsync(string search);
-        IQueryable<UserResponseDto> GetAll();
-        Task<IEnumerable<UserResponseDto>> ListAllAsync();
-        Task<UserResponseDto> GetByIdAsync(Guid id);
-        Task<ServiceResult<UserResponseDto>> UpdateAsync(UserResponseDto response);
-        Task<ServiceResult<UserResponseDto>> AddAsync(UserResponseDto response);
-        Task<ServiceResult<UserResponseDto>> DeleteAsync(Guid id);
-
-        Task<string> Login(LoginUserRequestDto loginUser);
-        Task<bool> RegisterAsync(RegisterDto registration);
+        Task<ServiceResultModel<IEnumerable<ApplicationUser>>> ListAllAsync();
+        Task<ServiceResultModel<ApplicationUser>> GetByIdAsync(Guid id);
+        Task<ServiceResultModel<IEnumerable<ApplicationUser>>> SearchUserNameAsync(string search);
+        Task<ServiceResultModel<IEnumerable<ApplicationUser>>> SearchFirstNameAsync(string search);
+        Task<ServiceResultModel<IEnumerable<ApplicationUser>>> SearchLastNameAsync(string search);
+        Task<ServiceResultModel<ApplicationUser>> AddAsync(UserRequestModel response);
+        Task<ServiceResultModel<ApplicationUser>> UpdateAsync(UserRequestModel response);
+        Task<ServiceResultModel<ApplicationUser>> DeleteAsync(Guid id);
     }
 }

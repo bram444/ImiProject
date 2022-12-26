@@ -1,6 +1,7 @@
-﻿using Imi.Project.Api.Core.Dto.User;
-using Imi.Project.Api.Core.Dto.UserGame;
+﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Sevices;
+using Imi.Project.Api.Core.Services.Models;
+using Imi.Project.Api.Dto.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,67 +24,194 @@ namespace Imi.Project.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            return Ok(await _userService.ListAllAsync());
+            var result = await _userService.ListAllAsync();
+
+            if(!result.IsSuccess)
+            {
+                return BadRequest(result.ValidationErrors);
+            }
+
+            return Ok(result.Data);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var result = await _userService.GetByIdAsync(id);
+
+            if(!result.IsSuccess)
+            {
+                return BadRequest(result.ValidationErrors);
+            }
+
+            return Ok(result.Data);
         }
 
         [HttpGet("{search}/firstname")]
         public async Task<IActionResult> GetByFirstName(string search)
         {
-            return Ok(await _userService.SearchFirstNameAsync(search));
+            var result = await _userService.SearchFirstNameAsync(search);
+
+            if(!result.IsSuccess)
+            {
+                return BadRequest(result.ValidationErrors);
+            }
+
+            return Ok(result.Data);
         }
 
         [HttpGet("{search}/lastname")]
         public async Task<IActionResult> GetByLastName(string search)
         {
-            return Ok(await _userService.SearchFirstNameAsync(search));
+            var result = await _userService.SearchLastNameAsync(search);
+
+            if(!result.IsSuccess)
+            {
+                return BadRequest(result.ValidationErrors);
+            }
+
+            return Ok(result.Data);
         }
 
         [HttpGet("{search}/username")]
         public async Task<IActionResult> GetByUserName(string search)
         {
-            return Ok(await _userService.SearchUserNameAsync(search));
+            var result = await _userService.SearchUserNameAsync(search);
+
+            if(!result.IsSuccess)
+            {
+                return BadRequest(result.ValidationErrors);
+            }
+
+            return Ok(result.Data);
         }
 
         [Authorize(Policy = "adminOnly")]
         [HttpPost]
-        public async Task<IActionResult> Post(UserResponseDto userResponseDto)
+        public async Task<IActionResult> Post(UserDto userRequestDto)
         {
             if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            foreach(Guid gameId in userResponseDto.GameId)
+            foreach(Guid gameId in userRequestDto.GameId)
             {
-                UserGameResponseDto userGameResponseDto = new() { UserId = userResponseDto.Id, GameId = gameId };
-                await _userGameService.AddAsync(userGameResponseDto);
+                var resultUserGame = await _userGameService.AddAsync(new UserGameModel
+                {
+                    GameId = gameId,
+                    UserId = userRequestDto.Id
+                });
+
+                if(!resultUserGame.IsSuccess)
+                {
+                    return BadRequest(resultUserGame.ValidationErrors);
+                }
             }
 
-            return Ok(await _userService.AddAsync(userResponseDto));
+            var result = await _userService.AddAsync(new UserRequestModel
+            {
+                Id = userRequestDto.Id,
+                UserName = userRequestDto.UserName,
+                GameId = userRequestDto.GameId,
+                ApprovedTerms = userRequestDto.ApprovedTerms,
+                BirthDay = userRequestDto.BirthDay,
+                ConfirmPassword = userRequestDto.ConfirmPassword,
+                Email = userRequestDto.Email,
+                FirstName = userRequestDto.FirstName,
+                LastName = userRequestDto.LastName,
+                Password = userRequestDto.Password
+            });
+
+            if(!result.IsSuccess)
+            {
+                return BadRequest(result.ValidationErrors);
+            }
+
+            return CreatedAtAction(nameof(GetById), new { id = userRequestDto.Id }, result.Data);
         }
 
+        [Authorize(Policy = "onlyOwner")]
         [HttpPut]
-        public async Task<IActionResult> Put(UserResponseDto userResponseDto)
+        public async Task<IActionResult> Put(UserDto userRequestDto)
         {
             if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            await _userGameService.EditUserGameAsync(userResponseDto);
+            var resultUserGame = await _userGameService.EditUserGameAsync(new UserRequestModel
+            {
+                Id = userRequestDto.Id,
+                UserName = userRequestDto.UserName,
+                GameId = userRequestDto.GameId,
+                ApprovedTerms = userRequestDto.ApprovedTerms,
+                BirthDay = userRequestDto.BirthDay,
+                ConfirmPassword = userRequestDto.ConfirmPassword,
+                Email = userRequestDto.Email,
+                FirstName = userRequestDto.FirstName,
+                LastName = userRequestDto.LastName,
+                Password = userRequestDto.Password
+            });
 
-            return Ok(await _userService.UpdateAsync(userResponseDto));
+            if(!resultUserGame.IsSuccess)
+            {
+                return BadRequest(resultUserGame.ValidationErrors);
+            }
+
+            var result = await _userService.UpdateAsync(new UserRequestModel
+            {
+                Id = userRequestDto.Id,
+                UserName = userRequestDto.UserName,
+                GameId = userRequestDto.GameId,
+                ApprovedTerms = userRequestDto.ApprovedTerms,
+                BirthDay = userRequestDto.BirthDay,
+                ConfirmPassword = userRequestDto.ConfirmPassword,
+                Email = userRequestDto.Email,
+                FirstName = userRequestDto.FirstName,
+                LastName = userRequestDto.LastName,
+                Password = userRequestDto.Password
+            });
+
+            if(!result.IsSuccess)
+            {
+                return BadRequest(result.ValidationErrors);
+            }
+
+            return Ok(result.Data);
         }
 
+        [Authorize(Policy = "onlyOwner")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            foreach(UserGameResponseDto ug in await _userGameService.GetByUserIdAsync(id))
+            if(!ModelState.IsValid)
             {
-                await _userGameService.DeleteAsync(ug);
+                return BadRequest(ModelState);
             }
 
-            return Ok(await _userService.DeleteAsync(id));
+            var deleteUserGame = await _userGameService.GetByUserIdAsync(id);
+
+            foreach(UserGame ug in deleteUserGame.Data)
+            {
+                UserGameModel userGameModel = new() { UserId = ug.UserId, GameId = ug.GameId };
+
+                var resultUserGame = await _userGameService.DeleteAsync(userGameModel);
+
+                if(!resultUserGame.IsSuccess)
+                {
+                    return BadRequest(resultUserGame.ValidationErrors);
+                }
+            }
+
+            var result = await _userService.DeleteAsync(id);
+
+            if(!result.IsSuccess)
+            {
+                return BadRequest(result.ValidationErrors);
+            }
+
+            return Ok();
         }
     }
 }

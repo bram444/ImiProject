@@ -1,5 +1,7 @@
-﻿using Imi.Project.Api.Core.Dto.Publisher;
+﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Sevices;
+using Imi.Project.Api.Core.Services.Models;
+using Imi.Project.Api.Dto.Publisher;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,50 +23,122 @@ namespace Imi.Project.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            return Ok(await _publisherService.ListAllAsync());
+            var result = await _publisherService.ListAllAsync();
+
+            if(!result.IsSuccess)
+            {
+                return BadRequest(result.ValidationErrors);
+            }
+
+            return Ok(result.Data);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var result = await _publisherService.GetByIdAsync(id);
+
+            if(!result.IsSuccess)
+            {
+                return BadRequest(result.ValidationErrors);
+            }
+
+            return Ok(result.Data);
         }
 
         [HttpGet("{search}/name")]
         public async Task<IActionResult> GetPublisherByName(string search)
         {
-            return Ok(await _publisherService.SearchAsync(search));
+            var result = await _publisherService.SearchAsync(search);
+
+            if(!result.IsSuccess)
+            {
+                return BadRequest(result.ValidationErrors);
+            }
+
+            return Ok(result.Data);
         }
 
         [HttpGet("{search}/country")]
         public async Task<IActionResult> GetPublisherByCountry(string search)
         {
-            return Ok(await _publisherService.SearchByCountryAsync(search));
+            var result = await _publisherService.SearchByCountryAsync(search);
+
+            if(!result.IsSuccess)
+            {
+                return BadRequest(result.ValidationErrors);
+            }
+
+            return Ok(result.Data);
         }
 
         [Authorize(Policy = "adminOnly")]
         [HttpPost]
-        public async Task<IActionResult> Post(PublisherResponseDto publisherResponseDto)
+        public async Task<IActionResult> Post(PublisherDto publisherDto)
         {
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            return Ok(await _publisherService.AddAsync(publisherResponseDto));
+            var result = new ServiceResultModel<Publisher>();
+
+            result = await _publisherService.AddAsync(new PublisherModel
+            {
+                Id = publisherDto.Id,
+                Name = publisherDto.Name,
+                Country = publisherDto.Country
+            });
+
+            if(!result.IsSuccess)
+            {
+                return BadRequest(result.ValidationErrors);
+            }
+
+            return CreatedAtAction(nameof(GetById), new { id = publisherDto.Id }, result.Data);
         }
 
         [Authorize(Policy = "adminOnly")]
         [HttpPut]
-        public async Task<IActionResult> Put(PublisherResponseDto publisherResponseDto)
+        public async Task<IActionResult> Put(PublisherDto publisherDto)
         {
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            return Ok(await _publisherService.UpdateAsync(publisherResponseDto));
+            var result = await _publisherService.UpdateAsync(new PublisherModel
+            {
+                Id = publisherDto.Id,
+                Name = publisherDto.Name,
+                Country = publisherDto.Country
+            });
+
+            if(!result.IsSuccess)
+            {
+                return BadRequest(result.ValidationErrors);
+            }
+
+            return Ok(result.Data);
         }
 
         [Authorize(Policy = "adminOnly")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            return Ok(await _publisherService.DeleteAsync(id));
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _publisherService.DeleteAsync(id);
+
+            if(!result.IsSuccess)
+            {
+                return BadRequest(result.ValidationErrors);
+            }
+
+            return Ok();
         }
     }
 }

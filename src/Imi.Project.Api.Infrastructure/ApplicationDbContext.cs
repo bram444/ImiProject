@@ -28,12 +28,17 @@ namespace Imi.Project.Api.Infrastructure
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Game>().HasKey(g => g.Id);
+            modelBuilder.Entity<Game>().HasIndex(g => g.Name).IsUnique();
 
             modelBuilder.Entity<Genre>().HasKey(g => g.Id);
+            modelBuilder.Entity<Genre>().HasIndex(g => g.Name).IsUnique();
 
             modelBuilder.Entity<Publisher>().HasKey(p => p.Id);
+            modelBuilder.Entity<Publisher>().HasIndex(p => p.Name).IsUnique();
 
             modelBuilder.Entity<ApplicationUser>().HasKey(p => p.Id);
+            modelBuilder.Entity<ApplicationUser>().HasIndex(p => p.Email).IsUnique();
+            modelBuilder.Entity<ApplicationUser>().HasIndex(p => p.UserName).IsUnique();
 
             modelBuilder.Entity<Publisher>().HasMany(p => p.Games)
                 .WithOne(g => g.Publisher).HasForeignKey(g => g.PublisherId);

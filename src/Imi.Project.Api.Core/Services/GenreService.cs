@@ -1,15 +1,17 @@
-﻿using Imi.Project.Api.Core.Dto.Genre;
-using Imi.Project.Api.Core.Entities;
+﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Repository;
 using Imi.Project.Api.Core.Interfaces.Sevices;
+using Imi.Project.Api.Core.Models;
+using Imi.Project.Api.Core.Services.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Services
 {
-    public class GenreService: IGenreService
+    public class GenreService : IGenreService
     {
         private readonly IGenreRepository _genreRepository;
 
@@ -18,127 +20,208 @@ namespace Imi.Project.Api.Core.Services
             _genreRepository = genreRepository;
         }
 
-        private static Genre CreateEntity(GenreResponseDto genreResponseDto)
+        public async Task<ServiceResultModel<Genre>> AddAsync(GenreModel entity)
         {
-            Genre genre = new()
+            ServiceResultModel<Genre> result = new();
+
+            try
             {
-                Id = genreResponseDto.Id,
-                Name = genreResponseDto.Name,
-                Description = genreResponseDto.Description,
+                var allgenres = await _genreRepository.SearchAsync(entity.Name);
+
+                if(allgenres.Any(genre => (genre.Name == entity.Name) && (genre.Id != entity.Id)) && allgenres.Any())
+                {
+                    result.IsSuccess = false;
+                    result.ValidationErrors.Add(new ValidationResult($"Genre with name {entity.Name} already exists"));
+                }
+
+                if(!result.IsSuccess)
+                {
+                    return result;
+                }
+
+                Genre genre = new()
+                {
+                    Id = entity.Id,
+                    Name = entity.Name,
+                    Description = entity.Description
+                };
+
+                await _genreRepository.AddAsync(genre);
+
+                result.IsSuccess = true;
+                result.Data = genre;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult(ex.Message));
+                if(ex.InnerException != null)
+                {
+                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
+                }
+                return result;
+            }
+        }
+
+        public async Task<ServiceResultModel<Genre>> DeleteAsync(Guid id)
+        {
+            ServiceResultModel<Genre> result = new();
+
+            if (await _genreRepository.GetByIdAsync(id) == null)
+            {
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult("Genre does not exist"));
+                return result;
+            }
+
+            try
+            {
+
+                await _genreRepository.DeleteAsync(await _genreRepository.GetByIdAsync(id));
+                result.IsSuccess = true;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult(ex.Message));
+                if(ex.InnerException != null)
+                {
+                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
+                }
+                return result;
+            }
+        }
+
+        public async Task<ServiceResultModel<Genre>> GetByIdAsync(Guid id)
+        {
+            ServiceResultModel<Genre> result = new();
+            try
+            {
+                Genre genre = await _genreRepository.GetByIdAsync(id);
+                if(genre == null)
+                {
+                    result.IsSuccess = false;
+                    result.ValidationErrors.Add(new ValidationResult("Genre soes not exist"));
+                    return result;
+                }
+
+                result.IsSuccess = true;
+                result.Data = genre;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult(ex.Message));
+                if(ex.InnerException != null)
+                {
+                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
+                }
+                return result;
+            }
+        }
+
+        public async Task<ServiceResultModel<IEnumerable<Genre>>> ListAllAsync()
+        {
+            ServiceResultModel<IEnumerable<Genre>> result = new();
+            try
+            {
+                result.Data = await _genreRepository.ListAllAsync();
+                result.IsSuccess = true;
+                return result;
+
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult(ex.Message));
+                if(ex.InnerException != null)
+                {
+                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
+                }
+                return result;
+            }
+        }
+
+        public async Task<ServiceResultModel<IEnumerable<Genre>>> SearchAsync(string search)
+        {
+            ServiceResultModel<IEnumerable<Genre>> result = new();
+            try
+            {
+                result.Data = await _genreRepository.SearchAsync(search);
+                result.IsSuccess = true;
+                return result;
+
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult(ex.Message));
+                if(ex.InnerException != null)
+                {
+                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
+                }
+                return result;
+            }
+        }
+
+        public async Task<ServiceResultModel<Genre>> UpdateAsync(GenreModel entity)
+        {
+            ServiceResultModel<Genre> result = new()
+            {
+                IsSuccess = true,
             };
 
-            return genre;
-        }
-
-        private static GenreResponseDto CreateDto(Genre genre)
-        {
-            GenreResponseDto genreDto = new()
-            {
-                Id = genre.Id,
-                Name = genre.Name,
-                Description = genre.Description,
-            };
-
-            return genreDto;
-        }
-
-        public async Task<ServiceResult<GenreResponseDto>> AddAsync(GenreResponseDto response)
-        {
-            ServiceResult<GenreResponseDto> serviceResponse = new();
-
             try
             {
-                serviceResponse.Result = CreateDto(await _genreRepository.AddAsync(CreateEntity(response)));
-            } catch(Exception ex)
-            {
-                serviceResponse.HasErrors = true;
-                serviceResponse.ErrorMessages.Add(ex.Message);
+                if(await _genreRepository.GetByIdAsync(entity.Id) == null)
+                {
+                    result.IsSuccess = false;
+                    result.ValidationErrors.Add(new ValidationResult("Genre does not exist"));
+                }
+
+                var allgenres = await _genreRepository.SearchAsync(entity.Name);
+
+                if(allgenres.Any(genre => (genre.Name == entity.Name) && (genre.Id != entity.Id))&& allgenres.Any())
+                {
+                    result.IsSuccess = false;
+                    result.ValidationErrors.Add(new ValidationResult($"Genre with name {entity.Name} already exists"));
+                }
+
+                if(!result.IsSuccess)
+                {
+                    return result;
+                }
+
+                await _genreRepository.UpdateAsync(new Genre
+                {
+                    Id = entity.Id,
+                    Name = entity.Name,
+                    Description = entity.Description
+                });
+
+                result.IsSuccess = true;
+                result.Data = new Genre
+                {
+                    Id = entity.Id,
+                    Name = entity.Name,
+                    Description = entity.Description
+                };
+                return result;
+
             }
-
-            return serviceResponse;
-        }
-
-        public async Task<ServiceResult<GenreResponseDto>> DeleteAsync(Guid id)
-        {
-            ServiceResult<GenreResponseDto> serviceResponse = new();
-
-            if(await _genreRepository.GetByIdAsync(id) == null)
+            catch (Exception ex)
             {
-                serviceResponse.HasErrors = true;
-                serviceResponse.ErrorMessages.Add("Genre does not exist");
-                return serviceResponse;
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult(ex.Message));
+                if(ex.InnerException != null)
+                {
+                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
+                }
+                return result;
             }
-
-            try
-            {
-                serviceResponse.Result = CreateDto(await _genreRepository.DeleteAsync(await _genreRepository.GetByIdAsync(id)));
-            } catch(Exception ex)
-            {
-                serviceResponse.HasErrors = true;
-                serviceResponse.ErrorMessages.Add(ex.Message);
-            }
-
-            return serviceResponse;
-        }
-
-        public IQueryable<GenreResponseDto> GetAll()
-        {
-            List<GenreResponseDto> genreResponseDtos = new();
-            foreach(Genre entity in _genreRepository.GetAll())
-            {
-                genreResponseDtos.Add(CreateDto(entity));
-            }
-
-            return genreResponseDtos.AsQueryable();
-        }
-
-        public async Task<GenreResponseDto> GetByIdAsync(Guid id)
-        {
-            return CreateDto(await _genreRepository.GetByIdAsync(id));
-        }
-
-        public async Task<IEnumerable<GenreResponseDto>> ListAllAsync()
-        {
-            List<GenreResponseDto> genreResponseDtos = new();
-            foreach(Genre entity in await _genreRepository.ListAllAsync())
-            {
-                genreResponseDtos.Add(CreateDto(entity));
-            }
-
-            return genreResponseDtos;
-        }
-
-        public async Task<IEnumerable<GenreResponseDto>> SearchAsync(string search)
-        {
-            List<GenreResponseDto> genreResponseDtos = new();
-            foreach(Genre entity in await _genreRepository.SearchAsync(search))
-            {
-                genreResponseDtos.Add(CreateDto(entity));
-            }
-
-            return genreResponseDtos;
-        }
-
-        public async Task<ServiceResult<GenreResponseDto>> UpdateAsync(GenreResponseDto response)
-        {
-            ServiceResult<GenreResponseDto> serviceResponse = new();
-
-            if(await _genreRepository.GetByIdAsync(response.Id) == null)
-            {
-                serviceResponse.HasErrors = true;
-                serviceResponse.ErrorMessages.Add("Genre does not exist");
-                return serviceResponse;
-            }
-
-            try
-            {
-                serviceResponse.Result = CreateDto(await _genreRepository.UpdateAsync(CreateEntity(response)));
-            } catch(Exception ex)
-            {
-                serviceResponse.HasErrors = true;
-                serviceResponse.ErrorMessages.Add(ex.Message);
-            }
-            return serviceResponse;
         }
     }
 }

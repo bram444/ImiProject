@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Security.Claims;
 
 namespace Imi.Project.Api.Infrastructure.Data.Seeding
 {
@@ -59,8 +60,8 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         FirstName="First",
                         LastName="User",
                         Email="FirstUser@gmail.com",
-                        NormalizedUserName =firstUserName.ToUpper(),
-                        NormalizedEmail =firstEmail.ToUpper(),
+                        NormalizedUserName =firstUserName.Normalize(),
+                        NormalizedEmail =firstEmail.Normalize(),
                         EmailConfirmed = true,
                         SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINA",
                         ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc58",
@@ -77,10 +78,10 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         EmailConfirmed = true,
                         SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINB",
                         ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc59",
-                        NormalizedEmail = secondEmail.ToUpper(),
-                        NormalizedUserName = secondUserName.ToUpper(),
+                        NormalizedEmail = secondEmail.Normalize(),
+                        NormalizedUserName = secondUserName.Normalize(),
                         ApprovedTerms = true,
-                        BirthDay = DateTime.Parse("19/08/2010")
+                        BirthDay = DateTime.Parse("19/08/2000")
                     },
                     new ApplicationUser
                     {
@@ -92,8 +93,8 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         EmailConfirmed = true,
                         SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINC",
                         ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc50",
-                        NormalizedEmail = thirdEmail.ToUpper(),
-                        NormalizedUserName = thirdUserName.ToUpper(),
+                        NormalizedEmail = thirdEmail.Normalize(),
+                        NormalizedUserName = thirdUserName.Normalize(),
                         ApprovedTerms = true,
                         BirthDay = DateTime.Parse("19/08/2010")
                     },
@@ -107,8 +108,8 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         EmailConfirmed = true,
                         SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZIND",
                         ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc51",
-                        NormalizedEmail = forthEmail.ToUpper(),
-                        NormalizedUserName = forthUserName.ToUpper(),
+                        NormalizedEmail = forthEmail.Normalize(),
+                        NormalizedUserName = forthUserName.Normalize(),
                         ApprovedTerms = true,
                         BirthDay = DateTime.Parse("19/08/2010")
                     },
@@ -122,8 +123,8 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         EmailConfirmed = true,
                         SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINE",
                         ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc52",
-                        NormalizedEmail = fifthEmail.ToUpper(),
-                        NormalizedUserName = fifthUserName.ToUpper(),
+                        NormalizedEmail = fifthEmail.Normalize(),
+                        NormalizedUserName = fifthUserName.Normalize(),
                         ApprovedTerms = true,
                         BirthDay = DateTime.Parse("19/08/2010")
                     },
@@ -137,8 +138,8 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         EmailConfirmed = true,
                         SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINF",
                         ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc53",
-                        NormalizedEmail = sixEmail.ToUpper(),
-                        NormalizedUserName = sixUserName.ToUpper(),
+                        NormalizedEmail = sixEmail.Normalize(),
+                        NormalizedUserName = sixUserName.Normalize(),
                         ApprovedTerms = true,
                         BirthDay = DateTime.Parse("19/08/2010")
                     },
@@ -152,8 +153,8 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         EmailConfirmed = true,
                         SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZING",
                         ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc54",
-                        NormalizedEmail = seventhEmail.ToUpper(),
-                        NormalizedUserName = seventhUserName.ToUpper(),
+                        NormalizedEmail = seventhEmail.Normalize(),
+                        NormalizedUserName = seventhUserName.Normalize(),
                         ApprovedTerms = true,
                         BirthDay = DateTime.Parse("19/08/2010")
                     },
@@ -167,8 +168,8 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         EmailConfirmed = true,
                         SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINH",
                         ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc55",
-                        NormalizedEmail = eigthEmail.ToUpper(),
-                        NormalizedUserName = eigthUserName.ToUpper(),
+                        NormalizedEmail = eigthEmail.Normalize(),
+                        NormalizedUserName = eigthUserName.Normalize(),
                         ApprovedTerms = true,
                         BirthDay = DateTime.Parse("19/08/2010")
                     },
@@ -182,8 +183,8 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         EmailConfirmed = true,
                         SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINI",
                         ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc56",
-                        NormalizedEmail = ninthEmail.ToUpper(),
-                        NormalizedUserName = ninthUserName.ToUpper(),
+                        NormalizedEmail = ninthEmail.Normalize(),
+                        NormalizedUserName = ninthUserName.Normalize(),
                         ApprovedTerms = true,
                         BirthDay = DateTime.Parse("19/08/2010")
                     },
@@ -197,8 +198,8 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         EmailConfirmed = true,
                         SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINJ",
                         ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc57",
-                        NormalizedEmail = xEmail.ToUpper(),
-                        NormalizedUserName = xUserName.ToUpper(),
+                        NormalizedEmail = xEmail.Normalize(),
+                        NormalizedUserName = xUserName.Normalize(),
                         ApprovedTerms = true,
                         BirthDay = DateTime.Parse("19/08/2010"),
                     }
@@ -214,18 +215,17 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                 {
                     Id = AdminRoleId,
                     Name = AdminRoleName,
-                    NormalizedName = AdminRoleName.ToUpper()
+                    NormalizedName = AdminRoleName.Normalize(),
                 },
                 new IdentityRole<Guid>()
                 {
                     Id=UserRoleId,
                     Name=UserRoleName,
-                    NormalizedName=UserRoleName.ToUpper()
+                    NormalizedName=UserRoleName.Normalize()
                 }
             });
 
             modelBuilder.Entity<ApplicationUser>().HasData(applicationUsers);
-
 
             modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(new[]
             {
@@ -291,8 +291,8 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                     {
 
                         UserId =user.Id,
-                        ClaimType ="birthday",
-                        ClaimValue = user.BirthDay.ToString(),
+                        ClaimType =ClaimTypes.DateOfBirth,
+                        ClaimValue = user.BirthDay.ToShortDateString(),
                         Id = ++id
                     },
                     new IdentityUserClaim<Guid>

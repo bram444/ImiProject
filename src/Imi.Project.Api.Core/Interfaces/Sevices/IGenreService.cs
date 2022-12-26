@@ -1,20 +1,20 @@
-﻿using Imi.Project.Api.Core.Dto.Genre;
-using Imi.Project.Api.Core.Services;
+﻿using Imi.Project.Api.Core.Entities;
+using Imi.Project.Api.Core.Models;
+using Imi.Project.Api.Core.Services.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Interfaces.Sevices
 {
     public interface IGenreService
     {
-        Task<IEnumerable<GenreResponseDto>> SearchAsync(string search);
-        IQueryable<GenreResponseDto> GetAll();
-        Task<IEnumerable<GenreResponseDto>> ListAllAsync();
-        Task<GenreResponseDto> GetByIdAsync(Guid id);
-        Task<ServiceResult<GenreResponseDto>> UpdateAsync(GenreResponseDto entity);
-        Task<ServiceResult<GenreResponseDto>> AddAsync(GenreResponseDto entity);
-        Task<ServiceResult<GenreResponseDto>> DeleteAsync(Guid id);
+
+        Task<ServiceResultModel<IEnumerable<Genre>>> ListAllAsync();
+        Task<ServiceResultModel<Genre>> GetByIdAsync(Guid id);
+        Task<ServiceResultModel<IEnumerable<Genre>>> SearchAsync(string search);
+        Task<ServiceResultModel<Genre>> AddAsync(GenreModel entity);
+        Task<ServiceResultModel<Genre>> UpdateAsync(GenreModel entity);
+        Task<ServiceResultModel<Genre>> DeleteAsync(Guid id);
     }
 }

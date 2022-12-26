@@ -23,39 +23,67 @@ namespace Imi.Project.Api.Infrastructure.Repository
 
         public virtual async Task<IEnumerable<T>> ListAllAsync()
         {
-            return await _dbContext.Set<T>().AsNoTracking().ToListAsync();
+            try
+            {
+
+                return await _dbContext.Set<T>().AsNoTracking().ToListAsync();
+            }catch(Exception ex)
+            {
+                throw new Exception($"Something went wrong while getting all {typeof(T).Name}",ex.InnerException);
+            }
+
         }
 
         public virtual async Task<T> GetByIdAsync(Guid id)
         {
-            return await _dbContext.Set<T>().AsNoTracking().SingleOrDefaultAsync(t => t.Id == id);
+            try
+            {
+                return await _dbContext.Set<T>().AsNoTracking().SingleOrDefaultAsync(t => t.Id == id);
+            } catch(Exception ex)
+            {
+                throw new Exception($"Something went wrong while getting {typeof(T).Name} with Id {id}", ex.InnerException);
+            }
         }
 
-        public async Task<T> AddAsync(T entity)
+        public async Task AddAsync(T entity)
         {
-            entity.CreatedOn = DateTime.UtcNow;
-            entity.LastEditedOn = DateTime.UtcNow;
-            _dbContext.Set<T>().Add(entity);
-            _dbContext.Entry(entity).State = EntityState.Added;
-            await _dbContext.SaveChangesAsync();
-            return entity;
+            try
+            {
+                entity.CreatedOn = DateTime.UtcNow;
+                entity.LastEditedOn = DateTime.UtcNow;
+                _dbContext.Set<T>().Add(entity);
+                _dbContext.Entry(entity).State = EntityState.Added;
+                await _dbContext.SaveChangesAsync();
+            } catch(Exception ex)
+            {
+                throw new Exception($"Something went wrong while adding {typeof(T).Name}", ex.InnerException);
+            }
         }
 
-        public async Task<T> UpdateAsync(T entity)
+        public async Task UpdateAsync(T entity)
         {
-            entity.LastEditedOn = DateTime.UtcNow;
-
-            _dbContext.Set<T>().Update(entity);
-            await _dbContext.SaveChangesAsync();
-            return entity;
+            try
+            {
+                entity.LastEditedOn = DateTime.UtcNow;
+                _dbContext.Set<T>().Update(entity);
+                await _dbContext.SaveChangesAsync();
+            } catch(Exception ex)
+            {
+                throw new Exception($"Something went wrong while updating {typeof(T).Name}", ex.InnerException);
+            }
         }
 
-        public async Task<T> DeleteAsync(T entity)
+        public async Task DeleteAsync(T entity)
         {
-            _dbContext.Set<T>().Remove(entity);
-            _dbContext.Entry(entity).State = EntityState.Deleted;
-            await _dbContext.SaveChangesAsync();
-            return entity;
+            try
+            {
+                _dbContext.Set<T>().Remove(entity);
+                _dbContext.Entry(entity).State = EntityState.Deleted;
+                await _dbContext.SaveChangesAsync();
+            } catch(Exception ex)
+            {
+                throw new Exception($"Something went wrong while removing {typeof(T).Name}", ex.InnerException);
+            }
         }
     }
 }

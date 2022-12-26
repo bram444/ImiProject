@@ -23,32 +23,61 @@ namespace Imi.Project.Api.Infrastructure.Repository
         }
         public virtual async Task<IEnumerable<GameGenre>> ListAllAsync()
         {
-            return await _dbContext.Set<GameGenre>().AsNoTracking().ToListAsync();
+            try
+            {
+                return await _dbContext.Set<GameGenre>().AsNoTracking().ToListAsync();
+            }
+            catch(Exception ex)
+            {
+                throw new Exception("Something went wrong when getting all GameGenre", ex.InnerException);
+            }
         }
         public virtual async Task<IEnumerable<GameGenre>> GetByGameIdAsync(Guid id)
         {
-            IEnumerable<GameGenre> gameGenre = await ListAllAsync();
-            return gameGenre.Where(gg => gg.GameId == id);
+            try
+            {
+                IEnumerable<GameGenre> gameGenre = await ListAllAsync();
+                return gameGenre.Where(gg => gg.GameId == id);
+            } catch(Exception ex)
+            {
+                throw new Exception($"Something went wrong when getting all GameGenre with Game Id {id}", ex.InnerException);
+            }
         }
 
         public virtual async Task<IEnumerable<GameGenre>> GetByGenreIdAsync(Guid id)
         {
+            try
+            { 
             IEnumerable<GameGenre> gameGenre = await ListAllAsync();
-            return gameGenre.Where(gg => gg.GameId == id);
+            return gameGenre.Where(gg => gg.GenreId == id);
+        } catch(Exception ex)
+            {
+                throw new Exception($"Something went wrong when getting all GameGenre with genre Id {id}", ex.InnerException);
+    }
+}
+
+        public async Task AddAsync(GameGenre entity)
+        {
+            try
+            {
+                _dbContext.Set<GameGenre>().Add(entity);
+                await _dbContext.SaveChangesAsync();
+            } catch(Exception ex)
+            {
+                throw new Exception($"Something went wrong while adding {typeof(GameGenre).Name}", ex.InnerException);
+            }
         }
 
-        public async Task<GameGenre> AddAsync(GameGenre entity)
+        public async Task DeleteAsync(GameGenre entity)
         {
-            _dbContext.Set<GameGenre>().Add(entity);
-            await _dbContext.SaveChangesAsync();
-            return entity;
-        }
-
-        public async Task<GameGenre> DeleteAsync(GameGenre entity)
-        {
-            _dbContext.Set<GameGenre>().Remove(entity);
-            await _dbContext.SaveChangesAsync();
-            return entity;
+            try
+            {
+                _dbContext.Set<GameGenre>().Remove(entity);
+                await _dbContext.SaveChangesAsync();
+            } catch(Exception ex)
+            {
+                throw new Exception($"Something went wrong while removing {typeof(GameGenre).Name}", ex.InnerException);
+            }
         }
     }
 }

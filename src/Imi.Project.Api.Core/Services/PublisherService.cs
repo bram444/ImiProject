@@ -1,15 +1,16 @@
-﻿using Imi.Project.Api.Core.Dto.Publisher;
-using Imi.Project.Api.Core.Entities;
+﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Repository;
 using Imi.Project.Api.Core.Interfaces.Sevices;
+using Imi.Project.Api.Core.Services.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Services
 {
-    public class PublisherService: IPublisherService
+    public class PublisherService : IPublisherService
     {
         private readonly IPublisherRepository _publisherRespository;
         private readonly IGameRepository _gameRepository;
@@ -20,147 +21,236 @@ namespace Imi.Project.Api.Core.Services
             _gameRepository = gameRepository;
         }
 
-        private static Publisher CreateEntity(PublisherResponseDto publisherResponseDto)
+        public async Task<ServiceResultModel<Publisher>> AddAsync(PublisherModel response)
         {
-            Publisher publisher = new()
+            ServiceResultModel<Publisher> result = new()
             {
-                Id = publisherResponseDto.Id,
-                Country = publisherResponseDto.Country,
-                Name = publisherResponseDto.Name,
+                IsSuccess = true
             };
 
-            return publisher;
+            try
+            {
+
+                var allPublishers = await _publisherRespository.SearchAsync(response.Name);
+
+                if(allPublishers.Any(publisher => (publisher.Name == response.Name) && (publisher.Id != response.Id)) && allPublishers.Any())
+                {
+                    result.IsSuccess = false;
+                    result.ValidationErrors.Add(new ValidationResult($"Publisher with name {response.Name} already exists"));
+                }
+
+                if(!result.IsSuccess)
+                {
+                    return result;
+                }
+
+                await _publisherRespository.AddAsync(new Publisher
+                {
+                    Id = response.Id,
+                    Name = response.Name,
+                    Country = response.Country,
+                });
+
+                result.Data = new Publisher { Id = response.Id, Country = response.Country, Name = response.Name };
+                result.IsSuccess = true;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult(ex.Message));
+                if(ex.InnerException != null)
+                {
+                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
+                }
+                return result;
+            }
+
         }
 
-        private static PublisherResponseDto CreateDto(Publisher publisher)
+        public async Task<ServiceResultModel<Publisher>> DeleteAsync(Guid id)
         {
-            PublisherResponseDto publisherResponseDto = new()
+            ServiceResultModel<Publisher> result = new()
             {
-                Id = publisher.Id,
-                Country = publisher.Country,
-                Name = publisher.Name,
+                IsSuccess = true
             };
 
-            return publisherResponseDto;
+            try
+            {
+                if(await _publisherRespository.GetByIdAsync(id) == null)
+                {
+                    result.IsSuccess = false;
+                    result.ValidationErrors.Add(new ValidationResult("Publisher does not exist"));
+                }
+
+                if(await _gameRepository.GetByPublisherIdAsync(id) != null && _gameRepository.GetByPublisherIdAsync(id).Result.Any())
+                {
+                    result.IsSuccess = false;
+                    result.ValidationErrors.Add(new ValidationResult("Please delete the games before deleting the publisher"));
+                }
+
+                if(!result.IsSuccess)
+                {
+                    return result;
+                }
+
+                await _publisherRespository.DeleteAsync(await _publisherRespository.GetByIdAsync(id));
+                result.IsSuccess = true;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult(ex.Message));
+                if(ex.InnerException != null)
+                {
+                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
+                }
+                return result;
+            }
         }
 
-        public async Task<ServiceResult<PublisherResponseDto>> AddAsync(PublisherResponseDto response)
+        public async Task<ServiceResultModel<Publisher>> GetByIdAsync(Guid id)
         {
-            ServiceResult<PublisherResponseDto> serviceResponse = new();
+            ServiceResultModel<Publisher> result = new();
+            try
+            {
+                Publisher publisher = await _publisherRespository.GetByIdAsync(id);
+                result.IsSuccess = true;
+                result.Data = publisher;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult(ex.Message));
+                if(ex.InnerException != null)
+                {
+                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
+                }
+                return result;
+            }
+        }
+
+        public async Task<ServiceResultModel<IEnumerable<Publisher>>> ListAllAsync()
+        {
+            ServiceResultModel<IEnumerable<Publisher>> result = new();
+            try
+            {
+                result.Data = await _publisherRespository.ListAllAsync();
+                result.IsSuccess = true;
+                return result;
+
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult(ex.Message));
+                if(ex.InnerException != null)
+                {
+                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
+                }
+                return result;
+            }
+        }
+
+        public async Task<ServiceResultModel<IEnumerable<Publisher>>> SearchAsync(string search)
+        {
+            ServiceResultModel<IEnumerable<Publisher>> result = new();
+            try
+            {
+                result.Data = await _publisherRespository.SearchAsync(search);
+                result.IsSuccess = true;
+                return result;
+
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult(ex.Message));
+                if(ex.InnerException != null)
+                {
+                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
+                }
+                return result;
+            }
+        }
+
+        public async Task<ServiceResultModel<IEnumerable<Publisher>>> SearchByCountryAsync(string country)
+        {
+            ServiceResultModel<IEnumerable<Publisher>> result = new();
+            try
+            {
+                result.Data = await _publisherRespository.SearchByCountryAsync(country);
+                result.IsSuccess = true;
+                return result;
+
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult(ex.Message));
+                if(ex.InnerException != null)
+                {
+                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
+                }
+                return result;
+            }
+        }
+
+        public async Task<ServiceResultModel<Publisher>> UpdateAsync(PublisherModel response)
+        {
+            ServiceResultModel<Publisher> result = new()
+            {
+                IsSuccess = true
+            };
 
             try
             {
-                serviceResponse.Result = CreateDto(await _publisherRespository.AddAsync(CreateEntity(response)));
-            } catch(Exception ex)
-            {
-                serviceResponse.HasErrors = true;
-                serviceResponse.ErrorMessages.Add(ex.Message);
+                if(await _publisherRespository.GetByIdAsync(response.Id) == null)
+                {
+                    result.IsSuccess = false;
+                    result.ValidationErrors.Add(new ValidationResult("publisher does not exist"));
+                }
+
+                var allPublishers = await _publisherRespository.SearchAsync(response.Name);
+
+                if(allPublishers.Any(publisher => (publisher.Name == response.Name) && (publisher.Id != response.Id)) && allPublishers.Any())
+                {
+                    result.IsSuccess = false;
+                    result.ValidationErrors.Add(new ValidationResult($"Publisher with name {response.Name} already exists"));
+                }
+                if(!result.IsSuccess)
+                {
+                    return result;
+                }
+
+                await _publisherRespository.UpdateAsync(new Publisher
+                {
+                    Id = response.Id,
+                    Name = response.Name,
+                    Country = response.Country,
+                });
+
+                result.IsSuccess = true;
+                result.Data = new Publisher
+                {
+                    Id = response.Id,
+                    Name = response.Name,
+                    Country = response.Country,
+                };
+                return result;
             }
-
-            return serviceResponse;
-        }
-
-        public async Task<ServiceResult<PublisherResponseDto>> DeleteAsync(Guid id)
-        {
-            ServiceResult<PublisherResponseDto> serviceResponse = new();
-
-            if(await _publisherRespository.GetByIdAsync(id) == null)
+            catch (Exception ex)
             {
-                serviceResponse.HasErrors = true;
-                serviceResponse.ErrorMessages.Add("publisher does not exist");
-                return serviceResponse;
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult(ex.Message));
+                if(ex.InnerException != null)
+                {
+                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
+                }
+                return result;
             }
-
-            if(await _gameRepository.GetByPublisherIdAsync(id) != null && _gameRepository.GetByPublisherIdAsync(id).Result.Any())
-            {
-                serviceResponse.HasErrors = true;
-                serviceResponse.ErrorMessages.Add("Please delete the games before deleting the publisher");
-                return serviceResponse;
-            }
-
-            try
-            {
-                serviceResponse.Result = CreateDto(await _publisherRespository.DeleteAsync(await _publisherRespository.GetByIdAsync(id)));
-            } catch(Exception ex)
-            {
-                serviceResponse.HasErrors = true;
-                serviceResponse.ErrorMessages.Add(ex.Message);
-            }
-
-            return serviceResponse;
-        }
-
-        public IQueryable<PublisherResponseDto> GetAll()
-        {
-            List<PublisherResponseDto> publisherResponseDtos = new();
-            foreach(Publisher response in _publisherRespository.GetAll())
-            {
-                publisherResponseDtos.Add(CreateDto(response));
-            }
-
-            return publisherResponseDtos.AsQueryable();
-        }
-
-        public async Task<PublisherResponseDto> GetByIdAsync(Guid id)
-        {
-            return CreateDto(await _publisherRespository.GetByIdAsync(id));
-        }
-
-        public async Task<IEnumerable<PublisherResponseDto>> ListAllAsync()
-        {
-            List<PublisherResponseDto> publisherResponseDtos = new();
-            foreach(Publisher entity in await _publisherRespository.ListAllAsync())
-            {
-                publisherResponseDtos.Add(CreateDto(entity));
-            }
-
-            return publisherResponseDtos;
-        }
-
-        public async Task<IEnumerable<PublisherResponseDto>> SearchAsync(string search)
-        {
-            List<PublisherResponseDto> publisherResponseDtos = new();
-            foreach(Publisher entity in await _publisherRespository.SearchAsync(search))
-            {
-                publisherResponseDtos.Add(CreateDto(entity));
-            }
-
-            return publisherResponseDtos;
-        }
-
-        public async Task<IEnumerable<PublisherResponseDto>> SearchByCountryAsync(string country)
-        {
-            List<PublisherResponseDto> publisherResponseDtos = new();
-            foreach(Publisher entity in await _publisherRespository.SearchByCountryAsync(country))
-            {
-                publisherResponseDtos.Add(CreateDto(entity));
-            }
-
-            return publisherResponseDtos;
-        }
-
-        public async Task<ServiceResult<PublisherResponseDto>> UpdateAsync(PublisherResponseDto response)
-        {
-            ServiceResult<PublisherResponseDto> serviceResponse = new();
-
-            if(await _publisherRespository.GetByIdAsync(response.Id) == null)
-            {
-                serviceResponse.HasErrors = true;
-                serviceResponse.ErrorMessages.Add("publisher does not exist");
-                return serviceResponse;
-            }
-
-            try
-            {
-                await _publisherRespository.UpdateAsync(CreateEntity(response));
-                serviceResponse.Result = CreateDto(await _publisherRespository.UpdateAsync(CreateEntity(response)));
-            } catch(Exception ex)
-            {
-                serviceResponse.HasErrors = true;
-                serviceResponse.ErrorMessages.Add(ex.Message);
-            }
-
-            return serviceResponse;
         }
     }
 }

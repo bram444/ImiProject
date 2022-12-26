@@ -1,16 +1,12 @@
-﻿using Imi.Project.Api.Core.Dto.User;
-using Imi.Project.Api.Core.Entities;
+﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Repository;
 using Imi.Project.Api.Core.Interfaces.Sevices;
+using Imi.Project.Api.Core.Services.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Services
@@ -18,278 +14,302 @@ namespace Imi.Project.Api.Core.Services
     public class UserService: IUserService
     {
         private readonly IUserRepository _userRepository;
-        private readonly IUserGameRepository _userGameRepository;
+        private readonly IGameRepository _gameRepository;
         private readonly IPasswordHasher<ApplicationUser> passwordHasher = new PasswordHasher<ApplicationUser>();
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IConfiguration _configuration;
-        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public UserService(IUserRepository userRepository, IUserGameRepository userGameRepository, 
-            UserManager<ApplicationUser> userManager, IConfiguration configuration, SignInManager<ApplicationUser> signInManager)
+        public UserService(IUserRepository userRepository, IGameRepository gameRepository)
         {
             _userRepository = userRepository;
-            _userGameRepository = userGameRepository;
-            _userManager = userManager;
-            _configuration = configuration;
-            _signInManager = signInManager;
+            _gameRepository = gameRepository;
         }
 
-        private ApplicationUser CreateEntity(UserResponseDto userResponseDto)
+        public async Task<ServiceResultModel<ApplicationUser>> AddAsync(UserRequestModel response)
         {
-            ApplicationUser user = new()
+            ServiceResultModel<ApplicationUser> result = new()
             {
-                Id = userResponseDto.Id,
-                Email = userResponseDto.Email,
-                FirstName = userResponseDto.FirstName,
-                LastName = userResponseDto.LastName,
-                UserName = userResponseDto.UserName,
-                ApprovedTerms = userResponseDto.ApprovedTerms,
+                IsSuccess = true
             };
-
-            user.PasswordHash = passwordHasher.HashPassword(user, userResponseDto.Password);
-
-            return user;
-        }
-
-        private static UserResponseDto CreateDto(ApplicationUser user, List<Guid> gameId)
-        {
-            UserResponseDto userResponseDto = new()
-            {
-                Id = user.Id,
-                Email = user.Email,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                UserName = user.UserName,
-                GameId = gameId,
-                Password = user.PasswordHash,
-                ConfirmPassword = user.PasswordHash,
-                ApprovedTerms = user.ApprovedTerms
-            };
-
-            return userResponseDto;
-        }
-
-        private async Task<List<Guid>> GetGameList(Guid userId)
-        {
-            IEnumerable<UserGame> userGames = await _userGameRepository.GetByUserIdAsync(userId);
-
-            List<Guid> gameIds = new();
-
-            foreach(UserGame userGame in userGames)
-            {
-                gameIds.Add(userGame.GameId);
-            }
-
-            return gameIds;
-        }
-
-        public async Task<ServiceResult<UserResponseDto>> AddAsync(UserResponseDto response)
-        {
-            ServiceResult<UserResponseDto> serviceResponse = new();
 
             try
             {
-                serviceResponse.Result = CreateDto(await _userRepository.AddAsync(CreateEntity(response)), await GetGameList(response.Id));
-            } catch(Exception ex)
-            {
-                serviceResponse.HasErrors = true;
-                serviceResponse.ErrorMessages.Add(ex.Message);
-            }
+                var allUsers= await _userRepository.SearchUserNameAsync(response.UserName);
 
-            return serviceResponse;
-        }
-
-        public async Task<ServiceResult<UserResponseDto>> DeleteAsync(Guid id)
-        {
-            ServiceResult<UserResponseDto> serviceResponse = new();
-
-            try
-            {
-                serviceResponse.Result = CreateDto(await _userRepository.DeleteAsync(await _userRepository.GetByIdAsync(id)), await GetGameList(id));
-            } catch(Exception ex)
-            {
-                serviceResponse.HasErrors = true;
-                serviceResponse.ErrorMessages.Add(ex.Message);
-            }
-
-            return serviceResponse;
-        }
-
-        public IQueryable<UserResponseDto> GetAll()
-        {
-            List<UserResponseDto> userResponseDtos = new();
-
-            foreach(ApplicationUser entity in _userRepository.GetAll())
-            {
-                IEnumerable<UserGame> userGames = _userGameRepository.GetByUserIdAsync(entity.Id).Result;
-
-                List<Guid> gameIds = new();
-
-                foreach(UserGame userGame in userGames)
+                if(allUsers.Any(user => (user.UserName == response.UserName) && (user.Id != response.Id)) && allUsers.Any())
                 {
-                    gameIds.Add(userGame.GameId);
+                    result.IsSuccess = false;
+                    result.ValidationErrors.Add(new ValidationResult($"User with username {response.UserName} already exists"));
                 }
 
-                userResponseDtos.Add(CreateDto(entity, gameIds));
-            }
+                allUsers = await _userRepository.SearchEmailAsync(response.Email);
 
-            return userResponseDtos.AsQueryable();
-        }
+                if(allUsers.Any(user => (user.Email == response.Email) && (user.Id != response.Id)) && allUsers.Any())
+                {
+                    result.IsSuccess = false;
+                    result.ValidationErrors.Add(new ValidationResult($"User with email already exists"));
+                }
 
-        public async Task<UserResponseDto> GetByIdAsync(Guid id)
-        {
-            return CreateDto(await _userRepository.GetByIdAsync(id), await GetGameList(id));
-        }
+                List<Game> allGames = new();
 
-        public async Task<IEnumerable<UserResponseDto>> ListAllAsync()
-        {
-            List<UserResponseDto> userResponseDtos = new();
-            foreach(ApplicationUser entity in await _userRepository.ListAllAsync())
+                foreach(var gameId in response.GameId)
+                {
+                    Game game = await _gameRepository.GetByIdAsync(gameId);
+
+                    if(game == null)
+                    {
+                        result.IsSuccess = false;
+                        result.ValidationErrors.Add(new ValidationResult($"Game with id {gameId} doesn't exist"));
+                    } else
+                    {
+                        allGames.Add(game);
+                    }
+                }
+
+                if(!result.IsSuccess)
+                {
+                    return result;
+                }
+
+                var user = new ApplicationUser
+                {
+                    Id = response.Id,
+                    Email = response.Email,
+                    FirstName = response.FirstName,
+                    LastName = response.LastName,
+                    UserName = response.UserName,
+                    ApprovedTerms = response.ApprovedTerms,
+                    BirthDay = response.BirthDay,
+                    NormalizedEmail = response.Email.Normalize(),
+                    NormalizedUserName = response.UserName.Normalize(),
+                    ConcurrencyStamp = Guid.NewGuid().ToString(),
+                    SecurityStamp = Guid.NewGuid().ToString()
+                };
+                user.PasswordHash = passwordHasher.HashPassword(user, response.Password);
+
+                await _userRepository.AddAsync(user);
+
+                result.IsSuccess = true;
+                result.Data = user;
+                return result;
+
+            } catch(Exception ex)
             {
-                userResponseDtos.Add(CreateDto(entity, await GetGameList(entity.Id)));
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult(ex.Message));
+                if(ex.InnerException != null)
+                {
+                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
+                }
+                return result;
             }
-
-            return userResponseDtos;
         }
 
-        public async Task<IEnumerable<UserResponseDto>> SearchFirstNameAsync(string search)
+        public async Task<ServiceResultModel<ApplicationUser>> DeleteAsync(Guid id)
         {
-            List<UserResponseDto> userResponseList = new();
-            foreach(ApplicationUser user in await _userRepository.SearchFirstNameAsync(search))
+            ServiceResultModel<ApplicationUser> result = await GetByIdAsync(id);
+
+            if(!result.IsSuccess)
             {
-                userResponseList.Add(CreateDto(user, await GetGameList(user.Id)));
+                return result;
             }
-
-            return userResponseList;
-        }
-        public async Task<IEnumerable<UserResponseDto>> SearchLastNameAsync(string search)
-        {
-            List<UserResponseDto> userResponseList = new();
-            foreach(ApplicationUser user in await _userRepository.SearchLastNameAsync(search))
-            {
-                userResponseList.Add(CreateDto(user, await GetGameList(user.Id)));
-            }
-
-            return userResponseList;
-        }
-
-        public async Task<IEnumerable<UserResponseDto>> SearchUserNameAsync(string search)
-        {
-            List<UserResponseDto> userResponseList = new();
-            foreach(ApplicationUser user in await _userRepository.SearchUserNameAsync(search))
-            {
-                userResponseList.Add(CreateDto(user, await GetGameList(user.Id)));
-            }
-
-            return userResponseList;
-        }
-
-        public async Task<ServiceResult<UserResponseDto>> UpdateAsync(UserResponseDto response)
-        {
-            ServiceResult<UserResponseDto> serviceResponse = new();
-
-            ApplicationUser editUser = await _userRepository.GetByIdAsync(response.Id);
-
-            editUser.Email = response.Email;
-            editUser.FirstName = response.FirstName;
-            editUser.LastName = response.LastName;
-            editUser.UserName = response.UserName;
-            editUser.PasswordHash = passwordHasher.HashPassword(editUser, response.Password);
 
             try
             {
-                serviceResponse.Result = CreateDto(await _userRepository.UpdateAsync(editUser), await GetGameList(response.Id));
+                await _userRepository.DeleteAsync(result.Data);
+
+                result.IsSuccess = true;
+                return result;
+
             } catch(Exception ex)
             {
-                serviceResponse.HasErrors = true;
-                serviceResponse.ErrorMessages.Add(ex.Message);
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult(ex.Message));
+                if(ex.InnerException != null)
+                {
+                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
+                }
+                return result;
             }
-
-            return serviceResponse;
         }
-        public async Task<bool> RegisterAsync(RegisterDto registration)
+
+        public async Task<ServiceResultModel<ApplicationUser>> GetByIdAsync(Guid id)
         {
-            ApplicationUser newUser = new()
+            ServiceResultModel<ApplicationUser> result = new();
+            try
             {
-                ApprovedTerms = registration.ApprovedTerms,
-                Email = registration.Email,
-                UserName = registration.UserName,
-                FirstName = registration.FirstName,
-                LastName = registration.LastName,
-                Id = Guid.NewGuid(),
-                BirthDay = registration.BirthDay,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                ConcurrencyStamp = Guid.NewGuid().ToString()
-            };
-
-            IdentityResult result = await _userManager.CreateAsync(newUser, registration.Password);
-
-            if(!result.Succeeded)
+                result.Data = await _userRepository.GetByIdAsync(id);
+                result.IsSuccess = true;
+                return result;
+            } catch(Exception ex)
             {
-                return false;
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult(ex.Message));
+                if(ex.InnerException != null)
+                {
+                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
+                }
+                return result;
             }
-
-            newUser = await _userManager.FindByEmailAsync(registration.Email);
-            await _userManager.AddClaimAsync(newUser, new Claim("birthday", registration.BirthDay.ToString()));
-            await _userManager.AddClaimAsync(newUser, new Claim("approved", registration.ApprovedTerms.ToString()));
-            await _userManager.AddToRoleAsync(newUser, "User");
-
-            return true;
         }
 
-        public async Task<string> Login(LoginUserRequestDto loginUser)
+        public async Task<ServiceResultModel<IEnumerable<ApplicationUser>>> ListAllAsync()
         {
-            //check if user exists
-            var user = await _signInManager.PasswordSignInAsync(loginUser.UserName, loginUser.Password, true, false);
-
-            ApplicationUser applicationUser = await _userManager.FindByNameAsync(loginUser.UserName);
-
-            JwtSecurityToken token = await GenerateTokenAsync(applicationUser!);
-            return new JwtSecurityTokenHandler().WriteToken(token); //serialize the token 
-        }
-
-        private async Task<JwtSecurityToken> GenerateTokenAsync(ApplicationUser user)
-        {
-            List<Claim> claims = new();
-
-            // Loading the user Claims 
-            IList<Claim> userClaims = await _userManager.GetClaimsAsync(user);
-
-            claims.AddRange(userClaims);
-
-            // Loading the roles and put them in a claim of a Role ClaimType 
-            IList<string> roleClaims = await _userManager.GetRolesAsync(user);
-            foreach(string roleClaim in roleClaims)
+            ServiceResultModel<IEnumerable<ApplicationUser>> result = new();
+            try
             {
-                claims.Add(new Claim(ClaimTypes.Role, roleClaim));
+                result.Data = await _userRepository.ListAllAsync();
+                result.IsSuccess = true;
+                return result;
+
+            } catch(Exception ex)
+            {
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult(ex.Message));
+                if(ex.InnerException != null)
+                {
+                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
+                }
+                return result;
             }
-
-            claims.Add(new Claim(ClaimTypes.NameIdentifier, await _userManager.GetUserIdAsync(user)));
-
-            claims.Add(new Claim(ClaimTypes.Name, (await _userManager.GetUserNameAsync(user))!));
-
-            claims.Add(new Claim(ClaimTypes.Email, (await _userManager.GetEmailAsync(user))!));
-
-            claims.Add(new Claim(ClaimTypes.DateOfBirth, value: user.BirthDay.ToShortDateString()));
-
-            claims.Add(new Claim(type: "approved", value: user.ApprovedTerms.ToString()));
-
-            claims.AddRange(userClaims);
-            var expirationDays = int.Parse(_configuration["JWTConfiguration:TokenExpirationDays"]);
-            var signinKey = _configuration["JWTConfiguration:SigninKey"];
-            var token = new JwtSecurityToken
-            (
-                issuer: _configuration["JWTConfiguration:Issuer"],
-                audience: _configuration["JWTConfiguration:Audience"],
-                claims: claims,
-                expires: DateTime.UtcNow.Add(TimeSpan.FromDays(expirationDays)),
-                notBefore: DateTime.UtcNow,
-                signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signinKey))
-                , SecurityAlgorithms.HmacSha256)
-            );
-
-            return token;
         }
 
+        public async Task<ServiceResultModel<IEnumerable<ApplicationUser>>> SearchFirstNameAsync(string search)
+        {
+            ServiceResultModel<IEnumerable<ApplicationUser>> result = new();
+            try
+            {
+                result.Data = await _userRepository.SearchFirstNameAsync(search);
+                result.IsSuccess = true;
+                return result;
+
+            } catch(Exception ex)
+            {
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult(ex.Message));
+                if(ex.InnerException != null)
+                {
+                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
+                }
+                return result;
+            }
+        }
+        public async Task<ServiceResultModel<IEnumerable<ApplicationUser>>> SearchLastNameAsync(string search)
+        {
+            ServiceResultModel<IEnumerable<ApplicationUser>> result = new();
+            try
+            {
+                result.Data = await _userRepository.SearchLastNameAsync(search);
+                result.IsSuccess = true;
+                return result;
+
+            } catch(Exception ex)
+            {
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult(ex.Message));
+                if(ex.InnerException != null)
+                {
+                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
+                }
+                return result;
+            }
+        }
+
+        public async Task<ServiceResultModel<IEnumerable<ApplicationUser>>> SearchUserNameAsync(string search)
+        {
+            ServiceResultModel<IEnumerable<ApplicationUser>> result = new();
+            try
+            {
+                result.Data = await _userRepository.SearchUserNameAsync(search);
+                result.IsSuccess = true;
+                return result;
+
+            } catch(Exception ex)
+            {
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult(ex.Message));
+                if(ex.InnerException != null)
+                {
+                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
+                }
+                return result;
+            }
+        }
+
+        public async Task<ServiceResultModel<ApplicationUser>> UpdateAsync(UserRequestModel response)
+        {
+            ServiceResultModel<ApplicationUser> result = new();
+
+            try
+            {
+                ApplicationUser editUser = await _userRepository.GetByIdAsync(response.Id);
+
+                if(editUser==null)
+                {
+                    result.IsSuccess = false;
+                    result.ValidationErrors.Add(new ValidationResult($"User {response.Id} doesn't exists"));
+                }
+
+                var allUsers = await _userRepository.SearchUserNameAsync(response.UserName);
+
+                if(allUsers.Any(user => (user.UserName == response.UserName) && (user.Id != response.Id)) && allUsers.Any())
+                {
+                    result.IsSuccess = false;
+                    result.ValidationErrors.Add(new ValidationResult($"User with username {response.UserName} already exists"));
+                }
+
+                allUsers = await _userRepository.SearchEmailAsync(response.Email);
+
+                if(allUsers.Any(user => (user.Email == response.Email) && (user.Id != response.Id)) && allUsers.Any())
+                {
+                    result.IsSuccess = false;
+                    result.ValidationErrors.Add(new ValidationResult($"User with email already exists"));
+                }
+
+                List<Game> allGames = new();
+
+                foreach(var gameId in response.GameId)
+                {
+                    Game game = await _gameRepository.GetByIdAsync(gameId);
+
+                    if(game == null)
+                    {
+                        result.IsSuccess = false;
+                        result.ValidationErrors.Add(new ValidationResult($"Game with id {gameId} doesn't exist"));
+                    } else
+                    {
+                        allGames.Add(game);
+                    }
+                }
+
+                if(!result.IsSuccess)
+                {
+                    return result;
+                }
+
+                editUser.Email = response.Email;
+                editUser.FirstName = response.FirstName;
+                editUser.LastName = response.LastName;
+                editUser.UserName = response.UserName;
+                editUser.PasswordHash = passwordHasher.HashPassword(editUser, response.Password);
+                editUser.BirthDay = response.BirthDay;
+                editUser.NormalizedEmail = response.Email.Normalize();
+                editUser.NormalizedUserName = response.UserName.Normalize();
+
+                await _userRepository.UpdateAsync(editUser);
+
+                result.IsSuccess = true;
+                result.Data = editUser;
+                return result;
+
+            } catch(Exception ex)
+            {
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult(ex.Message));
+                if(ex.InnerException != null)
+                {
+                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
+                }
+                return result;
+            }
+        }
     }
 }

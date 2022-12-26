@@ -11,13 +11,12 @@ namespace Imi.Project.Api.Core.Interfaces.Repository
         IQueryable<ApplicationUser> GetAll();
         Task<IEnumerable<ApplicationUser>> ListAllAsync();
         Task<ApplicationUser> GetByIdAsync(Guid id);
-        Task<ApplicationUser> UpdateAsync(ApplicationUser entity);
-        Task<ApplicationUser> AddAsync(ApplicationUser entity);
-        Task<ApplicationUser> DeleteAsync(ApplicationUser entity);
-
+        Task<IEnumerable<ApplicationUser>> SearchEmailAsync(string search);
         Task<IEnumerable<ApplicationUser>> SearchUserNameAsync(string search);
         Task<IEnumerable<ApplicationUser>> SearchFirstNameAsync(string search);
         Task<IEnumerable<ApplicationUser>> SearchLastNameAsync(string search);
-
+        Task AddAsync(ApplicationUser entity);
+        Task UpdateAsync(ApplicationUser entity);
+        Task DeleteAsync(ApplicationUser entity);
     }
 }

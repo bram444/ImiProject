@@ -17,17 +17,27 @@ namespace Imi.Project.Api.Infrastructure.Repository
 
         public async Task<IEnumerable<Game>> GetByPublisherIdAsync(Guid id)
         {
-            List<Game> game = await GetAll().Where(p => p.PublisherId.Equals(id)).AsNoTracking().ToListAsync();
-            return game;
+            try
+            {
+                return await GetAll().Where(p => p.PublisherId.Equals(id)).AsNoTracking().ToListAsync();
+            } catch(Exception ex)
+            {
+                throw new Exception($"Something went wrong with getting game with PublisherId {id}", ex.InnerException);
+            }
+
         }
 
         public virtual async Task<IEnumerable<Game>> SearchAsync(string search)
         {
-            List<Game> games = await GetAll()
-                .Where(g => g.Name.Contains(search.Trim().ToUpper()))
-                .ToListAsync();
-
-            return games;
+            try
+            {
+                return await GetAll()
+                    .Where(g => g.Name.Contains(search.Trim().ToUpper())).AsNoTracking()
+                    .ToListAsync();
+            } catch(Exception ex)
+            {
+                throw new Exception($"Something went wrong with getting game with name {search}", ex.InnerException);
+            }
         }
     }
 }

@@ -1,158 +1,222 @@
-﻿using Imi.Project.Api.Core.Dto.Game;
-using Imi.Project.Api.Core.Dto.GameGenre;
-using Imi.Project.Api.Core.Entities;
+﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Repository;
 using Imi.Project.Api.Core.Interfaces.Sevices;
+using Imi.Project.Api.Core.Services.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Services
 {
-    public class GameGenreService: IGameGenreService
+    public class GameGenreService : IGameGenreService
     {
         private readonly IGameGenreRepository _gameGenreRepository;
-
-        private static GameGenre CreateEntity(GameGenreResponseDto gameGenreResponseDto)
-        {
-            GameGenre gameGenre = new()
-            {
-                GameId = gameGenreResponseDto.GameId,
-                GenreId = gameGenreResponseDto.GenreId,
-            };
-            return gameGenre;
-        }
-
-        private static GameGenreResponseDto CreateDto(GameGenre gameGenre)
-        {
-            GameGenreResponseDto gameGenreResponseDto = new()
-            {
-                GameId = gameGenre.GameId,
-                GenreId = gameGenre.GenreId,
-            };
-            return gameGenreResponseDto;
-        }
 
         public GameGenreService(IGameGenreRepository gameGenreRepository)
         {
             _gameGenreRepository = gameGenreRepository;
         }
 
-        public async Task<ServiceResult<GameGenreResponseDto>> AddAsync(GameGenreResponseDto response)
+        public async Task<ServiceResultModel<GameGenre>> AddAsync(GameGenreModel gameGenreModel)
         {
-            ServiceResult<GameGenreResponseDto> serviceResponse = new();
+            ServiceResultModel<GameGenre> result = new();
 
             try
             {
-                serviceResponse.Result = CreateDto(await _gameGenreRepository.AddAsync(CreateEntity(response)));
-            } catch(Exception ex)
-            {
-                serviceResponse.HasErrors = true;
-                serviceResponse.ErrorMessages.Add(ex.Message);
+                await _gameGenreRepository.AddAsync(new GameGenre { GameId = gameGenreModel.GameId, GenreId = gameGenreModel.GenreId });
+
+                result.Data = new GameGenre { GameId = gameGenreModel.GameId, GenreId = gameGenreModel.GenreId };
+                result.IsSuccess = true;
+                return result;
+
             }
-            return serviceResponse;
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult(ex.Message));
+                if(ex.InnerException != null)
+                {
+                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
+                }
+                return result;
+            }
         }
 
-        public async Task<ServiceResult<GameGenreResponseDto>> DeleteAsync(GameGenreResponseDto response)
+        public async Task<ServiceResultModel<GameGenre>> DeleteAsync(GameGenreModel gameGenreModel)
         {
-            ServiceResult<GameGenreResponseDto> serviceResponse = new();
+            ServiceResultModel<GameGenre> result = new();
 
-            if(!_gameGenreRepository.ListAllAsync().Result.Any(gg => gg.GenreId == response.GenreId && gg.GameId == response.GameId))
+            if (!_gameGenreRepository.ListAllAsync().Result.Any(gg => gg.GenreId == gameGenreModel.GenreId && gg.GameId == gameGenreModel.GameId))
             {
-                serviceResponse.HasErrors = true;
-                serviceResponse.ErrorMessages.Add($"Many to many relationship does not exist");
-
-                return serviceResponse;
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult("A many to many relationship does not exist"));
+                return result;
             }
 
             try
             {
-                serviceResponse.Result = CreateDto(await _gameGenreRepository.DeleteAsync(CreateEntity(response)));
-            } catch(Exception ex)
-            {
-                serviceResponse.HasErrors = true;
-                serviceResponse.ErrorMessages.Add(ex.Message);
-            }
+                await _gameGenreRepository.DeleteAsync(new GameGenre { GameId = gameGenreModel.GameId, GenreId = gameGenreModel.GenreId });
 
-            return serviceResponse;
+                result.Data = new GameGenre { GameId = gameGenreModel.GameId, GenreId = gameGenreModel.GenreId };
+                result.IsSuccess = true;
+                return result;
+
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult(ex.Message));
+                if(ex.InnerException != null)
+                {
+                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
+                }
+                return result;
+            }
         }
 
-        public IQueryable<GameGenreResponseDto> GetAll()
+        public async Task<ServiceResultModel<IEnumerable<GameGenre>>> GetByGameIdAsync(Guid id)
         {
-            List<GameGenreResponseDto> gameResponseDtos = new();
-            foreach(GameGenre entity in _gameGenreRepository.GetAll())
-            {
-                gameResponseDtos.Add(CreateDto(entity));
-            }
+            ServiceResultModel<IEnumerable<GameGenre>> result = new();
 
-            return gameResponseDtos.AsQueryable();
+            List<GameGenre> gameGenres = new();
+
+            try
+            {
+
+                foreach (GameGenre entity in await _gameGenreRepository.GetByGameIdAsync(id))
+                {
+                    gameGenres.Add(entity);
+                }
+
+                result.Data = gameGenres;
+                result.IsSuccess = true;
+                return result;
+
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult(ex.Message));
+                if(ex.InnerException != null)
+                {
+                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
+                }
+                return result;
+            }
         }
 
-        public async Task<IEnumerable<GameGenreResponseDto>> GetByGameIdAsync(Guid id)
+        public async Task<ServiceResultModel<IEnumerable<GameGenre>>> GetByGenreIdAsync(Guid id)
         {
-            List<GameGenreResponseDto> gameGenreResponseDtos = new();
+            ServiceResultModel<IEnumerable<GameGenre>> result = new();
 
-            foreach(GameGenre entity in await _gameGenreRepository.GetByGameIdAsync(id))
+            List<GameGenre> gameGenres = new();
+
+            try
             {
-                gameGenreResponseDtos.Add(CreateDto(entity));
-            }
 
-            return gameGenreResponseDtos;
+                foreach (GameGenre entity in await _gameGenreRepository.GetByGenreIdAsync(id))
+                {
+                    gameGenres.Add(entity);
+                }
+
+                result.Data = gameGenres;
+                result.IsSuccess = true;
+                return result;
+
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult(ex.Message));
+                if(ex.InnerException != null)
+                {
+                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
+                }
+                return result;
+            }
         }
 
-        public async Task<IEnumerable<GameGenreResponseDto>> GetByGenreIdAsync(Guid id)
+        public async Task<ServiceResultModel<IEnumerable<GameGenre>>> ListAllAsync()
         {
-            List<GameGenreResponseDto> gameGenreResponseDtos = new();
-            foreach(GameGenre entity in await _gameGenreRepository.GetByGenreIdAsync(id))
-            {
-                gameGenreResponseDtos.Add(CreateDto(entity));
-            }
+            ServiceResultModel<IEnumerable<GameGenre>> result = new();
 
-            return gameGenreResponseDtos;
+            List<GameGenre> gameGenres = new();
+
+            try
+            {
+                foreach (GameGenre entity in await _gameGenreRepository.ListAllAsync())
+                {
+                    gameGenres.Add(entity);
+                }
+
+                result.Data = gameGenres;
+                result.IsSuccess = true;
+                return result;
+
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult(ex.Message));
+                if(ex.InnerException != null)
+                {
+                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
+                }
+                return result;
+            }
         }
 
-        public async Task<IEnumerable<GameGenreResponseDto>> ListAllAsync()
+        public async Task<ServiceResultModel<IEnumerable<GameGenre>>> EditGameGenreAsync(GameModel gameResponseDto)
         {
-            List<GameGenreResponseDto> gameGenreResponseDtos = new();
-            foreach(GameGenre entity in await _gameGenreRepository.ListAllAsync())
+            ServiceResultModel<IEnumerable<GameGenre>> gameGenreIenum = await GetByGameIdAsync(gameResponseDto.Id);
+
+            if (!gameGenreIenum.IsSuccess)
             {
-                gameGenreResponseDtos.Add(CreateDto(entity));
+                return gameGenreIenum;
             }
 
-            return gameGenreResponseDtos;
-        }
+            List<GameGenre> updateGameGenre = new();
 
-        public async Task<ServiceResult<GameGenreResponseDto>> EditGameGenreAsync(GameResponseDto gameResponseDto)
-        {
-            IEnumerable<GameGenreResponseDto> gameGenreResponseDtos = await GetByGameIdAsync(gameResponseDto.Id);
-
-            List<GameGenreResponseDto> updateGameGenre = new();
-
-            ServiceResult<GameGenreResponseDto> serviceResponse = new();
-
-            foreach(Guid genreId in gameResponseDto.GenreId)
+            foreach (Guid genreId in gameResponseDto.GenreId.Distinct())
             {
-                updateGameGenre.Add(new GameGenreResponseDto
+                updateGameGenre.Add(new GameGenre
                 {
                     GenreId = genreId,
                     GameId = gameResponseDto.Id
                 });
             }
 
-            List<GameGenreResponseDto> toDeleteGenre = gameGenreResponseDtos.Except(updateGameGenre).ToList();
-            foreach(GameGenreResponseDto deleteGenre in toDeleteGenre)
+            List<GameGenre> toDeleteGenre = gameGenreIenum.Data.Except(updateGameGenre).ToList();
+            foreach (GameGenre deleteGenre in toDeleteGenre)
             {
-                await DeleteAsync(deleteGenre);
+                ServiceResultModel<GameGenre> result = await DeleteAsync(new GameGenreModel { GameId = deleteGenre.GameId, GenreId = deleteGenre.GenreId });
+                if (!result.IsSuccess)
+                {
+                    return new ServiceResultModel<IEnumerable<GameGenre>>
+                    {
+                        IsSuccess = result.IsSuccess,
+                        ValidationErrors = result.ValidationErrors
+                    };
+                }
             }
 
-            List<GameGenreResponseDto> toAddGenre = updateGameGenre.Except(gameGenreResponseDtos).ToList();
-            foreach(GameGenreResponseDto addGenre in toAddGenre)
+            List<GameGenre> toAddGenre = updateGameGenre.Except(gameGenreIenum.Data).ToList();
+            foreach (GameGenre addGenre in toAddGenre)
             {
-                serviceResponse = await AddAsync(addGenre);
+                ServiceResultModel<GameGenre> result = await AddAsync(new GameGenreModel { GameId = addGenre.GameId, GenreId = addGenre.GenreId });
+                if (!result.IsSuccess)
+                {
+                    return new ServiceResultModel<IEnumerable<GameGenre>>
+                    {
+                        IsSuccess = result.IsSuccess,
+                        ValidationErrors = result.ValidationErrors
+                    };
+                }
             }
 
-            return serviceResponse;
+            return new ServiceResultModel<IEnumerable<GameGenre>> { Data = updateGameGenre, IsSuccess = true };
         }
     }
 }

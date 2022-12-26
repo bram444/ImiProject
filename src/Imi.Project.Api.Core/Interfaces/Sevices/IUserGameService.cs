@@ -1,21 +1,18 @@
-﻿using Imi.Project.Api.Core.Dto.User;
-using Imi.Project.Api.Core.Dto.UserGame;
-using Imi.Project.Api.Core.Services;
+﻿using Imi.Project.Api.Core.Entities;
+using Imi.Project.Api.Core.Services.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Interfaces.Sevices
 {
     public interface IUserGameService
     {
-        IQueryable<UserGameResponseDto> GetAll();
-        Task<IEnumerable<UserGameResponseDto>> ListAllAsync();
-        Task<IEnumerable<UserGameResponseDto>> GetByGameIdAsync(Guid id);
-        Task<IEnumerable<UserGameResponseDto>> GetByUserIdAsync(Guid id);
-        Task<ServiceResult<UserGameResponseDto>> EditUserGameAsync(UserResponseDto userResponse);
-        Task<ServiceResult<UserGameResponseDto>> AddAsync(UserGameResponseDto response);
-        Task<ServiceResult<UserGameResponseDto>> DeleteAsync(UserGameResponseDto response);
+        Task<ServiceResultModel< IEnumerable<UserGame>>> ListAllAsync();
+        Task<ServiceResultModel<IEnumerable<UserGame>>> GetByGameIdAsync(Guid id);
+        Task<ServiceResultModel<IEnumerable<UserGame>>> GetByUserIdAsync(Guid id);
+        Task<ServiceResultModel<UserGame>> AddAsync(UserGameModel model);
+        Task<ServiceResultModel<IEnumerable<UserGame>>> EditUserGameAsync(UserRequestModel model);
+        Task<ServiceResultModel<UserGame>> DeleteAsync(UserGameModel model);
     }
 }

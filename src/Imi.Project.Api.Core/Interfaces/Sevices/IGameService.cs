@@ -1,21 +1,19 @@
-﻿using Imi.Project.Api.Core.Dto.Game;
-using Imi.Project.Api.Core.Services;
+﻿using Imi.Project.Api.Core.Entities;
+using Imi.Project.Api.Core.Services.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Interfaces.Sevices
 {
     public interface IGameService
     {
-        Task<IEnumerable<GameResponseDto>> GetByPublisherIdAsync(Guid id);
-        Task<IEnumerable<GameResponseDto>> SearchAsync(string search);
-        IQueryable<GameResponseDto> GetAll();
-        Task<IEnumerable<GameResponseDto>> ListAllAsync();
-        Task<GameResponseDto> GetByIdAsync(Guid id);
-        Task<ServiceResult<GameResponseDto>> UpdateAsync(GameResponseDto entity);
-        Task<ServiceResult<GameResponseDto>> AddAsync(GameResponseDto entity);
-        Task<ServiceResult<GameResponseDto>> DeleteAsync(Guid id);
+        Task<ServiceResultModel<IEnumerable<Game>>> ListAllAsync();
+        Task<ServiceResultModel<Game>> GetByIdAsync(Guid id);
+        Task<ServiceResultModel<IEnumerable<Game>>> GetByPublisherIdAsync(Guid id);
+        Task<ServiceResultModel<IEnumerable<Game>>> SearchAsync(string search);
+        Task<ServiceResultModel<Game>> AddAsync(GameModel entity);
+        Task<ServiceResultModel<Game>> UpdateAsync(GameModel entity);
+        Task<ServiceResultModel<Game>> DeleteAsync(Guid id);
     }
 }

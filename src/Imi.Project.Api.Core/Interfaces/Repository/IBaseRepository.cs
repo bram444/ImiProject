@@ -11,8 +11,8 @@ namespace Imi.Project.Api.Core.Interfaces.Repository
         IQueryable<T> GetAll();
         Task<IEnumerable<T>> ListAllAsync();
         Task<T> GetByIdAsync(Guid id);
-        Task<T> UpdateAsync(T entity);
-        Task<T> AddAsync(T entity);
-        Task<T> DeleteAsync(T entity);
+        Task AddAsync(T entity);
+        Task UpdateAsync(T entity);
+        Task DeleteAsync(T entity);
     }
 }

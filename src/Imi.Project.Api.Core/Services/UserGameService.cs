@@ -1,16 +1,16 @@
-﻿using Imi.Project.Api.Core.Dto.User;
-using Imi.Project.Api.Core.Dto.UserGame;
-using Imi.Project.Api.Core.Entities;
+﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Repository;
 using Imi.Project.Api.Core.Interfaces.Sevices;
+using Imi.Project.Api.Core.Services.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Services
 {
-    public class UserGameService: IUserGameService
+    public class UserGameService : IUserGameService
     {
 
         private readonly IUserGameRepository _userGameRepository;
@@ -20,143 +20,206 @@ namespace Imi.Project.Api.Core.Services
             _userGameRepository = userGameRepository;
         }
 
-        private static UserGame CreateEntity(UserGameResponseDto userGameResponseDto)
+        public async Task<ServiceResultModel<UserGame>> AddAsync(UserGameModel model)
         {
-            UserGame gameGenre = new()
-            {
-                GameId = userGameResponseDto.GameId,
-                UserId = userGameResponseDto.UserId,
-            };
-
-            return gameGenre;
-        }
-
-        private static UserGameResponseDto CreateDto(UserGame userGame)
-        {
-            UserGameResponseDto userGameResponseDto = new()
-            {
-                GameId = userGame.GameId,
-                UserId = userGame.UserId,
-            };
-
-            return userGameResponseDto;
-        }
-        public async Task<ServiceResult<UserGameResponseDto>> AddAsync(UserGameResponseDto response)
-        {
-            ServiceResult<UserGameResponseDto> serviceResponse = new();
+            ServiceResultModel<UserGame> result = new();
 
             try
             {
-                serviceResponse.Result = CreateDto(await _userGameRepository.AddAsync(CreateEntity(response)));
-            } catch(Exception ex)
-            {
-                serviceResponse.HasErrors = true;
-                serviceResponse.ErrorMessages.Add(ex.Message);
-            }
+                await _userGameRepository.AddAsync(new UserGame
+                {
+                    UserId = model.UserId,
+                    GameId = model.GameId,
+                });
 
-            return serviceResponse;
+                result.Data = new UserGame
+                {
+                    UserId = model.UserId,
+                    GameId = model.GameId,
+                };
+
+                result.IsSuccess = true;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult(ex.Message));
+                if(ex.InnerException != null)
+                {
+                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
+                }
+                return result;
+            }
         }
 
-        public async Task<ServiceResult<UserGameResponseDto>> DeleteAsync(UserGameResponseDto response)
+        public async Task<ServiceResultModel<UserGame>> DeleteAsync(UserGameModel model)
         {
-            ServiceResult<UserGameResponseDto> serviceResponse = new();
+            ServiceResultModel<UserGame> result = new();
 
-            if(!_userGameRepository.ListAllAsync().Result.Any(gg => gg.UserId == response.UserId && gg.GameId == response.GameId))
+            if (!_userGameRepository.ListAllAsync().Result.Any(gg => gg.UserId == model.UserId && gg.GameId == model.GameId))
             {
-                serviceResponse.HasErrors = true;
-                serviceResponse.ErrorMessages.Add($"Many to many relationship does not exist");
-                return serviceResponse;
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult("Many to many relationship does not exist"));
+                return result;
             }
 
             try
             {
-                await _userGameRepository.DeleteAsync(CreateEntity(response));
-                serviceResponse.Result = response;
-            } catch(Exception ex)
-            {
-                serviceResponse.HasErrors = true;
-                serviceResponse.ErrorMessages.Add(ex.Message);
-            }
+                await _userGameRepository.DeleteAsync(new UserGame
+                {
+                    UserId = model.UserId,
+                    GameId = model.GameId,
+                });
 
-            return serviceResponse;
+                result.Data = new UserGame
+                {
+                    UserId = model.UserId,
+                    GameId = model.GameId,
+                };
+
+                result.IsSuccess = true;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult(ex.Message));
+                if(ex.InnerException != null)
+                {
+                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
+                }
+                return result;
+            }
         }
 
-        public IQueryable<UserGameResponseDto> GetAll()
+        public async Task<ServiceResultModel<IEnumerable<UserGame>>> GetByGameIdAsync(Guid id)
         {
-            List<UserGameResponseDto> userGameResponseDtos = new();
-            foreach(UserGame entity in _userGameRepository.GetAll())
-            {
-                userGameResponseDtos.Add(CreateDto(entity));
-            }
+            ServiceResultModel<IEnumerable<UserGame>> result = new();
 
-            return userGameResponseDtos.AsQueryable();
+            try
+            {
+                result.Data = await _userGameRepository.GetByGameIdAsync(id);
+                result.IsSuccess = true;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult(ex.Message));
+                if(ex.InnerException != null)
+                {
+                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
+                }
+                return result;
+            }
         }
 
-        public async Task<IEnumerable<UserGameResponseDto>> GetByGameIdAsync(Guid id)
+        public async Task<ServiceResultModel<IEnumerable<UserGame>>> GetByUserIdAsync(Guid id)
         {
-            List<UserGameResponseDto> userGameResponseDtos = new();
+            ServiceResultModel<IEnumerable<UserGame>> result = new();
 
-            foreach(UserGame entity in await _userGameRepository.GetByGameIdAsync(id))
+            try
             {
-                userGameResponseDtos.Add(CreateDto(entity));
+                result.Data = await _userGameRepository.GetByUserIdAsync(id);
+                result.IsSuccess = true;
+                return result;
             }
-
-            return userGameResponseDtos;
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult(ex.Message));
+                if(ex.InnerException != null)
+                {
+                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
+                }
+                return result;
+            }
         }
 
-        public async Task<IEnumerable<UserGameResponseDto>> GetByUserIdAsync(Guid id)
+        public async Task<ServiceResultModel<IEnumerable<UserGame>>> ListAllAsync()
         {
-            List<UserGameResponseDto> userGameResponseDtos = new();
-            foreach(UserGame entity in await _userGameRepository.GetByUserIdAsync(id))
-            {
-                userGameResponseDtos.Add(CreateDto(entity));
-            }
+            ServiceResultModel<IEnumerable<UserGame>> result = new();
 
-            return userGameResponseDtos;
+            try
+            {
+                result.Data = await _userGameRepository.ListAllAsync();
+                result.IsSuccess = true;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult(ex.Message));
+                if(ex.InnerException != null)
+                {
+                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
+                }
+                return result;
+            }
         }
 
-        public async Task<IEnumerable<UserGameResponseDto>> ListAllAsync()
+        public async Task<ServiceResultModel<IEnumerable<UserGame>>> EditUserGameAsync(UserRequestModel model)
         {
-            List<UserGameResponseDto> userResponseDtos = new();
-            foreach(UserGame entity in await _userGameRepository.ListAllAsync())
+
+            ServiceResultModel<IEnumerable<UserGame>> result = await GetByUserIdAsync(model.Id);
+
+            List<UserGame> updateUserGame = new();
+
+
+            foreach (Guid gameId in model.GameId.Distinct())
             {
-                userResponseDtos.Add(CreateDto(entity));
-            }
-
-            return userResponseDtos;
-        }
-
-        public async Task<ServiceResult<UserGameResponseDto>> EditUserGameAsync(UserResponseDto userResponse)
-        {
-            IEnumerable<UserGameResponseDto> userGameResponses = await GetByUserIdAsync(userResponse.Id);
-
-            List<UserGameResponseDto> updateUserGame = new();
-
-            ServiceResult<UserGameResponseDto> serviceResponse = new();
-
-            foreach(Guid gameId in userResponse.GameId)
-            {
-                updateUserGame.Add(new UserGameResponseDto
+                updateUserGame.Add(new UserGame
                 {
                     GameId = gameId,
-                    UserId = userResponse.Id
+                    UserId = model.Id
                 });
             }
 
-            List<UserGameResponseDto> toDeleteGame = userGameResponses.Except(updateUserGame).ToList();
-            foreach(UserGameResponseDto deleteGame in toDeleteGame)
+            List<UserGame> toDeleteGame = result.Data.Except(updateUserGame).ToList();
+            foreach (UserGame deleteGame in toDeleteGame)
             {
-                await DeleteAsync(deleteGame);
+                ServiceResultModel<UserGame> serviceDelete = await DeleteAsync(new UserGameModel
+                {
+                    GameId = deleteGame.GameId,
+                    UserId = deleteGame.UserId
+                });
+                if (!serviceDelete.IsSuccess)
+                {
+                    return new ServiceResultModel<IEnumerable<UserGame>>
+                    {
+                        IsSuccess = serviceDelete.IsSuccess,
+                        ValidationErrors = serviceDelete.ValidationErrors
+                    };
+                }
             }
 
-            List<UserGameResponseDto> toAddGame = updateUserGame.Except(userGameResponses).ToList();
+            List<UserGame> toAddGame = updateUserGame.Except(result.Data).ToList();
+            List<UserGame> listUserGame = new();
 
-            foreach(UserGameResponseDto addGame in toAddGame)
+            foreach (UserGame addGame in toAddGame)
             {
-                serviceResponse = await AddAsync(addGame);
+                ServiceResultModel<UserGame> serviceAdd = await AddAsync(new UserGameModel
+                {
+                    GameId = addGame.GameId,
+                    UserId = addGame.UserId
+                });
+                if (!serviceAdd.IsSuccess)
+                {
+                    return new ServiceResultModel<IEnumerable<UserGame>>
+                    {
+                        IsSuccess = serviceAdd.IsSuccess,
+                        ValidationErrors = serviceAdd.ValidationErrors
+                    };
+                }
+                listUserGame.Add(serviceAdd.Data);
             }
 
-            return serviceResponse;
+            result.Data = listUserGame;
+            result.IsSuccess = true;
+
+
+            return result;
         }
     }
 }

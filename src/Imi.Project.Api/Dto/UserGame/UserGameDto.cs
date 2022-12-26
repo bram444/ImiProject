@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Imi.Project.Api.Core.Dto.UserGame
+namespace Imi.Project.Api.Dto.UserGame
 {
-    public class UserGameResponseDto
+    public class UserGameDto
     {
         public Guid UserId { get; set; }
         public Guid GameId { get; set; }
