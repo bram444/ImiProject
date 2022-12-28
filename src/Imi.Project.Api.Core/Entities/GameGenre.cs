@@ -2,10 +2,8 @@
 
 namespace Imi.Project.Api.Core.Entities
 {
-    public class GameGenre
+    public class GameGenre: BaseGameMTM
     {
-        public Guid GameId { get; set; }
-        public Game Game { get; set; }
         public Guid GenreId { get; set; }
         public Genre Genre { get; set; }
     }

@@ -15,73 +15,53 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                     {
                         Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
                         Name="FPS",
-                        Description="Fist person shooter",
-                        LastEditedOn= DateTime.Now,
-                        CreatedOn=DateTime.Now
+                        Description="Fist person shooter"
                     },
                     new Genre
                     {
                         Id = Guid.Parse("00000000-0000-0000-0000-000000000002"),
                         Name="Third person shooter",
-                        Description="Fist person shooter but in the third person",
-                        LastEditedOn= DateTime.Now,
-                        CreatedOn=DateTime.Now
+                        Description="Fist person shooter but in the third person"
                     },
                     new Genre
                     {
                         Id = Guid.Parse("00000000-0000-0000-0000-000000000003"),
-                        Name="Simulation",
-                        LastEditedOn= DateTime.Now,
-                        CreatedOn=DateTime.Now
+                        Name="Simulation"
                     },
                     new Genre
                     {
                         Id = Guid.Parse("00000000-0000-0000-0000-000000000004"),
-                        Name="Platformer",
-                        LastEditedOn= DateTime.Now,
-                        CreatedOn=DateTime.Now
+                        Name="Platformer"
                     },
                     new Genre
                     {
                         Id = Guid.Parse("00000000-0000-0000-0000-000000000005"),
-                        Name="Party game",
-                        LastEditedOn= DateTime.Now,
-                        CreatedOn=DateTime.Now
+                        Name="Party game"
                     },
                     new Genre
                     {
                         Id = Guid.Parse("00000000-0000-0000-0000-000000000006"),
-                        Name="Story driven",
-                        LastEditedOn= DateTime.Now,
-                        CreatedOn=DateTime.Now
+                        Name="Story driven"
                     },
                     new Genre
                     {
                         Id = Guid.Parse("00000000-0000-0000-0000-000000000007"),
-                        Name="Open Word",
-                        LastEditedOn= DateTime.Now,
-                        CreatedOn=DateTime.Now
+                        Name="Open Word"
                     },
                     new Genre
                     {
                         Id = Guid.Parse("00000000-0000-0000-0000-000000000008"),
-                        Name="Nonlinear gameplay",
-                        LastEditedOn= DateTime.Now,
-                        CreatedOn=DateTime.Now
+                        Name="Nonlinear gameplay"
                     },
                     new Genre
                     {
                         Id = Guid.Parse("00000000-0000-0000-0000-000000000009"),
-                        Name="Action-adventure",
-                        LastEditedOn= DateTime.Now,
-                        CreatedOn=DateTime.Now
+                        Name="Action-adventure"
                     },
                     new Genre
                     {
                         Id = Guid.Parse("00000000-0000-0000-0000-000000000010"),
-                        Name="Stealth",
-                        LastEditedOn= DateTime.Now,
-                        CreatedOn=DateTime.Now
+                        Name="Stealth"
                     },
                 });
         }

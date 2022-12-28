@@ -5,9 +5,6 @@ namespace Imi.Project.Api.Core.Entities
 {
     public class Publisher: BaseEntity
     {
-        [Required]
-        public string Name { get; set; }
-
         public string Country { get; set; }
 
         public ICollection<Game> Games { get; set; }
