@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Infrastructure.Repository
@@ -26,33 +27,73 @@ namespace Imi.Project.Api.Infrastructure.Repository
             try
             {
 
-                return await _dbContext.Set<T>().AsNoTracking().ToListAsync();
-            }catch(Exception ex)
+                return await _dbContext.Set<T>().ToListAsync();
+            } catch(Exception ex)
             {
-                throw new Exception($"Something went wrong while getting all {typeof(T).Name}",ex.InnerException);
+                throw new Exception($"Something went wrong while getting all {typeof(T).Name}", ex.InnerException);
             }
-
         }
 
         public virtual async Task<T> GetByIdAsync(Guid id)
         {
             try
             {
-                return await _dbContext.Set<T>().AsNoTracking().SingleOrDefaultAsync(t => t.Id == id);
+                return await _dbContext.Set<T>().SingleOrDefaultAsync(t => t.Id == id);
             } catch(Exception ex)
             {
                 throw new Exception($"Something went wrong while getting {typeof(T).Name} with Id {id}", ex.InnerException);
             }
         }
 
+        public async Task<bool> DoesExistAsync(Guid id)
+        {
+            try
+            {
+                return await _dbContext.Set<T>().AnyAsync(t => t.Id == id);
+            } catch(Exception ex)
+            {
+                throw new Exception($"Something went wrong when checking if {typeof(T).Name} with id {id} already exists", ex.InnerException);
+            }
+        }
+
+        public async Task<bool> DoesExistAsync(Expression<Func<T, bool>> predicate)
+        {
+            try
+            {
+                return await _dbContext.Set<T>().AnyAsync(predicate);
+            } catch(Exception ex)
+            {
+                throw new Exception($"Something went wrong when checking if {typeof(T).Name} already exists", ex.InnerException);
+            }
+        }
+
+        public async Task<IEnumerable<T>> GetFilteredListAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await GetAll().Where(predicate).ToListAsync();
+        }
+
+        public bool DoesListExist(ICollection<Guid> ids)
+        {
+            try
+            {
+                return ids.All(id => GetAll().Any(t => t.Id == id));
+
+            } catch(Exception ex)
+            {
+                throw new Exception($"Something went wrong when checking if all {typeof(T).Name} in a list exists", ex.InnerException);
+            }
+        }
+
+        public async Task<IEnumerable<Guid>> GetNonExistend(IEnumerable<Guid> ids)
+        {
+            return ids.Except((await ListAllAsync()).Select(t => t.Id));
+        }
+
         public async Task AddAsync(T entity)
         {
             try
             {
-                entity.CreatedOn = DateTime.UtcNow;
-                entity.LastEditedOn = DateTime.UtcNow;
-                _dbContext.Set<T>().Add(entity);
-                _dbContext.Entry(entity).State = EntityState.Added;
+                await _dbContext.Set<T>().AddAsync(entity);
                 await _dbContext.SaveChangesAsync();
             } catch(Exception ex)
             {
@@ -64,7 +105,6 @@ namespace Imi.Project.Api.Infrastructure.Repository
         {
             try
             {
-                entity.LastEditedOn = DateTime.UtcNow;
                 _dbContext.Set<T>().Update(entity);
                 await _dbContext.SaveChangesAsync();
             } catch(Exception ex)
@@ -78,7 +118,6 @@ namespace Imi.Project.Api.Infrastructure.Repository
             try
             {
                 _dbContext.Set<T>().Remove(entity);
-                _dbContext.Entry(entity).State = EntityState.Deleted;
                 await _dbContext.SaveChangesAsync();
             } catch(Exception ex)
             {

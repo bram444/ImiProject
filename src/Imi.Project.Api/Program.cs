@@ -15,8 +15,7 @@ using System.Globalization;
 using System.Security.Claims;
 using System.Text;
 
-
-    var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultDatabase")));
@@ -67,57 +66,55 @@ builder.Services.AddAuthorization(options =>
         policy.RequireAssertion(context => Convert.ToBoolean(context.User.Claims.SingleOrDefault(claim => claim.Type == "approved")?.Value));
     });
 
-
-        options.AddPolicy("onlyOwner", policy =>
+    options.AddPolicy("onlyOwner", policy =>
+    {
+        policy.RequireAssertion(async context =>
         {
-            policy.RequireAssertion(async context =>
+            if(context.User.IsInRole("Admin"))
             {
-                if(context.User.IsInRole("Admin"))
+                return true;
+            }
+
+            var request = new HttpContextAccessor().HttpContext.Request;
+            request.EnableBuffering();
+
+            var userId = context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var idRoute = request.RouteValues["id"];
+
+            if(idRoute != null)
+            {
+                if(idRoute.Equals(userId))
                 {
                     return true;
                 }
+            }
 
-                var request = new HttpContextAccessor().HttpContext.Request;
-                request.EnableBuffering();
+            string jsonString;
+            var body = request.Body;
 
-                var userId = context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                var idRoute = request.RouteValues["id"];
+            using(var stream = new StreamReader(body, Encoding.UTF8, true, 1024, true))
+            {
+                jsonString = await stream.ReadToEndAsync();
+            }
 
-                if(idRoute != null)
+            request.Body.Position = 0;
+
+            if(jsonString != null)
+            {
+                UserResponseDto user = JsonConvert.DeserializeObject<UserResponseDto>(jsonString);
+
+                if(user != null)
                 {
-                    if(idRoute.Equals(userId))
+                    if(user.Id.ToString() == userId)
                     {
                         return true;
                     }
                 }
+            }
 
-                string jsonString;
-                var body = request.Body;
-
-                using(var stream = new StreamReader(body, Encoding.UTF8,true, 1024,true))
-                {
-                    jsonString = await stream.ReadToEndAsync();
-                }
-
-                request.Body.Position = 0;
-
-                if(jsonString != null)
-                {
-                    UserDto user = JsonConvert.DeserializeObject<UserDto>(jsonString);
-
-                    if(user != null)
-                    {
-                        if(user.Id.ToString() == userId)
-                        {
-                            return true;
-                        }
-                    }
-                }
-
-                return false;
-            });
+            return false;
         });
-
+    });
 
     options.AddPolicy("adminOnly", policy =>
     {

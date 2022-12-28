@@ -1,7 +1,8 @@
 ﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Sevices;
-using Imi.Project.Api.Core.Services.Models;
+using Imi.Project.Api.Core.Models;
 using Imi.Project.Api.Dto.Publisher;
+using Imi.Project.Api.Mapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,103 +24,69 @@ namespace Imi.Project.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var result = await _publisherService.ListAllAsync();
+            ServiceResultModel<IEnumerable<Publisher>> result = await _publisherService.ListAllAsync();
 
-            if(!result.IsSuccess)
-            {
-                return BadRequest(result.ValidationErrors);
-            }
-
-            return Ok(result.Data);
+            return !result.IsSuccess ? BadRequest(result.ValidationErrors) :
+                Ok(result.Data.PublisherResponseDtoMapper());
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var result = await _publisherService.GetByIdAsync(id);
+            ServiceResultModel<Publisher> result = await _publisherService.GetByIdAsync(id);
 
-            if(!result.IsSuccess)
-            {
-                return BadRequest(result.ValidationErrors);
-            }
+            return !result.IsSuccess ? BadRequest(result.ValidationErrors) :
+                Ok(result.Data.PublisherResponseDtoMapper());
 
-            return Ok(result.Data);
         }
 
         [HttpGet("{search}/name")]
         public async Task<IActionResult> GetPublisherByName(string search)
         {
-            var result = await _publisherService.SearchAsync(search);
+            ServiceResultModel<IEnumerable<Publisher>> result = await _publisherService.SearchAsync(search);
 
-            if(!result.IsSuccess)
-            {
-                return BadRequest(result.ValidationErrors);
-            }
-
-            return Ok(result.Data);
+            return !result.IsSuccess ? BadRequest(result.ValidationErrors) :
+                Ok(result.Data.PublisherResponseDtoMapper());
         }
 
         [HttpGet("{search}/country")]
         public async Task<IActionResult> GetPublisherByCountry(string search)
         {
-            var result = await _publisherService.SearchByCountryAsync(search);
+            ServiceResultModel<IEnumerable<Publisher>> result = await _publisherService.SearchByCountryAsync(search);
 
-            if(!result.IsSuccess)
-            {
-                return BadRequest(result.ValidationErrors);
-            }
-
-            return Ok(result.Data);
+            return !result.IsSuccess ? BadRequest(result.ValidationErrors) :
+                Ok(result.Data.PublisherResponseDtoMapper());
         }
 
         [Authorize(Policy = "adminOnly")]
         [HttpPost]
-        public async Task<IActionResult> Post(PublisherDto publisherDto)
+        public async Task<IActionResult> Post(NewPublisherRequestDto newPublisher)
         {
             if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var result = new ServiceResultModel<Publisher>();
+            ServiceResultModel<Publisher> result = await _publisherService.AddAsync(newPublisher.NewPublisherModelMapper());
 
-            result = await _publisherService.AddAsync(new PublisherModel
-            {
-                Id = publisherDto.Id,
-                Name = publisherDto.Name,
-                Country = publisherDto.Country
-            });
-
-            if(!result.IsSuccess)
-            {
-                return BadRequest(result.ValidationErrors);
-            }
-
-            return CreatedAtAction(nameof(GetById), new { id = publisherDto.Id }, result.Data);
+            return !result.IsSuccess
+                ? BadRequest(result.ValidationErrors)
+                : CreatedAtAction(nameof(GetById), new { id = result.Data.Id }, result.Data.PublisherResponseDtoMapper());
         }
 
         [Authorize(Policy = "adminOnly")]
         [HttpPut]
-        public async Task<IActionResult> Put(PublisherDto publisherDto)
+        public async Task<IActionResult> Put(UpdatePublisherRequestDto updatePublisher)
         {
             if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var result = await _publisherService.UpdateAsync(new PublisherModel
-            {
-                Id = publisherDto.Id,
-                Name = publisherDto.Name,
-                Country = publisherDto.Country
-            });
+            ServiceResultModel<Publisher> result = await _publisherService.UpdateAsync(updatePublisher.UpdatePublisherModelMapper());
 
-            if(!result.IsSuccess)
-            {
-                return BadRequest(result.ValidationErrors);
-            }
-
-            return Ok(result.Data);
+            return !result.IsSuccess ? BadRequest(result.ValidationErrors) :
+                Ok(result.Data.PublisherResponseDtoMapper());
         }
 
         [Authorize(Policy = "adminOnly")]
@@ -131,14 +98,9 @@ namespace Imi.Project.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _publisherService.DeleteAsync(id);
+            ServiceResultModel<Publisher> result = await _publisherService.DeleteAsync(id);
 
-            if(!result.IsSuccess)
-            {
-                return BadRequest(result.ValidationErrors);
-            }
-
-            return Ok();
+            return !result.IsSuccess ? BadRequest(result.ValidationErrors) : Ok();
         }
     }
 }

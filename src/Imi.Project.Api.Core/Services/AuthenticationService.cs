@@ -1,15 +1,11 @@
 ﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Sevices;
-using Imi.Project.Api.Core.Services.Models;
+using Imi.Project.Api.Core.Models.Authentiction;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Services
@@ -27,7 +23,7 @@ namespace Imi.Project.Api.Core.Services
             _jwtService = jwtService;
         }
 
-        public async Task<AuthenticateResult> RegisterAsync(RegisterModel registration)
+        public async Task<AuthenticateResult> RegisterAsync(RegistrationModel registration)
         {
             ApplicationUser newUser = new()
             {
@@ -42,7 +38,6 @@ namespace Imi.Project.Api.Core.Services
                 NormalizedUserName = registration.UserName.Normalize(),
                 SecurityStamp = Guid.NewGuid().ToString(),
                 ConcurrencyStamp = Guid.NewGuid().ToString(),
-                 
             };
 
             try
@@ -52,7 +47,7 @@ namespace Imi.Project.Api.Core.Services
                 if(!result.Succeeded)
                 {
                     List<string> errors = new();
-                    foreach(var error in result.Errors)
+                    foreach(IdentityError error in result.Errors)
                     {
                         errors.Add(error.Description);
                     }
@@ -71,11 +66,9 @@ namespace Imi.Project.Api.Core.Services
 
                 return new AuthenticateResult
                 {
-                    IsSuccess = true,
                     Messages = new List<string> { "Succesfully registered" }
                 };
-            }
-            catch(Exception ex)
+            } catch(Exception ex)
             {
                 return new AuthenticateResult
                 {
@@ -89,37 +82,32 @@ namespace Imi.Project.Api.Core.Services
         {
             try
             {
-                
-            //check if user exists
-            SignInResult result = await _signInManager.PasswordSignInAsync(loginUser.UserName, loginUser.Password, true, false);
+                SignInResult result = await _signInManager.PasswordSignInAsync(loginUser.UserName, loginUser.Password, true, false);
 
-            if(!result.Succeeded)
+                if(!result.Succeeded)
+                {
+                    return new AuthenticateResult
+                    {
+                        IsSuccess = false,
+                        Messages = new List<string> { "Login failed!" }
+                    };
+                }
+
+                ApplicationUser applicationUser = await _userManager.FindByNameAsync(loginUser.UserName);
+
+                List<Claim> listClaims = await GetClaims(applicationUser!);
+
+                JwtSecurityToken jwtSecurityToken = _jwtService.GenerateToken(listClaims);
+
+                return new AuthenticateResult { Token = _jwtService.SerializeToken(jwtSecurityToken) };
+
+            } catch(Exception ex)
             {
                 return new AuthenticateResult
                 {
                     IsSuccess = false,
-                    Messages = new List<string> { "Login failed!" }
+                    Messages = new List<string> { ex.Message }
                 };
-            }
-
-            ApplicationUser applicationUser = await _userManager.FindByNameAsync(loginUser.UserName);
-
-            List<Claim> listClaims = await GetClaims(applicationUser!);
-
-            JwtSecurityToken jwtSecurityToken = _jwtService.GenerateToken(listClaims);
-
-            return new AuthenticateResult { IsSuccess = true, Token = _jwtService.SerializeToken(jwtSecurityToken) };
-
-
-        }
-            catch(Exception ex)
-            {
-                return new AuthenticateResult
-                {
-                    IsSuccess = false,
-                    Messages = new List<string> { ex.Message
-    }
-};
             }
         }
 

@@ -1,6 +1,7 @@
-﻿using Imi.Project.Api.Core.Interfaces.Sevices;
-using Imi.Project.Api.Core.Services.Models;
+﻿using Imi.Project.Api.Core.Entities;
+using Imi.Project.Api.Core.Interfaces.Sevices;
 using Imi.Project.Api.Dto.Authentication;
+using Imi.Project.Api.Mapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Imi.Project.Api.Controllers
@@ -17,48 +18,24 @@ namespace Imi.Project.Api.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDto registration)
+        public async Task<IActionResult> Register([FromBody] RegistrationDto registration)
         {
             if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var result = await _authenticationService.RegisterAsync(new RegisterModel
-            {
-                ApprovedTerms = registration.ApprovedTerms,
-                BirthDay = registration.BirthDay,
-                ConfirmPassword = registration.ConfirmPassword,
-                Email = registration.Email,
-                FirstName = registration.FirstName,
-                LastName = registration.LastName,
-                Password = registration.Password,
-                UserName = registration.UserName,
-            });
+            AuthenticateResult result = await _authenticationService.RegisterAsync(registration.RegistrationModelMapper());
 
-            if(!result.IsSuccess)
-            {
-                return BadRequest(result.Messages);
-            }
-
-            return Ok();
+            return !result.IsSuccess ? BadRequest(result.Messages) : Ok();
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
         {
-            var result = await _authenticationService.Login(new LoginRequestModel
-            {
-                UserName = loginRequestDto.UserName,
-                Password = loginRequestDto.Password,
-            });
+            AuthenticateResult result = await _authenticationService.Login(loginRequestDto.LoginRequestModelMapper());
 
-            if(!result.IsSuccess)
-            {
-                return BadRequest(result.Messages);
-            }
-
-            return Ok(new LoginResponseDto { Token = result.Token });
+            return !result.IsSuccess ? BadRequest(result.Messages) : Ok(result.LoginResponseDto());
         }
     }
 }

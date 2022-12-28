@@ -1,5 +1,6 @@
 ﻿using Imi.Project.Api.Core.Entities;
-using Imi.Project.Api.Core.Services.Models;
+using Imi.Project.Api.Core.Models;
+using Imi.Project.Api.Core.Models.User;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -13,8 +14,8 @@ namespace Imi.Project.Api.Core.Interfaces.Sevices
         Task<ServiceResultModel<IEnumerable<ApplicationUser>>> SearchUserNameAsync(string search);
         Task<ServiceResultModel<IEnumerable<ApplicationUser>>> SearchFirstNameAsync(string search);
         Task<ServiceResultModel<IEnumerable<ApplicationUser>>> SearchLastNameAsync(string search);
-        Task<ServiceResultModel<ApplicationUser>> AddAsync(UserRequestModel response);
-        Task<ServiceResultModel<ApplicationUser>> UpdateAsync(UserRequestModel response);
+        Task<ServiceResultModel<ApplicationUser>> AddAsync(NewUserModel response);
+        Task<ServiceResultModel<ApplicationUser>> UpdateAsync(UpdateUserModel response);
         Task<ServiceResultModel<ApplicationUser>> DeleteAsync(Guid id);
     }
 }

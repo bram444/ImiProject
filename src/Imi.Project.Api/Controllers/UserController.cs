@@ -1,7 +1,10 @@
 ﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Sevices;
-using Imi.Project.Api.Core.Services.Models;
+using Imi.Project.Api.Core.Mapping;
+using Imi.Project.Api.Core.Models;
+using Imi.Project.Api.Dto.Game;
 using Imi.Project.Api.Dto.User;
+using Imi.Project.Api.Mapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,171 +17,216 @@ namespace Imi.Project.Api.Controllers
     {
         protected readonly IUserService _userService;
         protected readonly IUserGameService _userGameService;
+        protected readonly IGameService _gameService;
 
-        public UserController(IUserService userService, IUserGameService userGameService)
+        public UserController(IUserService userService, IUserGameService userGameService, IGameService gameService)
         {
             _userService = userService;
             _userGameService = userGameService;
+            _gameService = gameService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var result = await _userService.ListAllAsync();
+            ServiceResultModel<IEnumerable<ApplicationUser>> result = await _userService.ListAllAsync();
 
             if(!result.IsSuccess)
             {
                 return BadRequest(result.ValidationErrors);
             }
 
-            return Ok(result.Data);
+            List<UserResponseDto> response = new();
+
+            foreach(ApplicationUser user in result.Data)
+            {
+                var userGame = await _userGameService.GetByUserIdAsync(user.Id);
+
+                List<GameResponseDto> gameList = new();
+
+                foreach(var ug in userGame.Data)
+                {
+                    var game = await _gameService.GetByIdAsync(ug.GameId);
+                    if(!game.IsSuccess)
+                    {
+                        return BadRequest(game.ValidationErrors);
+                    }
+                    gameList.Add(game.Data.GameResponseDtoMapper());
+                }
+                response.Add(user.UserResponseDtoMapper(gameList));
+
+            }
+
+            return !result.IsSuccess ? BadRequest(result.ValidationErrors) : Ok(response);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var result = await _userService.GetByIdAsync(id);
+            ServiceResultModel<ApplicationUser> result = await _userService.GetByIdAsync(id);
 
-            if(!result.IsSuccess)
+            List<UserResponseDto> response = new();
+
+            var userGame = await _userGameService.GetByUserIdAsync(result.Data.Id);
+
+            List<GameResponseDto> gameList = new();
+
+            foreach(var ug in userGame.Data)
             {
-                return BadRequest(result.ValidationErrors);
+                var game = await _gameService.GetByIdAsync(ug.GameId);
+                if(!game.IsSuccess)
+                {
+                    return BadRequest(game.ValidationErrors);
+                }
+                gameList.Add(game.Data.GameResponseDtoMapper());
             }
 
-            return Ok(result.Data);
+            response.Add(result.Data.UserResponseDtoMapper(gameList));
+
+            return !result.IsSuccess ? BadRequest(result.ValidationErrors) : Ok(response);
         }
 
         [HttpGet("{search}/firstname")]
         public async Task<IActionResult> GetByFirstName(string search)
         {
-            var result = await _userService.SearchFirstNameAsync(search);
+            ServiceResultModel<IEnumerable<ApplicationUser>> result = await _userService.SearchFirstNameAsync(search);
 
-            if(!result.IsSuccess)
+            List<UserResponseDto> response = new();
+
+            foreach(ApplicationUser user in result.Data)
             {
-                return BadRequest(result.ValidationErrors);
+                var userGame = await _userGameService.GetByUserIdAsync(user.Id);
+
+                List<GameResponseDto> gameList = new();
+
+                foreach(var ug in userGame.Data)
+                {
+                    var game = await _gameService.GetByIdAsync(ug.GameId);
+                    if(!game.IsSuccess)
+                    {
+                        return BadRequest(game.ValidationErrors);
+                    }
+                    gameList.Add(game.Data.GameResponseDtoMapper());
+                }
+                response.Add(user.UserResponseDtoMapper(gameList));
+
             }
 
-            return Ok(result.Data);
+            return !result.IsSuccess ? BadRequest(result.ValidationErrors) : Ok(response);
         }
 
         [HttpGet("{search}/lastname")]
         public async Task<IActionResult> GetByLastName(string search)
         {
-            var result = await _userService.SearchLastNameAsync(search);
+            ServiceResultModel<IEnumerable<ApplicationUser>> result = await _userService.SearchLastNameAsync(search);
 
-            if(!result.IsSuccess)
+            List<UserResponseDto> response = new();
+
+            foreach(ApplicationUser user in result.Data)
             {
-                return BadRequest(result.ValidationErrors);
+                var userGame = await _userGameService.GetByUserIdAsync(user.Id);
+
+                List<GameResponseDto> gameList = new();
+
+                foreach(var ug in userGame.Data)
+                {
+                    var game = await _gameService.GetByIdAsync(ug.GameId);
+                    if(!game.IsSuccess)
+                    {
+                        return BadRequest(game.ValidationErrors);
+                    }
+                    gameList.Add(game.Data.GameResponseDtoMapper());
+                }
+                response.Add(user.UserResponseDtoMapper(gameList));
+
             }
 
-            return Ok(result.Data);
+            return !result.IsSuccess ? BadRequest(result.ValidationErrors) : Ok(response);
         }
 
         [HttpGet("{search}/username")]
         public async Task<IActionResult> GetByUserName(string search)
         {
-            var result = await _userService.SearchUserNameAsync(search);
+            ServiceResultModel<IEnumerable<ApplicationUser>> result = await _userService.SearchUserNameAsync(search);
 
-            if(!result.IsSuccess)
+            List<UserResponseDto> response = new();
+
+            foreach(ApplicationUser user in result.Data)
             {
-                return BadRequest(result.ValidationErrors);
+                var userGame = await _userGameService.GetByUserIdAsync(user.Id);
+
+                List<GameResponseDto> gameList = new();
+
+                foreach(var ug in userGame.Data)
+                {
+                    var game = await _gameService.GetByIdAsync(ug.GameId);
+                    if(!game.IsSuccess)
+                    {
+                        return BadRequest(game.ValidationErrors);
+                    }
+                    gameList.Add(game.Data.GameResponseDtoMapper());
+                }
+                response.Add(user.UserResponseDtoMapper(gameList));
+
             }
 
-            return Ok(result.Data);
+            return !result.IsSuccess ? BadRequest(result.ValidationErrors) : Ok(response);
         }
 
         [Authorize(Policy = "adminOnly")]
         [HttpPost]
-        public async Task<IActionResult> Post(UserDto userRequestDto)
+        public async Task<IActionResult> Post(NewUserRequestDto newUserRequest)
         {
             if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            foreach(Guid gameId in userRequestDto.GameId)
-            {
-                var resultUserGame = await _userGameService.AddAsync(new UserGameModel
-                {
-                    GameId = gameId,
-                    UserId = userRequestDto.Id
-                });
-
-                if(!resultUserGame.IsSuccess)
-                {
-                    return BadRequest(resultUserGame.ValidationErrors);
-                }
-            }
-
-            var result = await _userService.AddAsync(new UserRequestModel
-            {
-                Id = userRequestDto.Id,
-                UserName = userRequestDto.UserName,
-                GameId = userRequestDto.GameId,
-                ApprovedTerms = userRequestDto.ApprovedTerms,
-                BirthDay = userRequestDto.BirthDay,
-                ConfirmPassword = userRequestDto.ConfirmPassword,
-                Email = userRequestDto.Email,
-                FirstName = userRequestDto.FirstName,
-                LastName = userRequestDto.LastName,
-                Password = userRequestDto.Password
-            });
+            ServiceResultModel<ApplicationUser> result = await _userService.AddAsync(newUserRequest.NewUserModelMapper());
 
             if(!result.IsSuccess)
             {
                 return BadRequest(result.ValidationErrors);
             }
 
-            return CreatedAtAction(nameof(GetById), new { id = userRequestDto.Id }, result.Data);
+            return CreatedAtAction(nameof(GetById), new { id = result.Data.Id }, result.Data.UserResponseDtoMapper());
         }
 
         [Authorize(Policy = "onlyOwner")]
         [HttpPut]
-        public async Task<IActionResult> Put(UserDto userRequestDto)
+        public async Task<IActionResult> Put(UpdateUserRequestDto updateUserDto)
         {
             if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var resultUserGame = await _userGameService.EditUserGameAsync(new UserRequestModel
-            {
-                Id = userRequestDto.Id,
-                UserName = userRequestDto.UserName,
-                GameId = userRequestDto.GameId,
-                ApprovedTerms = userRequestDto.ApprovedTerms,
-                BirthDay = userRequestDto.BirthDay,
-                ConfirmPassword = userRequestDto.ConfirmPassword,
-                Email = userRequestDto.Email,
-                FirstName = userRequestDto.FirstName,
-                LastName = userRequestDto.LastName,
-                Password = userRequestDto.Password
-            });
+            ServiceResultModel<IEnumerable<UserGame>> resultUserGame = await _userGameService.EditUserGameAsync(updateUserDto.UpdateGameGenreModelMapper());
 
             if(!resultUserGame.IsSuccess)
             {
                 return BadRequest(resultUserGame.ValidationErrors);
             }
 
-            var result = await _userService.UpdateAsync(new UserRequestModel
-            {
-                Id = userRequestDto.Id,
-                UserName = userRequestDto.UserName,
-                GameId = userRequestDto.GameId,
-                ApprovedTerms = userRequestDto.ApprovedTerms,
-                BirthDay = userRequestDto.BirthDay,
-                ConfirmPassword = userRequestDto.ConfirmPassword,
-                Email = userRequestDto.Email,
-                FirstName = userRequestDto.FirstName,
-                LastName = userRequestDto.LastName,
-                Password = userRequestDto.Password
-            });
+            ServiceResultModel<ApplicationUser> result = await _userService.UpdateAsync(updateUserDto.UpdateUserModelMapper());
 
-            if(!result.IsSuccess)
+            var userGame = await _userGameService.GetByUserIdAsync(result.Data.Id);
+
+            List<GameResponseDto> gameList = new();
+
+            foreach(var ug in resultUserGame.Data)
             {
-                return BadRequest(result.ValidationErrors);
+                var game = await _gameService.GetByIdAsync(ug.GameId);
+                if(!game.IsSuccess)
+                {
+                    return BadRequest(game.ValidationErrors);
+                }
+                gameList.Add(game.Data.GameResponseDtoMapper());
             }
 
-            return Ok(result.Data);
+            UserResponseDto responseDto = result.Data.UserResponseDtoMapper(gameList);
+
+            return !result.IsSuccess ? BadRequest(result.ValidationErrors) : Ok(responseDto);
         }
 
         [Authorize(Policy = "onlyOwner")]
@@ -190,13 +238,11 @@ namespace Imi.Project.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var deleteUserGame = await _userGameService.GetByUserIdAsync(id);
+            ServiceResultModel<IEnumerable<UserGame>> deleteUserGame = await _userGameService.GetByUserIdAsync(id);
 
             foreach(UserGame ug in deleteUserGame.Data)
             {
-                UserGameModel userGameModel = new() { UserId = ug.UserId, GameId = ug.GameId };
-
-                var resultUserGame = await _userGameService.DeleteAsync(userGameModel);
+                ServiceResultModel<UserGame> resultUserGame = await _userGameService.DeleteAsync(ug.MapToModel());
 
                 if(!resultUserGame.IsSuccess)
                 {
@@ -204,14 +250,9 @@ namespace Imi.Project.Api.Controllers
                 }
             }
 
-            var result = await _userService.DeleteAsync(id);
+            ServiceResultModel<ApplicationUser> result = await _userService.DeleteAsync(id);
 
-            if(!result.IsSuccess)
-            {
-                return BadRequest(result.ValidationErrors);
-            }
-
-            return Ok();
+            return !result.IsSuccess ? BadRequest(result.ValidationErrors) : Ok();
         }
     }
 }

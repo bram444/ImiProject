@@ -1,8 +1,9 @@
 ﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Sevices;
-using Imi.Project.Api.Core.Services.Models;
-using Imi.Project.Api.Dto.Game;
+using Imi.Project.Api.Core.Mapping;
+using Imi.Project.Api.Core.Models;
 using Imi.Project.Api.Dto.Genre;
+using Imi.Project.Api.Mapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,12 +29,8 @@ namespace Imi.Project.Api.Controllers
         {
             var result = await _genreService.ListAllAsync();
 
-            if(!result.IsSuccess)
-            {
-                return BadRequest(result.ValidationErrors);
-            }
-
-            return Ok(result.Data);
+            return !result.IsSuccess ? BadRequest(result.ValidationErrors) 
+                : Ok(result.Data.GenreResponseDtoMapper());
         }
 
         [HttpGet("{id}")]
@@ -41,12 +38,8 @@ namespace Imi.Project.Api.Controllers
         {
             var result = await _genreService.GetByIdAsync(id);
 
-            if(!result.IsSuccess)
-            {
-                return BadRequest(result.ValidationErrors);
-            }
-
-            return Ok(result.Data);
+            return !result.IsSuccess ? BadRequest(result.ValidationErrors) 
+                : Ok(result.Data.GenreResponseDtoMapper());
         }
 
         [HttpGet("{search}/genre")]
@@ -54,94 +47,64 @@ namespace Imi.Project.Api.Controllers
         {
             var result = await _genreService.SearchAsync(search);
 
-            if(!result.IsSuccess)
-            {
-                return BadRequest(result.ValidationErrors);
-            }
-
-            return Ok(result.Data);
+            return !result.IsSuccess ? BadRequest(result.ValidationErrors) 
+                : Ok(result.Data.GenreResponseDtoMapper());
         }
 
         [Authorize(Policy = "adminOnly")]
         [HttpPost]
-        public async Task<IActionResult> Post(GenreDto genreDto)
+        public async Task<IActionResult> Post(NewGenreRequestDto newGenreRequestDto)
         {
             if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var result = await _genreService.AddAsync(new GenreModel
-            {
-                Id = genreDto.Id,
-                Description = genreDto.Description,
-                Name = genreDto.Name
-            });
+            ServiceResultModel<Genre> result = await _genreService.AddAsync(newGenreRequestDto.NewGenreModelMapper());
 
-            if(!result.IsSuccess)
-            {
-                return BadRequest(result.ValidationErrors);
-            }
-
-            return CreatedAtAction(nameof(GetById), new { id = genreDto.Id }, result.Data);
+            return !result.IsSuccess
+                ? BadRequest(result.ValidationErrors)
+                : CreatedAtAction(nameof(GetById), new { id = result.Data.Id }, result.Data.GenreResponseDtoMapper());
         }
 
         [Authorize(Policy = "adminOnly")]
         [HttpPut]
-        public async Task<IActionResult> Put(GenreDto genreDto)
+        public async Task<IActionResult> Put(UpdateGenreRequestDto updateGenre)
         {
             if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var result = await _genreService.UpdateAsync(new GenreModel
-            {
-                Id = genreDto.Id,
-                Description = genreDto.Description,
-                Name = genreDto.Name
-            });
+            ServiceResultModel<Genre> result = await _genreService.UpdateAsync(updateGenre.UpdateGameModelMapper());
 
-            if(!result.IsSuccess)
-            {
-                return BadRequest(result.ValidationErrors);
-            }
-
-            return Ok(result.Data);
+            return !result.IsSuccess ? BadRequest(result.ValidationErrors) 
+                : Ok(result.Data.GenreResponseDtoMapper());
         }
 
         [Authorize(Policy = "adminOnly")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            var x = await _gameGenreService.GetByGenreIdAsync(id);
-            if(!x.IsSuccess)
+            ServiceResultModel<IEnumerable<GameGenre>> resultGameGenreList = await _gameGenreService.GetByGenreIdAsync(id);
+            if(!resultGameGenreList.IsSuccess)
             {
-                return BadRequest(x.ValidationErrors);
+                return BadRequest(resultGameGenreList.ValidationErrors);
             }
 
-            foreach(GameGenre gg in x.Data)
+            foreach(GameGenre gg in resultGameGenreList.Data)
             {
-                var res = await _gameGenreService.DeleteAsync(new GameGenreModel
-                {
-                    GameId = gg.GameId,
-                    GenreId = gg.GenreId
-                });
+                ServiceResultModel<GameGenre> resultGameGenre = await _gameGenreService.DeleteAsync(gg.MapToModel());
 
-                if(!res.IsSuccess)
+                if(!resultGameGenre.IsSuccess)
                 {
-                    return BadRequest(res.ValidationErrors);
+                    return BadRequest(resultGameGenre.ValidationErrors);
                 }
             }
 
-            var result = await _genreService.DeleteAsync(id);
+            ServiceResultModel<Genre> result = await _genreService.DeleteAsync(id);
 
-            if(!result.IsSuccess)
-            {
-                return BadRequest(result.ValidationErrors);
-            }
-
-            return Ok();
+            return !result.IsSuccess ? BadRequest(result.ValidationErrors) : Ok();
         }
     }
 }

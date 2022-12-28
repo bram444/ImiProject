@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Infrastructure.Repository
@@ -21,23 +22,23 @@ namespace Imi.Project.Api.Infrastructure.Repository
         {
             return _dbContext.Set<GameGenre>().AsQueryable();
         }
+
         public virtual async Task<IEnumerable<GameGenre>> ListAllAsync()
         {
             try
             {
                 return await _dbContext.Set<GameGenre>().AsNoTracking().ToListAsync();
-            }
-            catch(Exception ex)
+            } catch(Exception ex)
             {
                 throw new Exception("Something went wrong when getting all GameGenre", ex.InnerException);
             }
         }
+
         public virtual async Task<IEnumerable<GameGenre>> GetByGameIdAsync(Guid id)
         {
             try
             {
-                IEnumerable<GameGenre> gameGenre = await ListAllAsync();
-                return gameGenre.Where(gg => gg.GameId == id);
+                return await _dbContext.Set<GameGenre>().Where(gg => gg.GameId == id).AsNoTracking().ToListAsync();
             } catch(Exception ex)
             {
                 throw new Exception($"Something went wrong when getting all GameGenre with Game Id {id}", ex.InnerException);
@@ -47,20 +48,30 @@ namespace Imi.Project.Api.Infrastructure.Repository
         public virtual async Task<IEnumerable<GameGenre>> GetByGenreIdAsync(Guid id)
         {
             try
-            { 
-            IEnumerable<GameGenre> gameGenre = await ListAllAsync();
-            return gameGenre.Where(gg => gg.GenreId == id);
-        } catch(Exception ex)
+            {
+                return await _dbContext.Set<GameGenre>().Where(gg => gg.GenreId == id).AsNoTracking().ToListAsync();
+            } catch(Exception ex)
             {
                 throw new Exception($"Something went wrong when getting all GameGenre with genre Id {id}", ex.InnerException);
-    }
-}
+            }
+        }
+
+        public virtual async Task<bool> DoesExistAsync(Expression<Func<GameGenre, bool>> predicate)
+        {
+            try
+            {
+                return await _dbContext.Set<GameGenre>().Where(predicate).AnyAsync();
+            } catch(Exception ex)
+            {
+                throw new Exception($"Something went wrong when checking if {typeof(GameGenre).Name} already exists", ex.InnerException);
+            }
+        }
 
         public async Task AddAsync(GameGenre entity)
         {
             try
             {
-                _dbContext.Set<GameGenre>().Add(entity);
+                await _dbContext.Set<GameGenre>().AddAsync(entity);
                 await _dbContext.SaveChangesAsync();
             } catch(Exception ex)
             {

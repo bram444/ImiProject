@@ -1,14 +1,15 @@
 ﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Sevices;
-using Imi.Project.Api.Core.Services.Models;
-using Imi.Project.Api.Dto;
+using Imi.Project.Api.Core.Mapping;
+using Imi.Project.Api.Core.Models;
 using Imi.Project.Api.Dto.Game;
+using Imi.Project.Api.Dto.Genre;
+using Imi.Project.Api.Mapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Imi.Project.Api.Controllers
 {
-
     [Authorize]
     [Authorize(Policy = "approved")]
     [Route("api/[controller]")]
@@ -18,37 +19,34 @@ namespace Imi.Project.Api.Controllers
         protected readonly IGameService _gameService;
         private readonly IGameGenreService _gameGenreService;
         private readonly IUserGameService _userGameService;
-        public GameController(IGameService gameService, IGameGenreService gameGenreService, IUserGameService userGameService)
+        private readonly IGenreService _genreService;
+        private readonly IPublisherService _publisherService;
+
+        public GameController(IGameService gameService, IGameGenreService gameGenreService,
+            IUserGameService userGameService, IGenreService genreService,
+            IPublisherService publisherService)
         {
             _gameService = gameService;
             _gameGenreService = gameGenreService;
             _userGameService = userGameService;
+            _genreService = genreService;
+            _publisherService = publisherService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var result = new ServiceResultModel<IEnumerable<GameDto>>();
-
             ServiceResultModel<IEnumerable<Game>> serviceGame = await _gameService.ListAllAsync();
 
             if(!serviceGame.IsSuccess)
             {
-                return BadRequest(result.ValidationErrors);
+                return BadRequest(serviceGame.ValidationErrors);
             }
 
-            List<GameDto> gameList = new();
+            List<GameResponseDto> gameList = new();
 
             foreach(Game game in serviceGame.Data)
             {
-                GameDto gameModel = new()
-                {
-                    Id = game.Id,
-                    Name = game.Name,
-                    Price = game.Price,
-                    PublisherId = game.PublisherId,
-                };
-
                 var serviceGameGenre = await _gameGenreService.GetByGameIdAsync(game.Id);
 
                 if(!serviceGameGenre.IsSuccess)
@@ -56,44 +54,43 @@ namespace Imi.Project.Api.Controllers
                     return BadRequest(serviceGameGenre.ValidationErrors);
                 }
 
-                List<Guid> listgenre = new();
+                List<GenreResponseDto> genreResponseDtos = new();
 
-                foreach(var gg in serviceGameGenre.Data)
+                foreach(GameGenre gg in serviceGameGenre.Data)
                 {
-                    listgenre.Add(gg.GenreId);
+                    var genreResult = await _genreService.GetByIdAsync(gg.GenreId);
+
+                    if(!genreResult.IsSuccess)
+                    {
+                        return BadRequest(genreResult.ValidationErrors);
+                    }
+
+                    genreResponseDtos.Add(genreResult.Data.GenreResponseDtoMapper());
                 }
 
-                gameModel.GenreId = listgenre;
+                var publisherResult= await _publisherService.GetByIdAsync(game.PublisherId);
 
-                gameList.Add(gameModel);
+                if(!publisherResult.IsSuccess)
+                {
+                    return BadRequest(publisherResult.ValidationErrors);
+                }
+
+                gameList.Add(game.GameResponseDtoMapper(genreResponseDtos, publisherResult.Data.PublisherResponseDtoMapper()));
             }
 
-            result.Data = gameList;
-
-            return Ok(result.Data);
+            return Ok(gameList);
         }
 
         [Authorize(Policy = "onlyAdults")]
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(Guid id)
+        public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
-            var result = new ServiceResultModel<GameDto>();
-
-
             ServiceResultModel<Game> serviceGame = await _gameService.GetByIdAsync(id);
 
             if(!serviceGame.IsSuccess)
             {
                 return BadRequest(serviceGame.ValidationErrors);
             }
-
-            result.Data = new GameDto
-            {
-                Id = serviceGame.Data.Id,
-                Name = serviceGame.Data.Name,
-                Price = serviceGame.Data.Price,
-                PublisherId = serviceGame.Data.PublisherId
-            };
 
             var serviceGameGenre = await _gameGenreService.GetByGameIdAsync(id);
 
@@ -102,43 +99,46 @@ namespace Imi.Project.Api.Controllers
                 return BadRequest(serviceGameGenre.ValidationErrors);
             }
 
-            List<Guid> listgenre = new();
+            List<GenreResponseDto> genreResponseDtos = new();
 
-            foreach(var gg in serviceGameGenre.Data)
+            foreach(GameGenre gg in serviceGameGenre.Data)
             {
-                listgenre.Add(gg.GenreId);
+                var genreResult = await _genreService.GetByIdAsync(gg.GenreId);
+
+                if(!genreResult.IsSuccess)
+                {
+                    return BadRequest(genreResult.ValidationErrors);
+                }
+
+                genreResponseDtos.Add(genreResult.Data.GenreResponseDtoMapper());
             }
 
-            result.Data.GenreId = listgenre;
+            var publisherResult = await _publisherService.GetByIdAsync(serviceGame.Data.PublisherId);
 
-            return Ok(result.Data);
+            if(!publisherResult.IsSuccess)
+            {
+                return BadRequest(publisherResult.ValidationErrors);
+            }
+
+            return Ok(serviceGame.Data.GameResponseDtoMapper(genreResponseDtos
+                ,publisherResult.Data.PublisherResponseDtoMapper()));
         }
 
         [Authorize(Policy = "onlyAdults")]
         [HttpGet("{search}/name")]
         public async Task<IActionResult> GetGamesByName(string search)
         {
-            var result = new ServiceResultModel<IEnumerable<GameDto>>();
-
-            var serviceGame = await _gameService.SearchAsync(search);
+            ServiceResultModel<IEnumerable<Game>> serviceGame = await _gameService.SearchAsync(search);
 
             if(!serviceGame.IsSuccess)
             {
                 return BadRequest(serviceGame.ValidationErrors);
             }
 
-            List<GameDto> model = new();
+            List<GameResponseDto> gameList = new();
 
-            foreach(var game in serviceGame.Data)
+            foreach(Game game in serviceGame.Data)
             {
-                GameDto gameModel = new()
-                {
-                    Id = game.Id,
-                    Name = game.Name,
-                    Price = game.Price,
-                    PublisherId = game.PublisherId,
-                };
-
                 var serviceGameGenre = await _gameGenreService.GetByGameIdAsync(game.Id);
 
                 if(!serviceGameGenre.IsSuccess)
@@ -146,48 +146,48 @@ namespace Imi.Project.Api.Controllers
                     return BadRequest(serviceGameGenre.ValidationErrors);
                 }
 
-                List<Guid> listgenre = new();
+                List<GenreResponseDto> genreResponseDtos = new();
 
-                foreach(var gg in serviceGameGenre.Data)
+                foreach(GameGenre gg in serviceGameGenre.Data)
                 {
-                    listgenre.Add(gg.GenreId);
+                    var genreResult = await _genreService.GetByIdAsync(gg.GenreId);
+
+                    if(!genreResult.IsSuccess)
+                    {
+                        return BadRequest(genreResult.ValidationErrors);
+                    }
+
+                    genreResponseDtos.Add(genreResult.Data.GenreResponseDtoMapper());
                 }
 
-                gameModel.GenreId = listgenre;
+                var publisherResult = await _publisherService.GetByIdAsync(game.PublisherId);
 
-                model.Add(gameModel);
+                if(!publisherResult.IsSuccess)
+                {
+                    return BadRequest(publisherResult.ValidationErrors);
+                }
+
+                gameList.Add(game.GameResponseDtoMapper(genreResponseDtos, publisherResult.Data.PublisherResponseDtoMapper()));
             }
 
-            result.Data = model;
-
-            return Ok(result.Data);
+            return Ok(gameList);
         }
 
         [Authorize(Policy = "onlyAdults")]
         [HttpGet("{id}/publishers")]
-        public async Task<IActionResult> GetGamesByPublisher(Guid id)
+        public async Task<IActionResult> GetGamesByPublisher([FromRoute] Guid id)
         {
-            var result = new ServiceResultModel<IEnumerable<GameDto>>();
-
-            var serviceGame = await _gameService.GetByPublisherIdAsync(id);
+            ServiceResultModel<IEnumerable<Game>> serviceGame = await _gameService.GetByPublisherIdAsync(id);
 
             if(!serviceGame.IsSuccess)
             {
                 return BadRequest(serviceGame.ValidationErrors);
             }
 
-            List<GameDto> model = new();
+            List<GameResponseDto> listGame = new();
 
-            foreach(var game in serviceGame.Data)
+            foreach(Game game in serviceGame.Data)
             {
-                GameDto gameModel = new()
-                {
-                    Id = game.Id,
-                    Name = game.Name,
-                    Price = game.Price,
-                    PublisherId = game.PublisherId,
-                };
-
                 var serviceGameGenre = await _gameGenreService.GetByGameIdAsync(game.Id);
 
                 if(!serviceGameGenre.IsSuccess)
@@ -195,108 +195,136 @@ namespace Imi.Project.Api.Controllers
                     return BadRequest(serviceGameGenre.ValidationErrors);
                 }
 
-                List<Guid> listgenre = new();
+                List<GenreResponseDto> genreResponseDtos = new();
 
-                foreach(var gg in serviceGameGenre.Data)
+                foreach(GameGenre gg in serviceGameGenre.Data)
                 {
-                    listgenre.Add(gg.GenreId);
+                    var genreResult = await _genreService.GetByIdAsync(gg.GenreId);
+
+                    if(!genreResult.IsSuccess)
+                    {
+                        return BadRequest(genreResult.ValidationErrors);
+                    }
+
+                    genreResponseDtos.Add(genreResult.Data.GenreResponseDtoMapper());
                 }
 
-                gameModel.GenreId = listgenre;
+                var publisherResult = await _publisherService.GetByIdAsync(game.PublisherId);
 
-                model.Add(gameModel);
+                if(!publisherResult.IsSuccess)
+                {
+                    return BadRequest(publisherResult.ValidationErrors);
+                }
+
+                listGame.Add(game.GameResponseDtoMapper(genreResponseDtos, publisherResult.Data.PublisherResponseDtoMapper()));
             }
 
-            result.Data = model;
-
-
-            return Ok(result.Data);
+            return Ok(listGame);
         }
 
         [Authorize(Policy = "adminOnly")]
         [HttpPost]
-        public async Task<IActionResult> Post(GameDto gameDto)
+        public async Task<IActionResult> Post(NewGameRequestDto newGameRequest)
         {
             if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var result = new ServiceResultModel<Game>();
+            var newGameModel = newGameRequest.NewGameModelMapper();
 
-            result = await _gameService.AddAsync(new GameModel
-            {
-                Id = gameDto.Id,
-                Name = gameDto.Name,
-                Price = gameDto.Price,
-                PublisherId = gameDto.PublisherId,
-                 GenreId = gameDto.GenreId,
-            });
+            var result = await _gameService.AddAsync(newGameModel);
 
             if(!result.IsSuccess)
             {
                 return BadRequest(result.ValidationErrors);
             }
 
-            foreach(Guid genreId in gameDto.GenreId.Distinct())
-            {
-                GameGenreModel gameGenreResponseDto = new() { GenreId = genreId, GameId = gameDto.Id };
-                var addGameGenre = await _gameGenreService.AddAsync(gameGenreResponseDto);
+            List<GenreResponseDto> genreResponseDtos = new();
 
-                if(!addGameGenre.IsSuccess)
+            foreach(Guid genreId in newGameModel.GenreId)
+            {
+                var genreResult = await _genreService.GetByIdAsync(genreId);
+
+                if(!genreResult.IsSuccess)
                 {
-                    return BadRequest(addGameGenre.ValidationErrors);
+                    return BadRequest(genreResult.ValidationErrors);
                 }
+
+                var gameGenre =await _gameGenreService.AddAsync(MapperGameGenre.GameGenreModelMapper(genreId, result.Data.Id));
+
+                if(!gameGenre.IsSuccess)
+                {
+                    return BadRequest(gameGenre.ValidationErrors);
+                }
+
+                genreResponseDtos.Add(genreResult.Data.GenreResponseDtoMapper());
             }
 
-            return CreatedAtAction(nameof(GetById), new { id = gameDto.Id }, result.Data);
+            var publisherResult = await _publisherService.GetByIdAsync(newGameModel.PublisherId);
+
+            if(!publisherResult.IsSuccess)
+            {
+                return BadRequest(publisherResult.ValidationErrors);
+            }
+
+            return CreatedAtAction(nameof(GetById), new { id = result.Data.Id },
+                result.Data.GameResponseDtoMapper(genreResponseDtos, publisherResult.Data.PublisherResponseDtoMapper()));
         }
 
         [Authorize(Policy = "adminOnly")]
         [HttpPut]
-        public async Task<IActionResult> Put(GameDto gameDto)
+        public async Task<IActionResult> Put(UpdateGameRequestDto updateGameRequest)
         {
             if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var result = await _gameService.UpdateAsync(new GameModel
-            {
-                Id = gameDto.Id,
-                Name = gameDto.Name,
-                Price = gameDto.Price,
-                PublisherId = gameDto.PublisherId,
-                GenreId = gameDto.GenreId
-            });
+            ServiceResultModel<Game> result = await _gameService.UpdateAsync(updateGameRequest.UpdateGameModelMapper());
 
             if(!result.IsSuccess)
             {
                 return BadRequest(result.ValidationErrors);
             }
 
-            var resultGameGenre = await _gameGenreService.EditGameGenreAsync(new GameModel
-            {
-                Id = gameDto.Id,
-                Name = gameDto.Name,
-                Price = gameDto.Price,
-                PublisherId = gameDto.PublisherId,
-                GenreId = gameDto.GenreId
-            });
+            var resultGameGenre = await _gameGenreService.EditGameGenreAsync(updateGameRequest.UpdateGameGenreModelMapper());
 
             if(!resultGameGenre.IsSuccess)
             {
                 return BadRequest(resultGameGenre.ValidationErrors);
             }
 
-            return Ok(result.Data);
+            List<GenreResponseDto> genreResponseDtos = new();
+
+            foreach(var gg in resultGameGenre.Data)
+            {
+                var genreResult = await _genreService.GetByIdAsync(gg.GenreId);
+
+                if(!genreResult.IsSuccess)
+                {
+                    return BadRequest(genreResult.ValidationErrors);
+                }
+
+                genreResponseDtos.Add(genreResult.Data.GenreResponseDtoMapper());
+            }
+
+            var publisherResult = await _publisherService.GetByIdAsync(updateGameRequest.PublisherId);
+
+            if(!publisherResult.IsSuccess)
+            {
+                return BadRequest(publisherResult.ValidationErrors);
+            }
+
+            return Ok(result.Data.GameResponseDtoMapper(genreResponseDtos,
+                publisherResult.Data.PublisherResponseDtoMapper()));
         }
 
         [Authorize(Policy = "adminOnly")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            var result = await _gameService.DeleteAsync(id);
+            ServiceResultModel<Game> result = await _gameService.DeleteAsync(id);
 
             if(!result.IsSuccess)
             {
@@ -307,11 +335,7 @@ namespace Imi.Project.Api.Controllers
 
             foreach(GameGenre gg in gameGenre.Data)
             {
-                var deleteGenreGame = await _gameGenreService.DeleteAsync(new GameGenreModel
-                {
-                    GameId = gg.GameId,
-                    GenreId = gg.GenreId
-                });
+                ServiceResultModel<GameGenre> deleteGenreGame = await _gameGenreService.DeleteAsync(gg.MapToModel());
 
                 if(!deleteGenreGame.IsSuccess)
                 {
@@ -319,12 +343,11 @@ namespace Imi.Project.Api.Controllers
                 }
             }
 
-            var userGame = await _userGameService.GetByGameIdAsync(id);
-
+            ServiceResultModel<IEnumerable<UserGame>> userGame = await _userGameService.GetByGameIdAsync(id);
 
             foreach(UserGame ug in userGame.Data)
             {
-                var deleteUserGame = await _userGameService.DeleteAsync(new UserGameModel { UserId = ug.UserId, GameId = ug.GameId });
+                ServiceResultModel<UserGame> deleteUserGame = await _userGameService.DeleteAsync(ug.MapToModel());
 
                 if(!deleteUserGame.IsSuccess)
                 {

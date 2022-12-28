@@ -4,10 +4,8 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Services
 {
@@ -22,12 +20,11 @@ namespace Imi.Project.Api.Core.Services
 
         public JwtSecurityToken GenerateToken(List<Claim> userClaims)
         {
-            var claims = new List<Claim>();
+            List<Claim> claims = new();
             claims.AddRange(userClaims);
-            var expirationDays = int.Parse(_configuration["JWTConfiguration:TokenExpirationDays"]);
-            var signinKey = _configuration["JWTConfiguration:SigninKey"];
-            var token = new JwtSecurityToken
-            (
+            int expirationDays = int.Parse(_configuration["JWTConfiguration:TokenExpirationDays"]);
+            string signinKey = _configuration["JWTConfiguration:SigninKey"];
+            JwtSecurityToken token = new(
                 issuer: _configuration["JWTConfiguration:Issuer"],
                 audience: _configuration["JWTConfiguration:Audience"],
                 claims: claims,

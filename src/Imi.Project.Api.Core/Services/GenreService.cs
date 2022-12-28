@@ -1,58 +1,41 @@
 ﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Repository;
 using Imi.Project.Api.Core.Interfaces.Sevices;
+using Imi.Project.Api.Core.Mapping;
 using Imi.Project.Api.Core.Models;
-using Imi.Project.Api.Core.Services.Models;
+using Imi.Project.Api.Core.Models.Genre;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Services
 {
-    public class GenreService : IGenreService
+    public class GenreService:BaseService<Genre,IGenreRepository>, IGenreService
     {
-        private readonly IGenreRepository _genreRepository;
-
-        public GenreService(IGenreRepository genreRepository)
+        public GenreService(IGenreRepository genreRepository):base(genreRepository)
         {
-            _genreRepository = genreRepository;
         }
 
-        public async Task<ServiceResultModel<Genre>> AddAsync(GenreModel entity)
+        public async Task<ServiceResultModel<Genre>> AddAsync(NewGenreModel entity)
         {
             ServiceResultModel<Genre> result = new();
 
             try
             {
-                var allgenres = await _genreRepository.SearchAsync(entity.Name);
-
-                if(allgenres.Any(genre => (genre.Name == entity.Name) && (genre.Id != entity.Id)) && allgenres.Any())
+                if(await _itemRepository.DoesExistAsync(genre => genre.Name == entity.Name))
                 {
                     result.IsSuccess = false;
                     result.ValidationErrors.Add(new ValidationResult($"Genre with name {entity.Name} already exists"));
-                }
-
-                if(!result.IsSuccess)
-                {
                     return result;
                 }
 
-                Genre genre = new()
-                {
-                    Id = entity.Id,
-                    Name = entity.Name,
-                    Description = entity.Description
-                };
+                Genre genre = entity.MapToEntity();
 
-                await _genreRepository.AddAsync(genre);
+                await _itemRepository.AddAsync(genre);
 
-                result.IsSuccess = true;
                 result.Data = genre;
                 return result;
-            }
-            catch (Exception ex)
+            } catch(Exception ex)
             {
                 result.IsSuccess = false;
                 result.ValidationErrors.Add(new ValidationResult(ex.Message));
@@ -64,127 +47,19 @@ namespace Imi.Project.Api.Core.Services
             }
         }
 
-        public async Task<ServiceResultModel<Genre>> DeleteAsync(Guid id)
+        public async Task<ServiceResultModel<Genre>> UpdateAsync(UpdateGenreModel entity)
         {
             ServiceResultModel<Genre> result = new();
 
-            if (await _genreRepository.GetByIdAsync(id) == null)
-            {
-                result.IsSuccess = false;
-                result.ValidationErrors.Add(new ValidationResult("Genre does not exist"));
-                return result;
-            }
-
             try
             {
-
-                await _genreRepository.DeleteAsync(await _genreRepository.GetByIdAsync(id));
-                result.IsSuccess = true;
-                return result;
-            }
-            catch (Exception ex)
-            {
-                result.IsSuccess = false;
-                result.ValidationErrors.Add(new ValidationResult(ex.Message));
-                if(ex.InnerException != null)
-                {
-                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
-                }
-                return result;
-            }
-        }
-
-        public async Task<ServiceResultModel<Genre>> GetByIdAsync(Guid id)
-        {
-            ServiceResultModel<Genre> result = new();
-            try
-            {
-                Genre genre = await _genreRepository.GetByIdAsync(id);
-                if(genre == null)
-                {
-                    result.IsSuccess = false;
-                    result.ValidationErrors.Add(new ValidationResult("Genre soes not exist"));
-                    return result;
-                }
-
-                result.IsSuccess = true;
-                result.Data = genre;
-                return result;
-            }
-            catch (Exception ex)
-            {
-                result.IsSuccess = false;
-                result.ValidationErrors.Add(new ValidationResult(ex.Message));
-                if(ex.InnerException != null)
-                {
-                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
-                }
-                return result;
-            }
-        }
-
-        public async Task<ServiceResultModel<IEnumerable<Genre>>> ListAllAsync()
-        {
-            ServiceResultModel<IEnumerable<Genre>> result = new();
-            try
-            {
-                result.Data = await _genreRepository.ListAllAsync();
-                result.IsSuccess = true;
-                return result;
-
-            }
-            catch (Exception ex)
-            {
-                result.IsSuccess = false;
-                result.ValidationErrors.Add(new ValidationResult(ex.Message));
-                if(ex.InnerException != null)
-                {
-                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
-                }
-                return result;
-            }
-        }
-
-        public async Task<ServiceResultModel<IEnumerable<Genre>>> SearchAsync(string search)
-        {
-            ServiceResultModel<IEnumerable<Genre>> result = new();
-            try
-            {
-                result.Data = await _genreRepository.SearchAsync(search);
-                result.IsSuccess = true;
-                return result;
-
-            }
-            catch (Exception ex)
-            {
-                result.IsSuccess = false;
-                result.ValidationErrors.Add(new ValidationResult(ex.Message));
-                if(ex.InnerException != null)
-                {
-                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
-                }
-                return result;
-            }
-        }
-
-        public async Task<ServiceResultModel<Genre>> UpdateAsync(GenreModel entity)
-        {
-            ServiceResultModel<Genre> result = new()
-            {
-                IsSuccess = true,
-            };
-
-            try
-            {
-                if(await _genreRepository.GetByIdAsync(entity.Id) == null)
+                if(!await _itemRepository.DoesExistAsync(entity.Id))
                 {
                     result.IsSuccess = false;
                     result.ValidationErrors.Add(new ValidationResult("Genre does not exist"));
                 }
 
-                var allgenres = await _genreRepository.SearchAsync(entity.Name);
-
-                if(allgenres.Any(genre => (genre.Name == entity.Name) && (genre.Id != entity.Id))&& allgenres.Any())
+                if(await _itemRepository.DoesExistAsync(genre => genre.Name == entity.Name && (genre.Id != entity.Id)))
                 {
                     result.IsSuccess = false;
                     result.ValidationErrors.Add(new ValidationResult($"Genre with name {entity.Name} already exists"));
@@ -195,24 +70,14 @@ namespace Imi.Project.Api.Core.Services
                     return result;
                 }
 
-                await _genreRepository.UpdateAsync(new Genre
-                {
-                    Id = entity.Id,
-                    Name = entity.Name,
-                    Description = entity.Description
-                });
+                Genre genre = entity.MapToEntity();
 
-                result.IsSuccess = true;
-                result.Data = new Genre
-                {
-                    Id = entity.Id,
-                    Name = entity.Name,
-                    Description = entity.Description
-                };
+                await _itemRepository.UpdateAsync(genre);
+
+                result.Data = genre;
                 return result;
 
-            }
-            catch (Exception ex)
+            } catch(Exception ex)
             {
                 result.IsSuccess = false;
                 result.ValidationErrors.Add(new ValidationResult(ex.Message));

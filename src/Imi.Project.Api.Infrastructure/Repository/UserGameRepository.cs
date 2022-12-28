@@ -36,7 +36,7 @@ namespace Imi.Project.Api.Infrastructure.Repository
         {
             try
             {
-                return await _dbContext.Set<UserGame>().AsNoTracking().Where(ug => ug.GameId == id).ToListAsync();
+                return await _dbContext.Set<UserGame>().Where(ug => ug.GameId == id).AsNoTracking().ToListAsync();
             } catch(Exception ex)
             {
                 throw new Exception($"Something went wrong when getting all UserGame with Game Id {id}", ex.InnerException);
@@ -47,7 +47,7 @@ namespace Imi.Project.Api.Infrastructure.Repository
         {
             try
             {
-                return await _dbContext.Set<UserGame>().AsNoTracking().Where(ug => ug.UserId == id).ToListAsync();
+                return await _dbContext.Set<UserGame>().Where(ug => ug.UserId == id).AsNoTracking().ToListAsync();
             } catch(Exception ex)
             {
                 throw new Exception($"Something went wrong when getting all UserGame with User Id {id}", ex.InnerException);
@@ -58,7 +58,7 @@ namespace Imi.Project.Api.Infrastructure.Repository
         {
             try
             {
-                _dbContext.Set<UserGame>().Add(entity);
+                await _dbContext.Set<UserGame>().AddAsync(entity);
                 await _dbContext.SaveChangesAsync();
             } catch(Exception ex)
             {
