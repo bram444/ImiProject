@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Imi.Project.Api.Core.Services.Models
+namespace Imi.Project.Api.Core.Models.Publisher
 {
-    public class GenreModel
+    public class UpdatePublisherModel
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public string Description { get; set; }
+        public string Country { get; set; }
     }
 }

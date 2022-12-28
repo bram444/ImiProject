@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Imi.Project.Api.Core.Services.Models
+namespace Imi.Project.Api.Core.Models.Publisher
 {
-    public class PublisherModel
+    public class NewPublisherModel
     {
-        public Guid Id { get; set; }
         public string Name { get; set; }
         public string Country { get; set; }
     }

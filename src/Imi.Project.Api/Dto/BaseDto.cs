@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Imi.Project.Api.Dto
+﻿namespace Imi.Project.Api.Dto
 {
     public abstract class BaseDto
     {

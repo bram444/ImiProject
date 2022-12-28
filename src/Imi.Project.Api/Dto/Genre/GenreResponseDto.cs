@@ -2,9 +2,8 @@
 
 namespace Imi.Project.Api.Dto.Genre
 {
-    public class GenreDto: BaseDto
+    public class GenreResponseDto: BaseDto
     {
-        [Required]
         public string Name { get; set; }
         public string Description { get; set; }
     }

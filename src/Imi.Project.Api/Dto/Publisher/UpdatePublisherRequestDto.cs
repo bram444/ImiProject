@@ -2,7 +2,7 @@
 
 namespace Imi.Project.Api.Dto.Publisher
 {
-    public class PublisherDto: BaseDto
+    public class UpdatePublisherRequestDto:BaseDto
     {
         [Required]
         public string Name { get; set; }

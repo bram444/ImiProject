@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Imi.Project.Api.Dto.Game
 {
-    public class GameDto: BaseDto
+    public class NewGameRequestDto
     {
         [Required]
         public string Name { get; set; }

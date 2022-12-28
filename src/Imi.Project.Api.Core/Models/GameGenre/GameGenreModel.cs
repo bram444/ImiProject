@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Imi.Project.Api.Core.Services.Models
+namespace Imi.Project.Api.Core.Models.GameGenre
 {
     public class GameGenreModel
     {

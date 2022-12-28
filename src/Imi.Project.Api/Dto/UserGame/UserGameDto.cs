@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Imi.Project.Api.Dto.UserGame
+﻿namespace Imi.Project.Api.Dto.UserGame
 {
     public class UserGameDto
     {

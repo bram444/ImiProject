@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Imi.Project.Api.Dto.Game;
 
-namespace Imi.Project.Api.Core.Services.Models
+namespace Imi.Project.Api.Dto.User
 {
-    public class RegisterModel
+    public class UserResponseDto:BaseDto
     {
         public string Password { get; set; }
-
-        public string ConfirmPassword { get; set; }
 
         public string UserName { get; set; }
 
@@ -20,6 +13,8 @@ namespace Imi.Project.Api.Core.Services.Models
         public string LastName { get; set; }
 
         public string Email { get; set; }
+
+        public ICollection<GameResponseDto> Games { get; set; }
 
         public bool ApprovedTerms { get; set; }
 

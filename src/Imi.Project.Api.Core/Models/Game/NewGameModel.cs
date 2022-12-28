@@ -5,17 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Imi.Project.Api.Core.Services.Models
+namespace Imi.Project.Api.Core.Models.Game
 {
-    public class GameModel
+    public class NewGameModel
     {
-        public Guid Id { get; set; }
         public string Name { get; set; }
 
         public float Price { get; set; }
 
         public Guid PublisherId { get; set; }
 
-        public ICollection<Guid> GenreId { get; set; }
+        public IEnumerable<Guid> GenreId { get; set; }
     }
 }

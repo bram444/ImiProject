@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Imi.Project.Api.Dto.Game;
+using System.ComponentModel.DataAnnotations;
 
-namespace Imi.Project.Api.Dto.Authentication
+namespace Imi.Project.Api.Dto.User
 {
-    public class RegisterDto
+    public class UpdateUserRequestDto:BaseDto
     {
         [Required]
         [StringLength(100, MinimumLength = 6)]
@@ -22,14 +23,9 @@ namespace Imi.Project.Api.Dto.Authentication
         [Required]
         public string LastName { get; set; }
 
-        [Required]
-        [DataType(DataType.EmailAddress)]
-        public string Email { get; set; }
+        public ICollection<Guid> GameId { get; set; }
 
         [Required]
         public bool ApprovedTerms { get; set; }
-
-        [Required]
-        public DateTime BirthDay { get; set; }
     }
 }
