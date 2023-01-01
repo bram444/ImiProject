@@ -2,9 +2,8 @@
 
 namespace Imi.Project.Api.Core.Models.UserGame
 {
-    public class UserGameModel
+    public class UserGameModel: BaseGameMTMModel
     {
         public Guid UserId { get; set; }
-        public Guid GameId { get; set; }
     }
 }

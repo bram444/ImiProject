@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 
-namespace Imi.Project.Api.Infrastructure
+namespace Imi.Project.Api.Infrastructure.Data
 {
-    public class ApplicationDbContext: IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
     {
         public DbSet<Game> Games { get; set; }
 
@@ -60,7 +60,6 @@ namespace Imi.Project.Api.Infrastructure
             UserSeeder.Seed(modelBuilder);
 
             base.OnModelCreating(modelBuilder);
-
         }
     }
 }

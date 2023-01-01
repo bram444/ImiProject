@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Interfaces.Sevices
 {
-    public interface IPublisherService:IBaseService<Publisher>
+    public interface IPublisherService:IBaseService<Publisher,NewPublisherModel, UpdatePublisherModel>
     {
         Task<ServiceResultModel<IEnumerable<Publisher>>> SearchByCountryAsync(string country);
-        Task<ServiceResultModel<Publisher>> AddAsync(NewPublisherModel response);
-        Task<ServiceResultModel<Publisher>> UpdateAsync(UpdatePublisherModel response);
     }
 }

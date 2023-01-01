@@ -1,5 +1,4 @@
-﻿using Imi.Project.Api.Dto.Game;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Imi.Project.Api.Dto.User
 {

@@ -25,7 +25,7 @@ namespace Imi.Project.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            AuthenticateResult result = await _authenticationService.RegisterAsync(registration.RegistrationModelMapper());
+            AuthenticationResult result = await _authenticationService.RegisterAsync(registration.MapToModel());
 
             return !result.IsSuccess ? BadRequest(result.Messages) : Ok();
         }
@@ -33,9 +33,9 @@ namespace Imi.Project.Api.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
         {
-            AuthenticateResult result = await _authenticationService.Login(loginRequestDto.LoginRequestModelMapper());
+            AuthenticationResult result = await _authenticationService.Login(loginRequestDto.MapToModel());
 
-            return !result.IsSuccess ? BadRequest(result.Messages) : Ok(result.LoginResponseDto());
+            return !result.IsSuccess ? BadRequest(result.Messages) : Ok(result.MapToDto());
         }
     }
 }

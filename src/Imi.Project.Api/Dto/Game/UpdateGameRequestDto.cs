@@ -2,7 +2,7 @@
 
 namespace Imi.Project.Api.Dto.Game
 {
-    public class UpdateGameRequestDto:BaseDto
+    public class UpdateGameRequestDto: BaseDto
     {
         [Required]
         public string Name { get; set; }

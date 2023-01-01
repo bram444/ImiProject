@@ -1,10 +1,11 @@
 ﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Sevices;
-using Imi.Project.Api.Core.Models.Authentiction;
+using Imi.Project.Api.Core.Models.Authentication;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -23,39 +24,33 @@ namespace Imi.Project.Api.Core.Services
             _jwtService = jwtService;
         }
 
-        public async Task<AuthenticateResult> RegisterAsync(RegistrationModel registration)
+        public async Task<AuthenticationResult> RegisterAsync(RegistrationModel registration)
         {
-            ApplicationUser newUser = new()
-            {
-                ApprovedTerms = registration.ApprovedTerms,
-                Email = registration.Email,
-                UserName = registration.UserName,
-                FirstName = registration.FirstName,
-                LastName = registration.LastName,
-                Id = Guid.NewGuid(),
-                BirthDay = registration.BirthDay,
-                NormalizedEmail = registration.Email.Normalize(),
-                NormalizedUserName = registration.UserName.Normalize(),
-                SecurityStamp = Guid.NewGuid().ToString(),
-                ConcurrencyStamp = Guid.NewGuid().ToString(),
-            };
-
             try
             {
+                ApplicationUser newUser = new()
+                {
+                    ApprovedTerms = registration.ApprovedTerms,
+                    Email = registration.Email,
+                    UserName = registration.UserName,
+                    FirstName = registration.FirstName,
+                    LastName = registration.LastName,
+                    Id = Guid.NewGuid(),
+                    BirthDay = registration.BirthDay,
+                    NormalizedEmail = registration.Email.Normalize(),
+                    NormalizedUserName = registration.UserName.Normalize(),
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    ConcurrencyStamp = Guid.NewGuid().ToString(),
+                };
+
                 IdentityResult result = await _userManager.CreateAsync(newUser, registration.Password);
 
                 if(!result.Succeeded)
                 {
-                    List<string> errors = new();
-                    foreach(IdentityError error in result.Errors)
-                    {
-                        errors.Add(error.Description);
-                    }
-
-                    return new AuthenticateResult
+                    return new AuthenticationResult
                     {
                         IsSuccess = false,
-                        Messages = errors
+                        Messages = result.Errors.Select(error=>error.Description).ToList()
                     };
                 }
 
@@ -64,13 +59,14 @@ namespace Imi.Project.Api.Core.Services
                 await _userManager.AddClaimAsync(newUser, new Claim("approved", registration.ApprovedTerms.ToString()));
                 await _userManager.AddToRoleAsync(newUser, "User");
 
-                return new AuthenticateResult
+                return new AuthenticationResult
                 {
                     Messages = new List<string> { "Succesfully registered" }
                 };
+
             } catch(Exception ex)
             {
-                return new AuthenticateResult
+                return new AuthenticationResult
                 {
                     IsSuccess = false,
                     Messages = new List<string> { ex.Message }
@@ -78,7 +74,7 @@ namespace Imi.Project.Api.Core.Services
             }
         }
 
-        public async Task<AuthenticateResult> Login(LoginRequestModel loginUser)
+        public async Task<AuthenticationResult> Login(LoginRequestModel loginUser)
         {
             try
             {
@@ -86,7 +82,7 @@ namespace Imi.Project.Api.Core.Services
 
                 if(!result.Succeeded)
                 {
-                    return new AuthenticateResult
+                    return new AuthenticationResult
                     {
                         IsSuccess = false,
                         Messages = new List<string> { "Login failed!" }
@@ -99,11 +95,11 @@ namespace Imi.Project.Api.Core.Services
 
                 JwtSecurityToken jwtSecurityToken = _jwtService.GenerateToken(listClaims);
 
-                return new AuthenticateResult { Token = _jwtService.SerializeToken(jwtSecurityToken) };
+                return new AuthenticationResult { Token = _jwtService.SerializeToken(jwtSecurityToken) };
 
             } catch(Exception ex)
             {
-                return new AuthenticateResult
+                return new AuthenticationResult
                 {
                     IsSuccess = false,
                     Messages = new List<string> { ex.Message }
@@ -118,10 +114,11 @@ namespace Imi.Project.Api.Core.Services
 
         private async Task<List<Claim>> GetClaims(ApplicationUser user)
         {
-            List<Claim> claims = new();
 
             // Loading the user Claims 
             IList<Claim> userClaims = await _userManager.GetClaimsAsync(user);
+
+            List<Claim> claims = new();
 
             claims.AddRange(userClaims);
 

@@ -3,7 +3,7 @@ using Imi.Project.Api.Core.Interfaces.Repository;
 using Imi.Project.Api.Core.Interfaces.Sevices;
 using Imi.Project.Api.Core.Services;
 using Imi.Project.Api.Dto.User;
-using Imi.Project.Api.Infrastructure;
+using Imi.Project.Api.Infrastructure.Data;
 using Imi.Project.Api.Infrastructure.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -53,8 +53,8 @@ builder.Services.AddAuthorization(options =>
         {
             var adultClaimValue = context.User.Claims
                          .SingleOrDefault(c => c.Type == ClaimTypes.DateOfBirth)?.Value;
-            if(DateTime.TryParseExact(adultClaimValue, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal,
-               out var birthDay))
+            if(DateTime.TryParseExact(adultClaimValue, "dd/MM/yyyy", CultureInfo.InvariantCulture,
+                                      DateTimeStyles.AdjustToUniversal, out var birthDay))
             {
                 return birthDay.AddYears(18) < DateTime.UtcNow;
             }

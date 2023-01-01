@@ -2,9 +2,8 @@
 
 namespace Imi.Project.Api.Core.Models.GameGenre
 {
-    public class GameGenreModel
+    public class GameGenreModel: BaseGameMTMModel
     {
-        public Guid GameId { get; set; }
         public Guid GenreId { get; set; }
     }
 }

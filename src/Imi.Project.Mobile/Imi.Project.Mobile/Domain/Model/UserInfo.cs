@@ -13,7 +13,6 @@ namespace Imi.Project.Mobile.Domain.Model
         public string ConfirmPassword { get; set; }
         public ICollection<Guid> GameId { get; set; }
         public bool ApprovedTerms { get; set; }
-
         public DateTime BirthDay { get; set; }
     }
 }

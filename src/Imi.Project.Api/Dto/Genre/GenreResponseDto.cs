@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Imi.Project.Api.Dto.Genre
+﻿namespace Imi.Project.Api.Dto.Genre
 {
     public class GenreResponseDto: BaseDto
     {

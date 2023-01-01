@@ -1,13 +1,12 @@
 ﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Models.Publisher;
-using Imi.Project.Api.Dto.Genre;
 using Imi.Project.Api.Dto.Publisher;
 
 namespace Imi.Project.Api.Mapper
 {
     public static class MapperPublisher
     {
-        public static NewPublisherModel NewPublisherModelMapper(this NewPublisherRequestDto newPublisher)
+        public static NewPublisherModel MapToModel(this NewPublisherRequestDto newPublisher)
         {
             return new NewPublisherModel
             {
@@ -16,7 +15,7 @@ namespace Imi.Project.Api.Mapper
             };
         }
 
-        public static UpdatePublisherModel UpdatePublisherModelMapper(this UpdatePublisherRequestDto updatePublisher)
+        public static UpdatePublisherModel MapToModel(this UpdatePublisherRequestDto updatePublisher)
         {
             return new UpdatePublisherModel
             {
@@ -26,19 +25,19 @@ namespace Imi.Project.Api.Mapper
             };
         }
 
-        public static PublisherResponseDto PublisherResponseDtoMapper(this Publisher publisher)
+        public static PublisherResponseDto MapToDto(this Publisher publisher)
         {
             return new PublisherResponseDto
             {
                 Id = publisher.Id,
-                 Country = publisher.Country,
-                  Name= publisher.Name,
+                Country = publisher.Country,
+                Name = publisher.Name,
             };
         }
 
-        public static IEnumerable<PublisherResponseDto> PublisherResponseDtoMapper(this IEnumerable<Publisher> publishers)
+        public static IEnumerable<PublisherResponseDto> MapToDtos(this IEnumerable<Publisher> publishers)
         {
-            return publishers.Select(publisher => publisher.PublisherResponseDtoMapper());
+            return publishers.Select(publisher => publisher.MapToDto());
         }
     }
 }

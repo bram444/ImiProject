@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Imi.Project.Api.Core.Mapping
+namespace Imi.Project.Api.Core.Mapper
 {
     public static class GameGenreEntityMapper
     {
@@ -26,7 +26,7 @@ namespace Imi.Project.Api.Core.Mapping
             };
         }
 
-        public static GameGenreModel GameGenreModelMapper(Guid genreId, Guid gameId)
+        public static GameGenreModel MapToModel(Guid genreId, Guid gameId)
         {
             return new GameGenreModel
             {

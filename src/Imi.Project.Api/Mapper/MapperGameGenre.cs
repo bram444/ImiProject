@@ -1,21 +1,20 @@
-﻿using Imi.Project.Api.Core.Models;
-using Imi.Project.Api.Core.Models.GameGenre;
+﻿using Imi.Project.Api.Core.Models.GameGenre;
 using Imi.Project.Api.Dto.Game;
 
 namespace Imi.Project.Api.Mapper
 {
     public static class MapperGameGenre
     {
-        public static GameGenreModel GameGenreModelMapper(Guid genreId, Guid gameId)
+        public static UpdateGameGenreModel MapToUpdateModel(this NewGameRequestDto game, Guid gameId)
         {
-            return new GameGenreModel
+            return new UpdateGameGenreModel
             {
-                GenreId = genreId,
+                GenreIds = game.GenreId,
                 GameId = gameId
             };
         }
 
-        public static UpdateGameGenreModel UpdateGameGenreModelMapper(this UpdateGameRequestDto gameModel)
+        public static UpdateGameGenreModel MapToGameGenreModel(this UpdateGameRequestDto gameModel)
         {
             return new UpdateGameGenreModel
             {

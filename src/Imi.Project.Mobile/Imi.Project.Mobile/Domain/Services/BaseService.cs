@@ -17,7 +17,7 @@ namespace Imi.Project.Mobile.Domain.Services
 
         public async Task<IEnumerable<T>> GetAll() => await _httpClient.GetApiResult<IEnumerable<T>>($"{baseUrl}{Api}/");
 
-        public async Task<T> GetById(Guid id) => await _httpClient.GetApiResult<T>($"{baseUrl}{Api}/{id}");
+        //public async Task<T> GetById(Guid id) => await _httpClient.GetApiResult<T>($"{baseUrl}{Api}/{id}");
 
         public async Task<T> Update(T game) => await _httpClient.PutCallApi<T, T>($"{baseUrl}{Api}/", game);
 

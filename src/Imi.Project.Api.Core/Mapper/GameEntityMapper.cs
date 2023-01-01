@@ -2,7 +2,7 @@
 using Imi.Project.Api.Core.Models.Game;
 using System;
 
-namespace Imi.Project.Api.Core.Mapping
+namespace Imi.Project.Api.Core.Mapper
 {
     public static class GameEntityMapper
     {
@@ -10,10 +10,10 @@ namespace Imi.Project.Api.Core.Mapping
         {
             return new Game
             {
-                 Id = Guid.NewGuid(),
-                 Name = newGame.Name,
-                 Price = newGame.Price,
-                  PublisherId = newGame.PublisherId,
+                Id = Guid.NewGuid(),
+                Name = newGame.Name,
+                Price = newGame.Price,
+                PublisherId = newGame.PublisherId,
             };
         }
 

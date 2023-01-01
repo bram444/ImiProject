@@ -1,24 +1,22 @@
 ﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Repository;
 using Imi.Project.Api.Core.Interfaces.Sevices;
-using Imi.Project.Api.Core.Mapping;
+using Imi.Project.Api.Core.Mapper;
 using Imi.Project.Api.Core.Models;
 using Imi.Project.Api.Core.Models.Game;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Services
 {
-    public class GameService:BaseService<Game,IGameRepository>, IGameService
+    public class GameService: BaseService<Game, IGameRepository, NewGameModel,UpdateGameModel>, IGameService
     {
         private readonly IPublisherRepository _publisherRepository;
         private readonly IGenreRepository _genreRepository;
 
-        public GameService(IGameRepository gameRepository, IPublisherRepository publisherRepository, IGenreRepository genreRepository):base(gameRepository)
+        public GameService(IGameRepository gameRepository, IPublisherRepository publisherRepository, IGenreRepository genreRepository) : base(gameRepository)
         {
             _publisherRepository = publisherRepository;
             _genreRepository = genreRepository;
@@ -26,124 +24,115 @@ namespace Imi.Project.Api.Core.Services
 
         public async Task<ServiceResultModel<IEnumerable<Game>>> GetByPublisherIdAsync(Guid id)
         {
-            ServiceResultModel<IEnumerable<Game>> result = new();
-
             try
             {
-                result.Data = await _itemRepository.GetFilteredListAsync(g=>g.PublisherId==id);
-                return result;
+                return new ServiceResultModel<IEnumerable<Game>>
+                {
+                    Data = await _itemRepository.GetFilteredListAsync(g => g.PublisherId == id)
+                };
             } catch(Exception ex)
             {
-                result.IsSuccess = false;
-                result.ValidationErrors.Add(new ValidationResult(ex.Message));
-                return result;
+                return SetErrorList(ex);
             }
         }
 
-        public async Task<ServiceResultModel<Game>> AddAsync(NewGameModel entity)
+        public override async Task<ServiceResultModel<Game>> AddAsync(NewGameModel entity)
         {
-            ServiceResultModel<Game> result = new();
-
             try
             {
-                if(!await _publisherRepository.DoesExistAsync(entity.PublisherId))
+                var result =await ErrorCheckAdd(entity);
+
+                if(result.IsSuccess)
                 {
-                    result.IsSuccess = false;
-                    result.ValidationErrors.Add(new ValidationResult($"Publisher {entity.PublisherId} doesn't exist"));
+                    await _itemRepository.AddAsync(result.Data);
                 }
 
-                if(await _itemRepository.DoesExistAsync(game => game.Name == entity.Name))
-                {
-                    result.IsSuccess = false;
-                    result.ValidationErrors.Add(new ValidationResult($"Game with name {entity.Name} already exists"));
-                }
-
-                foreach(var id in entity.GenreId)
-                {
-                    if(!await _genreRepository.DoesExistAsync(id))
-                    {
-                        result.IsSuccess = false;
-                        result.ValidationErrors.Add(new ValidationResult($"Genre {id} does not exist"));
-                    }
-                }
-
-                if(!result.IsSuccess)
-                {
-                    return result;
-                }
-
-                var gameEntity = entity.MapToEntity();
-
-                await _itemRepository.AddAsync(gameEntity);
-                result.Data = gameEntity;
                 return result;
+
             } catch(Exception ex)
             {
-                result.IsSuccess = false;
-                result.ValidationErrors.Add(new ValidationResult(ex.Message));
-                if(ex.InnerException != null)
-                {
-                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
-                }
-                return result;
+                return SetError(ex);
             }
         }
 
-        public async Task<ServiceResultModel<Game>> UpdateAsync(UpdateGameModel entity)
+        public override async Task<ServiceResultModel<Game>> UpdateAsync(UpdateGameModel entity)
         {
-            ServiceResultModel<Game> result = new();
-
             try
             {
-                if(!await _itemRepository.DoesExistAsync(entity.Id))
+                var result = await ErrorCheckUpdate(entity);
+
+                if(result.IsSuccess)
                 {
-                    result.IsSuccess = false;
-                    result.ValidationErrors.Add(new ValidationResult("Game does not exist"));
+                    await _itemRepository.UpdateAsync(result.Data);
                 }
 
-                if(!await _publisherRepository.DoesExistAsync(entity.PublisherId))
-                {
-                    result.IsSuccess = false;
-                    result.ValidationErrors.Add(new ValidationResult($"Publisher {entity.PublisherId} doesn't exist"));
-                }
-
-                if(await _itemRepository.DoesExistAsync(game => game.Name == entity.Name && (game.Id != entity.Id)))
-                {
-                    result.IsSuccess = false;
-                    result.ValidationErrors.Add(new ValidationResult($"Game with name {entity.Name} already exists"));
-                }
-
-                foreach(var id in entity.GenreId)
-                {
-                    if(!await _genreRepository.DoesExistAsync(id))
-                    {
-                        result.IsSuccess = false;
-                        result.ValidationErrors.Add(new ValidationResult($"Genre {id} does not exist"));
-                    }
-                }
-
-                if(!result.IsSuccess)
-                {
-                    return result;
-                }
-
-                var game = entity.MapToEntity();
-
-                await _itemRepository.UpdateAsync(game);
-
-                result.Data = game;
                 return result;
 
             } catch(Exception ex)
             {
-                result.IsSuccess = false;
-                result.ValidationErrors.Add(new ValidationResult(ex.Message));
-                if(ex.InnerException != null)
-                {
-                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
-                }
-                return result;
+                return SetError(ex);
             }
+        }
+
+        private async Task<ServiceResultModel<Game>> ErrorCheckAdd(NewGameModel newGameModel)
+        {
+            ServiceResultModel<Game> result = new()
+            {
+                Data = newGameModel.MapToEntity()
+            };
+
+            foreach(var id in newGameModel.GenreId)
+            {
+                if(!await _genreRepository.DoesExistAsync(id))
+                {
+                    result.IsSuccess = false;
+                    result.ValidationErrors.Add(new ValidationResult($"Genre {id} does not exist"));
+                }
+            }
+
+            return await ErrorCheck(result);
+        }
+
+        private async Task<ServiceResultModel<Game>> ErrorCheckUpdate(UpdateGameModel updateGameModel)
+        {
+            ServiceResultModel<Game> result = new()
+            {
+                Data = updateGameModel.MapToEntity()
+            };
+
+            foreach(var id in updateGameModel.GenreId)
+            {
+                if(!await _genreRepository.DoesExistAsync(id))
+                {
+                    result.IsSuccess = false;
+                    result.ValidationErrors.Add(new ValidationResult($"Genre {id} does not exist"));
+                }
+            }
+
+            if(!await _itemRepository.DoesExistAsync(updateGameModel.Id))
+            {
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult("Game does not exist"));
+            }
+
+            return await ErrorCheck(result);
+        }
+
+        private async Task<ServiceResultModel<Game>> ErrorCheck(ServiceResultModel<Game> result)
+        {
+            if(!await _publisherRepository.DoesExistAsync(result.Data.PublisherId))
+            {
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult($"Publisher {result.Data.PublisherId} doesn't exist"));
+            }
+
+            if(await _itemRepository.DoesExistAsync(game => game.Name == result.Data.Name))
+            {
+                result.IsSuccess = false;
+                result.ValidationErrors.Add(new ValidationResult($"Game with name {result.Data.Name} already exists"));
+            }
+
+            return result;
         }
     }
 }

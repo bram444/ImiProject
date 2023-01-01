@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Imi.Project.Api.Core.Models.Authentiction
+namespace Imi.Project.Api.Core.Models.Authentication
 {
     public class RegistrationModel
     {

@@ -1,6 +1,6 @@
 ﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Sevices;
-using Imi.Project.Api.Core.Mapping;
+using Imi.Project.Api.Core.Mapper;
 using Imi.Project.Api.Core.Models;
 using Imi.Project.Api.Dto.Genre;
 using Imi.Project.Api.Mapper;
@@ -30,7 +30,7 @@ namespace Imi.Project.Api.Controllers
             var result = await _genreService.ListAllAsync();
 
             return !result.IsSuccess ? BadRequest(result.ValidationErrors) 
-                : Ok(result.Data.GenreResponseDtoMapper());
+                : Ok(result.Data.MapToDtos());
         }
 
         [HttpGet("{id}")]
@@ -39,7 +39,7 @@ namespace Imi.Project.Api.Controllers
             var result = await _genreService.GetByIdAsync(id);
 
             return !result.IsSuccess ? BadRequest(result.ValidationErrors) 
-                : Ok(result.Data.GenreResponseDtoMapper());
+                : Ok(result.Data.MapToDto());
         }
 
         [HttpGet("{search}/genre")]
@@ -48,7 +48,7 @@ namespace Imi.Project.Api.Controllers
             var result = await _genreService.SearchAsync(search);
 
             return !result.IsSuccess ? BadRequest(result.ValidationErrors) 
-                : Ok(result.Data.GenreResponseDtoMapper());
+                : Ok(result.Data.MapToDtos());
         }
 
         [Authorize(Policy = "adminOnly")]
@@ -60,11 +60,11 @@ namespace Imi.Project.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            ServiceResultModel<Genre> result = await _genreService.AddAsync(newGenreRequestDto.NewGenreModelMapper());
+            ServiceResultModel<Genre> result = await _genreService.AddAsync(newGenreRequestDto.MapToModel());
 
             return !result.IsSuccess
                 ? BadRequest(result.ValidationErrors)
-                : CreatedAtAction(nameof(GetById), new { id = result.Data.Id }, result.Data.GenreResponseDtoMapper());
+                : CreatedAtAction(nameof(GetById), new { id = result.Data.Id }, result.Data.MapToDto());
         }
 
         [Authorize(Policy = "adminOnly")]
@@ -76,17 +76,18 @@ namespace Imi.Project.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            ServiceResultModel<Genre> result = await _genreService.UpdateAsync(updateGenre.UpdateGameModelMapper());
+            ServiceResultModel<Genre> result = await _genreService.UpdateAsync(updateGenre.MapToModel());
 
             return !result.IsSuccess ? BadRequest(result.ValidationErrors) 
-                : Ok(result.Data.GenreResponseDtoMapper());
+                : Ok(result.Data.MapToDto());
         }
 
         [Authorize(Policy = "adminOnly")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            ServiceResultModel<IEnumerable<GameGenre>> resultGameGenreList = await _gameGenreService.GetByGenreIdAsync(id);
+            var resultGameGenreList = await _gameGenreService.GetByGenreIdAsync(id);
+
             if(!resultGameGenreList.IsSuccess)
             {
                 return BadRequest(resultGameGenreList.ValidationErrors);
@@ -94,7 +95,7 @@ namespace Imi.Project.Api.Controllers
 
             foreach(GameGenre gg in resultGameGenreList.Data)
             {
-                ServiceResultModel<GameGenre> resultGameGenre = await _gameGenreService.DeleteAsync(gg.MapToModel());
+                var resultGameGenre = await _gameGenreService.DeleteAsync(gg.MapToModel());
 
                 if(!resultGameGenre.IsSuccess)
                 {

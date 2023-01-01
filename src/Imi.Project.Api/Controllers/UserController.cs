@@ -1,6 +1,6 @@
 ﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Sevices;
-using Imi.Project.Api.Core.Mapping;
+using Imi.Project.Api.Core.Mapper;
 using Imi.Project.Api.Core.Models;
 using Imi.Project.Api.Dto.Game;
 using Imi.Project.Api.Dto.User;
@@ -29,7 +29,7 @@ namespace Imi.Project.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            ServiceResultModel<IEnumerable<ApplicationUser>> result = await _userService.ListAllAsync();
+            var result = await _userService.ListAllAsync();
 
             if(!result.IsSuccess)
             {
@@ -47,13 +47,17 @@ namespace Imi.Project.Api.Controllers
                 foreach(var ug in userGame.Data)
                 {
                     var game = await _gameService.GetByIdAsync(ug.GameId);
+
                     if(!game.IsSuccess)
                     {
                         return BadRequest(game.ValidationErrors);
                     }
-                    gameList.Add(game.Data.GameResponseDtoMapper());
+
+                    gameList.Add(game.Data.MapToDto());
+
                 }
-                response.Add(user.UserResponseDtoMapper(gameList));
+
+                response.Add(user.MapToDto(gameList));
 
             }
 
@@ -65,8 +69,6 @@ namespace Imi.Project.Api.Controllers
         {
             ServiceResultModel<ApplicationUser> result = await _userService.GetByIdAsync(id);
 
-            List<UserResponseDto> response = new();
-
             var userGame = await _userGameService.GetByUserIdAsync(result.Data.Id);
 
             List<GameResponseDto> gameList = new();
@@ -74,22 +76,23 @@ namespace Imi.Project.Api.Controllers
             foreach(var ug in userGame.Data)
             {
                 var game = await _gameService.GetByIdAsync(ug.GameId);
+
                 if(!game.IsSuccess)
                 {
                     return BadRequest(game.ValidationErrors);
                 }
-                gameList.Add(game.Data.GameResponseDtoMapper());
+
+                gameList.Add(game.Data.MapToDto());
+
             }
 
-            response.Add(result.Data.UserResponseDtoMapper(gameList));
-
-            return !result.IsSuccess ? BadRequest(result.ValidationErrors) : Ok(response);
+            return !result.IsSuccess ? BadRequest(result.ValidationErrors) : Ok(result.Data.MapToDto(gameList));
         }
 
         [HttpGet("{search}/firstname")]
         public async Task<IActionResult> GetByFirstName(string search)
         {
-            ServiceResultModel<IEnumerable<ApplicationUser>> result = await _userService.SearchFirstNameAsync(search);
+            var result = await _userService.SearchFirstNameAsync(search);
 
             List<UserResponseDto> response = new();
 
@@ -102,13 +105,16 @@ namespace Imi.Project.Api.Controllers
                 foreach(var ug in userGame.Data)
                 {
                     var game = await _gameService.GetByIdAsync(ug.GameId);
+
                     if(!game.IsSuccess)
                     {
                         return BadRequest(game.ValidationErrors);
                     }
-                    gameList.Add(game.Data.GameResponseDtoMapper());
+
+                    gameList.Add(game.Data.MapToDto());
                 }
-                response.Add(user.UserResponseDtoMapper(gameList));
+
+                response.Add(user.MapToDto(gameList));
 
             }
 
@@ -118,7 +124,7 @@ namespace Imi.Project.Api.Controllers
         [HttpGet("{search}/lastname")]
         public async Task<IActionResult> GetByLastName(string search)
         {
-            ServiceResultModel<IEnumerable<ApplicationUser>> result = await _userService.SearchLastNameAsync(search);
+            var result = await _userService.SearchLastNameAsync(search);
 
             List<UserResponseDto> response = new();
 
@@ -131,13 +137,16 @@ namespace Imi.Project.Api.Controllers
                 foreach(var ug in userGame.Data)
                 {
                     var game = await _gameService.GetByIdAsync(ug.GameId);
+
                     if(!game.IsSuccess)
                     {
                         return BadRequest(game.ValidationErrors);
                     }
-                    gameList.Add(game.Data.GameResponseDtoMapper());
+
+                    gameList.Add(game.Data.MapToDto());
                 }
-                response.Add(user.UserResponseDtoMapper(gameList));
+
+                response.Add(user.MapToDto(gameList));
 
             }
 
@@ -147,7 +156,7 @@ namespace Imi.Project.Api.Controllers
         [HttpGet("{search}/username")]
         public async Task<IActionResult> GetByUserName(string search)
         {
-            ServiceResultModel<IEnumerable<ApplicationUser>> result = await _userService.SearchUserNameAsync(search);
+            var result = await _userService.SearchUserNameAsync(search);
 
             List<UserResponseDto> response = new();
 
@@ -160,13 +169,16 @@ namespace Imi.Project.Api.Controllers
                 foreach(var ug in userGame.Data)
                 {
                     var game = await _gameService.GetByIdAsync(ug.GameId);
+
                     if(!game.IsSuccess)
                     {
                         return BadRequest(game.ValidationErrors);
                     }
-                    gameList.Add(game.Data.GameResponseDtoMapper());
+
+                    gameList.Add(game.Data.MapToDto());
                 }
-                response.Add(user.UserResponseDtoMapper(gameList));
+
+                response.Add(user.MapToDto(gameList));
 
             }
 
@@ -182,14 +194,11 @@ namespace Imi.Project.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            ServiceResultModel<ApplicationUser> result = await _userService.AddAsync(newUserRequest.NewUserModelMapper());
+            var result = await _userService.AddAsync(newUserRequest.MapToModel());
 
-            if(!result.IsSuccess)
-            {
-                return BadRequest(result.ValidationErrors);
-            }
-
-            return CreatedAtAction(nameof(GetById), new { id = result.Data.Id }, result.Data.UserResponseDtoMapper());
+            return !result.IsSuccess
+                ? BadRequest(result.ValidationErrors)
+                : CreatedAtAction(nameof(GetById), new { id = result.Data.Id }, result.Data.MapToDto());
         }
 
         [Authorize(Policy = "onlyOwner")]
@@ -201,16 +210,16 @@ namespace Imi.Project.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            ServiceResultModel<IEnumerable<UserGame>> resultUserGame = await _userGameService.EditUserGameAsync(updateUserDto.UpdateGameGenreModelMapper());
+            var resultUserGame = await _userGameService.EditUserGameAsync(updateUserDto.MapToUserGameModel());
 
             if(!resultUserGame.IsSuccess)
             {
                 return BadRequest(resultUserGame.ValidationErrors);
             }
 
-            ServiceResultModel<ApplicationUser> result = await _userService.UpdateAsync(updateUserDto.UpdateUserModelMapper());
+            ServiceResultModel<ApplicationUser> result = await _userService.UpdateAsync(updateUserDto.MapToModel());
 
-            var userGame = await _userGameService.GetByUserIdAsync(result.Data.Id);
+            //var userGame = await _userGameService.GetByUserIdAsync(result.Data.Id);
 
             List<GameResponseDto> gameList = new();
 
@@ -221,12 +230,10 @@ namespace Imi.Project.Api.Controllers
                 {
                     return BadRequest(game.ValidationErrors);
                 }
-                gameList.Add(game.Data.GameResponseDtoMapper());
+                gameList.Add(game.Data.MapToDto());
             }
 
-            UserResponseDto responseDto = result.Data.UserResponseDtoMapper(gameList);
-
-            return !result.IsSuccess ? BadRequest(result.ValidationErrors) : Ok(responseDto);
+            return !result.IsSuccess ? BadRequest(result.ValidationErrors) : Ok(result.Data.MapToDto(gameList));
         }
 
         [Authorize(Policy = "onlyOwner")]
@@ -238,11 +245,11 @@ namespace Imi.Project.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            ServiceResultModel<IEnumerable<UserGame>> deleteUserGame = await _userGameService.GetByUserIdAsync(id);
+            var deleteUserGame = await _userGameService.GetByUserIdAsync(id);
 
             foreach(UserGame ug in deleteUserGame.Data)
             {
-                ServiceResultModel<UserGame> resultUserGame = await _userGameService.DeleteAsync(ug.MapToModel());
+                var resultUserGame = await _userGameService.DeleteAsync(ug.MapToModel());
 
                 if(!resultUserGame.IsSuccess)
                 {
@@ -250,7 +257,7 @@ namespace Imi.Project.Api.Controllers
                 }
             }
 
-            ServiceResultModel<ApplicationUser> result = await _userService.DeleteAsync(id);
+            var result = await _userService.DeleteAsync(id);
 
             return !result.IsSuccess ? BadRequest(result.ValidationErrors) : Ok();
         }

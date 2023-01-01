@@ -1,9 +1,8 @@
-﻿using Imi.Project.Api.Dto.Game;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Imi.Project.Api.Dto.User
 {
-    public class UpdateUserRequestDto:BaseDto
+    public class UpdateUserRequestDto: BaseDto
     {
         [Required]
         [StringLength(100, MinimumLength = 6)]

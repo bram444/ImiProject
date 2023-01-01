@@ -2,14 +2,12 @@
 using Imi.Project.Api.Core.Models.User;
 using Microsoft.AspNetCore.Identity;
 using System;
-using System.Collections.Generic;
 
-namespace Imi.Project.Api.Core.Mapping
+namespace Imi.Project.Api.Core.Mapper
 {
-    public static class UserMapper
+    public static class UserEntityMapper
     {
         private static readonly IPasswordHasher<ApplicationUser> passwordHasher = new PasswordHasher<ApplicationUser>();
-
 
         public static ApplicationUser MapToEntity(this NewUserModel newUser)
         {
@@ -28,12 +26,14 @@ namespace Imi.Project.Api.Core.Mapping
                 SecurityStamp = Guid.NewGuid().ToString(),
             };
             user.PasswordHash = passwordHasher.HashPassword(user, newUser.Password);
+
             return user;
         }
 
         public static ApplicationUser MapToEntity(this UpdateUserModel updateUser, ApplicationUser oldUser)
         {
             var user = oldUser;
+
             user.UserName = updateUser.UserName;
             user.FirstName = updateUser.FirstName;
             user.LastName = updateUser.LastName;
@@ -41,6 +41,7 @@ namespace Imi.Project.Api.Core.Mapping
             user.NormalizedUserName = updateUser.UserName.Normalize();
 
             user.PasswordHash = passwordHasher.HashPassword(user, updateUser.Password);
+
             return user;
         }
     }

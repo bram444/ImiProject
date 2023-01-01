@@ -6,11 +6,15 @@ using System;
 
 namespace Imi.Project.Api.Core.Interfaces.Sevices
 {
-    public interface IBaseService<T> where T : BaseEntity
+    public interface IBaseService<T, NM, UM> where T : BaseEntity
     {
         Task<ServiceResultModel<IEnumerable<T>>> ListAllAsync();
         Task<ServiceResultModel<T>> GetByIdAsync(Guid id);
         Task<ServiceResultModel<IEnumerable<T>>> SearchAsync(string search);
+        Task<ServiceResultModel<T>> AddAsync(NM response);
+        Task<ServiceResultModel<T>> UpdateAsync(UM response);
         Task<ServiceResultModel<T>> DeleteAsync(Guid id);
+        ServiceResultModel<IEnumerable<T>> SetErrorList(Exception ex);
+        ServiceResultModel<T> SetError(Exception ex);
     }
 }

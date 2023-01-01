@@ -3,9 +3,8 @@ using System.Collections.Generic;
 
 namespace Imi.Project.Api.Core.Models.GameGenre
 {
-    public class UpdateGameGenreModel
+    public class UpdateGameGenreModel: BaseGameMTMModel
     {
-        public Guid GameId { get; set; }
         public IEnumerable<Guid> GenreIds { get; set; }
     }
 }

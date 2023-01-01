@@ -1,20 +1,19 @@
 ﻿using Imi.Project.Api.Core.Entities;
-using Imi.Project.Api.Core.Models.GameGenre;
 using Imi.Project.Api.Core.Models.UserGame;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Imi.Project.Api.Core.Mapping
+namespace Imi.Project.Api.Core.Mapper
 {
     public static class UserGameEntityMapper
     {
         public static UserGame MapToEntity(this UserGameModel userGameModel)
         {
             return new UserGame
-            { 
+            {
                 GameId = userGameModel.GameId,
-                 UserId = userGameModel.UserId
+                UserId = userGameModel.UserId
             };
         }
 
@@ -27,7 +26,7 @@ namespace Imi.Project.Api.Core.Mapping
             };
         }
 
-        public static UserGameModel UserGameModelMapper(Guid userId, Guid gameId)
+        public static UserGameModel MapToModel(Guid userId, Guid gameId)
         {
             return new UserGameModel
             {
@@ -41,9 +40,9 @@ namespace Imi.Project.Api.Core.Mapping
             return userGames.Select(gg => gg.MapToModel());
         }
 
-        public static IEnumerable<UserGame> MapToEntity(this IEnumerable<UserGameModel> userGameModels)
-        {
-            return userGameModels.Select(gg => gg.MapToEntity());
-        }
+        //public static IEnumerable<UserGame> MapToEntity(this IEnumerable<UserGameModel> userGameModels)
+        //{
+        //    return userGameModels.Select(gg => gg.MapToEntity());
+        //}
     }
 }

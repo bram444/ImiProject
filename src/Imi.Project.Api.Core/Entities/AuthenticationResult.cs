@@ -2,7 +2,7 @@
 
 namespace Imi.Project.Api.Core.Entities
 {
-    public class AuthenticateResult
+    public class AuthenticationResult
     {
         public string Token { get; set; }
         public bool IsSuccess { get; set; } = true;

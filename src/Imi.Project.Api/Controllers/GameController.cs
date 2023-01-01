@@ -1,6 +1,6 @@
 ﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Sevices;
-using Imi.Project.Api.Core.Mapping;
+using Imi.Project.Api.Core.Mapper;
 using Imi.Project.Api.Core.Models;
 using Imi.Project.Api.Dto.Game;
 using Imi.Project.Api.Dto.Genre;
@@ -65,7 +65,7 @@ namespace Imi.Project.Api.Controllers
                         return BadRequest(genreResult.ValidationErrors);
                     }
 
-                    genreResponseDtos.Add(genreResult.Data.GenreResponseDtoMapper());
+                    genreResponseDtos.Add(genreResult.Data.MapToDto());
                 }
 
                 var publisherResult= await _publisherService.GetByIdAsync(game.PublisherId);
@@ -75,7 +75,7 @@ namespace Imi.Project.Api.Controllers
                     return BadRequest(publisherResult.ValidationErrors);
                 }
 
-                gameList.Add(game.GameResponseDtoMapper(genreResponseDtos, publisherResult.Data.PublisherResponseDtoMapper()));
+                gameList.Add(game.MapToDto(genreResponseDtos, publisherResult.Data.MapToDto()));
             }
 
             return Ok(gameList);
@@ -110,7 +110,7 @@ namespace Imi.Project.Api.Controllers
                     return BadRequest(genreResult.ValidationErrors);
                 }
 
-                genreResponseDtos.Add(genreResult.Data.GenreResponseDtoMapper());
+                genreResponseDtos.Add(genreResult.Data.MapToDto());
             }
 
             var publisherResult = await _publisherService.GetByIdAsync(serviceGame.Data.PublisherId);
@@ -120,8 +120,8 @@ namespace Imi.Project.Api.Controllers
                 return BadRequest(publisherResult.ValidationErrors);
             }
 
-            return Ok(serviceGame.Data.GameResponseDtoMapper(genreResponseDtos
-                ,publisherResult.Data.PublisherResponseDtoMapper()));
+            return Ok(serviceGame.Data.MapToDto(genreResponseDtos
+                ,publisherResult.Data.MapToDto()));
         }
 
         [Authorize(Policy = "onlyAdults")]
@@ -157,7 +157,7 @@ namespace Imi.Project.Api.Controllers
                         return BadRequest(genreResult.ValidationErrors);
                     }
 
-                    genreResponseDtos.Add(genreResult.Data.GenreResponseDtoMapper());
+                    genreResponseDtos.Add(genreResult.Data.MapToDto());
                 }
 
                 var publisherResult = await _publisherService.GetByIdAsync(game.PublisherId);
@@ -167,7 +167,7 @@ namespace Imi.Project.Api.Controllers
                     return BadRequest(publisherResult.ValidationErrors);
                 }
 
-                gameList.Add(game.GameResponseDtoMapper(genreResponseDtos, publisherResult.Data.PublisherResponseDtoMapper()));
+                gameList.Add(game.MapToDto(genreResponseDtos, publisherResult.Data.MapToDto()));
             }
 
             return Ok(gameList);
@@ -206,7 +206,7 @@ namespace Imi.Project.Api.Controllers
                         return BadRequest(genreResult.ValidationErrors);
                     }
 
-                    genreResponseDtos.Add(genreResult.Data.GenreResponseDtoMapper());
+                    genreResponseDtos.Add(genreResult.Data.MapToDto());
                 }
 
                 var publisherResult = await _publisherService.GetByIdAsync(game.PublisherId);
@@ -216,7 +216,7 @@ namespace Imi.Project.Api.Controllers
                     return BadRequest(publisherResult.ValidationErrors);
                 }
 
-                listGame.Add(game.GameResponseDtoMapper(genreResponseDtos, publisherResult.Data.PublisherResponseDtoMapper()));
+                listGame.Add(game.MapToDto(genreResponseDtos, publisherResult.Data.MapToDto()));
             }
 
             return Ok(listGame);
@@ -231,13 +231,20 @@ namespace Imi.Project.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var newGameModel = newGameRequest.NewGameModelMapper();
+            var newGameModel = newGameRequest.MapToModel();
 
             var result = await _gameService.AddAsync(newGameModel);
 
             if(!result.IsSuccess)
             {
                 return BadRequest(result.ValidationErrors);
+            }
+
+            var gameGenre = await _gameGenreService.EditGameGenreAsync(newGameRequest.MapToUpdateModel(result.Data.Id));
+
+            if(!gameGenre.IsSuccess)
+            {
+                return BadRequest(gameGenre.ValidationErrors);
             }
 
             List<GenreResponseDto> genreResponseDtos = new();
@@ -251,14 +258,7 @@ namespace Imi.Project.Api.Controllers
                     return BadRequest(genreResult.ValidationErrors);
                 }
 
-                var gameGenre =await _gameGenreService.AddAsync(MapperGameGenre.GameGenreModelMapper(genreId, result.Data.Id));
-
-                if(!gameGenre.IsSuccess)
-                {
-                    return BadRequest(gameGenre.ValidationErrors);
-                }
-
-                genreResponseDtos.Add(genreResult.Data.GenreResponseDtoMapper());
+                genreResponseDtos.Add(genreResult.Data.MapToDto());
             }
 
             var publisherResult = await _publisherService.GetByIdAsync(newGameModel.PublisherId);
@@ -269,7 +269,7 @@ namespace Imi.Project.Api.Controllers
             }
 
             return CreatedAtAction(nameof(GetById), new { id = result.Data.Id },
-                result.Data.GameResponseDtoMapper(genreResponseDtos, publisherResult.Data.PublisherResponseDtoMapper()));
+                result.Data.MapToDto(genreResponseDtos, publisherResult.Data.MapToDto()));
         }
 
         [Authorize(Policy = "adminOnly")]
@@ -281,14 +281,14 @@ namespace Imi.Project.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            ServiceResultModel<Game> result = await _gameService.UpdateAsync(updateGameRequest.UpdateGameModelMapper());
+            ServiceResultModel<Game> result = await _gameService.UpdateAsync(updateGameRequest.MapToModel());
 
             if(!result.IsSuccess)
             {
                 return BadRequest(result.ValidationErrors);
             }
 
-            var resultGameGenre = await _gameGenreService.EditGameGenreAsync(updateGameRequest.UpdateGameGenreModelMapper());
+            var resultGameGenre = await _gameGenreService.EditGameGenreAsync(updateGameRequest.MapToGameGenreModel());
 
             if(!resultGameGenre.IsSuccess)
             {
@@ -306,7 +306,7 @@ namespace Imi.Project.Api.Controllers
                     return BadRequest(genreResult.ValidationErrors);
                 }
 
-                genreResponseDtos.Add(genreResult.Data.GenreResponseDtoMapper());
+                genreResponseDtos.Add(genreResult.Data.MapToDto());
             }
 
             var publisherResult = await _publisherService.GetByIdAsync(updateGameRequest.PublisherId);
@@ -316,8 +316,8 @@ namespace Imi.Project.Api.Controllers
                 return BadRequest(publisherResult.ValidationErrors);
             }
 
-            return Ok(result.Data.GameResponseDtoMapper(genreResponseDtos,
-                publisherResult.Data.PublisherResponseDtoMapper()));
+            return Ok(result.Data.MapToDto(genreResponseDtos,
+                publisherResult.Data.MapToDto()));
         }
 
         [Authorize(Policy = "adminOnly")]

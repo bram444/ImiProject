@@ -2,7 +2,7 @@
 using Imi.Project.Api.Core.Models.Publisher;
 using System;
 
-namespace Imi.Project.Api.Core.Mapping
+namespace Imi.Project.Api.Core.Mapper
 {
     public static class PublisherEntityMapper
     {
@@ -12,7 +12,7 @@ namespace Imi.Project.Api.Core.Mapping
             {
                 Id = Guid.NewGuid(),
                 Name = newPublisher.Name,
-                 Country = newPublisher.Country
+                Country = newPublisher.Country
             };
         }
 

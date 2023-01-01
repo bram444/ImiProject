@@ -1,13 +1,8 @@
 ﻿using Imi.Project.Api.Core.Entities;
-using Imi.Project.Api.Core.Models.Game;
 using Imi.Project.Api.Core.Models.Genre;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Imi.Project.Api.Core.Mapping
+namespace Imi.Project.Api.Core.Mapper
 {
     public static class GenreEntityMapper
     {

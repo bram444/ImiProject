@@ -2,7 +2,7 @@
 {
     public class GameGenreDto
     {
-        public Guid GameId { get; set; }
-        public Guid GenreId { get; set; }
+        //public Guid GameId { get; set; }
+        //public Guid GenreId { get; set; }
     }
 }

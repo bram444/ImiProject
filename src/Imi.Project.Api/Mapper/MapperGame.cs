@@ -8,7 +8,7 @@ namespace Imi.Project.Api.Mapper
 {
     public static class MapperGame
     {
-        public static NewGameModel NewGameModelMapper(this NewGameRequestDto newGame)
+        public static NewGameModel MapToModel(this NewGameRequestDto newGame)
         {
             return new NewGameModel
             {
@@ -19,7 +19,7 @@ namespace Imi.Project.Api.Mapper
             };
         }
 
-        public static UpdateGameModel UpdateGameModelMapper(this UpdateGameRequestDto updateGame)
+        public static UpdateGameModel MapToModel(this UpdateGameRequestDto updateGame)
         {
             return new UpdateGameModel
             {
@@ -31,7 +31,7 @@ namespace Imi.Project.Api.Mapper
             };
         }
 
-        public static GameResponseDto GameResponseDtoMapper(this Game game, List<GenreResponseDto> genres, PublisherResponseDto publisher)
+        public static GameResponseDto MapToDto(this Game game, List<GenreResponseDto> genres, PublisherResponseDto publisher)
         {
             return new GameResponseDto
             {
@@ -43,7 +43,7 @@ namespace Imi.Project.Api.Mapper
             };
         }
 
-        public static GameResponseDto GameResponseDtoMapper(this Game game)
+        public static GameResponseDto MapToDto(this Game game)
         {
             return new GameResponseDto
             {

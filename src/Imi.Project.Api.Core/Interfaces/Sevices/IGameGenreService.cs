@@ -7,11 +7,9 @@ using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Interfaces.Sevices
 {
-    public interface IGameGenreService:IBaseGameMTMService<GameGenre>
+    public interface IGameGenreService:IBaseGameMTMService<GameGenre, GameGenreModel>
     {
         Task<ServiceResultModel<IEnumerable<GameGenre>>> GetByGenreIdAsync(Guid id);
         Task<ServiceResultModel<IEnumerable<GameGenre>>> EditGameGenreAsync(UpdateGameGenreModel updateGameGenre);
-        Task<ServiceResultModel<GameGenre>> AddAsync(GameGenreModel gameGenreModel);
-        Task<ServiceResultModel<GameGenre>> DeleteAsync(GameGenreModel gameGenreModel);
     }
 }

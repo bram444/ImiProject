@@ -30,8 +30,9 @@ namespace Imi.Project.Api.Core.Services
                 claims: claims,
                 expires: DateTime.UtcNow.Add(TimeSpan.FromDays(expirationDays)),
                 notBefore: DateTime.UtcNow,
-                signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signinKey))
-                , SecurityAlgorithms.HmacSha256)
+                signingCredentials: new SigningCredentials(
+                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signinKey)),
+                    SecurityAlgorithms.HmacSha256)
             );
             return token;
         }

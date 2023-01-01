@@ -1,12 +1,12 @@
 ﻿using Imi.Project.Api.Core.Entities;
-using Imi.Project.Api.Core.Models.Authentiction;
+using Imi.Project.Api.Core.Models.Authentication;
 using Imi.Project.Api.Dto.Authentication;
 
 namespace Imi.Project.Api.Mapper
 {
     public static class MapperAuthentication
     {
-        public static RegistrationModel RegistrationModelMapper(this RegistrationDto registrationDto)
+        public static RegistrationModel MapToModel(this RegistrationDto registrationDto)
         {
             return new RegistrationModel
             {
@@ -21,7 +21,7 @@ namespace Imi.Project.Api.Mapper
             };
         }
 
-        public static LoginRequestModel LoginRequestModelMapper(this LoginRequestDto loginRequestDto)
+        public static LoginRequestModel MapToModel(this LoginRequestDto loginRequestDto)
         {
             return new LoginRequestModel
             {
@@ -30,7 +30,7 @@ namespace Imi.Project.Api.Mapper
             };
         }
 
-        public static LoginResponseDto LoginResponseDto(this AuthenticateResult authenticationresult)
+        public static LoginResponseDto MapToDto(this AuthenticationResult authenticationresult)
         {
             return new LoginResponseDto { Token = authenticationresult.Token };
         }

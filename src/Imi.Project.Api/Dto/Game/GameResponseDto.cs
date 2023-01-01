@@ -1,6 +1,5 @@
 ﻿using Imi.Project.Api.Dto.Genre;
 using Imi.Project.Api.Dto.Publisher;
-using System.ComponentModel.DataAnnotations;
 
 namespace Imi.Project.Api.Dto.Game
 {

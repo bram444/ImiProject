@@ -44,12 +44,10 @@ namespace Imi.Project.Mobile.Domain.Services
 
         private async Task<TOut> CallApi<TOut, TIn>(string uri, TIn entity, HttpMethod httpMethod)
         {
-            TOut result = default;
-
             HttpResponseMessage response = httpMethod == HttpMethod.Post
                 ? await this.PostAsync(uri, entity, GetJsonFormatter())
                 : httpMethod == HttpMethod.Put ? await this.PutAsync(uri, entity, GetJsonFormatter()) : await DeleteAsync(uri);
-            result = await response.Content.ReadAsAsync<TOut>();
+            TOut result = await response.Content.ReadAsAsync<TOut>();
             return result;
         }
     }

@@ -8,8 +8,7 @@ namespace Imi.Project.Mobile.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var eventArgs = value as ItemTappedEventArgs;
-            if (eventArgs == null)
+            if(!(value is ItemTappedEventArgs eventArgs))
                 throw new ArgumentException("Expected TappedEventArgs as value", "value");
             //Item contains the tapped item
             return eventArgs.Item;

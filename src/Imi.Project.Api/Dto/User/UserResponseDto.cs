@@ -2,7 +2,7 @@
 
 namespace Imi.Project.Api.Dto.User
 {
-    public class UserResponseDto:BaseDto
+    public class UserResponseDto: BaseDto
     {
         public string Password { get; set; }
 

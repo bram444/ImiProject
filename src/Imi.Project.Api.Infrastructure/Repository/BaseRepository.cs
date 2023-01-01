@@ -7,11 +7,12 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace Imi.Project.Api.Infrastructure.Repository
+namespace Imi.Project.Api.Infrastructure.Data
 {
     public class BaseRepository<T>: IBaseRepository<T> where T : BaseEntity
     {
         protected readonly ApplicationDbContext _dbContext;
+
         public BaseRepository(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -19,18 +20,23 @@ namespace Imi.Project.Api.Infrastructure.Repository
 
         public virtual IQueryable<T> GetAll()
         {
-            return _dbContext.Set<T>().AsQueryable();
+            try
+            {
+                return _dbContext.Set<T>().AsQueryable();
+            } catch(Exception ex)
+            {
+                throw new Exception($"Something went wrong while getting all {nameof(T)}", ex.InnerException);
+            }
         }
 
         public virtual async Task<IEnumerable<T>> ListAllAsync()
         {
             try
             {
-
                 return await _dbContext.Set<T>().ToListAsync();
             } catch(Exception ex)
             {
-                throw new Exception($"Something went wrong while getting all {typeof(T).Name}", ex.InnerException);
+                throw new Exception($"Something went wrong while getting all {nameof(T)}", ex.InnerException);
             }
         }
 
@@ -41,7 +47,7 @@ namespace Imi.Project.Api.Infrastructure.Repository
                 return await _dbContext.Set<T>().SingleOrDefaultAsync(t => t.Id == id);
             } catch(Exception ex)
             {
-                throw new Exception($"Something went wrong while getting {typeof(T).Name} with Id {id}", ex.InnerException);
+                throw new Exception($"Something went wrong while getting {nameof(T)} with Id {id}", ex.InnerException);
             }
         }
 
@@ -52,7 +58,7 @@ namespace Imi.Project.Api.Infrastructure.Repository
                 return await _dbContext.Set<T>().AnyAsync(t => t.Id == id);
             } catch(Exception ex)
             {
-                throw new Exception($"Something went wrong when checking if {typeof(T).Name} with id {id} already exists", ex.InnerException);
+                throw new Exception($"Something went wrong when checking if {nameof(T)} with id {id} already exists", ex.InnerException);
             }
         }
 
@@ -63,31 +69,37 @@ namespace Imi.Project.Api.Infrastructure.Repository
                 return await _dbContext.Set<T>().AnyAsync(predicate);
             } catch(Exception ex)
             {
-                throw new Exception($"Something went wrong when checking if {typeof(T).Name} already exists", ex.InnerException);
+                throw new Exception($"Something went wrong when checking if {nameof(T)} already exists", ex.InnerException);
             }
         }
 
         public async Task<IEnumerable<T>> GetFilteredListAsync(Expression<Func<T, bool>> predicate)
         {
-            return await GetAll().Where(predicate).ToListAsync();
-        }
-
-        public bool DoesListExist(ICollection<Guid> ids)
-        {
             try
             {
-                return ids.All(id => GetAll().Any(t => t.Id == id));
-
+                return await GetAll().Where(predicate).ToListAsync();
             } catch(Exception ex)
             {
-                throw new Exception($"Something went wrong when checking if all {typeof(T).Name} in a list exists", ex.InnerException);
+                throw new Exception($"Something went wrong when getting a filtered list of {typeof(T).Name}", ex.InnerException);
             }
         }
 
-        public async Task<IEnumerable<Guid>> GetNonExistend(IEnumerable<Guid> ids)
-        {
-            return ids.Except((await ListAllAsync()).Select(t => t.Id));
-        }
+        //public bool DoesListExist(ICollection<Guid> ids)
+        //{
+        //    try
+        //    {
+        //        return ids.All(id => GetAll().Any(t => t.Id == id));
+
+        //    } catch(Exception ex)
+        //    {
+        //        throw new Exception($"Something went wrong when checking if all {typeof(T).Name} in a list exists", ex.InnerException);
+        //    }
+        //}
+
+        //public async Task<IEnumerable<Guid>> GetNonExistend(IEnumerable<Guid> ids)
+        //{
+        //    return ids.Except((await ListAllAsync()).Select(t => t.Id));
+        //}
 
         public async Task AddAsync(T entity)
         {
@@ -97,7 +109,7 @@ namespace Imi.Project.Api.Infrastructure.Repository
                 await _dbContext.SaveChangesAsync();
             } catch(Exception ex)
             {
-                throw new Exception($"Something went wrong while adding {typeof(T).Name}", ex.InnerException);
+                throw new Exception($"Something went wrong while adding {nameof(T)}", ex.InnerException);
             }
         }
 
@@ -109,7 +121,7 @@ namespace Imi.Project.Api.Infrastructure.Repository
                 await _dbContext.SaveChangesAsync();
             } catch(Exception ex)
             {
-                throw new Exception($"Something went wrong while updating {typeof(T).Name}", ex.InnerException);
+                throw new Exception($"Something went wrong while updating {nameof(T)}", ex.InnerException);
             }
         }
 
@@ -121,7 +133,7 @@ namespace Imi.Project.Api.Infrastructure.Repository
                 await _dbContext.SaveChangesAsync();
             } catch(Exception ex)
             {
-                throw new Exception($"Something went wrong while removing {typeof(T).Name}", ex.InnerException);
+                throw new Exception($"Something went wrong while removing {nameof(T)}", ex.InnerException);
             }
         }
     }

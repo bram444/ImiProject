@@ -1,7 +1,7 @@
 ﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Repository;
 using Imi.Project.Api.Core.Interfaces.Sevices;
-using Imi.Project.Api.Core.Mapping;
+using Imi.Project.Api.Core.Mapper;
 using Imi.Project.Api.Core.Models;
 using Imi.Project.Api.Core.Models.User;
 using System;
@@ -24,116 +24,89 @@ namespace Imi.Project.Api.Core.Services
 
         public async Task<ServiceResultModel<IEnumerable<ApplicationUser>>> ListAllAsync()
         {
-            ServiceResultModel<IEnumerable<ApplicationUser>> result = new();
             try
             {
-                result.Data = await _userRepository.ListAllAsync();
-                return result;
-
+                return new ServiceResultModel<IEnumerable<ApplicationUser>>
+                {
+                    Data = await _userRepository.ListAllAsync()
+                };
             } catch(Exception ex)
             {
-                result.IsSuccess = false;
-                result.ValidationErrors.Add(new ValidationResult(ex.Message));
-                if(ex.InnerException != null)
-                {
-                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
-                }
-                return result;
+                return SetErrorUserList(ex);
             }
         }
 
         public async Task<ServiceResultModel<ApplicationUser>> GetByIdAsync(Guid id)
         {
-            ServiceResultModel<ApplicationUser> result = new();
             try
             {
-                result.Data = await _userRepository.GetByIdAsync(id);
-                return result;
+                return new ServiceResultModel<ApplicationUser>
+                {
+                    Data = await _userRepository.GetByIdAsync(id)
+                };
             } catch(Exception ex)
             {
-                result.IsSuccess = false;
-                result.ValidationErrors.Add(new ValidationResult(ex.Message));
-                if(ex.InnerException != null)
-                {
-                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
-                }
-                return result;
+                return SetErrorUser(ex);
             }
         }
 
         public async Task<ServiceResultModel<IEnumerable<ApplicationUser>>> SearchUserNameAsync(string search)
         {
-            ServiceResultModel<IEnumerable<ApplicationUser>> result = new();
             try
             {
-                result.Data = await _userRepository.SearchUserNameAsync(search);
-                return result;
-
+                return new ServiceResultModel<IEnumerable<ApplicationUser>>
+                {
+                    Data = await _userRepository.SearchUserNameAsync(search)
+                };
             } catch(Exception ex)
             {
-                result.IsSuccess = false;
-                result.ValidationErrors.Add(new ValidationResult(ex.Message));
-                if(ex.InnerException != null)
-                {
-                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
-                }
-                return result;
+                return SetErrorUserList(ex);
             }
         }
 
         public async Task<ServiceResultModel<IEnumerable<ApplicationUser>>> SearchFirstNameAsync(string search)
         {
-            ServiceResultModel<IEnumerable<ApplicationUser>> result = new();
             try
             {
-                result.Data = await _userRepository.SearchFirstNameAsync(search);
-                return result;
-
+                return new ServiceResultModel<IEnumerable<ApplicationUser>>
+                {
+                    Data = await _userRepository.SearchFirstNameAsync(search)
+                };
             } catch(Exception ex)
             {
-                result.IsSuccess = false;
-                result.ValidationErrors.Add(new ValidationResult(ex.Message));
-                if(ex.InnerException != null)
-                {
-                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
-                }
-                return result;
+                return SetErrorUserList(ex);
             }
         }
 
         public async Task<ServiceResultModel<IEnumerable<ApplicationUser>>> SearchLastNameAsync(string search)
         {
-            ServiceResultModel<IEnumerable<ApplicationUser>> result = new();
             try
             {
-                result.Data = await _userRepository.SearchLastNameAsync(search);
-                return result;
-
+                return new ServiceResultModel<IEnumerable<ApplicationUser>>
+                {
+                    Data = await _userRepository.SearchLastNameAsync(search)
+                };
             } catch(Exception ex)
             {
-                result.IsSuccess = false;
-                result.ValidationErrors.Add(new ValidationResult(ex.Message));
-                if(ex.InnerException != null)
-                {
-                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
-                }
-                return result;
+                return SetErrorUserList(ex);
             }
         }
 
         public async Task<ServiceResultModel<ApplicationUser>> AddAsync(NewUserModel response)
         {
-            ServiceResultModel<ApplicationUser> result = new();
-
             try
             {
-                if(await _userRepository.DoesExistAsync(user => (user.UserName == response.UserName)))
+                var userEntity = response.MapToEntity();
+
+                ServiceResultModel<ApplicationUser> result = new();
+
+                if(await _userRepository.DoesExistAsync(user => user.UserName == userEntity.UserName))
                 {
                     result.IsSuccess = false;
-                    result.ValidationErrors.Add(new ValidationResult($"User with username {response.UserName} already exists"));
+                    result.ValidationErrors.Add(new ValidationResult($"User with username {userEntity.UserName} already exists"));
                 }
 
-                if(await _userRepository.DoesExistAsync(user => (user.Email == response.Email)))
+                if(await _userRepository.DoesExistAsync(user => (user.Email == userEntity.Email)))
                 {
                     result.IsSuccess = false;
                     result.ValidationErrors.Add(new ValidationResult($"User with email already exists"));
@@ -144,31 +117,24 @@ namespace Imi.Project.Api.Core.Services
                     return result;
                 }
 
-                var user = response.MapToEntity();
+                await _userRepository.AddAsync(userEntity);
 
-                await _userRepository.AddAsync(user);
-
-                result.Data = user;
-                return result;
+                return new ServiceResultModel<ApplicationUser>
+                {
+                    Data = userEntity
+                };
 
             } catch(Exception ex)
             {
-                result.IsSuccess = false;
-                result.ValidationErrors.Add(new ValidationResult(ex.Message));
-                if(ex.InnerException != null)
-                {
-                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
-                }
-                return result;
+                return SetErrorUser(ex);
             }
         }
 
         public async Task<ServiceResultModel<ApplicationUser>> UpdateAsync(UpdateUserModel response)
         {
-            ServiceResultModel<ApplicationUser> result = new();
-
             try
             {
+                ServiceResultModel<ApplicationUser> result = new();
 
                 if(!await _userRepository.DoesExistAsync(response.Id))
                 {
@@ -176,14 +142,11 @@ namespace Imi.Project.Api.Core.Services
                     result.ValidationErrors.Add(new ValidationResult($"User {response.Id} doesn't exists"));
                 }
 
-                IEnumerable<ApplicationUser> allUsers = await _userRepository.SearchUserNameAsync(response.UserName);
-
                 if(await _userRepository.DoesExistAsync(user => (user.UserName == response.UserName) && (user.Id != response.Id)))
                 {
                     result.IsSuccess = false;
                     result.ValidationErrors.Add(new ValidationResult($"User with username {response.UserName} already exists"));
                 }
-
 
                 foreach(var id in response.GameId)
                 {
@@ -199,54 +162,74 @@ namespace Imi.Project.Api.Core.Services
                     return result;
                 }
 
-                ApplicationUser editUser = await _userRepository.GetByIdAsync(response.Id);
-
-                var user = response.MapToEntity(editUser);
+                ApplicationUser editUser = response.MapToEntity(await _userRepository.GetByIdAsync(response.Id));
 
                 await _userRepository.UpdateAsync(editUser);
 
-                result.Data = editUser;
-                return result;
+                return new ServiceResultModel<ApplicationUser>
+                {
+                    Data = editUser
+                };
 
             } catch(Exception ex)
             {
-                result.IsSuccess = false;
-                result.ValidationErrors.Add(new ValidationResult(ex.Message));
-                if(ex.InnerException != null)
-                {
-                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
-                }
-                return result;
+                return SetErrorUser(ex);
             }
         }
 
         public async Task<ServiceResultModel<ApplicationUser>> DeleteAsync(Guid id)
         {
-            ServiceResultModel<ApplicationUser> result = new();
-
             try
             {
-                if(!await _userRepository.DoesExistAsync(id))
+                if(await _userRepository.DoesExistAsync(id))
                 {
-                    result.IsSuccess = false;
-                    result.ValidationErrors.Add(new ValidationResult("User does not exist"));
-                    return result;
+                    await _userRepository.DeleteAsync(await _userRepository.GetByIdAsync(id));
+
+                    return new ServiceResultModel<ApplicationUser> { };
                 }
-
-                await _userRepository.DeleteAsync(await _userRepository.GetByIdAsync(id));
-
-                return result;
+                return new ServiceResultModel<ApplicationUser>
+                {
+                    IsSuccess = false,
+                    ValidationErrors = new List<ValidationResult> { new ValidationResult("User does not exist") }
+                };
 
             } catch(Exception ex)
             {
-                result.IsSuccess = false;
-                result.ValidationErrors.Add(new ValidationResult(ex.Message));
-                if(ex.InnerException != null)
-                {
-                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
-                }
-                return result;
+                return SetErrorUser(ex);
             }
+        }
+
+        private static ServiceResultModel<IEnumerable<ApplicationUser>> SetErrorUserList(Exception ex)
+        {
+            return new ServiceResultModel<IEnumerable<ApplicationUser>>
+            {
+                IsSuccess = false,
+                ValidationErrors = GetResult(ex)
+            };
+        }
+
+        private static ServiceResultModel<ApplicationUser> SetErrorUser(Exception ex)
+        {
+            return new ServiceResultModel<ApplicationUser>
+            {
+                IsSuccess = false,
+                ValidationErrors = GetResult(ex)
+            };
+        }
+
+        private static IList<ValidationResult> GetResult(Exception ex)
+        {
+            List<ValidationResult> error = new()
+            {
+                new ValidationResult(ex.Message)
+            };
+
+            if(ex.InnerException != null)
+            {
+                error.Add(new ValidationResult(ex.InnerException.Message));
+            }
+
+            return error;
         }
     }
 }

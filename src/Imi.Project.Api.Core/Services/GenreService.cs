@@ -1,58 +1,58 @@
 ﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Repository;
 using Imi.Project.Api.Core.Interfaces.Sevices;
-using Imi.Project.Api.Core.Mapping;
+using Imi.Project.Api.Core.Mapper;
 using Imi.Project.Api.Core.Models;
 using Imi.Project.Api.Core.Models.Genre;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Services
 {
-    public class GenreService:BaseService<Genre,IGenreRepository>, IGenreService
+    public class GenreService:BaseService<Genre,IGenreRepository, NewGenreModel,UpdateGenreModel>, IGenreService
     {
         public GenreService(IGenreRepository genreRepository):base(genreRepository)
         {
         }
 
-        public async Task<ServiceResultModel<Genre>> AddAsync(NewGenreModel entity)
+        public override async Task<ServiceResultModel<Genre>> AddAsync(NewGenreModel entity)
         {
-            ServiceResultModel<Genre> result = new();
-
             try
             {
                 if(await _itemRepository.DoesExistAsync(genre => genre.Name == entity.Name))
                 {
-                    result.IsSuccess = false;
-                    result.ValidationErrors.Add(new ValidationResult($"Genre with name {entity.Name} already exists"));
-                    return result;
+                    return new ServiceResultModel<Genre>
+                    {
+                        IsSuccess = false,
+                        ValidationErrors = new List<ValidationResult>
+                        {
+                            new ValidationResult($"Genre with name {entity.Name} already exists")
+                        }
+                    };
                 }
 
                 Genre genre = entity.MapToEntity();
 
                 await _itemRepository.AddAsync(genre);
 
-                result.Data = genre;
-                return result;
+                return new ServiceResultModel<Genre>
+                {
+                    Data = genre
+                };
             } catch(Exception ex)
             {
-                result.IsSuccess = false;
-                result.ValidationErrors.Add(new ValidationResult(ex.Message));
-                if(ex.InnerException != null)
-                {
-                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
-                }
-                return result;
+                return SetError(ex);
             }
         }
 
-        public async Task<ServiceResultModel<Genre>> UpdateAsync(UpdateGenreModel entity)
+        public override async Task<ServiceResultModel<Genre>> UpdateAsync(UpdateGenreModel entity)
         {
-            ServiceResultModel<Genre> result = new();
-
             try
             {
+                ServiceResultModel<Genre> result = new();
+
                 if(!await _itemRepository.DoesExistAsync(entity.Id))
                 {
                     result.IsSuccess = false;
@@ -74,18 +74,14 @@ namespace Imi.Project.Api.Core.Services
 
                 await _itemRepository.UpdateAsync(genre);
 
-                result.Data = genre;
-                return result;
+                return new ServiceResultModel<Genre>
+                {
+                    Data = genre
+                };
 
             } catch(Exception ex)
             {
-                result.IsSuccess = false;
-                result.ValidationErrors.Add(new ValidationResult(ex.Message));
-                if(ex.InnerException != null)
-                {
-                    result.ValidationErrors.Add(new ValidationResult(ex.InnerException.Message));
-                }
-                return result;
+                return SetError(ex);
             }
         }
     }

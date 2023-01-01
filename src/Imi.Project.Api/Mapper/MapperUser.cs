@@ -1,14 +1,13 @@
 ﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Models.User;
 using Imi.Project.Api.Dto.Game;
-using Imi.Project.Api.Dto.Publisher;
 using Imi.Project.Api.Dto.User;
 
 namespace Imi.Project.Api.Mapper
 {
     public static class MapperUser
     {
-        public static NewUserModel NewUserModelMapper(this NewUserRequestDto newUser)
+        public static NewUserModel MapToModel(this NewUserRequestDto newUser)
         {
             return new NewUserModel
             {
@@ -23,7 +22,7 @@ namespace Imi.Project.Api.Mapper
             };
         }
 
-        public static UpdateUserModel UpdateUserModelMapper(this UpdateUserRequestDto updateUser)
+        public static UpdateUserModel MapToModel(this UpdateUserRequestDto updateUser)
         {
             return new UpdateUserModel
             {
@@ -38,7 +37,7 @@ namespace Imi.Project.Api.Mapper
             };
         }
 
-        public static UserResponseDto UserResponseDtoMapper(this ApplicationUser applicationUser)
+        public static UserResponseDto MapToDto(this ApplicationUser applicationUser)
         {
             return new UserResponseDto
             {
@@ -53,16 +52,16 @@ namespace Imi.Project.Api.Mapper
             };
         }
 
-        public static UserResponseDto UserResponseDtoMapper(this ApplicationUser applicationUser, List<GameResponseDto> gameResponse)
+        public static UserResponseDto MapToDto(this ApplicationUser applicationUser, List<GameResponseDto> gameResponse)
         {
-            var userResponse = UserResponseDtoMapper(applicationUser);
+            var userResponse = MapToDto(applicationUser);
             userResponse.Games = gameResponse;
             return userResponse;
         }
 
-        public static IEnumerable<UserResponseDto> UserResponseDtoMapper(this IEnumerable<ApplicationUser> applicationUsers)
-        {
-            return applicationUsers.Select(user => user.UserResponseDtoMapper());
-        }
+        //public static IEnumerable<UserResponseDto> UserResponseDtoMapper(this IEnumerable<ApplicationUser> applicationUsers)
+        //{
+        //    return applicationUsers.Select(user => user.UserResponseDtoMapper());
+        //}
     }
 }

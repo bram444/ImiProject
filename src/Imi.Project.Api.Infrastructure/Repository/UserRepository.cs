@@ -1,5 +1,6 @@
 ﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Repository;
+using Imi.Project.Api.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -19,84 +20,121 @@ namespace Imi.Project.Api.Infrastructure.Repository
             _dbContext = dbContext;
         }
 
-        public virtual IQueryable<ApplicationUser> GetAll()
-        {
-            return _dbContext.Set<ApplicationUser>().AsQueryable();
-        }
-
-        public virtual async Task<IEnumerable<ApplicationUser>> ListAllAsync()
-        {
-            return await _dbContext.Set<ApplicationUser>().ToListAsync();
-        }
-
-        public virtual async Task<ApplicationUser> GetByIdAsync(Guid id)
-        {
-            return await _dbContext.Set<ApplicationUser>().SingleOrDefaultAsync(t => t.Id == id);
-        }
-
-        public virtual async Task<IEnumerable<ApplicationUser>> SearchUserNameAsync(string search)
-        {
-            return await GetAll()
-                .Where(g => g.UserName.Contains(search.Trim().ToUpper()))
-                .ToListAsync();
-        }
-
-        public virtual async Task<IEnumerable<ApplicationUser>> SearchFirstNameAsync(string search)
-        {
-            return await GetAll()
-                .Where(g => g.FirstName.Contains(search.Trim().ToUpper()))
-                .ToListAsync();
-        }
-
-        public virtual async Task<IEnumerable<ApplicationUser>> SearchEmailAsync(string search)
-        {
-            return await GetAll()
-                .Where(g => g.Email.Contains(search.Trim().ToUpper()))
-                .ToListAsync();
-        }
-
-        public virtual async Task<IEnumerable<ApplicationUser>> SearchLastNameAsync(string search)
-        {
-            return await GetAll()
-                .Where(g => g.LastName.Contains(search.Trim().ToUpper()))
-                .ToListAsync();
-        }
-
-        public virtual async Task<bool> DoesExistAsync(Guid id)
+        public IQueryable<ApplicationUser> GetAll()
         {
             try
             {
-                return await _dbContext.Set<ApplicationUser>().AnyAsync(t => t.Id == id);
+                return _dbContext.ApplicationUsers.AsQueryable();
             } catch(Exception ex)
             {
-                throw new Exception($"Something went wrong when checking if {typeof(ApplicationUser).Name} with id {id} already exists", ex.InnerException);
+                throw new Exception("Something went wrong when getting all users", ex.InnerException);
             }
         }
 
-        public virtual async Task<bool> DoesExistAsync(Expression<Func<ApplicationUser, bool>> predicate)
+        public async Task<IEnumerable<ApplicationUser>> ListAllAsync()
         {
             try
             {
-                return await _dbContext.Set<ApplicationUser>().Where(predicate).AnyAsync();
+                return await _dbContext.ApplicationUsers.ToListAsync();
             } catch(Exception ex)
             {
-                throw new Exception($"Something went wrong when checking if {typeof(ApplicationUser).Name} already exists", ex.InnerException);
+                throw new Exception("Something went wrong when getting all users", ex.InnerException);
             }
         }
 
-        public async Task<IEnumerable<ApplicationUser>> GetFilteredListAsync(Expression<Func<ApplicationUser, bool>> predicate)
+        public async Task<ApplicationUser> GetByIdAsync(Guid id)
         {
-            return await GetAll().Where(predicate).ToListAsync();
+            try
+            {
+                return await _dbContext.ApplicationUsers.SingleOrDefaultAsync(t => t.Id == id);
+            } catch(Exception ex)
+            {
+                throw new Exception($"Something went wrong when getting the user with id {id}", ex.InnerException);
+            }
         }
+
+        public async Task<IEnumerable<ApplicationUser>> SearchUserNameAsync(string search)
+        {
+            try
+            {
+                return await GetAll()
+                .Where(g => g.UserName.Contains(search))
+                .ToListAsync();
+            } catch(Exception ex)
+            {
+                throw new Exception($"Something went wrong when getting all users with username {search}", ex.InnerException);
+            }
+        }
+
+        public async Task<IEnumerable<ApplicationUser>> SearchFirstNameAsync(string search)
+        {
+            try
+            {
+                return await GetAll()
+                .Where(user => user.FirstName.Contains(search))
+                .ToListAsync();
+            } catch(Exception ex)
+            {
+                throw new Exception($"Something went wrong when getting all users with firstname {search}", ex.InnerException);
+            }
+        }
+
+        //public virtual async Task<IEnumerable<ApplicationUser>> SearchEmailAsync(string search)
+        //{
+        //    return await GetAll()
+        //        .Where(g => g.Email.Contains(search.Trim().ToUpper()))
+        //        .ToListAsync();
+        //}
+
+        public async Task<IEnumerable<ApplicationUser>> SearchLastNameAsync(string search)
+        {
+            try
+            {
+                return await GetAll()
+                    .Where(g => g.LastName.Contains(search))
+                    .ToListAsync();
+            } catch(Exception ex)
+            {
+                throw new Exception($"Something went wrong when getting all users with lastname {search}", ex.InnerException);
+            }
+        }
+
+        public async Task<bool> DoesExistAsync(Guid id)
+        {
+            try
+            {
+                return await _dbContext.ApplicationUsers.AnyAsync(t => t.Id == id);
+            } catch(Exception ex)
+            {
+                throw new Exception($"Something went wrong when checking if {nameof(ApplicationUser)} with id {id} already exists", ex.InnerException);
+            }
+        }
+
+        public async Task<bool> DoesExistAsync(Expression<Func<ApplicationUser, bool>> predicate)
+        {
+            try
+            {
+                return await _dbContext.ApplicationUsers.Where(predicate).AnyAsync();
+            } catch(Exception ex)
+            {
+                throw new Exception($"Something went wrong when checking if {nameof(ApplicationUser)} already exists", ex.InnerException);
+            }
+        }
+
+        //public async Task<IEnumerable<ApplicationUser>> GetFilteredListAsync(Expression<Func<ApplicationUser, bool>> predicate)
+        //{
+        //    return await GetAll().Where(predicate).ToListAsync();
+        //}
+
         public async Task AddAsync(ApplicationUser entity)
         {
             try
             {
-                await _dbContext.Set<ApplicationUser>().AddAsync(entity);
+                await _dbContext.ApplicationUsers.AddAsync(entity);
                 await _dbContext.SaveChangesAsync();
             } catch(Exception ex)
             {
-                throw new Exception($"Something went wrong while adding {typeof(ApplicationUser).Name}", ex.InnerException);
+                throw new Exception($"Something went wrong while adding {nameof(ApplicationUser)}", ex.InnerException);
             }
         }
 
@@ -104,11 +142,11 @@ namespace Imi.Project.Api.Infrastructure.Repository
         {
             try
             {
-                _dbContext.Set<ApplicationUser>().Update(entity);
+                _dbContext.ApplicationUsers.Update(entity);
                 await _dbContext.SaveChangesAsync();
             } catch(Exception ex)
             {
-                throw new Exception($"Something went wrong while updating {typeof(ApplicationUser).Name}", ex.InnerException);
+                throw new Exception($"Something went wrong while updating {nameof(ApplicationUser)}", ex.InnerException);
             }
         }
 
@@ -116,12 +154,11 @@ namespace Imi.Project.Api.Infrastructure.Repository
         {
             try
             {
-                _dbContext.Set<ApplicationUser>().Remove(entity);
+                _dbContext.ApplicationUsers.Remove(entity);
                 await _dbContext.SaveChangesAsync();
-
             } catch(Exception ex)
             {
-                throw new Exception($"Something went wrong while removing {typeof(ApplicationUser).Name}", ex.InnerException);
+                throw new Exception($"Something went wrong while removing {nameof(ApplicationUser)}", ex.InnerException);
             }
         }
     }
