@@ -50,7 +50,7 @@ namespace Imi.Project.Api.Core.Services
                     return new AuthenticationResult
                     {
                         IsSuccess = false,
-                        Messages = result.Errors.Select(error=>error.Description).ToList()
+                        Messages = result.Errors.Select(error => error.Description).ToList()
                     };
                 }
 
@@ -129,11 +129,13 @@ namespace Imi.Project.Api.Core.Services
                 claims.Add(new Claim(ClaimTypes.Role, roleClaim));
             }
 
-            claims.Add(new Claim(ClaimTypes.NameIdentifier, await _userManager.GetUserIdAsync(user)));
+            ApplicationUser foundUser = await _userManager.FindByNameAsync(user.UserName);
 
-            claims.Add(new Claim(ClaimTypes.Name, (await _userManager.GetUserNameAsync(user))!));
+            claims.Add(new Claim(ClaimTypes.NameIdentifier, foundUser.Id.ToString()));
 
-            claims.Add(new Claim(ClaimTypes.Email, (await _userManager.GetEmailAsync(user))!));
+            claims.Add(new Claim(ClaimTypes.Name, foundUser.UserName));
+
+            claims.Add(new Claim(ClaimTypes.Email, foundUser.Email));
 
             return claims;
         }

@@ -20,19 +20,19 @@ namespace Imi.Project.Api.Core.Services
 
         public JwtSecurityToken GenerateToken(List<Claim> userClaims)
         {
-            List<Claim> claims = new();
+            var claims = new List<Claim>();
             claims.AddRange(userClaims);
-            int expirationDays = int.Parse(_configuration["JWTConfiguration:TokenExpirationDays"]);
-            string signinKey = _configuration["JWTConfiguration:SigninKey"];
-            JwtSecurityToken token = new(
+            var expirationDays = int.Parse(_configuration["JWTConfiguration:TokenExpirationDays"]);
+            var signinKey = _configuration["JWTConfiguration:SigninKey"];
+            var token = new JwtSecurityToken
+            (
                 issuer: _configuration["JWTConfiguration:Issuer"],
                 audience: _configuration["JWTConfiguration:Audience"],
                 claims: claims,
                 expires: DateTime.UtcNow.Add(TimeSpan.FromDays(expirationDays)),
                 notBefore: DateTime.UtcNow,
-                signingCredentials: new SigningCredentials(
-                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signinKey)),
-                    SecurityAlgorithms.HmacSha256)
+                signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signinKey))
+                , SecurityAlgorithms.HmacSha256)
             );
             return token;
         }

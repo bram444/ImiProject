@@ -5,26 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Imi.Project.Vue</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
+            <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Imi.Project.Vue</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
+                        <li v-if="userModel.isAdmin">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Genre">Genre</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Genres">Genres</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Games">Games</a>
                         </li>
                     </ul>
+                    <div id="loginForm" class="d-flex flex-column">
+                        <form class="d-flex" role="login" v-if="userIsLoggedIn == false" v-on:submit.prevent="submitLogin">
+                            <input class="form-control me-2" type="text" placeholder="user name" aria-label="UserName" v-model="loginModel.userName">
+                            <input class="form-control me-2" type="password" placeholder="password" aria-label="Password" v-model="loginModel.password">
+                            <button class="btn btn-outline-primary" type="submit">Login</button>
+                        </form>
+                        <div v-else class="d-inline-flex align-items-center">
+                            <div class="me-2">
+                                <p class="d-inline" >Welkom <strong>{{userModel.name}}</strong>!</p>
+                            </div>
+                            <button class="btn btn-danger align-self-center" type="submit" style="margin-left:10px" v-on:click.prevent="submitLogout">Logout</button>
+                        </div>
+                        <div class="alert alert-danger p-2 my-2" v-if="errorMessage">{{errorMessage}}</div>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -37,12 +54,75 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2021 - Imi.Project.Vue - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2022 - Imi.Project.Vue - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    @RenderSection("Scripts", required: false)
+    <script src="~/lib/axios/axios.min.js"></script>
+    <script src="~/lib/vue/vue.js"></script>
+    <script src="~/lib/jwt-decode/build/jwt-decode.js"></script>
+    
+    <script>
+        var navbarVue = new Vue({
+            el: ".navbar",
+            name: "navigation",
+            data: {
+                loginModel: {
+                    userName: "TimTheDestroyerXx400",
+                    password: "Test123?"
+                },
+                errorMessage: null,
+                showLoginForm: true,
+                userIsLoggedIn: false,
+                userModel: {
+                    name: "",
+                    isAdmin: false,
+                }
+            },
+            created: function () {
+                if (sessionStorage.getItem("token")) {
+                    this.userIsLoggedIn = true;
+                    this.userModel.name = readUserNameFromToken();
+                    this.userModel.isAdmin = hasUserAdminRole();
+                }
+                else {
+                    this.userIsLoggedIn = false;
+                }
+            },
+            methods: {
+                submitLogin: async function () {
+                    await axios.post(`${baseUrl}authentication/login`, this.loginModel)
+                        .then((response) => {
+                            sessionStorage.setItem("token", response.data.token);
+                            this.userIsLoggedIn = true;
+                            this.userModel.name = readUserNameFromToken();
+                            this.userModel.isAdmin = hasUserAdminRole();
+                            this.errorMessage = null;
+                        }).
+                        catch((e) => {
+                            this.errorMessage = "Login failed!";
+                            this.userIsLoggedIn = false;
+                        })
+                        .finally(() => {
+                            this.loginModel.userName = "";
+                            this.loginModel.password = ""
+                        });
+                },
+                submitLogout: function () {
+                    sessionStorage.clear();
+                    axiosConfig = null;
+                    this.userIsLoggedIn = false;
+                    this.userModel = {
+                        name: "",
+                        isAdmin: false,
+                    }
+                }
+            }
+        });
+    </script>
+    
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

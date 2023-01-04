@@ -1,5 +1,6 @@
 ﻿using Imi.Project.Api.Core.Entities;
 using Imi.Project.Api.Core.Interfaces.Repository;
+using Imi.Project.Api.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace Imi.Project.Api.Infrastructure.Data
+namespace Imi.Project.Api.Infrastructure.Repository
 {
     public class BaseRepository<T>: IBaseRepository<T> where T : BaseEntity
     {

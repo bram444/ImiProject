@@ -13,3 +13,49 @@ const dateOfBirthClaimKey = "http://schemas.xmlsoap.org/ws/2005/05/identity/clai
 const approveTermClaimKey = "approved";
 
 const adminRoleClaimValue = "Admin";
+
+// Axios configuration
+let axiosConfig = {
+    headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` }
+};
+
+//Methods
+function getDecodedToken() {
+    const token = sessionStorage.getItem("token");
+    if (token == null) {
+        return "";
+    }
+    else {
+        const decodedToken = jwt_decode(token);
+        return decodedToken;
+    }
+}
+
+function readUserNameFromToken() {
+    const decodedToken = getDecodedToken();
+    return decodedToken[nameClaimKey];
+}
+
+function readUserIdFromToken() {
+    const decodedToken = getDecodedToken();
+    return decodedToken[nameIdentifierClaimKey];
+}
+
+function readUserBirthDayFromToken() {
+    const decodedToken = getDecodedToken();
+    return decodedToken[dateOfBirthClaimKey];
+}
+
+function readUserRoleFromToken() {
+    const decodedToken = getDecodedToken();
+    return decodedToken[roleClaimKey];
+}
+
+function hasUserAdminRole() {
+    if (readUserRoleFromToken() === adminRoleClaimValue) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
