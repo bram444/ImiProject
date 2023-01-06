@@ -18,29 +18,34 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li v-if="userModel.isAdmin">
+                        <li>
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item" v-if="userModel.isAdmin">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Genres">Genres</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Games">Games</a>
                         </li>
                     </ul>
-                    <div id="loginForm" class="d-flex flex-column">
+                        <div id="loginForm" class="d-flex flex-column">
                         <form class="d-flex" role="login" v-if="userIsLoggedIn == false" v-on:submit.prevent="submitLogin">
                             <input class="form-control me-2" type="text" placeholder="user name" aria-label="UserName" v-model="loginModel.userName">
                             <input class="form-control me-2" type="password" placeholder="password" aria-label="Password" v-model="loginModel.password">
                             <button class="btn btn-outline-primary" type="submit">Login</button>
-                        </form>
-                        <div v-else class="d-inline-flex align-items-center">
-                            <div class="me-2">
-                                <p class="d-inline" >Welkom <strong>{{userModel.name}}</strong>!</p>
+                            </form>
+                            <div v-else class="d-inline-flex align-items-center">
+                                <div class="me-2">
+                                    <p class="d-inline">Welkom <strong>{{userModel.name}}</strong>!</p>
+                                </div>
+                                <button class="btn btn-danger align-self-center" type="submit" style="margin-left:10px" v-on:click.prevent="submitLogout">Logout</button>
                             </div>
-                            <button class="btn btn-danger align-self-center" type="submit" style="margin-left:10px" v-on:click.prevent="submitLogout">Logout</button>
-                        </div>
-                        <div class="alert alert-danger p-2 my-2" v-if="errorMessage">{{errorMessage}}</div>
+                            <div class="alert alert-danger p-2 my-2" v-if="errorMessage">{{errorMessage}}</div>
+                    </div>
+                    <div class="d-flex flex-row">
+                        <form class="d-flex" role="register" v-if="userIsLoggedIn == false" asp-area="" asp-controller="Home" asp-action="Register">
+                            <button class="btn btn-outline-success" type="submit">Register</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -54,7 +59,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2022 - Imi.Project.Vue - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2022 - Imi.Project.Vue
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -65,6 +70,7 @@
     <script src="~/lib/jwt-decode/build/jwt-decode.js"></script>
     
     <script>
+
         var navbarVue = new Vue({
             el: ".navbar",
             name: "navigation",
@@ -100,6 +106,12 @@
                             this.userModel.name = readUserNameFromToken();
                             this.userModel.isAdmin = hasUserAdminRole();
                             this.errorMessage = null;
+
+                            if (window.location.pathname=="/Home/Register") {
+                                window.location.assign(window.location.origin+ "/Home/");
+                            }
+
+
                         }).
                         catch((e) => {
                             this.errorMessage = "Login failed!";

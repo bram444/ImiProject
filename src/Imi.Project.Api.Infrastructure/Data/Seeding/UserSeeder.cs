@@ -46,6 +46,15 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
             const string xUserName = "UserX";
             const string xEmail = "XUser@gmail.com";
 
+            const string adminUserName = "admin";
+            const string adminEmail = "admin@imi.be";
+
+            const string userUserName = "user";
+            const string userEmail = "user@imi.be";
+
+            const string refuserUserName = "refuser";
+            const string refuserEmail = "refuser@imi.be";
+
             const string AdminUserPassword = "Test123?";
 
             IPasswordHasher<ApplicationUser> passwordHasher = new PasswordHasher<ApplicationUser>();
@@ -63,8 +72,8 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         NormalizedUserName =firstUserName.Normalize(),
                         NormalizedEmail =firstEmail.Normalize(),
                         EmailConfirmed = true,
-                        SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINA",
-                        ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc58",
+                        SecurityStamp = Guid.NewGuid().ToString(),
+                        ConcurrencyStamp = Guid.NewGuid().ToString(),
                         ApprovedTerms = true,
                         BirthDay = DateTime.Now
                     },
@@ -76,8 +85,8 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         LastName="User",
                         Email=secondEmail,
                         EmailConfirmed = true,
-                        SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINB",
-                        ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc59",
+                        SecurityStamp = Guid.NewGuid().ToString(),
+                        ConcurrencyStamp = Guid.NewGuid().ToString(),
                         NormalizedEmail = secondEmail.Normalize(),
                         NormalizedUserName = secondUserName.Normalize(),
                         ApprovedTerms = true,
@@ -91,8 +100,8 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         LastName="User",
                         Email=thirdEmail,
                         EmailConfirmed = true,
-                        SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINC",
-                        ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc50",
+                        SecurityStamp = Guid.NewGuid().ToString(),
+                        ConcurrencyStamp = Guid.NewGuid().ToString(),
                         NormalizedEmail = thirdEmail.Normalize(),
                         NormalizedUserName = thirdUserName.Normalize(),
                         ApprovedTerms = true,
@@ -106,8 +115,8 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         LastName="User",
                         Email=forthEmail,
                         EmailConfirmed = true,
-                        SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZIND",
-                        ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc51",
+                        SecurityStamp = Guid.NewGuid().ToString(),
+                        ConcurrencyStamp = Guid.NewGuid().ToString(),
                         NormalizedEmail = forthEmail.Normalize(),
                         NormalizedUserName = forthUserName.Normalize(),
                         ApprovedTerms = true,
@@ -121,8 +130,8 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         LastName = "User",
                         Email = fifthEmail,
                         EmailConfirmed = true,
-                        SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINE",
-                        ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc52",
+                        SecurityStamp = Guid.NewGuid().ToString(),
+                        ConcurrencyStamp = Guid.NewGuid().ToString(),
                         NormalizedEmail = fifthEmail.Normalize(),
                         NormalizedUserName = fifthUserName.Normalize(),
                         ApprovedTerms = true,
@@ -136,8 +145,8 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         LastName = "User",
                         Email = sixEmail,
                         EmailConfirmed = true,
-                        SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINF",
-                        ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc53",
+                        SecurityStamp = Guid.NewGuid().ToString(),
+                        ConcurrencyStamp = Guid.NewGuid().ToString(),
                         NormalizedEmail = sixEmail.Normalize(),
                         NormalizedUserName = sixUserName.Normalize(),
                         ApprovedTerms = true,
@@ -151,8 +160,8 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         LastName = "User",
                         Email = seventhEmail,
                         EmailConfirmed = true,
-                        SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZING",
-                        ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc54",
+                        SecurityStamp = Guid.NewGuid().ToString(),
+                        ConcurrencyStamp = Guid.NewGuid().ToString(),
                         NormalizedEmail = seventhEmail.Normalize(),
                         NormalizedUserName = seventhUserName.Normalize(),
                         ApprovedTerms = true,
@@ -166,8 +175,8 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         LastName = "User",
                         Email = eigthEmail,
                         EmailConfirmed = true,
-                        SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINH",
-                        ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc55",
+                        SecurityStamp = Guid.NewGuid().ToString(),
+                        ConcurrencyStamp = Guid.NewGuid().ToString(),
                         NormalizedEmail = eigthEmail.Normalize(),
                         NormalizedUserName = eigthUserName.Normalize(),
                         ApprovedTerms = true,
@@ -181,8 +190,8 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         LastName = "User",
                         Email = ninthEmail,
                         EmailConfirmed = true,
-                        SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINI",
-                        ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc56",
+                        SecurityStamp = Guid.NewGuid().ToString(),
+                        ConcurrencyStamp = Guid.NewGuid().ToString(),
                         NormalizedEmail = ninthEmail.Normalize(),
                         NormalizedUserName = ninthUserName.Normalize(),
                         ApprovedTerms = true,
@@ -196,11 +205,56 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                         LastName = "User",
                         Email = xEmail,
                         EmailConfirmed = true,
-                        SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINJ",
-                        ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc57",
+                        SecurityStamp = Guid.NewGuid().ToString(),
+                        ConcurrencyStamp = Guid.NewGuid().ToString(),
                         NormalizedEmail = xEmail.Normalize(),
                         NormalizedUserName = xUserName.Normalize(),
                         ApprovedTerms = true,
+                        BirthDay = DateTime.Parse("19/08/2010"),
+                    },
+                    new ApplicationUser
+                    {
+                        Id = Guid.Parse("00000000-0000-0000-0000-000000000011"),
+                        UserName = adminUserName,
+                        FirstName = "ad",
+                        LastName = "min",
+                        Email = adminEmail,
+                        EmailConfirmed = true,
+                        SecurityStamp = Guid.NewGuid().ToString(),
+                        ConcurrencyStamp = Guid.NewGuid().ToString(),
+                        NormalizedEmail = adminEmail.Normalize(),
+                        NormalizedUserName = adminUserName.Normalize(),
+                        ApprovedTerms = true,
+                        BirthDay = DateTime.Parse("19/08/2010"),
+                    },
+                    new ApplicationUser
+                    {
+                        Id = Guid.Parse("00000000-0000-0000-0000-000000000012"),
+                        UserName = userUserName,
+                        FirstName = "us",
+                        LastName = "er",
+                        Email = userEmail,
+                        EmailConfirmed = true,
+                        SecurityStamp = Guid.NewGuid().ToString(),
+                        ConcurrencyStamp = Guid.NewGuid().ToString(),
+                        NormalizedEmail = userEmail.Normalize(),
+                        NormalizedUserName = userUserName.Normalize(),
+                        ApprovedTerms = true,
+                        BirthDay = DateTime.Parse("19/08/2010"),
+                    },
+                    new ApplicationUser
+                    {
+                        Id = Guid.Parse("00000000-0000-0000-0000-000000000013"),
+                        UserName = refuserUserName,
+                        FirstName = "ref",
+                        LastName = "user",
+                        Email = refuserEmail,
+                        EmailConfirmed = true,
+                        SecurityStamp = Guid.NewGuid().ToString(),
+                        ConcurrencyStamp = Guid.NewGuid().ToString(),
+                        NormalizedEmail = refuserEmail.Normalize(),
+                        NormalizedUserName = refuserUserName.Normalize(),
+                        ApprovedTerms = false,
                         BirthDay = DateTime.Parse("19/08/2010"),
                     }
                 };
@@ -278,6 +332,21 @@ namespace Imi.Project.Api.Infrastructure.Data.Seeding
                 {
                 RoleId = UserRoleId,
                 UserId = applicationUsers[9].Id,
+                },
+                                new IdentityUserRole<Guid>
+                {
+                RoleId = AdminRoleId,
+                UserId = applicationUsers[10].Id,
+                },
+                new IdentityUserRole<Guid>
+                {
+                RoleId = UserRoleId,
+                UserId = applicationUsers[11].Id,
+                },
+                new IdentityUserRole<Guid>
+                {
+                RoleId = UserRoleId,
+                UserId = applicationUsers[12].Id,
                 }
             });
 
