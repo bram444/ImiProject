@@ -96,17 +96,17 @@ namespace Imi.Project.Api.Core.Services
         {
             try
             {
-                var userEntity = response.MapToEntity();
+                ApplicationUser userEntity = response.MapToEntity();
 
                 ServiceResultModel<ApplicationUser> result = new();
 
                 if(await _userRepository.DoesExistAsync(user => user.UserName == userEntity.UserName))
                 {
                     result.IsSuccess = false;
-                    result.ValidationErrors.Add(new ValidationResult($"User with username {userEntity.UserName} already exists"));
+                    result.ValidationErrors.Add(new ValidationResult($"Username {userEntity.UserName} already exists"));
                 }
 
-                if(await _userRepository.DoesExistAsync(user => (user.Email == userEntity.Email)))
+                if(await _userRepository.DoesExistAsync(user => user.Email == userEntity.Email))
                 {
                     result.IsSuccess = false;
                     result.ValidationErrors.Add(new ValidationResult($"User with email already exists"));
@@ -145,10 +145,10 @@ namespace Imi.Project.Api.Core.Services
                 if(await _userRepository.DoesExistAsync(user => (user.UserName == response.UserName) && (user.Id != response.Id)))
                 {
                     result.IsSuccess = false;
-                    result.ValidationErrors.Add(new ValidationResult($"User with username {response.UserName} already exists"));
+                    result.ValidationErrors.Add(new ValidationResult($"Username {response.UserName} already exists"));
                 }
 
-                foreach(var id in response.GameId)
+                foreach(Guid id in response.GameId)
                 {
                     if(!await _gameRepository.DoesExistAsync(id))
                     {

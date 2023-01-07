@@ -5,14 +5,14 @@
 
 const baseUrl = "https://localhost:5001/api/";
 
-const roleClaimKey = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
-const nameIdentifierClaimKey = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
-const nameClaimKey = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name";
-const emailClaimKey = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress";
-const dateOfBirthClaimKey = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/dateofbirth";
-const approveTermClaimKey = "approved";
+const roleKey = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
+const nameIdentifierKey = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
+const nameKey = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name";
+const emailKey = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress";
+const dateOfBirthKey = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/dateofbirth";
+const approveTermKey = "approved";
 
-const adminRoleClaimValue = "Admin";
+const adminRoleValue = "Admin";
 
 // Axios configuration
 let axiosConfig = {
@@ -33,26 +33,26 @@ function getDecodedToken() {
 
 function readUserNameFromToken() {
     const decodedToken = getDecodedToken();
-    return decodedToken[nameClaimKey];
+    return decodedToken[nameKey];
 }
 
 function readUserIdFromToken() {
     const decodedToken = getDecodedToken();
-    return decodedToken[nameIdentifierClaimKey];
+    return decodedToken[nameIdentifierKey];
 }
 
 function readUserBirthDayFromToken() {
     const decodedToken = getDecodedToken();
-    return decodedToken[dateOfBirthClaimKey];
+    return decodedToken[dateOfBirthKey];
 }
 
 function readUserRoleFromToken() {
     const decodedToken = getDecodedToken();
-    return decodedToken[roleClaimKey];
+    return decodedToken[roleKey];
 }
 
 function hasUserAdminRole() {
-    if (readUserRoleFromToken() === adminRoleClaimValue) {
+    if (readUserRoleFromToken() === adminRoleValue) {
         return true;
     }
     else {

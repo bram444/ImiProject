@@ -1,0 +1,442 @@
+﻿@{
+    ViewData["Title"] = "Update user";
+}
+
+<div id="UserUpdate" class="d-flex flex-column">
+    <div class="row" v-if="showUserError">
+        <div class="alert alert-danger">
+            {{userErrorMessage}}
+        </div>
+    </div>
+    <div v-else>
+        <div class="text-center">
+            <h1 class="display-4">Update User</h1>
+        </div>
+
+        <div class="alert alert-danger" v-if="unknownError.length">
+            {{unknownError}}
+        </div>
+
+        <form class="d-flex flex-column" v-on:submit.prevent="setUpdate" v-if="isEditing == false">
+            <div>
+                <label for="username">username</label>
+                <input name="username" v-model="currentUser.userName" placeholder="username" disabled>
+            </div>
+            <div>
+                <label for="firstName">first name</label>
+                <input name="firstName" v-model="currentUser.firstName" placeholder="first name" disabled>
+            </div>
+            <div>
+                <label for="lastName">last name</label>
+                <input name="lastName" v-model="currentUser.lastName" placeholder="last name" disabled>
+            </div>
+
+            <div>
+                <label for="email">Email</label>
+                <input name="email" v-model="currentUser.email" placeholder="email" disabled>
+            </div>
+
+            <button id="Update" class="btn btn-outline-success" type="submit">Update</button>
+        </form>
+
+        <form class="d-flex flex-column" role="update" v-on:submit.prevent="updateUser" v-else>
+            <div>
+                <label for="username">username</label>
+                <input name="username" v-model="editUser.userName" placeholder="username" required>
+                <div class="alert alert-danger" v-if="usernameError.length">
+                    {{usernameError}}
+                </div>
+            </div>
+            <div>
+                <label for="password">password</label>
+                <input name="password" v-model="editUser.password" placeholder="password" type="password" required>
+                <div class="alert alert-danger" v-if="passwordError.length">
+                    {{passwordError}}
+                </div>
+            </div>
+            <div>
+                <label for="confirmPassword">Confirm Password</label>
+                <input name="confirmPassword" v-model="editUser.confirmPassword" placeholder="password" type="password" required>
+                <div class="alert alert-danger" v-if="confirmPasswordError.length">
+                    {{confirmPasswordError}}
+                </div>
+            </div>
+            <div>
+                <label for="firstName">first name</label>
+                <input name="firstName" v-model="editUser.firstName" placeholder="first name" required>
+            </div>
+            <div>
+                <label for="lastName">last name</label>
+                <input name="lastName" v-model="editUser.lastName" placeholder="last name" required>
+            </div>
+
+            <div v-if="isApproved">
+                <label for="approvedTerms">Did you approve our terms and service?</label>
+                <input id="termsId" name="approved" v-model="editUser.approvedTerms" type="checkbox">
+            </div>
+            <button id="Update" class="btn btn-outline-success" type="submit">Save</button>
+        </form>
+
+        <form class="d-flex flex-column" role="cancel" v-on:submit.prevent="cancelUpdate" v-if="isEditing == true">
+            <button class="btn btn-outline-secondary" type="submit">Cancel</button>
+        </form>
+
+        <form class="d-flex flex-column" role="deleter" v-on:submit.prevent="deleteUser" v-if="isEditing == false">
+            <button class="btn btn-outline-danger" type="submit">delete</button>
+        </form>
+
+        <hr />
+
+        <div v-if="!playedGames.length">
+            <h2> You dont have games yet, please add them.</h2>
+        </div>
+
+
+        <div v-else>
+
+            <h2> All games played by the user</h2>
+
+            <div class="row">
+                <div class="card col-md-3 p-2 m-1" v-for="playedGame in playedGames">
+                    <div class="card-body">
+                        <h5 class="card-title">{{playedGame.name}}</h5>
+                        <p class="card-text">{{playedGame.price}}</p>
+                        <button v-if="isEditing" type="button" class="btn btn-outline-danger" v-on:click="removeGame(playedGame)">Remove</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br />
+        <div v-if="isEditing == true">
+            <div v-if="notPlayedGames.length > 0">
+                <h2> All games the user didn't play</h2>
+                <div class="row">
+                    <div class="card col-md-3 p-2 m-1" v-for="notPlayed in notPlayedGames">
+                        <div class="card-body">
+                            <h5 class="card-title">{{notPlayed.name}}</h5>
+                            <p class="card-text">{{notPlayed.price}}</p>
+                            <button type="button" class="btn btn-outline-success" v-on:click="addGame(notPlayed)">Add</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        var vue = new Vue({
+            el: "#UserUpdate",
+            name: "userUpdate",
+            data: {
+
+                usernameError: "",
+                passwordError: "",
+                confirmPasswordError: "",
+                unknownError: "",
+                userErrorMessage: "",
+                showUserError: false,
+                isEditing: false,
+                playedGames: new Array(),
+                notPlayedGames: new Array(),
+                isApproved :false,
+                allGames: new Array(),
+
+                currentUser: {
+                    email: "",
+                    userName: "",
+                    firstName: "",
+                    lastName: "",
+                    gameId: [""],
+                    approvedTerms: false,
+                },
+
+                editUser: {
+                    id: "",
+                    password: "",
+                    confirmPassword: "",
+                    userName: "",
+                    firstName: "",
+                    lastName: "",
+                    approvedTerms: false,
+                    gameId: [""]
+                }
+
+            },
+
+            created: async function () {
+                var id = readUserIdFromToken();
+                await axios.get(`${baseUrl}user/${id}`, axiosConfig)
+                    .then((response) => {
+
+                        this.currentUser.userName = response.data.userName;
+                        this.currentUser.firstName = response.data.firstName;
+                        this.currentUser.lastName = response.data.lastName;
+                        this.currentUser.email = response.data.email;
+                        this.currentUser.approvedTerms = response.data.approvedTerms;
+                        this.currentUser.gameId = response.data.games.map(game => game.id);
+                        this.isApproved = response.data.approvedTerms;
+
+                        this.editUser.gameId = response.data.games.map(game => game.id);
+                        this.editUser.userName = response.data.userName;
+                        this.editUser.firstName = response.data.firstName;
+                        this.editUser.lastName = response.data.lastName;
+                        this.editUser.approvedTerms = response.data.approvedTerms;
+
+                        this.playedGames = response.data.games;
+                    }).
+                    catch((e) => {
+                                                    this.showUserError = true;
+
+                        if (e.response.status === 400) {
+                            e.response.data.forEach(this.setError);
+                        }
+                        else if (e.response.status === 401) {
+                            this.errorMessage = "Onvoldoende rechten om een item te verwijderen!";
+                        }
+                        else {
+                            this.errorMessage = e.message;
+                        }
+                    });
+
+                await axios.get(`${baseUrl}game/`, axiosConfig)
+                    .then((response) => {
+
+                        this.allGames = response.data;
+                        var gameId = this.currentUser.gameId;
+
+                        this.notPlayedGames = response.data.filter(game =>
+                            !gameId.includes(game.id)
+                        );
+                    }).
+                    catch((e) => {
+                        this.showUserError = true;
+
+                        if (e.response.status === 400) {
+                            e.response.data.forEach(this.setError);
+                        }
+                        else if (e.response.status === 401) {
+                            this.errorMessage = "Onvoldoende rechten om een item te verwijderen!";
+                        }
+                        else {
+                            this.errorMessage = e.message;
+                        }
+                    });
+
+            },
+            methods: {
+                setUpdate: function () {
+                    this.isEditing = true;
+                },
+
+                updateUser: async function () {
+
+                    if (this.editUser.password != this.editUser.confirmPassword) {
+
+                        this.confirmPasswordError = "Password isn't the same";
+                    }
+                    else {
+                        this.passwordError="";
+                        if(this.passwordValidator(this.editUser.password))
+                        {
+                        this.editUser.id = readUserIdFromToken();
+
+                        await axios.put(`${baseUrl}User`, this.editUser, axiosConfig)
+                            .then((response) => {
+                            })
+                            .catch((e) => {
+                                    this.showUserError = true;
+
+                                if (e.response.status === 400) {
+                                    e.response.data.forEach(this.setError);
+                                }
+                                else if (e.response.status === 401) {
+                                        this.errorMessage = "Onvoldoende rechten om een item te verwijderen!";
+                                    }
+                                    else {
+                                        this.errorMessage = e.message;
+                                    }
+
+                            });
+
+                        const loginModel = {
+                            userName: this.editUser.userName,
+                            password: this.editUser.password
+                        };
+
+                        if (this.unknownError === "" && this.usernameError === "" && this.passwordError == "") {
+
+                            await axios.post(`${baseUrl}authentication/login`, loginModel)
+                                .then((response) => {
+                                    sessionStorage.setItem("token", response.data.token);
+                                    location.reload();
+                                })
+                                .catch((e)=>{
+                                        this.showUserError = true;
+                                        this.errorMessage = "Iets ging verkeerd wanneer de gebruiker zich opniew probeert in te loggen";
+
+                                });
+                        }
+                        }
+
+                    }
+                },
+
+                setError: function (data) {
+                    switch (data.errorMessage.split(' ')[0]) {
+                        case `Username`:
+                            this.usernameError = data.errorMessage;
+                            break;
+                        case `Password`:
+                            this.passwordError = data.errorMessage;
+                            break;
+
+                        default:
+                            this.unknownError = data.errorMessage;
+
+                            break;
+                    }
+                },
+
+                removeGame: function (playedGame) {
+
+                    const result = this.allGames.find(({ id }) => id === playedGame.id);
+                    var index = this.editUser.gameId.indexOf(result.id);
+                    if (index !== -1) {
+                        this.editUser.gameId.splice(index, 1);
+                    }
+                    if (this.notPlayedGames.length) {
+                        this.notPlayedGames.push(result);
+                    } else {
+                        this.notPlayedGames = new Array(result);
+                        this.notPlayedGames.gameId = new Array(result.id);
+                    }
+
+
+                    var gameId = this.editUser.gameId;
+
+                    var filtered = this.playedGames.filter(game =>
+                        gameId.includes(game.id)
+                    );
+
+                    this.playedGames = filtered;
+
+                },
+
+                addGame: function (game) {
+
+                    const result = this.allGames.find(({ id }) => id === game.id);
+
+                    if (this.playedGames.length) {
+                        this.playedGames.push(result);
+                        this.editUser.gameId.push(result.id);
+                    }
+                    else {
+                        this.playedGames = new Array(result);
+                        this.editUser.gameId = new Array(result.id);
+
+                    }
+
+                    var gameId = this.editUser.gameId;
+
+                    var filtered = this.notPlayedGames.filter(game =>
+                        !gameId.includes(game.id)
+                    );
+
+                    this.notPlayedGames = filtered;
+
+
+                },
+
+                deleteUser:function(){
+
+                    let id = readUserIdFromToken();
+
+
+                    await axios.delete(`${baseUrl}User/${id}`, axiosConfig)
+                        .then((response) => {
+                        })
+                        .catch((e) => {
+                            this.showErrorSection = true;
+                            if (e.response.status === 401) {
+                                this.errorMessage = "Onvoldoende rechten om een item aan te verwijderen!";
+                            }
+                            else if (e.response.status === 400) {
+                                console.log(e.response.data[0].errorMessage);
+                                this.errorMessage = e.response.data[0].errorMessage;
+                            }
+                            else {
+                                this.errorMessage = e.message;
+                            }
+                        })
+                        .finally(() => {
+
+                            sessionStorage.clear();
+                            window.location.assign(window.location.origin+ "/Home/");
+
+                        });
+
+                },
+                cancelUpdate: function () {
+                    this.isEditing = false;
+
+                    this.editUser.password = "";
+                    this.editUser.confirmPassword = "";
+
+                    var deepcopyUser = JSON.parse(JSON.stringify(this.currentUser));
+
+                    this.editUser.userName = deepcopyUser.userName;
+                    this.editUser.firstName = deepcopyUser.firstName;
+                    this.editUser.lastName = deepcopyUser.lastName;
+
+                    this.editUser.gameId = deepcopyUser.gameId;
+                    this.editUser.approvedTerms = deepcopyUser.approvedTerms;
+
+                    var gameId = this.currentUser.gameId;
+
+                    this.notPlayedGames = this.allGames.filter(game =>
+                        !gameId.includes(game.id)
+                    );
+
+
+                    this.playedGames = this.allGames.filter(game =>
+                        gameId.includes(game.id)
+                    );
+
+                },
+                passwordValidator: function (password) {
+                    if (password.length < 8) {
+                        this.passwordError += "Your password must be at least 8 characters";
+                        return false;
+                    }
+                    if (!password.match(/[a-z]/)) {
+                        this.passwordError += "Your password must contain at least one small letter.";
+                                                return false;
+                    }
+                    if (!password.match(/[A-Z]/)) {
+                        this.passwordError += "Your password must contain at least one big letter.";
+                        return false;
+
+                    }
+                    if (!password.match(/[0-9]/)) {
+                        this.passwordError += "Your password must contain at least one digit.";
+                        return false;
+
+                    }
+                    if (!password.match(/[0-9]/)) {
+                        this.passwordError += "Your password must contain at least one digit.";
+                        return false;
+
+                    }
+                    if (!password.match(/[$&+?<>.^*()%!]/)) {
+                        this.passwordError += "Your password must contain at least one special character.";
+                        return false;
+                    }
+                    return true;
+                }
+            }
+        });
+    </script>
+    }

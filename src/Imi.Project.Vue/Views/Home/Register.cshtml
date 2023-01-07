@@ -9,24 +9,28 @@
 
     <form class="d-flex flex-column" role="register" v-on:submit.prevent="register">
         <div>
+            <div class="alert alert-danger" v-if="unknownError.length">
+                {{unknownError}}
+            </div>
+
             <label for="username">username</label>
             <input name="username" v-model="newUser.userName" placeholder="username" required>
-            <div v-for="error in usernameError" class="alert alert-danger" v-if="usernameError.length">
-                {{error}}
+            <div class="alert alert-danger" v-if="usernameError.length">
+                {{usernameError}}
             </div>
         </div>
         <div>
             <label for="password">password</label>
             <input name="password" v-model="newUser.password" placeholder="password" type="password" required>
-            <div v-for="error in passwordError" class="alert alert-danger" v-if="passwordError.length">
-                {{error}}
+            <div class="alert alert-danger" v-if="passwordError.length">
+                {{passwordError}}
             </div>
         </div>
         <div>
             <label for="password">Confirm Password</label>
             <input name="confirmPassword" v-model="newUser.confirmPassword" placeholder="password" type="password" required>
-            <div v-for="error in confirmPasswordError" class="alert alert-danger" v-if="confirmPasswordError.length">
-                {{error}}
+            <div class="alert alert-danger" v-if="confirmPasswordError.length">
+                {{confirmPasswordError}}
             </div>
         </div>
         <div>
@@ -44,16 +48,13 @@
         <div>
             <label for="email">E-mail</label>
             <input name="email" v-model="newUser.email" placeholder="e-mail@email.com" type="email" required>
-            <div v-for="error in emailError" class="alert alert-danger" v-if="emailError.length">
-                {{error}}
+            <div class="alert alert-danger" v-if="emailError.length">
+                {{emailError}}
             </div>
         </div>
         <div>
             <label for="approvedTerms">Did you approve our terms and service?</label>
             <input name="approved" v-model="newUser.approvedTerms" type="checkbox">
-            <div v-for="error in unknownError" class="alert alert-danger" v-if="unknownError.length">
-                {{error}}
-            </div>
         </div>
         <button id="Register" class="btn btn-outline-success" type="submit">Register</button>
         </form>
@@ -66,14 +67,14 @@
 @section Scripts{
     <script>
         var vue = new Vue({
-            el: "#registration",
+            el: "#Registration",
             name: "registration",
             data: {
-                usernameError: new Array(),
-                passwordError: new Array(),
-                confirmPasswordError: new Array(),
-                emailError: new Array(),
-                unknownError: new Array(),
+                usernameError: "",
+                passwordError: "",
+                confirmPasswordError: "",
+                emailError: "",
+                unknownError: "",
 
                 newUser: {
                     password: "",
@@ -93,21 +94,17 @@
             },
             methods: {
                 register: async function () {
-                    this.usernameError = new Array();
-                    this.passwordError = new Array();
-                    this.confirmPasswordError = new Array();
-                    this.emailError = new Array();
-                    this.unknownError = new Array();
+                    this.usernameError = "";
+                    this.passwordError = "";
+                    this.confirmPasswordError = "";
+                    this.emailError = "";
+                    this.unknownError = "";
 
                     if (this.newUser.password != this.newUser.confirmPassword) {
-                        if (!this.confirmPasswordError.length) {
-                            this.confirmPasswordError.push("Password isn't the same");
-                        }
-                        else {
-                            this.confirmPasswordError = new Array("Password isn't the same");
-                        }
+                        this.confirmPasswordError = "Password isn't the same";
                     }
                     else {
+                        if (this.passwordValidator(this.newUser.password)) {
                         await axios.post(`${baseUrl}authentication/register`, this.newUser)
                             .then((response) => {
                                 let allInputs = document.getElementById('Registration').getElementsByTagName('input');
@@ -127,45 +124,64 @@
                                     e.response.data.forEach(this.setError);
                                 }
                             });
+                            }
                     }
                 },
 
                 setError: function (data) {
-                    switch (data.split(' ')[0]) {
+                    switch (data.errorMessage.split(' ')[0]) {
                         case `Username`:
-                            if (!this.usernameError.length) {
-                                this.usernameError.push(data);
-                            }
-                            else {
-                                this.usernameError = new Array(data)
-                            }
+
+                                this.usernameError =data.errorMessage;
                             break;
                         case `Password`:
-                            if (!this.passwordError.length) {
-                                this.passwordError.push(data);
-                            }
-                            else {
-                                this.passwordError = new Array(data)
-                            }
+
+                            this.passwordError = data.errorMessage;
+                            
                             break;
                         case `Email`:
-                            if (!this.emailError.length) {
-                                this.emailError.push(data);
-                            }
-                            else {
-                                this.emailError = new Array(data)
-                            }
+
+                            this.emailError = data.errorMessage;
+                            
                             break;
                         default:
-                            if (!this.unknownError.length) {
-                                this.unknownError.push(data);
-                            }
-                            else {
-                                this.unknownError = new Array(data)
-                            }
+
+                            this.unknownError = data.errorMessage;
+                            
                             break;
                     }
                 },
+
+                passwordValidator: function (password) {
+                    if (password.length < 8) {
+                        this.passwordError += "Your password must be at least 8 characters";
+                        return false;
+                    }
+                    if (!password.match(/[a-z]/)) {
+                        this.passwordError += "Your password must contain at least one small letter.";
+                        return false;
+                    }
+                    if (!password.match(/[A-Z]/)) {
+                        this.passwordError += "Your password must contain at least one big letter.";
+                        return false;
+
+                    }
+                    if (!password.match(/[0-9]/)) {
+                        this.passwordError += "Your password must contain at least one digit.";
+                        return false;
+
+                    }
+                    if (!password.match(/[0-9]/)) {
+                        this.passwordError += "Your password must contain at least one digit.";
+                        return false;
+
+                    }
+                    if (!password.match(/[$&+?<>.^*()%!]/)) {
+                        this.passwordError += "Your password must contain at least one special character.";
+                        return false;
+                    }
+                    return true;
+                }
 
             }
         });

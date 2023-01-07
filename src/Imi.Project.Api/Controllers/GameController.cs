@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace Imi.Project.Api.Controllers
 {
     [Authorize]
-    [Authorize(Policy = "approved")]
     [Route("api/[controller]")]
     [ApiController]
     public class GameController: ControllerBase
@@ -47,7 +46,7 @@ namespace Imi.Project.Api.Controllers
 
             foreach(Game game in serviceGame.Data)
             {
-                var serviceGameGenre = await _gameGenreService.GetByGameIdAsync(game.Id);
+                ServiceResultModel<IEnumerable<GameGenre>> serviceGameGenre = await _gameGenreService.GetByGameIdAsync(game.Id);
 
                 if(!serviceGameGenre.IsSuccess)
                 {
@@ -58,7 +57,7 @@ namespace Imi.Project.Api.Controllers
 
                 foreach(GameGenre gg in serviceGameGenre.Data)
                 {
-                    var genreResult = await _genreService.GetByIdAsync(gg.GenreId);
+                    ServiceResultModel<Genre> genreResult = await _genreService.GetByIdAsync(gg.GenreId);
 
                     if(!genreResult.IsSuccess)
                     {
@@ -68,7 +67,7 @@ namespace Imi.Project.Api.Controllers
                     genreResponseDtos.Add(genreResult.Data.MapToDto());
                 }
 
-                var publisherResult= await _publisherService.GetByIdAsync(game.PublisherId);
+                ServiceResultModel<Publisher> publisherResult = await _publisherService.GetByIdAsync(game.PublisherId);
 
                 if(!publisherResult.IsSuccess)
                 {
@@ -92,7 +91,7 @@ namespace Imi.Project.Api.Controllers
                 return BadRequest(serviceGame.ValidationErrors);
             }
 
-            var serviceGameGenre = await _gameGenreService.GetByGameIdAsync(id);
+            ServiceResultModel<IEnumerable<GameGenre>> serviceGameGenre = await _gameGenreService.GetByGameIdAsync(id);
 
             if(!serviceGameGenre.IsSuccess)
             {
@@ -103,7 +102,7 @@ namespace Imi.Project.Api.Controllers
 
             foreach(GameGenre gg in serviceGameGenre.Data)
             {
-                var genreResult = await _genreService.GetByIdAsync(gg.GenreId);
+                ServiceResultModel<Genre> genreResult = await _genreService.GetByIdAsync(gg.GenreId);
 
                 if(!genreResult.IsSuccess)
                 {
@@ -113,15 +112,12 @@ namespace Imi.Project.Api.Controllers
                 genreResponseDtos.Add(genreResult.Data.MapToDto());
             }
 
-            var publisherResult = await _publisherService.GetByIdAsync(serviceGame.Data.PublisherId);
+            ServiceResultModel<Publisher> publisherResult = await _publisherService.GetByIdAsync(serviceGame.Data.PublisherId);
 
-            if(!publisherResult.IsSuccess)
-            {
-                return BadRequest(publisherResult.ValidationErrors);
-            }
-
-            return Ok(serviceGame.Data.MapToDto(genreResponseDtos
-                ,publisherResult.Data.MapToDto()));
+            return !publisherResult.IsSuccess
+                ? BadRequest(publisherResult.ValidationErrors)
+                : Ok(serviceGame.Data.MapToDto(genreResponseDtos
+                , publisherResult.Data.MapToDto()));
         }
 
         [Authorize(Policy = "onlyAdults")]
@@ -139,7 +135,7 @@ namespace Imi.Project.Api.Controllers
 
             foreach(Game game in serviceGame.Data)
             {
-                var serviceGameGenre = await _gameGenreService.GetByGameIdAsync(game.Id);
+                ServiceResultModel<IEnumerable<GameGenre>> serviceGameGenre = await _gameGenreService.GetByGameIdAsync(game.Id);
 
                 if(!serviceGameGenre.IsSuccess)
                 {
@@ -150,7 +146,7 @@ namespace Imi.Project.Api.Controllers
 
                 foreach(GameGenre gg in serviceGameGenre.Data)
                 {
-                    var genreResult = await _genreService.GetByIdAsync(gg.GenreId);
+                    ServiceResultModel<Genre> genreResult = await _genreService.GetByIdAsync(gg.GenreId);
 
                     if(!genreResult.IsSuccess)
                     {
@@ -160,7 +156,7 @@ namespace Imi.Project.Api.Controllers
                     genreResponseDtos.Add(genreResult.Data.MapToDto());
                 }
 
-                var publisherResult = await _publisherService.GetByIdAsync(game.PublisherId);
+                ServiceResultModel<Publisher> publisherResult = await _publisherService.GetByIdAsync(game.PublisherId);
 
                 if(!publisherResult.IsSuccess)
                 {
@@ -188,7 +184,7 @@ namespace Imi.Project.Api.Controllers
 
             foreach(Game game in serviceGame.Data)
             {
-                var serviceGameGenre = await _gameGenreService.GetByGameIdAsync(game.Id);
+                ServiceResultModel<IEnumerable<GameGenre>> serviceGameGenre = await _gameGenreService.GetByGameIdAsync(game.Id);
 
                 if(!serviceGameGenre.IsSuccess)
                 {
@@ -199,7 +195,7 @@ namespace Imi.Project.Api.Controllers
 
                 foreach(GameGenre gg in serviceGameGenre.Data)
                 {
-                    var genreResult = await _genreService.GetByIdAsync(gg.GenreId);
+                    ServiceResultModel<Genre> genreResult = await _genreService.GetByIdAsync(gg.GenreId);
 
                     if(!genreResult.IsSuccess)
                     {
@@ -209,7 +205,7 @@ namespace Imi.Project.Api.Controllers
                     genreResponseDtos.Add(genreResult.Data.MapToDto());
                 }
 
-                var publisherResult = await _publisherService.GetByIdAsync(game.PublisherId);
+                ServiceResultModel<Publisher> publisherResult = await _publisherService.GetByIdAsync(game.PublisherId);
 
                 if(!publisherResult.IsSuccess)
                 {
@@ -231,16 +227,16 @@ namespace Imi.Project.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var newGameModel = newGameRequest.MapToModel();
+            Core.Models.Game.NewGameModel newGameModel = newGameRequest.MapToModel();
 
-            var result = await _gameService.AddAsync(newGameModel);
+            ServiceResultModel<Game> result = await _gameService.AddAsync(newGameModel);
 
             if(!result.IsSuccess)
             {
                 return BadRequest(result.ValidationErrors);
             }
 
-            var gameGenre = await _gameGenreService.EditGameGenreAsync(newGameRequest.MapToUpdateModel(result.Data.Id));
+            ServiceResultModel<IEnumerable<GameGenre>> gameGenre = await _gameGenreService.EditGameGenreAsync(newGameRequest.MapToUpdateModel(result.Data.Id));
 
             if(!gameGenre.IsSuccess)
             {
@@ -251,7 +247,7 @@ namespace Imi.Project.Api.Controllers
 
             foreach(Guid genreId in newGameModel.GenreId)
             {
-                var genreResult = await _genreService.GetByIdAsync(genreId);
+                ServiceResultModel<Genre> genreResult = await _genreService.GetByIdAsync(genreId);
 
                 if(!genreResult.IsSuccess)
                 {
@@ -261,14 +257,11 @@ namespace Imi.Project.Api.Controllers
                 genreResponseDtos.Add(genreResult.Data.MapToDto());
             }
 
-            var publisherResult = await _publisherService.GetByIdAsync(newGameModel.PublisherId);
+            ServiceResultModel<Publisher> publisherResult = await _publisherService.GetByIdAsync(newGameModel.PublisherId);
 
-            if(!publisherResult.IsSuccess)
-            {
-                return BadRequest(publisherResult.ValidationErrors);
-            }
-
-            return CreatedAtAction(nameof(GetById), new { id = result.Data.Id },
+            return !publisherResult.IsSuccess
+                ? BadRequest(publisherResult.ValidationErrors)
+                : CreatedAtAction(nameof(GetById), new { id = result.Data.Id },
                 result.Data.MapToDto(genreResponseDtos, publisherResult.Data.MapToDto()));
         }
 
@@ -288,7 +281,7 @@ namespace Imi.Project.Api.Controllers
                 return BadRequest(result.ValidationErrors);
             }
 
-            var resultGameGenre = await _gameGenreService.EditGameGenreAsync(updateGameRequest.MapToGameGenreModel());
+            ServiceResultModel<IEnumerable<GameGenre>> resultGameGenre = await _gameGenreService.EditGameGenreAsync(updateGameRequest.MapToGameGenreModel());
 
             if(!resultGameGenre.IsSuccess)
             {
@@ -297,9 +290,9 @@ namespace Imi.Project.Api.Controllers
 
             List<GenreResponseDto> genreResponseDtos = new();
 
-            foreach(var gg in resultGameGenre.Data)
+            foreach(GameGenre gg in resultGameGenre.Data)
             {
-                var genreResult = await _genreService.GetByIdAsync(gg.GenreId);
+                ServiceResultModel<Genre> genreResult = await _genreService.GetByIdAsync(gg.GenreId);
 
                 if(!genreResult.IsSuccess)
                 {
@@ -309,14 +302,11 @@ namespace Imi.Project.Api.Controllers
                 genreResponseDtos.Add(genreResult.Data.MapToDto());
             }
 
-            var publisherResult = await _publisherService.GetByIdAsync(updateGameRequest.PublisherId);
+            ServiceResultModel<Publisher> publisherResult = await _publisherService.GetByIdAsync(updateGameRequest.PublisherId);
 
-            if(!publisherResult.IsSuccess)
-            {
-                return BadRequest(publisherResult.ValidationErrors);
-            }
-
-            return Ok(result.Data.MapToDto(genreResponseDtos,
+            return !publisherResult.IsSuccess
+                ? BadRequest(publisherResult.ValidationErrors)
+                : Ok(result.Data.MapToDto(genreResponseDtos,
                 publisherResult.Data.MapToDto()));
         }
 
@@ -331,7 +321,7 @@ namespace Imi.Project.Api.Controllers
                 return BadRequest(result.ValidationErrors);
             }
 
-            var gameGenre = await _gameGenreService.GetByGameIdAsync(id);
+            ServiceResultModel<IEnumerable<GameGenre>> gameGenre = await _gameGenreService.GetByGameIdAsync(id);
 
             foreach(GameGenre gg in gameGenre.Data)
             {
