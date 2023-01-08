@@ -1,68 +1,81 @@
 ﻿@{
-    ViewData["Title"] = "Register User";
+    ViewData["Title"] = "Gebruiker registreren";
 }
 
 <div id="Registration" class="d-flex flex-column">
     <div class="text-center">
-        <h1 class="display-4">Register User</h1>
+        <h1 class="display-4">Registreren</h1>
     </div>
-
-    <form class="d-flex flex-column" role="register" v-on:submit.prevent="register">
-        <div>
             <div class="alert alert-danger" v-if="unknownError.length">
                 {{unknownError}}
             </div>
-
-            <label for="username">username</label>
-            <input name="username" v-model="newUser.userName" placeholder="username" required>
+    <form class="d-flex flex-column" role="register" v-on:submit.prevent="register">
+        <div class="d-flex flex-row mb-3">
+            <label class="col-sm-2" for="username">Gebruikersnaam</label>
+            <div class="col-sm-2 d-flex align-items-center">
+                <input name="username" v-model="newUser.userName" placeholder="Gebruikersnaam" required>
             <div class="alert alert-danger" v-if="usernameError.length">
                 {{usernameError}}
+                </div>
             </div>
         </div>
-        <div>
-            <label for="password">password</label>
-            <input name="password" v-model="newUser.password" placeholder="password" type="password" required>
-            <div class="alert alert-danger" v-if="passwordError.length">
-                {{passwordError}}
+        <div class="d-flex flex-row mb-3">
+            <label class="col-sm-2" for="firstName">Voornaam</label>
+            <div class="col-sm-2 d-flex align-items-center">
+                <input name="firstName" v-model="newUser.firstName" placeholder="Voornaam" required>
             </div>
         </div>
-        <div>
-            <label for="password">Confirm Password</label>
-            <input name="confirmPassword" v-model="newUser.confirmPassword" placeholder="password" type="password" required>
-            <div class="alert alert-danger" v-if="confirmPasswordError.length">
-                {{confirmPasswordError}}
+        <div class="d-flex flex-row mb-3">
+            <label class="col-sm-2" for="lastName">Achternaam</label>
+            <div class="col-sm-2 d-flex align-items-center">
+                <input name="lastName" v-model="newUser.lastName" placeholder="Achternaam" required>
             </div>
         </div>
-        <div>
-            <label for="firstName">first name</label>
-            <input name="firstName" v-model="newUser.firstName" placeholder="first name" required>
+        <div class="d-flex flex-row mb-3">
+            <label class="col-sm-2" for="email">Email</label>
+            <div class="col-sm-2 d-flex align-items-center">
+                <input name="email" v-model="newUser.email" placeholder="Email" type="email" required>
+                <div class="alert alert-danger" v-if="emailError.length">
+                    {{emailError}}
+                </div>
+            </div>
         </div>
-        <div>
-            <label for="lastName">last name</label>
-            <input name="lastName" v-model="newUser.lastName" placeholder="last name" required>
-        </div>
-        <div>
-            <label for="birthday">Birthday</label>
+        <div class="d-flex flex-row mb-3">
+            <label class="col-sm-2" for="birthday">Geboortedag</label>
+            <div class="col-sm-2 d-flex align-items-center">
             <input id="birthday" class="birthday" name="birthDay" v-model="newUser.birthDay" type="date" min="1900-01-01" required>
-        </div>
-        <div>
-            <label for="email">E-mail</label>
-            <input name="email" v-model="newUser.email" placeholder="e-mail@email.com" type="email" required>
-            <div class="alert alert-danger" v-if="emailError.length">
-                {{emailError}}
             </div>
         </div>
-        <div>
-            <label for="approvedTerms">Did you approve our terms and service?</label>
-            <input name="approved" v-model="newUser.approvedTerms" type="checkbox">
+        <div class="d-flex flex-row mb-3">
+            <label class="col-sm-2" for="password">Wachtwoord</label>
+            <div class="col-sm-2 d-flex align-items-center">
+                <input name="password" v-model="newUser.password" placeholder="Wachtwoord" type="password" required>
+                <div class="alert alert-danger" v-if="passwordError.length">
+                    {{passwordError}}
+                </div>
+            </div>
         </div>
-        <button id="Register" class="btn btn-outline-success" type="submit">Register</button>
+        <div class="d-flex flex-row mb-3">
+            <label class="col-sm-2" for="password">Bevestig wachtwoord</label>
+            <div class="col-sm-2 d-flex align-items-center">
+                <input name="confirmPassword" v-model="newUser.confirmPassword" placeholder="Wachtwoord" type="password" required>
+                <div class="alert alert-danger" v-if="confirmPasswordError.length">
+                    {{confirmPasswordError}}
+                </div>
+            </div>
+        </div>
+        <div class="d-flex flex-row">
+            <label for="approvedTerms">Ga je akkoord met onze service voorwaarden?</label>
+            <div class="col-sm-2 align-items-center">
+            <input name="approved" v-model="newUser.approvedTerms" type="checkbox">
+            </div>
+        </div>
+        <button id="Register" class="btn btn-outline-success" type="submit">Registreren</button>
         </form>
     <div id="Succes" class="alert alert-success" hidden>
         Succesfully registered in, please log in.
         </div>
     </div>
-
 
 @section Scripts{
     <script>
@@ -86,7 +99,6 @@
                     approvedTerms: false,
                     birthDay: new Date().toISOString().split('T')[0]
                 }
-
             },
             created: function () {
                 birthday.max = new Date().toISOString().split("T")[0];
@@ -131,58 +143,47 @@
                 setError: function (data) {
                     switch (data.errorMessage.split(' ')[0]) {
                         case `Username`:
-
                                 this.usernameError =data.errorMessage;
                             break;
                         case `Password`:
-
                             this.passwordError = data.errorMessage;
-                            
                             break;
                         case `Email`:
-
                             this.emailError = data.errorMessage;
-                            
                             break;
                         default:
-
                             this.unknownError = data.errorMessage;
-                            
                             break;
                     }
                 },
 
                 passwordValidator: function (password) {
-                    if (password.length < 8) {
-                        this.passwordError += "Your password must be at least 8 characters";
+                    if (password.length < 6) {
+                        this.passwordError = "Your password must be at least 6 characters";
                         return false;
                     }
                     if (!password.match(/[a-z]/)) {
-                        this.passwordError += "Your password must contain at least one small letter.";
+                        this.passwordError = "Your password must contain at least one small letter.";
                         return false;
                     }
                     if (!password.match(/[A-Z]/)) {
-                        this.passwordError += "Your password must contain at least one big letter.";
+                        this.passwordError = "Your password must contain at least one big letter.";
                         return false;
-
                     }
                     if (!password.match(/[0-9]/)) {
-                        this.passwordError += "Your password must contain at least one digit.";
+                        this.passwordError = "Your password must contain at least one digit.";
                         return false;
-
                     }
                     if (!password.match(/[0-9]/)) {
-                        this.passwordError += "Your password must contain at least one digit.";
+                        this.passwordError = "Your password must contain at least one digit.";
                         return false;
-
                     }
                     if (!password.match(/[$&+?<>.^*()%!]/)) {
-                        this.passwordError += "Your password must contain at least one special character.";
+                        this.passwordError = "Your password must contain at least one special character.";
                         return false;
                     }
                     return true;
                 }
-
             }
         });
     </script>

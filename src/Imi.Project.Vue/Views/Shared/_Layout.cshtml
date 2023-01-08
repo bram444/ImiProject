@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Imi.Project.Vue</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
     <header>
@@ -18,24 +18,34 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li>
+                        <li class="nav-link text-dang d-flex align-items-center">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item" v-if="userModel.isAdmin">
+                        <li class="nav-item d-flex align-items-center">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Genres">Genres</a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item d-flex align-items-center">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Games">Games</a>
                         </li>
-                        <li class="nav-item" v-if="userIsLoggedIn">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="CurrentUser">Current User</a>
+                        <li class="nav-item d-flex align-items-center" v-if="userIsLoggedIn">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="CurrentUser">Gebruiker profiel</a>
                         </li>
                     </ul>
-                        <div id="loginForm" class="d-flex flex-column">
-                        <form class="d-flex" role="login" v-if="userIsLoggedIn == false" v-on:submit.prevent="submitLogin">
-                            <input class="form-control me-2" type="text" placeholder="user name" aria-label="UserName" v-model="loginModel.userName">
-                            <input class="form-control me-2" type="password" placeholder="password" aria-label="Password" v-model="loginModel.password">
-                            <button class="btn btn-outline-primary" type="submit">Login</button>
+                    <div class="d-flex flex-column">
+                        <div id="loginForm" class="d-flex flex-row">
+                            <form class="d-flex" role="login" v-if="userIsLoggedIn == false" v-on:submit.prevent="submitLogin">
+                                <div class="mr-1">
+                                    <input class="form-control col-me-2" type="text" placeholder="Gebruikersnaam" aria-label="UserName" v-model="loginModel.userName">
+                                </div>
+                                <div class="mr-1">
+                                    <input class="form-control col-me-2" type="password" placeholder="Wactwoord" aria-label="Password" v-model="loginModel.password">
+                                </div>
+                                <div class="mr-1">
+                                    <button class="btn btn-outline-primary col-me-2" type="submit">Login</button>
+                                </div>
+                            </form>
+                            <form class="d-flex me-2" role="register" v-if="userIsLoggedIn == false" asp-area="" asp-controller="Home" asp-action="Register">
+                                <button class="btn btn-outline-success" type="submit">Registreren</button>
                             </form>
                             <div v-else class="d-inline-flex align-items-center">
                                 <div class="me-2">
@@ -43,12 +53,8 @@
                                 </div>
                                 <button class="btn btn-danger align-self-center" type="submit" style="margin-left:10px" v-on:click.prevent="submitLogout">Logout</button>
                             </div>
-                            <div class="alert alert-danger p-2 my-2" v-if="errorMessage">{{errorMessage}}</div>
-                    </div>
-                    <div class="d-flex flex-row">
-                        <form class="d-flex" role="register" v-if="userIsLoggedIn == false" asp-area="" asp-controller="Home" asp-action="Register">
-                            <button class="btn btn-outline-success" type="submit">Register</button>
-                        </form>
+                        </div>
+                        <div class="d-flex flex-column alert alert-danger p-2 my-2" v-if="errorMessage">{{errorMessage}}</div>
                     </div>
                 </div>
             </div>
@@ -71,7 +77,7 @@
     <script src="~/lib/axios/axios.min.js"></script>
     <script src="~/lib/vue/vue.js"></script>
     <script src="~/lib/jwt-decode/build/jwt-decode.js"></script>
-    
+
     <script>
         var navbarVue = new Vue({
             el: ".navbar",
@@ -109,11 +115,9 @@
                             this.userModel.isAdmin = hasUserAdminRole();
                             this.errorMessage = null;
 
-                            if (window.location.pathname=="/Home/Register") {
-                                window.location.assign(window.location.origin+ "/Home/");
+                            if (window.location.pathname == "/Home/Register") {
+                                window.location.assign(window.location.origin + "/Home/");
                             }
-
-
                         }).
                         catch((e) => {
                             this.errorMessage = "Login failed!";
@@ -134,9 +138,8 @@
                     }
                 }
             }
-            });
+        });
     </script>
-    
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
