@@ -21,10 +21,11 @@ namespace Imi.Project.Api.Controllers
             _publisherService = publisherService;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var result = await _publisherService.ListAllAsync();
+            ServiceResultModel<IEnumerable<Publisher>> result = await _publisherService.ListAllAsync();
 
             return !result.IsSuccess ? BadRequest(result.ValidationErrors) :
                 Ok(result.Data.MapToDtos());
@@ -40,10 +41,11 @@ namespace Imi.Project.Api.Controllers
 
         }
 
+        [AllowAnonymous]
         [HttpGet("{search}/name")]
         public async Task<IActionResult> GetPublisherByName(string search)
         {
-            var result = await _publisherService.SearchAsync(search);
+            ServiceResultModel<IEnumerable<Publisher>> result = await _publisherService.SearchAsync(search);
 
             return !result.IsSuccess ? BadRequest(result.ValidationErrors) :
                 Ok(result.Data.MapToDtos());
@@ -52,7 +54,7 @@ namespace Imi.Project.Api.Controllers
         [HttpGet("{search}/country")]
         public async Task<IActionResult> GetPublisherByCountry(string search)
         {
-            var result = await _publisherService.SearchByCountryAsync(search);
+            ServiceResultModel<IEnumerable<Publisher>> result = await _publisherService.SearchByCountryAsync(search);
 
             return !result.IsSuccess ? BadRequest(result.ValidationErrors) :
                 Ok(result.Data.MapToDtos());

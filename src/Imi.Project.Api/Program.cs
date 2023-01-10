@@ -15,7 +15,7 @@ using System.Globalization;
 using System.Security.Claims;
 using System.Text;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultDatabase")));
@@ -51,14 +51,12 @@ builder.Services.AddAuthorization(options =>
     {
         policy.RequireAssertion(context =>
         {
-            var adultClaimValue = context.User.Claims
+            string adultClaimValue = context.User.Claims
                          .SingleOrDefault(c => c.Type == ClaimTypes.DateOfBirth)?.Value;
-            if(DateTime.TryParseExact(adultClaimValue, "dd/MM/yyyy", CultureInfo.InvariantCulture,
-                                      DateTimeStyles.AdjustToUniversal, out var birthDay))
-            {
-                return birthDay.AddYears(18) < DateTime.UtcNow;
-            }
-            return false;
+            return DateTime.TryParseExact(adultClaimValue, "dd/MM/yyyy", CultureInfo.InvariantCulture,
+                                      DateTimeStyles.AdjustToUniversal, out DateTime birthDay)
+                ? birthDay.AddYears(18) < DateTime.UtcNow
+                : false;
         });
     });
     options.AddPolicy("approved", policy =>
@@ -75,11 +73,11 @@ builder.Services.AddAuthorization(options =>
                 return true;
             }
 
-            var request = new HttpContextAccessor().HttpContext.Request;
+            HttpRequest request = new HttpContextAccessor().HttpContext.Request;
             request.EnableBuffering();
 
-            var userId = context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var idRoute = request.RouteValues["id"];
+            string userId = context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            object idRoute = request.RouteValues["id"];
 
             if(idRoute != null)
             {
@@ -90,9 +88,9 @@ builder.Services.AddAuthorization(options =>
             }
 
             string jsonString;
-            var body = request.Body;
+            Stream body = request.Body;
 
-            using(var stream = new StreamReader(body, Encoding.UTF8, true, 1024, true))
+            using(StreamReader stream = new StreamReader(body, Encoding.UTF8, true, 1024, true))
             {
                 jsonString = await stream.ReadToEndAsync();
             }
@@ -172,7 +170,7 @@ builder.Services.AddSwaggerGen(option =>
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddCors();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 if(app.Environment.IsDevelopment())
 {

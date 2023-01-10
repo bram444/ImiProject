@@ -24,30 +24,32 @@ namespace Imi.Project.Api.Controllers
             _gameGenreService = gameGenreService;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var result = await _genreService.ListAllAsync();
+            ServiceResultModel<IEnumerable<Genre>> result = await _genreService.ListAllAsync();
 
-            return !result.IsSuccess ? BadRequest(result.ValidationErrors) 
+            return !result.IsSuccess ? BadRequest(result.ValidationErrors)
                 : Ok(result.Data.MapToDtos());
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var result = await _genreService.GetByIdAsync(id);
+            ServiceResultModel<Genre> result = await _genreService.GetByIdAsync(id);
 
-            return !result.IsSuccess ? BadRequest(result.ValidationErrors) 
+            return !result.IsSuccess ? BadRequest(result.ValidationErrors)
                 : Ok(result.Data.MapToDto());
         }
 
+        [AllowAnonymous]
         [HttpGet("{search}/genre")]
         public async Task<IActionResult> GetByName(string search)
         {
-            var result = await _genreService.SearchAsync(search);
+            ServiceResultModel<IEnumerable<Genre>> result = await _genreService.SearchAsync(search);
 
-            return !result.IsSuccess ? BadRequest(result.ValidationErrors) 
+            return !result.IsSuccess ? BadRequest(result.ValidationErrors)
                 : Ok(result.Data.MapToDtos());
         }
 
@@ -78,7 +80,7 @@ namespace Imi.Project.Api.Controllers
 
             ServiceResultModel<Genre> result = await _genreService.UpdateAsync(updateGenre.MapToModel());
 
-            return !result.IsSuccess ? BadRequest(result.ValidationErrors) 
+            return !result.IsSuccess ? BadRequest(result.ValidationErrors)
                 : Ok(result.Data.MapToDto());
         }
 
@@ -86,7 +88,7 @@ namespace Imi.Project.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            var resultGameGenreList = await _gameGenreService.GetByGenreIdAsync(id);
+            ServiceResultModel<IEnumerable<GameGenre>> resultGameGenreList = await _gameGenreService.GetByGenreIdAsync(id);
 
             if(!resultGameGenreList.IsSuccess)
             {
@@ -95,7 +97,7 @@ namespace Imi.Project.Api.Controllers
 
             foreach(GameGenre gg in resultGameGenreList.Data)
             {
-                var resultGameGenre = await _gameGenreService.DeleteAsync(gg.MapToModel());
+                ServiceResultModel<GameGenre> resultGameGenre = await _gameGenreService.DeleteAsync(gg.MapToModel());
 
                 if(!resultGameGenre.IsSuccess)
                 {

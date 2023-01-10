@@ -11,7 +11,7 @@ namespace Imi.Project.Api.Core.Mapper
 
         public static ApplicationUser MapToEntity(this NewUserModel newUser)
         {
-            var user = new ApplicationUser
+            ApplicationUser user = new()
             {
                 Id = Guid.NewGuid(),
                 UserName = newUser.UserName,
@@ -32,15 +32,13 @@ namespace Imi.Project.Api.Core.Mapper
 
         public static ApplicationUser MapToEntity(this UpdateUserModel updateUser, ApplicationUser oldUser)
         {
-            var user = oldUser;
+            ApplicationUser user = oldUser;
 
             user.UserName = updateUser.UserName;
             user.FirstName = updateUser.FirstName;
             user.LastName = updateUser.LastName;
             user.ApprovedTerms = updateUser.ApprovedTerms;
             user.NormalizedUserName = updateUser.UserName.Normalize();
-
-            user.PasswordHash = passwordHasher.HashPassword(user, updateUser.Password);
 
             return user;
         }

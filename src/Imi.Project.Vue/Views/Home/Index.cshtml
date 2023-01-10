@@ -2,6 +2,500 @@
     ViewData["Title"] = "Home Pagina";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Home, Home on the range</h1>
+<div id="app">
+    <div class="btn-group mb-4 d-flex row" role="group">
+        <button type="button" class="btn btn-outline-primary" v-on:click="showGames">Games</button>
+        <button type="button" class="btn btn-outline-primary" v-on:click="showGenres">Genres</button>
+        <button type="button" class="btn btn-outline-primary" v-on:click="showPublishers">Publishers</button>
+    </div>
+    <div class="d-flex justify-content-center" v-if="start">
+        <div class="d-flex-column">
+            <h1 class="d-flex justify-content-center display-4">Welcome</h1>
+            <div>Om gebruik te maken van de hele site moet je inloggen en akkoord gaan met de service voorwaarden.</div>
+        </div>
+    </div>
+    <div class="row" v-else-if="showError">
+        <div class="alert alert-danger">
+            {{errorMessage}}
+        </div>
+    </div>
+    <div v-else>
+        <div v-if="showAllGames">
+            <div class="d-flex justify-content-center row">
+                <input type="text" v-model="searchGames" class="form-control mb-4" placeholder="Zoek games..." v-on:input="showGames" />
+                <div v-if="isLoading">
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Laden...</span>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-bordered table-striped align-middle sortable" v-else>
+                    <thead>
+                        <tr>
+                            <th>Naam</th>
+                            <th>Prijs</th>
+                            <th>Publisher</th>
+                            <th>Genres</th>
+                            <th v-if="editUser.approvedTerms">Gebruikers</th>
+                            <th v-if="editUser.approvedTerms">Toevoegen/Verwijderen</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="game in games">
+                            <td>{{game.name}}</td>
+                            <td>€ {{game.price}}</td>
+                            <td>{{game.publisher.name}}</td>
+                            <td>
+                                <ul>
+                                    <li v-for="genre in game.genres">
+                                        {{genre.name}}
+                                    </li>
+                                </ul>
+                            </td>
+                            <td v-if="editUser.approvedTerms">
+                                <ul>
+                                    <li v-for="user in game.users">
+                                        {{user}}
+                                    </li>
+                                </ul>
+                            </td>
+                            <td class="align-middle text-center" v-if="editUser.approvedTerms">
+                                <button class="btn btn-outline-success mb-3" v-on:click="addGame(game)" v-if="!hasGame(game)">Toevoegen</button>
+                                <button class="btn btn-outline-danger mb-3" v-on:click="removeGame(game)" v-else>Verwijderen</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div v-else-if="showAllGenres">
+            <div class="d-flex justify-content-center row">
+                <input type="text" v-model="searchGenres" class="form-control mb-4" placeholder="Zoek genres..." v-on:input="showGenres" />
+                <div v-if="isLoading">
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Laden...</span>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-bordered table-striped align-middle" v-else>
+                    <thead>
+                        <tr>
+                            <th>Naam</th>
+                            <th>Beschrijving</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="genre in genres">
+                            <td>{{genre.name}}</td>
+                            <td>{{genre.description}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div v-else-if="showAllPublishers">
+            <div class="d-flex justify-content-center row">
+                <input type="text" v-model="searchPublishers" class="form-control mb-4" placeholder="Zoek publishers..." v-on:input="showPublishers" />
+                <div v-if="isLoading">
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Laden...</span>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-bordered table-striped align-middle" v-else>
+                    <thead>
+                        <tr>
+                            <th>Naam</th>
+                            <th>Land</th>
+                            <th>Games</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="publisher in publishers">
+                            <td>{{publisher.name}}</td>
+                            <td>{{publisher.country}}</td>
+                            <td>
+                                <ul>
+                                    <li v-for="game in publisher.games">
+                                        {{game.name}}
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts{
+    <script>
+        var app = new Vue({
+            el: "#app",
+            data: {
+                showError: false,
+                errorMessage: "",
+                games: null,
+                genres: null,
+                publishers: null,
+                searchGames: "",
+                searchGenres: "",
+                searchPublishers: "",
+                showAllGames: false,
+                showAllGenres: false,
+                showAllPublishers: false,
+                start: true,
+                isLoading: false,
+
+                editUser: {
+                    id: "",
+                    userName: "",
+                    firstName: "",
+                    lastName: "",
+                    approvedTerms: false,
+                    gameId: [""]
+                }
+            },
+            created: async function () {
+            },
+
+            methods: {
+                showGames: async function () {
+                    this.showAllGames = true;
+                    this.showAllGenres = false;
+                    this.showAllPublishers = false;
+                    this.checkUser();
+                    this.showError = false;
+
+                    this.isLoading = true;
+                    this.start = false;
+
+                    let trimmedSearch = this.searchGames.trimEnd();
+
+                    trimmedSearch = trimmedSearch.trimStart();
+
+                    let searchText = `${baseUrl}game`;
+
+                    if (trimmedSearch != "") {
+                        searchText = `${baseUrl}game/${trimmedSearch}/name`;
+                    }
+
+                    await axios.get(searchText)
+                        .then((response) => {
+                            this.games = response.data
+                        })
+                        .catch((e) => {
+                            this.showError = true;
+                            this.errorMessage = e.message
+                        });
+
+                    if (userApprovedTerms()) {
+                        let allUsers = null;
+
+                        await axios.get(`${baseUrl}user`, axiosConfig)
+                            .then((response) => {
+                                allUsers = JSON.parse(JSON.stringify(response.data));
+                            })
+                            .catch((e) => {
+                                this.showError = true;
+                                this.errorMessage = e.message;
+                            })
+                            .finally(() => {
+                                for (const game of this.games) {
+                                    game.users = new Array();
+                                    allUsers.forEach(user => {
+                                        let username = "";
+                                        if (user.games.some(Usergame => Usergame.id === game.id)) {
+                                            username = user.userName;
+                                            if (game.users.length) {
+                                                game.users.push(username);
+                                            }
+                                            else {
+                                                game.users = new Array(username);
+                                            }
+                                        }
+                                    })
+                                }
+                            });
+
+                        var id = readUserIdFromToken();
+
+                        await axios.get(`${baseUrl}user/${id}`, axiosConfig)
+                            .then((response) => {
+
+                                this.editUser.gameId = response.data.games.map(game => game.id);
+                                this.editUser.userName = response.data.userName;
+                                this.editUser.firstName = response.data.firstName;
+                                this.editUser.lastName = response.data.lastName;
+                                this.editUser.approvedTerms = response.data.approvedTerms;
+                                this.editUser.id = response.data.id;
+
+                            }).
+                            catch((e) => {
+                                this.showError = true;
+                                if (e.response.status === 400) {
+                                    this.errorMessage = e.response.data[0].errorMessage;
+                                }
+                                else if (e.response.status === 401) {
+                                    this.errorMessage = "You don't have the valid authentication to get the user.";
+                                }
+                                else {
+                                    this.errorMessage = e.message;
+                                }
+                            });
+
+                    }
+                    this.isLoading = false;
+                },
+
+                hasGame: function (game) {
+                    return this.editUser.gameId.includes(game.id);
+                },
+
+                removeGame: async function (game) {
+                    this.checkUser();
+
+                    this.isLoading = true;
+                    this.showError = false;
+
+                    if (this.isUserApproved()) {
+
+
+                        const index = this.editUser.gameId.indexOf(game.id);
+
+                        this.editUser.gameId.splice(index, 1);
+
+                        await axios.put(`${baseUrl}User`, this.editUser, axiosConfig)
+                            .then((response) => {
+
+                                this.editUser.userName = response.data.userName;
+                                this.editUser.firstName = response.data.firstName;
+                                this.editUser.lastName = response.data.lastName;
+                                this.editUser.approvedTerms = response.data.approvedTerms;
+                                this.editUser.gameId = response.data.games.map(game => game.id);
+                                this.editUser.id = response.data.id;
+
+                            })
+                            .catch((e) => {
+                                this.showError = true;
+
+                                if (e.response.status === 400) {
+                                    this.errorMessage = e.message;
+                                }
+                                else if (e.response.status === 401) {
+                                    this.errorMessage = "You don't have the valid authentication to edit this user";
+                                }
+                                else {
+                                    this.errorMessage = e.message;
+                                }
+                            });
+
+                        let allUsers = null;
+
+                        await axios.get(`${baseUrl}user`, axiosConfig)
+                            .then((response) => {
+                                allUsers = JSON.parse(JSON.stringify(response.data));
+                            })
+                            .catch((e) => {
+                                this.showError = true;
+                                this.errorMessage = e.message;
+                            })
+                            .finally(() => {
+                                for (const game of this.games) {
+                                    game.users = new Array();
+                                    allUsers.forEach(user => {
+                                        let username = "";
+                                        if (user.games.some(Usergame => Usergame.id === game.id)) {
+                                            username = user.userName;
+                                            if (game.users.length) {
+                                                game.users.push(username);
+                                            }
+                                            else {
+                                                game.users = new Array(username);
+                                            }
+                                        }
+                                    })
+                                }
+                            });
+                    }
+                    this.isLoading = false;
+
+                },
+
+                addGame: async function (game) {
+                    this.checkUser();
+
+                    this.showError = false;
+
+                    this.isLoading = true;
+                    if (this.isUserApproved()) {
+
+                        this.editUser.gameId.push(game.id);
+
+                        await axios.put(`${baseUrl}user`, this.editUser, axiosConfig)
+                            .then((response) => {
+                                this.editUser.userName = response.data.userName;
+                                this.editUser.firstName = response.data.firstName;
+                                this.editUser.lastName = response.data.lastName;
+                                this.editUser.approvedTerms = response.data.approvedTerms;
+                                this.editUser.gameId = response.data.games.map(game => game.id);
+                                this.editUser.id = response.data.id;
+
+                            })
+                            .catch((e) => {
+                                this.showError = true;
+
+                                if (e.response.status === 400) {
+                                    this.errorMessage = e.message;
+                                }
+                                else if (e.response.status === 401) {
+                                    this.errorMessage = "You don't have the valid authentication to edit this user";
+                                }
+                                else {
+                                    this.errorMessage = e.message;
+                                }
+                            });
+
+                        let allUsers = null;
+
+                        await axios.get(`${baseUrl}user`, axiosConfig)
+                            .then((response) => {
+                                allUsers = JSON.parse(JSON.stringify(response.data));
+                            })
+                            .catch((e) => {
+
+                                this.showError = true;
+                                this.errorMessage = e.message;
+                            })
+                            .finally(() => {
+                                for (const game of this.games) {
+                                    game.users = new Array();
+                                    allUsers.forEach(user => {
+                                        let username = "";
+                                        if (user.games.some(Usergame => Usergame.id === game.id)) {
+                                            username = user.userName;
+                                            if (game.users.length) {
+                                                game.users.push(username);
+                                            }
+                                            else {
+                                                game.users = new Array(username);
+                                            }
+                                        }
+                                    })
+                                }
+                            });
+                    }
+
+                    this.isLoading = false;
+                },
+                showGenres: async function () {
+                                        this.showAllGames = false;
+                    this.showAllGenres = true;
+                    this.showAllPublishers = false;
+                    this.start = false;
+                    this.isLoading = true;
+                    this.showError = false;
+
+                    let trimmedSearch = this.searchGenres.trimEnd();
+
+                    trimmedSearch = trimmedSearch.trimStart();
+
+                    let searchText = `${baseUrl}genre`;
+
+                    if (trimmedSearch != "") {
+                        searchText = `${baseUrl}genre/${trimmedSearch}/genre`;
+                    }
+
+                    await axios.get(searchText)
+                        .then((response) => {
+                            this.genres = response.data
+                        })
+                        .catch((e) => {
+                            this.showError = true;
+                            this.errorMessage = e.message
+                        });
+
+                    this.isLoading = false;
+
+                },
+                showPublishers: async function () {
+                    this.showAllGames = false;
+                    this.showAllGenres = false;
+                    this.showAllPublishers = true;
+                    this.isLoading = true;
+                    this.showError = false;
+
+                    this.start = false;
+
+                    let trimmedSearch = this.searchPublishers.trimEnd();
+
+                    trimmedSearch = trimmedSearch.trimStart();
+
+                    let searchText = `${baseUrl}publisher`;
+
+                    if (trimmedSearch != "") {
+                        searchText = `${baseUrl}publisher/${trimmedSearch}/name`;
+                    }
+
+                    await axios.get(searchText)
+                        .then((response) => {
+                            this.publishers = JSON.parse(JSON.stringify(response.data));
+                        })
+                        .catch((e) => {
+
+                            this.showError = true;
+                            this.errorMessage = e.message;
+                        });
+
+                    for (const publisher of this.publishers) {
+
+                        await axios.get(`${baseUrl}game/${publisher.id}/publishers`)
+                            .then((response) => {
+                                publisher.games = JSON.parse(JSON.stringify(response.data));
+                            })
+                            .catch((e) => {
+
+                                this.showError = true;
+                                this.errorMessage = e.message;
+
+                            });
+                    };
+
+                    this.isLoading = false;
+                },
+                checkUser: function () {
+                    if (sessionStorage.getItem("token") === null) {
+                        this.editUser = {
+                            id: "",
+                            userName: "",
+                            firstName: "",
+                            lastName: "",
+                            approvedTerms: false,
+                            gameId: [""]
+                        };
+                    }
+                },
+
+                isUserApproved: function () {
+                    userApprovedTerms() === "True" ? this.editUser.approvedTerms = true : this.editUser.approvedTerms = false;
+
+                    if (this.editUser.approvedTerms) {
+                        return true;
+                    }
+                    else if (sessionStorage.getItem("token") === null) {
+                        this.showError = true;
+                        this.errorMessage = "You aren't logged in. To use this log in";
+                        return false;
+                    }
+                    this.showError = true;
+                    this.errorMessage = "You haven't approved the terms of service. To use this please approve";
+                    return false;
+                }
+            }
+        });
+    </script>
+}

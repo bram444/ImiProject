@@ -18,14 +18,15 @@ namespace Imi.Project.Api.Core.Services
             _configuration = configuration;
         }
 
+
+
         public JwtSecurityToken GenerateToken(List<Claim> userClaims)
         {
-            var claims = new List<Claim>();
+            List<Claim> claims = new();
             claims.AddRange(userClaims);
-            var expirationDays = int.Parse(_configuration["JWTConfiguration:TokenExpirationDays"]);
-            var signinKey = _configuration["JWTConfiguration:SigninKey"];
-            var token = new JwtSecurityToken
-            (
+            int expirationDays = int.Parse(_configuration["JWTConfiguration:TokenExpirationDays"]);
+            string signinKey = _configuration["JWTConfiguration:SigninKey"];
+            JwtSecurityToken token = new(
                 issuer: _configuration["JWTConfiguration:Issuer"],
                 audience: _configuration["JWTConfiguration:Audience"],
                 claims: claims,
@@ -40,6 +41,12 @@ namespace Imi.Project.Api.Core.Services
         public string SerializeToken(JwtSecurityToken token)
         {
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public JwtSecurityToken DecodeToken(string token)
+        {
+            return new JwtSecurityTokenHandler().ReadJwtToken(token);
+
         }
     }
 }

@@ -6,35 +6,35 @@
     <div class="text-center">
         <h1 class="display-4">Registreren</h1>
     </div>
-            <div class="alert alert-danger" v-if="unknownError.length">
-                {{unknownError}}
-            </div>
+    <div class="alert alert-danger" v-if="unknownError.length">
+        {{unknownError}}
+    </div>
     <form class="d-flex flex-column" role="register" v-on:submit.prevent="register">
         <div class="d-flex flex-row mb-3">
             <label class="col-sm-2" for="username">Gebruikersnaam</label>
-            <div class="col-sm-2 d-flex align-items-center">
-                <input name="username" v-model="newUser.userName" placeholder="Gebruikersnaam" required>
-            <div class="alert alert-danger" v-if="usernameError.length">
-                {{usernameError}}
+            <div class="col-sm-2 d-flex align-items-center row">
+                <input name="username" v-model="newUser.userName" placeholder="Gebruikersnaam" required />
+                <div class="alert alert-danger" v-if="usernameError.length">
+                    {{usernameError}}
                 </div>
             </div>
         </div>
         <div class="d-flex flex-row mb-3">
             <label class="col-sm-2" for="firstName">Voornaam</label>
-            <div class="col-sm-2 d-flex align-items-center">
-                <input name="firstName" v-model="newUser.firstName" placeholder="Voornaam" required>
+            <div class="col-sm-2 d-flex align-items-center row">
+                <input name="firstName" v-model="newUser.firstName" placeholder="Voornaam" required />
             </div>
         </div>
         <div class="d-flex flex-row mb-3">
             <label class="col-sm-2" for="lastName">Achternaam</label>
-            <div class="col-sm-2 d-flex align-items-center">
-                <input name="lastName" v-model="newUser.lastName" placeholder="Achternaam" required>
+            <div class="col-sm-2 d-flex align-items-center row">
+                <input name="lastName" v-model="newUser.lastName" placeholder="Achternaam" required />
             </div>
         </div>
         <div class="d-flex flex-row mb-3">
             <label class="col-sm-2" for="email">Email</label>
-            <div class="col-sm-2 d-flex align-items-center">
-                <input name="email" v-model="newUser.email" placeholder="Email" type="email" required>
+            <div class="col-sm-2 d-flex align-items-center row">
+                <input name="email" v-model="newUser.email" placeholder="Email" type="email" required />
                 <div class="alert alert-danger" v-if="emailError.length">
                     {{emailError}}
                 </div>
@@ -42,24 +42,24 @@
         </div>
         <div class="d-flex flex-row mb-3">
             <label class="col-sm-2" for="birthday">Geboortedag</label>
-            <div class="col-sm-2 d-flex align-items-center">
-            <input id="birthday" class="birthday" name="birthDay" v-model="newUser.birthDay" type="date" min="1900-01-01" required>
+            <div class="col-sm-2 d-flex align-items-center row">
+                <input id="birthday" class="birthday" name="birthDay" v-model="newUser.birthDay" type="date" min="1900-01-01" required />
             </div>
         </div>
         <div class="d-flex flex-row mb-3">
-            <label class="col-sm-2" for="password">Wachtwoord</label>
-            <div class="col-sm-2 d-flex align-items-center">
-                <input name="password" v-model="newUser.password" placeholder="Wachtwoord" type="password" required>
-                <div class="alert alert-danger" v-if="passwordError.length">
+            <label class="col-sm-2 d-flex align-items-center" for="password">Wachtwoord</label>
+            <div class="col-sm d-flex align-items-center row">
+                <input name="password" v-model="newUser.password" placeholder="Wachtwoord" type="password" required />
+                <div class="alert alert-danger alert alert-danger mb-0 ml-2" v-if="passwordError.length">
                     {{passwordError}}
                 </div>
             </div>
         </div>
         <div class="d-flex flex-row mb-3">
-            <label class="col-sm-2" for="password">Bevestig wachtwoord</label>
-            <div class="col-sm-2 d-flex align-items-center">
+            <label class="col-sm-2 d-flex align-items-center" for="password">Bevestig wachtwoord</label>
+            <div class="col-sm d-flex align-items-center row">
                 <input name="confirmPassword" v-model="newUser.confirmPassword" placeholder="Wachtwoord" type="password" required>
-                <div class="alert alert-danger" v-if="confirmPasswordError.length">
+                <div class="alert alert-danger alert alert-danger mb-0 ml-2" v-if="confirmPasswordError.length">
                     {{confirmPasswordError}}
                 </div>
             </div>
@@ -67,15 +67,15 @@
         <div class="d-flex flex-row">
             <label for="approvedTerms">Ga je akkoord met onze service voorwaarden?</label>
             <div class="col-sm-2 align-items-center">
-            <input name="approved" v-model="newUser.approvedTerms" type="checkbox">
+                <input name="approved" v-model="newUser.approvedTerms" type="checkbox">
             </div>
         </div>
-        <button id="Register" class="btn btn-outline-success" type="submit">Registreren</button>
-        </form>
+        <button id="Register" class="btn btn-outline-success mb-2" type="submit">Registreren</button>
+    </form>
     <div id="Succes" class="alert alert-success" hidden>
         Succesfully registered in, please log in.
-        </div>
     </div>
+</div>
 
 @section Scripts{
     <script>
@@ -117,43 +117,46 @@
                     }
                     else {
                         if (this.passwordValidator(this.newUser.password)) {
-                        await axios.post(`${baseUrl}authentication/register`, this.newUser)
-                            .then((response) => {
-                                let allInputs = document.getElementById('Registration').getElementsByTagName('input');
+                            await axios.post(`${baseUrl}authentication/register`, this.newUser)
+                                .then((response) => {
+                                    let allInputs = document.getElementById('Registration').getElementsByTagName('input');
 
-                                for (let i = 0; i < allInputs.length; i++) {
-                                    allInputs[i].disabled = true;
-                                }
+                                    for (let i = 0; i < allInputs.length; i++) {
+                                        allInputs[i].disabled = true;
+                                    }
 
-                                let registerButton = document.getElementById('Register');
-                                Register.disabled = true;
+                                    let registerButton = document.getElementById('Register');
+                                    Register.disabled = true;
 
-                                let registerSucces = document.getElementById('Succes');
-                                registerSucces.hidden=false;
-                            })
-                            .catch((e) => {
-                                if (e.response.status === 400) {
-                                    e.response.data.forEach(this.setError);
-                                }
-                            });
-                            }
+                                    let registerSucces = document.getElementById('Succes');
+                                    registerSucces.hidden = false;
+                                })
+                                .catch((e) => {
+                                    if (e.response.status === 400) {
+                                        e.response.data.forEach(this.setError);
+                                    }
+                                });
+                        }
                     }
                 },
 
                 setError: function (data) {
-                    switch (data.errorMessage.split(' ')[0]) {
-                        case `Username`:
-                                this.usernameError =data.errorMessage;
-                            break;
-                        case `Password`:
-                            this.passwordError = data.errorMessage;
-                            break;
-                        case `Email`:
-                            this.emailError = data.errorMessage;
-                            break;
-                        default:
-                            this.unknownError = data.errorMessage;
-                            break;
+
+                    if (data.errorMessage.contains(`Username`))
+                    {
+                        this.usernameError = data.errorMessage;
+                    }
+                    else if (data.errorMessage.contains(`Password`)) {
+                        this.passwordError = data.errorMessage;
+                    }
+                    else if (data.errorMessage.contains(`Email`)) {
+                        this.emailError = data.errorMessage;
+                    }
+                    else if(data.errorMessage.contains(`Username`)) {
+                        this.usernameError = data.errorMessage;
+                    }
+                    else{
+                        this.unknownError = data.errorMessage;
                     }
                 },
 

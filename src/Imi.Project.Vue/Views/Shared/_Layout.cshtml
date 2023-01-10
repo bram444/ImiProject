@@ -21,10 +21,10 @@
                         <li class="nav-link text-dang d-flex align-items-center">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item d-flex align-items-center">
+                        <li class="nav-item d-flex align-items-center" v-if="userModel.isAdmin">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Genres">Genres</a>
                         </li>
-                        <li class="nav-item d-flex align-items-center">
+                        <li class="nav-item d-flex align-items-center" v-if="userModel.isAdmin">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Games">Games</a>
                         </li>
                         <li class="nav-item d-flex align-items-center" v-if="userIsLoggedIn">
@@ -110,12 +110,13 @@
                     await axios.post(`${baseUrl}authentication/login`, this.loginModel)
                         .then((response) => {
                             sessionStorage.setItem("token", response.data.token);
+                            reloadAxios();
                             this.userIsLoggedIn = true;
                             this.userModel.name = readUserNameFromToken();
                             this.userModel.isAdmin = hasUserAdminRole();
                             this.errorMessage = null;
 
-                            if (window.location.pathname == "/Home/Register") {
+                            if (window.location.pathname == "/Home/Register" ) {
                                 window.location.assign(window.location.origin + "/Home/");
                             }
                         }).
@@ -135,6 +136,11 @@
                     this.userModel = {
                         name: "",
                         isAdmin: false,
+                    }
+
+                    if (window.location.pathname == "/Home/CurrentUser"){
+                        window.location.assign(window.location.origin + "/Home/");
+
                     }
                 }
             }

@@ -32,6 +32,7 @@ namespace Imi.Project.Api.Controllers
             _publisherService = publisherService;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -119,8 +120,8 @@ namespace Imi.Project.Api.Controllers
                 : Ok(serviceGame.Data.MapToDto(genreResponseDtos
                 , publisherResult.Data.MapToDto()));
         }
+        [AllowAnonymous]
 
-        [Authorize(Policy = "onlyAdults")]
         [HttpGet("{search}/name")]
         public async Task<IActionResult> GetGamesByName(string search)
         {
@@ -169,7 +170,7 @@ namespace Imi.Project.Api.Controllers
             return Ok(gameList);
         }
 
-        [Authorize(Policy = "onlyAdults")]
+        [AllowAnonymous]
         [HttpGet("{id}/publishers")]
         public async Task<IActionResult> GetGamesByPublisher([FromRoute] Guid id)
         {

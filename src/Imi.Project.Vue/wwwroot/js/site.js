@@ -31,6 +31,11 @@ function getDecodedToken() {
     }
 }
 
+function userApprovedTerms() {
+    const decodedToken = getDecodedToken();
+    return decodedToken[approveTermKey];
+}
+
 function readUserNameFromToken() {
     const decodedToken = getDecodedToken();
     return decodedToken[nameKey];
@@ -57,5 +62,11 @@ function hasUserAdminRole() {
     }
     else {
         return false;
+    }
+}
+
+function reloadAxios() {
+    axiosConfig = {
+        headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` }
     }
 }

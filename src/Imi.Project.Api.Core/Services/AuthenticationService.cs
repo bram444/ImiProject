@@ -55,7 +55,7 @@ namespace Imi.Project.Api.Core.Services
                 }
 
                 newUser = await _userManager.FindByEmailAsync(registration.Email);
-                await _userManager.AddClaimAsync(newUser, new Claim("birthday", registration.BirthDay.ToString()));
+                await _userManager.AddClaimAsync(newUser, new Claim(ClaimTypes.DateOfBirth, registration.BirthDay.ToString()));
                 await _userManager.AddClaimAsync(newUser, new Claim("approved", registration.ApprovedTerms.ToString()));
                 await _userManager.AddToRoleAsync(newUser, "User");
 
@@ -105,6 +105,32 @@ namespace Imi.Project.Api.Core.Services
                     Messages = new List<string> { ex.Message }
                 };
             }
+        }
+
+        public async Task<string> RefreshToken(string token)
+        {
+            JwtSecurityToken jwt = _jwtService.DecodeToken(token);
+
+            string id = jwt.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+
+            string email = jwt.Claims.First(c => c.Type == ClaimTypes.Email).Value;
+
+            string birthday = jwt.Claims.First(c => c.Type == ClaimTypes.DateOfBirth).Value;
+
+            ApplicationUser user = await _userManager.FindByIdAsync(id);
+
+            string dateTimeBDString = user.BirthDay.ToString("dd/MM/yyyy");
+
+            if(user == null || user.Email != email || dateTimeBDString != birthday || user.Id.ToString() != id)
+            {
+                return token;
+            }
+
+            List<Claim> listClaims = await GetClaims(user!);
+
+            JwtSecurityToken jwtSecurityToken = _jwtService.GenerateToken(listClaims);
+
+            return _jwtService.SerializeToken(jwtSecurityToken);
         }
 
         public async Task Logout()

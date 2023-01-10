@@ -30,8 +30,6 @@ namespace Imi.Project.Api.Mapper
                 UserName = updateUser.UserName,
                 FirstName = updateUser.FirstName,
                 LastName = updateUser.LastName,
-                Password = updateUser.Password,
-                ConfirmPassword = updateUser.ConfirmPassword,
                 ApprovedTerms = updateUser.ApprovedTerms,
                 GameId = updateUser.GameId
             };
@@ -54,7 +52,7 @@ namespace Imi.Project.Api.Mapper
 
         public static UserResponseDto MapToDto(this ApplicationUser applicationUser, List<GameResponseDto> gameResponse)
         {
-            var userResponse = MapToDto(applicationUser);
+            UserResponseDto userResponse = MapToDto(applicationUser);
             userResponse.Games = gameResponse;
             return userResponse;
         }

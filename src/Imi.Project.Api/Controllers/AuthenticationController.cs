@@ -37,5 +37,11 @@ namespace Imi.Project.Api.Controllers
 
             return !result.IsSuccess ? BadRequest(result.Messages) : Ok(result.MapToDto());
         }
+
+        [HttpPost("{token}refresh")]
+        public async Task<IActionResult> Refresh(string token)
+        {
+            return Ok(await _authenticationService.RefreshToken(token));
+        }
     }
 }

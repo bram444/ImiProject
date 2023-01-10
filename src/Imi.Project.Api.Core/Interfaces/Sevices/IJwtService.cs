@@ -8,5 +8,8 @@ namespace Imi.Project.Api.Core.Interfaces.Sevices
     {
         JwtSecurityToken GenerateToken(List<Claim> userClaims);
         string SerializeToken(JwtSecurityToken token);
+
+        JwtSecurityToken DecodeToken(string token);
+
     }
 }
