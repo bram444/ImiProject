@@ -18,8 +18,6 @@ namespace Imi.Project.Api.Core.Services
             _configuration = configuration;
         }
 
-
-
         public JwtSecurityToken GenerateToken(List<Claim> userClaims)
         {
             List<Claim> claims = new();
@@ -34,6 +32,7 @@ namespace Imi.Project.Api.Core.Services
                 notBefore: DateTime.UtcNow,
                 signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signinKey))
                 , SecurityAlgorithms.HmacSha256)
+
             );
             return token;
         }

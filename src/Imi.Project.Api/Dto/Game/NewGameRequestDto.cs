@@ -14,7 +14,6 @@ namespace Imi.Project.Api.Dto.Game
         [Required]
         public Guid PublisherId { get; set; }
 
-        [Required]
         public ICollection<Guid> GenreId { get; set; }
     }
 }

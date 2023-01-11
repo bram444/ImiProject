@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Services
 {
-    public class GameService: BaseService<Game, IGameRepository, NewGameModel,UpdateGameModel>, IGameService
+    public class GameService: BaseService<Game, IGameRepository, NewGameModel, UpdateGameModel>, IGameService
     {
         private readonly IPublisherRepository _publisherRepository;
         private readonly IGenreRepository _genreRepository;
@@ -40,7 +40,7 @@ namespace Imi.Project.Api.Core.Services
         {
             try
             {
-                var result =await ErrorCheckAdd(entity);
+                ServiceResultModel<Game> result = await ErrorCheckAdd(entity);
 
                 if(result.IsSuccess)
                 {
@@ -59,7 +59,7 @@ namespace Imi.Project.Api.Core.Services
         {
             try
             {
-                var result = await ErrorCheckUpdate(entity);
+                ServiceResultModel<Game> result = await ErrorCheckUpdate(entity);
 
                 if(result.IsSuccess)
                 {
@@ -81,7 +81,7 @@ namespace Imi.Project.Api.Core.Services
                 Data = newGameModel.MapToEntity()
             };
 
-            foreach(var id in newGameModel.GenreId)
+            foreach(Guid id in newGameModel.GenreId)
             {
                 if(!await _genreRepository.DoesExistAsync(id))
                 {
@@ -100,7 +100,7 @@ namespace Imi.Project.Api.Core.Services
                 Data = updateGameModel.MapToEntity()
             };
 
-            foreach(var id in updateGameModel.GenreId)
+            foreach(Guid id in updateGameModel.GenreId)
             {
                 if(!await _genreRepository.DoesExistAsync(id))
                 {
@@ -126,7 +126,7 @@ namespace Imi.Project.Api.Core.Services
                 result.ValidationErrors.Add(new ValidationResult($"Publisher {result.Data.PublisherId} doesn't exist"));
             }
 
-            if(await _itemRepository.DoesExistAsync(game => game.Name == result.Data.Name))
+            if(await _itemRepository.DoesExistAsync(game => game.Name == result.Data.Name && game.Id != result.Data.Id))
             {
                 result.IsSuccess = false;
                 result.ValidationErrors.Add(new ValidationResult($"Game with name {result.Data.Name} already exists"));

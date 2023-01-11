@@ -16,7 +16,7 @@ const adminRoleValue = "Admin";
 
 // Axios configuration
 let axiosConfig = {
-    headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` }
+    headers: {  Authorization: `Bearer ${sessionStorage.getItem("token")}` }
 };
 
 //Methods

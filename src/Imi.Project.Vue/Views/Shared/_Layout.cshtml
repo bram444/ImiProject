@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Imi.Project.Vue</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/Checkbox/vanillaSelectBox.css"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
@@ -72,11 +73,12 @@
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="~/lib/axios/axios.min.js"></script>
     <script src="~/lib/vue/vue.js"></script>
     <script src="~/lib/jwt-decode/build/jwt-decode.js"></script>
+    <script src="~/lib/Checkbox/vanillaSelectBox.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
 
     <script>
         var navbarVue = new Vue({
@@ -138,7 +140,7 @@
                         isAdmin: false,
                     }
 
-                    if (window.location.pathname == "/Home/CurrentUser"){
+                    if (window.location.pathname === "/Home/CurrentUser" || window.location.pathname === "/Home/Games" || window.location.pathname === "/Home/Genres" || window.location.pathname === "/Home/Publisherd") {
                         window.location.assign(window.location.origin + "/Home/");
 
                     }

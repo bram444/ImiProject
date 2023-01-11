@@ -3,17 +3,11 @@
 }
 
 <div id="UserUpdate" class="d-flex flex-column">
-    <div class="row" v-if="showUserError">
-        <div class="alert alert-danger">
-            {{userErrorMessage}}
-        </div>
-    </div>
-    <div v-else>
         <div class="text-center">
             <h1 class="display-4">Gebruiker profiel</h1>
         </div>
-        <div class="alert alert-danger" v-if="unknownError.length">
-            {{unknownError}}
+        <div class="alert alert-danger" v-if="errorMessage.length">
+            {{errorMessage}}
         </div>
         <form class="d-flex flex-column" v-on:submit.prevent="setUpdate" v-if="isEditing == false">
             <div class="d-flex flex-row mb-3">
@@ -93,8 +87,6 @@
                 </div>
             </div>
         </div>
-        <br />
-    </div>
 </div>
 
 @section Scripts{
@@ -104,8 +96,7 @@
             name: "userUpdate",
             data: {
                 usernameError: "",
-                unknownError: "",
-                userErrorMessage: "",
+                errorMessage: "",
                 showUserError: false,
                 isEditing: false,
                 playedGames: new Array(),
@@ -151,7 +142,6 @@
                         this.playedGames = response.data.games;
                     }).
                     catch((e) => {
-                        this.showUserError = true;
 
                         if (e.response.status === 400) {
                             this.errorMessage = e.response.data[0].errorMessage;
@@ -184,10 +174,17 @@
 
                         })
                         .catch((e) => {
-                            this.showUserError = true;
 
                             if (e.response.status === 400) {
+                                if (e.response.data[0].errorMessage.toLowerCase().includes("username"))
+                                {
+                                    this.usernameError = e.response.data[0].errorMessage;
+                                }
+                                else{
+
                                 this.errorMessage = e.response.data[0].errorMessage;
+                                }
+
                             }
                             else if (e.response.status === 401) {
                                 this.errorMessage = "You don't have the valid authentication to edit this user";
@@ -196,6 +193,9 @@
                                 this.errorMessage = e.message;
                             }
                         });
+
+                    if (this.errorMessage.length === 0 && this.usernameError.length ===0)
+                    {
 
                     let token =sessionStorage.getItem("token");
 
@@ -207,6 +207,7 @@
                     });
 
                     this.isEditing=false;
+                    }
 
                 },
                 deleteUser: async function () {
@@ -222,6 +223,7 @@
                             }
                             else if (e.response.status === 400) {
                                 this.errorMessage = e.response.data[0].errorMessage;
+
                             }
                             else {
                                 this.errorMessage = e.message;

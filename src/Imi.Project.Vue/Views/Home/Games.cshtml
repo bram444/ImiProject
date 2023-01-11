@@ -2,6 +2,527 @@
     ViewData["Title"] = "Games pagina";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Games</h1>
+<div id="app">
+    <div class="d-flex justify-content-center">
+        <div class="d-flex-column">
+            <div class="text-center">
+                <h1 class="display-4">Games beheer</h1>
+                <button class="btn btn-outline-primary mb-4" v-on:click="showCreate" data-bs-toggle="modal" data-bs-target="#createGameModal">Nieuwe game</button>
+            </div>
+        </div>
+    </div>
+    <div class="row" v-if="errorMessage.length">
+        <div class="alert alert-danger">
+            {{errorMessage}}
+        </div>
+    </div>
+    <div v-else>
+        <div class="d-flex justify-content-center row">
+            <input type="text" v-model="searchGames" class="form-control mb-4" placeholder="Zoek games..." v-on:input="showGames" />
+            <div v-if="isLoading">
+                <div class="d-flex justify-content-center">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Laden...</span>
+                    </div>
+                </div>
+            </div>
+            <table class="table table-bordered table-striped align-middle sortable" v-else>
+                <thead>
+                    <tr>
+                        <th>Naam</th>
+                        <th>Prijs</th>
+                        <th>Publisher</th>
+                        <th>Genres</th>
+                        <th>Gebruikers</th>
+                        <th>Aanpassen/Verwijderen</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="game in games">
+                        <td>{{game.name}}</td>
+                        <td>€ {{game.price}}</td>
+                        <td>{{game.publisher.name}}</td>
+                        <td>
+                            <ul>
+                                <li v-for="genre in game.genres">
+                                    {{genre.name}}
+                                </li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li v-for="user in game.users">
+                                    {{user}}
+                                </li>
+                            </ul>
+                        </td>
+                        <td class="align-middle text-center">
+                            <button class="btn btn-warning mb-3" v-on:click="showUpdate(game)" data-bs-toggle="modal" data-bs-target="#updateGameModal">Bewerken</button>
+                            <button class="btn btn-danger mb-3" v-on:click="showDelete(game)" data-bs-toggle="modal" data-bs-target="#deleteGameModal">Verwijderen</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal fade" id="createGameModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Nieuwe game</h5>
+                </div>
+                <div class="modal-body">
+                    <label>Naam:</label>
+                    <input type="text" class="form-control" placeholder="Naam game" v-model="newGame.name" required />
+                    <div class="alert alert-danger alert alert-danger mb-0 ml-2" v-if="errorName.length">
+                        {{errorName}}
+                    </div>
+                    <label>Prijs:</label>
+                    <input type="number" min="0.01" class="form-control" placeholder="Prijs game" v-model="newGame.price" required />
+                    <div class="alert alert-danger alert alert-danger mb-0 ml-2" v-if="errorPrice.length">
+                        {{errorPrice}}
+                    </div>
+                    <label>Publisher:</label>
+                    <select id="publishersSelect" v-model="newGame.publisherId" data-mdb-placeholder="Select a publisher" required> 
+                        <option v-for="singlepublisher in publishers" :value="singlepublisher.id">{{ singlepublisher.name }}</option>
+                    </select>
+                    <div class="alert alert-danger alert alert-danger mb-0 ml-2" v-if="errorPublisher.length">
+                        {{errorPublisher}}
+                    </div>
+                    <label>Genres:</label>
+                    <select id="genresSelectCreate" v-model="newGame.genreId" multiple>
+                        <option v-for="genre in genres" :value="genre.id">{{genre.name}}</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" v-on:click="cancelGame">Annuleren</button>
+                    <button type="button" class="btn btn-outline-primary" v-on:click="createGame" >Opslaan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="updateGameModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Bewerken {{selectedGame.name}}</h5>
+                </div>
+                <div class="modal-body">
+                    <label>Naam:</label>
+                    <input type="text" class="form-control" placeholder="Naam game" v-model="selectedGame.name" required />
+                    <div class="alert alert-danger alert alert-danger mb-0 ml-2" v-if="errorName.length">
+                        {{errorName}}
+                    </div>
+                    <label>Prijs:</label>
+                    <input type="number" min="0.01" class="form-control" placeholder="Prijs game" v-model="selectedGame.price" required />
+                    <div class="alert alert-danger alert alert-danger mb-0 ml-2" v-if="errorPrice.length">
+                        {{errorPrice}}
+                    </div>
+                    <label>Publisher:</label>
+                    <select id="publishersSelect" v-model="selectedGame.publisherId" required>
+                        <option v-for="publisher in publishers" :value="publisher.id">{{ publisher.name }}</option>
+                    </select>
+                    <div class="alert alert-danger alert alert-danger mb-0 ml-2" v-if="errorPublisher.length">
+                        {{errorPublisher}}
+                    </div>
+                    <label>Genres:</label>
+                    <select id="genresSelectUpdate" v-model="selectedGame.genreId" class="selectpicker" data-selected-text-format="count > 3" data-live-search="true" multiple>
+                        <option v-for="genre in genres" :value="genre.id">{{genre.name}}</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" v-on:click="cancelGame">Annuleren</button>
+                    <button type="button" class="btn btn-outline-primary" v-on:click="updateGame(selectedGame)">Opslaan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteGameModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Verwijderen {{selectedGame.name}}?</h5>
+                </div>
+                <div class="modal-body">
+                    Weet je zeker dat je de game {{selectedGame.name}} wilt verwijderen?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="cancelGame">Annuleren</button>
+                    <button type="button" class="btn btn-primary" v-on:click="deleteGame(selectedGame)">Verwijderen</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </div>
+
+@section Scripts{
+    <script>
+
+        var vue = new Vue({
+            el: "#app",
+            data: {
+                                errorName: "",
+                errorPrice: "",
+                errorPublisher: "",
+
+                games: null,
+                genres: null,
+                publishers: null,
+                errorMessage: "",
+                isLoading: false,
+
+                dropdownCreate :null,
+
+                dropdownUpdate: null,
+
+                searchGames:"",
+                newGame: {
+                    name: "",
+                    price: 1,
+                    publisherId: "",
+                    genreId: [""]
+                },
+                selectedGame: {
+                    id: "",
+                    name: "",
+                    price: 1,
+                    publisherId: "",
+                    genreId: [""]
+                }
+
+
+            },
+            created: async function () {
+                await this.showGames();
+                await this.getGenres();
+                this.dropdownCreate = new vanillaSelectBox("#genresSelectCreate", {
+                    maxWidth: 500,
+                    maxHeight: 400,
+                    minWidth: -1,
+                });
+
+                this.dropdownUpdate = new vanillaSelectBox("#genresSelectUpdate", {
+                    maxWidth: 500,
+                    maxHeight: 400,
+                    minWidth: -1,
+                });
+            },
+            methods: {
+                showGames: async function () {
+                    this.isLoading = true;
+
+                    let trimmedSearch = this.searchGames.trimEnd();
+
+                    trimmedSearch = trimmedSearch.trimStart();
+
+                    let searchText = `${baseUrl}game`;
+
+                    if (trimmedSearch != "") {
+                        searchText = `${baseUrl}game/${trimmedSearch}/name`;
+                    }
+
+                    await axios.get(searchText,axiosConfig)
+                        .then((response) => {
+                            this.games = JSON.parse(JSON.stringify(response.data));
+                        })
+                        .catch((e) => {
+                            this.errorMessage = e.message
+                        });
+
+                    let allUsers = null;
+
+                    await axios.get(`${baseUrl}user`, axiosConfig)
+                        .then((response) => {
+                            allUsers = JSON.parse(JSON.stringify(response.data));
+                        })
+                        .catch((e) => {
+                            if (e.response.status === 401) {
+                                this.errorMessage = "You don't have the valid authentication to create game.";
+                            }
+                            else if (e.response.status === 400) {
+
+                                this.errorMessage = e.response.data[0].errorMessage;
+                            }
+                            else {
+                                this.errorMessage = e.message;
+                            }
+                        })
+                        .finally(() => {
+                            for (const game of this.games) {
+                                game.users = new Array();
+                                allUsers.forEach(user => {
+                                    let username = "";
+                                    if (user.games.some(Usergame => Usergame.id === game.id)) {
+                                        username = user.userName;
+                                        if (game.users.length) {
+                                            game.users.push(username);
+                                        }
+                                        else {
+                                            game.users = new Array(username);
+                                        }
+                                    }
+                                })
+                            }
+                        });
+
+                    this.isLoading = false;
+                },
+                getGameDetails: async function (gameId) {
+
+                    await axios.get(`${baseUrl}game/${gameId}`, axiosConfig)
+                        .then((response) => {
+                            this.selectedGame.id = response.data.id;
+                            this.selectedGame.name = response.data.name;
+                            this.selectedGame.price = response.data.price;
+                            this.selectedGame.publisherId = response.data.publisher.id;
+                            this.selectedGame.genreId = response.data.genres.map(genre => genre.id);
+                        })
+                        .catch((e) => {
+                            if (e.response.status === 401) {
+                                this.errorMessage = "You don't have the valid authentication to create game.";
+                            }
+                            else if (e.response.status === 400) {
+
+                                        this.errorMessage = e.response.data[0].errorMessage;
+                                }
+                            else {
+                                this.errorMessage = e.message;
+                            }
+                        });
+
+                },
+                createGame: async function () {
+
+
+                    this.resetValidate();
+                    if (this.validateGame(this.newGame))
+                    {
+                        this.isLoading = true;
+                    await axios.post(`${baseUrl}game`, this.newGame, axiosConfig)
+                        .then((response) => {
+                                const modalElement = document.getElementById("createGameModal");
+                                const modal = bootstrap.Modal.getInstance(modalElement);
+                                modal.hide();
+this.cancelGame();
+
+
+                        })
+                        .catch((e) => {
+                            if (e.response.status === 401) {
+                                this.errorMessage = "You don't have the valid authentication to create game.";
+                            }
+                            else if (e.response.status === 400) {
+                                    if (e.response.data[0].errorMessage.toLowerCase().includes("name")) {
+                                        this.errorName = "Game with name already exists";
+
+                                    }
+                                    else {
+                                        this.errorMessage = e.response.data[0].errorMessage;
+                                    }
+                                }
+                            else {
+                                this.errorMessage = e.message;
+                            }
+                        });
+                        await this.showGames();
+
+                        this.isLoading = false;
+
+                    }
+
+
+
+                },
+                updateGame: async function (updatedGame) {
+
+                    this.resetValidate();
+                    if (this.validateGame(updatedGame)) {
+                    this.isLoading = true;
+                    await axios.put(`${baseUrl}game`, updatedGame, axiosConfig)
+                        .then((response) => {
+                                const modalElement = document.getElementById("updateGameModal");
+                                const modal = bootstrap.Modal.getInstance(modalElement);
+                                modal.hide();
+                                this.cancelGame();
+
+                        })
+                        .catch((e) => {
+                            if (e.response.status === 401) {
+                                this.errorMessage = "You don't have the valid authentication to edit game.";
+                            }
+                            else if (e.response.status === 400) {
+                                if (e.response.data[0].errorMessage.toLowerCase().includes("name"))
+                                {
+                                        this.errorName = "Game with name already exists";
+
+                                }
+                                else{
+                                this.errorMessage = e.response.data[0].errorMessage;
+                            }
+                            }
+                            else {
+                                this.errorMessage = e.message;
+                            }
+                        });
+                                                    await this.showGames();
+
+                        this.isLoading = false;
+
+                        }
+
+                },
+                deleteGame: async function (selectedGame) {
+                    this.isLoading = true;
+
+                    await axios.delete(`${baseUrl}game/${selectedGame.id}`, axiosConfig)
+                        .then((response) => {
+                            var index = this.games.indexOf(selectedGame);
+                            this.games.splice(index, 1);
+                        })
+                        .catch((e) => {
+                            if (e.response.status === 401) {
+                                this.errorMessage = "You don't have the valid authentication to delete the game.";
+                            }
+                            else if (e.response.status === 400) {
+                                this.errorMessage = e.response.data[0].errorMessage;
+                            }
+                            else {
+                                this.errorMessage = e.message;
+                            }
+                        })
+                        .finally(() => {
+                            const modalElement = document.getElementById("deleteGameModal");
+                            const modal = bootstrap.Modal.getInstance(modalElement);
+                            modal.hide();
+
+                        });
+                            this.isLoading = false;
+                },
+                getPublishers: async function () {
+
+                    await axios.get(`${baseUrl}publisher`, axiosConfig)
+                        .then((response) => {
+                            this.publishers = response.data;
+                        })
+                        .catch((e) => {
+                            if (e.response.status === 401) {
+                                this.errorMessage = "You don't have the valid authentication to create game.";
+                            }
+                            else if (e.response.status === 400) {
+
+                                this.errorMessage = e.response.data[0].errorMessage;
+                            }
+                            else {
+                                this.errorMessage = e.message;
+                            }
+                        });
+                },
+                getGenres: async function () {
+
+                    await axios.get(`${baseUrl}genre`, axiosConfig)
+                        .then((response) => {
+
+                             this.genres = JSON.parse(JSON.stringify(response.data));
+                        })
+                        .catch((e) => {
+                            if (e.response.status === 401) {
+                                this.errorMessage = "You don't have the valid authentication to create game.";
+                            }
+                            else if (e.response.status === 400) {
+
+                                this.errorMessage = e.response.data[0].errorMessage;
+                            }
+                            else {
+                                this.errorMessage = e.message;
+                            }
+                        });
+                },
+                showCreate: async function () {
+                    await this.getGenres();
+                    await this.getPublishers();
+                    const modalElement = document.getElementById("createGameModal");
+                    const modal = bootstrap.Modal.getInstance(modalElement);
+
+                    modal.show();
+                },
+                showUpdate: async function (game) {
+                    await this.getGenres();
+                    await this.getPublishers();
+
+                    await this.getGameDetails(game.id);
+
+                    this.dropdownUpdate.setValue( this.selectedGame.genreId);
+
+                    const modalElement = document.getElementById("updateGameModal");
+                    const modal = bootstrap.Modal.getInstance(modalElement);
+                    modal.show();
+                },
+                showDelete: function (game) {
+
+                                                this.selectedGame.id = game.id;
+                            this.selectedGame.name = game.name;
+                    this.selectedGame.price = parseFloat(game.price);
+                    this.selectedGame.publisherId = game.publisher.id;
+                            this.selectedGame.genreId = game.genres.map(genre => genre.id);
+
+                    const modalElement = document.getElementById("deleteGameModal");
+                    const modal = bootstrap.Modal.getInstance(modalElement);
+                    modal.show();
+                },
+                cancelGame: function () {
+                    this.resetValidate();
+
+                    this.newGame = {
+                        name: "",
+                        price: 1,
+                        publisherId: "",
+                        genreId: [""]
+                    };
+                    this.selectedGame = {
+                        id: "",
+                        name: "",
+                        price: 1,
+                        publisherId: "",
+                        genreId: [""]
+                    };
+
+                    this.dropdownCreate.empty();
+                    this.dropdownUpdate.empty();
+
+                },
+                validateGame:function(game)
+                {
+
+                    if (game.name === "" )
+                    {
+                        this.errorName="Name must be filled in";
+                    }
+                    if(game.price ===null||game.price===0)
+                    {
+                        this.errorPrice= "Price must be filled in";
+                    }
+
+                    if(game.publisherId==="")
+                    {
+                        this.errorPublisher= "Publisher must be selected";
+                    }
+
+                    return (this.errorName === "" && this.errorPrice === "" && this.errorPublisher==="");
+                },
+
+                resetValidate:function()
+                {
+                                            this.errorName="";
+                        this.errorPrice= "";
+                    this.errorPublisher = "";
+
+                }
+            }
+        });
+    </script>
+}
