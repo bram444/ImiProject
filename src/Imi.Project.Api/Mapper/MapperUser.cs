@@ -11,8 +11,8 @@ namespace Imi.Project.Api.Mapper
         {
             return new NewUserModel
             {
-                UserName = newUser.UserName,
-                FirstName = newUser.FirstName,
+                UserName = newUser.UserName.Trim(' '),
+                FirstName = newUser.FirstName.Trim(' '),
                 LastName = newUser.LastName,
                 Email = newUser.Email,
                 Password = newUser.Password,
@@ -27,9 +27,9 @@ namespace Imi.Project.Api.Mapper
             return new UpdateUserModel
             {
                 Id = updateUser.Id,
-                UserName = updateUser.UserName,
-                FirstName = updateUser.FirstName,
-                LastName = updateUser.LastName,
+                UserName = updateUser.UserName.Trim(' '),
+                FirstName = updateUser.FirstName.Trim(' '),
+                LastName = updateUser.LastName.Trim(' '),
                 ApprovedTerms = updateUser.ApprovedTerms,
                 GameId = updateUser.GameId
             };
@@ -40,9 +40,9 @@ namespace Imi.Project.Api.Mapper
             return new UserResponseDto
             {
                 Id = applicationUser.Id,
-                UserName = applicationUser.UserName,
-                FirstName = applicationUser.FirstName,
-                LastName = applicationUser.LastName,
+                UserName = applicationUser.UserName.Trim(' '),
+                FirstName = applicationUser.FirstName.Trim(' '),
+                LastName = applicationUser.LastName.Trim(' '),
                 Email = applicationUser.Email,
                 ApprovedTerms = applicationUser.ApprovedTerms,
                 BirthDay = applicationUser.BirthDay,

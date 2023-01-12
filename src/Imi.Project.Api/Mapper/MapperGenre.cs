@@ -10,8 +10,8 @@ namespace Imi.Project.Api.Mapper
         {
             return new NewGenreModel
             {
-                Name = newGenre.Name,
-                Description = newGenre.Description,
+                Name = newGenre.Name.Trim(' '),
+                Description = newGenre.Description?.Trim(' ')
             };
         }
 
@@ -20,8 +20,8 @@ namespace Imi.Project.Api.Mapper
             return new UpdateGenreModel
             {
                 Id = updateGenre.Id,
-                Name = updateGenre.Name,
-                Description = updateGenre.Description,
+                Name = updateGenre.Name.Trim(' '),
+                Description = updateGenre.Description?.Trim(' ')
             };
         }
 
@@ -30,8 +30,8 @@ namespace Imi.Project.Api.Mapper
             return new GenreResponseDto
             {
                 Id = genre.Id,
-                Name = genre.Name,
-                Description = genre.Description
+                Name = genre.Name.Trim(' '),
+                Description = genre.Description?.Trim(' ')
             };
         }
 

@@ -2,6 +2,7 @@
 using Imi.Project.Api.Core.Interfaces.Sevices;
 using Imi.Project.Api.Core.Mapper;
 using Imi.Project.Api.Core.Models;
+using Imi.Project.Api.Core.Models.Game;
 using Imi.Project.Api.Dto.Game;
 using Imi.Project.Api.Dto.Genre;
 using Imi.Project.Api.Mapper;
@@ -228,7 +229,7 @@ namespace Imi.Project.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            Core.Models.Game.NewGameModel newGameModel = newGameRequest.MapToModel();
+            NewGameModel newGameModel = newGameRequest.MapToModel();
 
             ServiceResultModel<Game> result = await _gameService.AddAsync(newGameModel);
 

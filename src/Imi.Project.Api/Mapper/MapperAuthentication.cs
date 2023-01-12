@@ -10,9 +10,9 @@ namespace Imi.Project.Api.Mapper
         {
             return new RegistrationModel
             {
-                UserName = registrationDto.UserName,
-                FirstName = registrationDto.FirstName,
-                LastName = registrationDto.LastName,
+                UserName = registrationDto.UserName.Trim(' '),
+                FirstName = registrationDto.FirstName.Trim(' '),
+                LastName = registrationDto.LastName.Trim(' '),
                 Email = registrationDto.Email,
                 Password = registrationDto.Password,
                 ConfirmPassword = registrationDto.ConfirmPassword,
@@ -25,7 +25,7 @@ namespace Imi.Project.Api.Mapper
         {
             return new LoginRequestModel
             {
-                UserName = loginRequestDto.UserName,
+                UserName = loginRequestDto.UserName.Trim(' '),
                 Password = loginRequestDto.Password
             };
         }

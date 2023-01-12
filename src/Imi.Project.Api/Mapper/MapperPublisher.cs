@@ -10,8 +10,8 @@ namespace Imi.Project.Api.Mapper
         {
             return new NewPublisherModel
             {
-                Country = newPublisher.Country,
-                Name = newPublisher.Name,
+                Country = newPublisher.Country.Trim(' '),
+                Name = newPublisher.Name.Trim(' '),
             };
         }
 
@@ -20,8 +20,8 @@ namespace Imi.Project.Api.Mapper
             return new UpdatePublisherModel
             {
                 Id = updatePublisher.Id,
-                Name = updatePublisher.Name,
-                Country = updatePublisher.Country,
+                Name = updatePublisher.Name.Trim(' '),
+                Country = updatePublisher.Country.Trim(' '),
             };
         }
 
@@ -30,8 +30,8 @@ namespace Imi.Project.Api.Mapper
             return new PublisherResponseDto
             {
                 Id = publisher.Id,
-                Country = publisher.Country,
-                Name = publisher.Name,
+                Country = publisher.Country.Trim(' '),
+                Name = publisher.Name.Trim(' '),
             };
         }
 

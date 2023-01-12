@@ -12,7 +12,7 @@ namespace Imi.Project.Api.Mapper
         {
             return new NewGameModel
             {
-                Name = newGame.Name,
+                Name = newGame.Name.Trim(' '),
                 Price = newGame.Price,
                 PublisherId = newGame.PublisherId,
                 GenreId = newGame.GenreId.Distinct(),
@@ -24,7 +24,7 @@ namespace Imi.Project.Api.Mapper
             return new UpdateGameModel
             {
                 Id = updateGame.Id,
-                Name = updateGame.Name,
+                Name = updateGame.Name.Trim(' '),
                 Price = updateGame.Price,
                 PublisherId = updateGame.PublisherId,
                 GenreId = updateGame.GenreId.Distinct(),
@@ -36,7 +36,7 @@ namespace Imi.Project.Api.Mapper
             return new GameResponseDto
             {
                 Id = game.Id,
-                Name = game.Name,
+                Name = game.Name.Trim(' '),
                 Price = game.Price,
                 Publisher = publisher,
                 Genres = genres
@@ -48,7 +48,7 @@ namespace Imi.Project.Api.Mapper
             return new GameResponseDto
             {
                 Id = game.Id,
-                Name = game.Name,
+                Name = game.Name.Trim(' '),
                 Price = game.Price
             };
         }

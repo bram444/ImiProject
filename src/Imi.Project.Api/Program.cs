@@ -53,10 +53,9 @@ builder.Services.AddAuthorization(options =>
         {
             string adultClaimValue = context.User.Claims
                          .SingleOrDefault(c => c.Type == ClaimTypes.DateOfBirth)?.Value;
-            return DateTime.TryParseExact(adultClaimValue, "dd/MM/yyyy", CultureInfo.InvariantCulture,
-                                      DateTimeStyles.AdjustToUniversal, out DateTime birthDay)
-                ? birthDay.AddYears(18) < DateTime.UtcNow
-                : false;
+            DateTime.TryParseExact(adultClaimValue, "dd/MM/yyyy", CultureInfo.InvariantCulture,
+                                      DateTimeStyles.AdjustToUniversal, out DateTime birthDay);
+            return birthDay.AddYears(18) < DateTime.UtcNow;
         });
     });
     options.AddPolicy("approved", policy =>
@@ -90,7 +89,7 @@ builder.Services.AddAuthorization(options =>
             string jsonString;
             Stream body = request.Body;
 
-            using(StreamReader stream = new StreamReader(body, Encoding.UTF8, true, 1024, true))
+            using(StreamReader stream = new(body, Encoding.UTF8, true, 1024, true))
             {
                 jsonString = await stream.ReadToEndAsync();
             }

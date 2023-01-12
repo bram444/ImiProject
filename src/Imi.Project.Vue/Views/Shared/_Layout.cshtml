@@ -34,7 +34,7 @@
                     </ul>
                     <div class="d-flex flex-column">
                         <div id="loginForm" class="d-flex flex-row">
-                            <form class="d-flex" role="login" v-if="userIsLoggedIn == false" v-on:submit.prevent="submitLogin">
+                            <form class="d-flex" v-if="userIsLoggedIn == false" v-on:submit.prevent="submitLogin">
                                 <div class="mr-1">
                                     <input class="form-control col-me-2" type="text" placeholder="Gebruikersnaam" aria-label="UserName" v-model="loginModel.userName">
                                 </div>
@@ -45,7 +45,7 @@
                                     <button class="btn btn-outline-primary col-me-2" type="submit">Login</button>
                                 </div>
                             </form>
-                            <form class="d-flex me-2" role="register" v-if="userIsLoggedIn == false" asp-area="" asp-controller="Home" asp-action="Register">
+                            <form class="d-flex me-2" v-if="userIsLoggedIn == false" asp-area="" asp-controller="Home" asp-action="Register">
                                 <button class="btn btn-outline-success" type="submit">Registreren</button>
                             </form>
                             <div v-else class="d-inline-flex align-items-center">
@@ -73,7 +73,7 @@
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
     <script src="~/lib/axios/axios.min.js"></script>
     <script src="~/lib/vue/vue.js"></script>
     <script src="~/lib/jwt-decode/build/jwt-decode.js"></script>

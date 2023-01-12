@@ -30,15 +30,15 @@
                         </div>
                     </div>
                 </div>
-                <table class="table table-bordered table-striped align-middle sortable" v-else>
+                <table class="table table-bordered table-striped align-middle" v-else>
                     <thead>
                         <tr>
                             <th>Naam</th>
                             <th>Prijs</th>
                             <th>Publisher</th>
                             <th>Genres</th>
-                            <th v-if="editUser.approvedTerms">Gebruikers</th>
-                            <th v-if="editUser.approvedTerms">Toevoegen/Verwijderen</th>
+                            <th v-if="user.approvedTerms">Gebruikers</th>
+                            <th v-if="user.approvedTerms">Toevoegen/Verwijderen</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -53,14 +53,14 @@
                                     </li>
                                 </ul>
                             </td>
-                            <td v-if="editUser.approvedTerms">
+                            <td v-if="user.approvedTerms">
                                 <ul>
                                     <li v-for="user in game.users">
                                         {{user}}
                                     </li>
                                 </ul>
                             </td>
-                            <td class="align-middle text-center" v-if="editUser.approvedTerms">
+                            <td class="align-middle text-center" v-if="user.approvedTerms">
                                 <button class="btn btn-outline-success mb-3" v-on:click="addGame(game)" v-if="!hasGame(game)">Toevoegen</button>
                                 <button class="btn btn-outline-danger mb-3" v-on:click="removeGame(game)" v-else>Verwijderen</button>
                             </td>
@@ -84,12 +84,20 @@
                         <tr>
                             <th>Naam</th>
                             <th>Beschrijving</th>
+                            <th>Games</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="genre in genres">
                             <td>{{genre.name}}</td>
                             <td>{{genre.description}}</td>
+                            <td>
+                            <ul>
+                                <li v-for="game in genre.games">
+                                    {{game}}
+                                </li>
+                            </ul>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -151,7 +159,7 @@
                 start: true,
                 isLoading: false,
 
-                editUser: {
+                user: {
                     id: "",
                     userName: "",
                     firstName: "",
@@ -186,7 +194,8 @@
 
                     await axios.get(searchText)
                         .then((response) => {
-                            this.games = response.data
+                            this.games = response.data;
+                            this.games.forEach(game => game.genres.sort(this.sortDefealt));
                         })
                         .catch((e) => {
                             this.showError = true;
@@ -194,6 +203,7 @@
                         });
 
                     if (userApprovedTerms()) {
+
                         let allUsers = null;
 
                         await axios.get(`${baseUrl}user`, axiosConfig)
@@ -207,7 +217,7 @@
                             .finally(() => {
                                 for (const game of this.games) {
                                     game.users = new Array();
-                                    allUsers.forEach(user => {
+                                    allUsers.sort(this.sortUser).forEach(user => {
                                         let username = "";
                                         if (user.games.some(Usergame => Usergame.id === game.id)) {
                                             username = user.userName;
@@ -227,12 +237,12 @@
                         await axios.get(`${baseUrl}user/${id}`, axiosConfig)
                             .then((response) => {
 
-                                this.editUser.gameId = response.data.games.map(game => game.id);
-                                this.editUser.userName = response.data.userName;
-                                this.editUser.firstName = response.data.firstName;
-                                this.editUser.lastName = response.data.lastName;
-                                this.editUser.approvedTerms = response.data.approvedTerms;
-                                this.editUser.id = response.data.id;
+                                this.user.gameId = response.data.games.map(game => game.id);
+                                this.user.userName = response.data.userName;
+                                this.user.firstName = response.data.firstName;
+                                this.user.lastName = response.data.lastName;
+                                this.user.approvedTerms = response.data.approvedTerms;
+                                this.user.id = response.data.id;
 
                             }).
                             catch((e) => {
@@ -253,7 +263,7 @@
                 },
 
                 hasGame: function (game) {
-                    return this.editUser.gameId.includes(game.id);
+                    return this.user.gameId.includes(game.id);
                 },
 
                 removeGame: async function (game) {
@@ -265,19 +275,19 @@
                     if (this.isUserApproved()) {
 
 
-                        const index = this.editUser.gameId.indexOf(game.id);
+                        const index = this.user.gameId.indexOf(game.id);
 
-                        this.editUser.gameId.splice(index, 1);
+                        this.user.gameId.splice(index, 1);
 
-                        await axios.put(`${baseUrl}User`, this.editUser, axiosConfig)
+                        await axios.put(`${baseUrl}User`, this.user, axiosConfig)
                             .then((response) => {
 
-                                this.editUser.userName = response.data.userName;
-                                this.editUser.firstName = response.data.firstName;
-                                this.editUser.lastName = response.data.lastName;
-                                this.editUser.approvedTerms = response.data.approvedTerms;
-                                this.editUser.gameId = response.data.games.map(game => game.id);
-                                this.editUser.id = response.data.id;
+                                this.user.userName = response.data.userName;
+                                this.user.firstName = response.data.firstName;
+                                this.user.lastName = response.data.lastName;
+                                this.user.approvedTerms = response.data.approvedTerms;
+                                this.user.gameId = response.data.games.map(game => game.id);
+                                this.user.id = response.data.id;
 
                             })
                             .catch((e) => {
@@ -323,7 +333,6 @@
                             });
                     }
                     this.isLoading = false;
-
                 },
 
                 addGame: async function (game) {
@@ -334,16 +343,16 @@
                     this.isLoading = true;
                     if (this.isUserApproved()) {
 
-                        this.editUser.gameId.push(game.id);
+                        this.user.gameId.push(game.id);
 
-                        await axios.put(`${baseUrl}user`, this.editUser, axiosConfig)
+                        await axios.put(`${baseUrl}user`, this.user, axiosConfig)
                             .then((response) => {
-                                this.editUser.userName = response.data.userName;
-                                this.editUser.firstName = response.data.firstName;
-                                this.editUser.lastName = response.data.lastName;
-                                this.editUser.approvedTerms = response.data.approvedTerms;
-                                this.editUser.gameId = response.data.games.map(game => game.id);
-                                this.editUser.id = response.data.id;
+                                this.user.userName = response.data.userName;
+                                this.user.firstName = response.data.firstName;
+                                this.user.lastName = response.data.lastName;
+                                this.user.approvedTerms = response.data.approvedTerms;
+                                this.user.gameId = response.data.games.map(game => game.id);
+                                this.user.id = response.data.id;
 
                             })
                             .catch((e) => {
@@ -393,7 +402,7 @@
                     this.isLoading = false;
                 },
                 showGenres: async function () {
-                                        this.showAllGames = false;
+                    this.showAllGames = false;
                     this.showAllGenres = true;
                     this.showAllPublishers = false;
                     this.start = false;
@@ -412,15 +421,44 @@
 
                     await axios.get(searchText)
                         .then((response) => {
-                            this.genres = response.data
+                            this.genres = response.data;
                         })
                         .catch((e) => {
                             this.showError = true;
                             this.errorMessage = e.message
                         });
 
-                    this.isLoading = false;
+                    let allGame = null;
 
+                    await axios.get(`${baseUrl}game`, axiosConfig)
+                        .then((response) => {
+                            allGame = JSON.parse(JSON.stringify(response.data));
+                            allGame.sort(this.sortDefealt);
+                        })
+                        .catch((e) => {
+
+                            this.showError = true;
+                            this.errorMessage = e.message;
+                        })
+                        .finally(() => {
+                            for (const genre of this.genres) {
+                                genre.games = new Array();
+                                allGame.forEach(game => {
+                                    let name = "";
+                                    if (game.genres.some(gameGenre => gameGenre.id === genre.id)) {
+                                        name = game.name;
+                                        if (genre.games.length) {
+                                            genre.games.push(name);
+                                        }
+                                        else {
+                                            genre.games = new Array(name);
+                                        }
+                                    }
+                                })
+                            }
+                        });
+
+                    this.isLoading = false;
                 },
                 showPublishers: async function () {
                     this.showAllGames = false;
@@ -456,6 +494,7 @@
                         await axios.get(`${baseUrl}game/${publisher.id}/publishers`)
                             .then((response) => {
                                 publisher.games = JSON.parse(JSON.stringify(response.data));
+                                publisher.games.sort(this.sortDefealt);
                             })
                             .catch((e) => {
 
@@ -469,7 +508,7 @@
                 },
                 checkUser: function () {
                     if (sessionStorage.getItem("token") === null) {
-                        this.editUser = {
+                        this.user = {
                             id: "",
                             userName: "",
                             firstName: "",
@@ -481,9 +520,9 @@
                 },
 
                 isUserApproved: function () {
-                    userApprovedTerms() === "True" ? this.editUser.approvedTerms = true : this.editUser.approvedTerms = false;
+                    userApprovedTerms() === "True" ? this.user.approvedTerms = true : this.user.approvedTerms = false;
 
-                    if (this.editUser.approvedTerms) {
+                    if (this.user.approvedTerms) {
                         return true;
                     }
                     else if (sessionStorage.getItem("token") === null) {
@@ -494,7 +533,32 @@
                     this.showError = true;
                     this.errorMessage = "You haven't approved the terms of service. To use this please approve";
                     return false;
-                }
+                },
+                sortUser:function(firstUser, secondUser)
+                {
+                    const userA = firstUser.userName.toUpperCase();
+                    const userB = secondUser.userName.toUpperCase();
+                    if (userA < userB) {
+                        return -1;
+                    }
+                    if (userA > userB) {
+                        return 1;
+                    }
+
+                    return 0;
+                },
+                sortDefealt: function (first, second) {
+                    const A = first.name.toUpperCase();
+                    const B = second.name.toUpperCase();
+                    if (A < B) {
+                        return -1;
+                    }
+                    if (A > B) {
+                        return 1;
+                    }
+
+                    return 0;
+                },
             }
         });
     </script>

@@ -84,7 +84,7 @@
                         {{errorPrice}}
                     </div>
                     <label>Publisher:</label>
-                    <select id="publishersSelect" v-model="newGame.publisherId" data-mdb-placeholder="Select a publisher" required> 
+                    <select id="publishersSelect" v-model="newGame.publisherId" data-mdb-placeholder="Select a publisher" required>
                         <option v-for="singlepublisher in publishers" :value="singlepublisher.id">{{ singlepublisher.name }}</option>
                     </select>
                     <div class="alert alert-danger alert alert-danger mb-0 ml-2" v-if="errorPublisher.length">
@@ -97,7 +97,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" v-on:click="cancelGame">Annuleren</button>
-                    <button type="button" class="btn btn-outline-primary" v-on:click="createGame" >Opslaan</button>
+                    <button type="button" class="btn btn-outline-primary" v-on:click="createGame">Opslaan</button>
                 </div>
             </div>
         </div>
@@ -107,7 +107,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Bewerken {{selectedGame.name}}</h5>
+                    <h5 class="modal-title" id="staticBackdropLabel">Bewerken {{editGameName}}</h5>
                 </div>
                 <div class="modal-body">
                     <label>Naam:</label>
@@ -156,31 +156,25 @@
             </div>
         </div>
     </div>
-
-
 </div>
 
 @section Scripts{
     <script>
-
         var vue = new Vue({
             el: "#app",
             data: {
-                                errorName: "",
+                errorName: "",
                 errorPrice: "",
                 errorPublisher: "",
-
+                errorMessage: "",
+                searchGames: "",
+                isLoading: false,
                 games: null,
                 genres: null,
                 publishers: null,
-                errorMessage: "",
-                isLoading: false,
-
-                dropdownCreate :null,
-
+                dropdownCreate: null,
                 dropdownUpdate: null,
-
-                searchGames:"",
+                editGameName:"",
                 newGame: {
                     name: "",
                     price: 1,
@@ -194,8 +188,6 @@
                     publisherId: "",
                     genreId: [""]
                 }
-
-
             },
             created: async function () {
                 await this.showGames();
@@ -217,7 +209,6 @@
                     this.isLoading = true;
 
                     let trimmedSearch = this.searchGames.trimEnd();
-
                     trimmedSearch = trimmedSearch.trimStart();
 
                     let searchText = `${baseUrl}game`;
@@ -226,7 +217,7 @@
                         searchText = `${baseUrl}game/${trimmedSearch}/name`;
                     }
 
-                    await axios.get(searchText,axiosConfig)
+                    await axios.get(searchText, axiosConfig)
                         .then((response) => {
                             this.games = JSON.parse(JSON.stringify(response.data));
                         })
@@ -242,10 +233,9 @@
                         })
                         .catch((e) => {
                             if (e.response.status === 401) {
-                                this.errorMessage = "You don't have the valid authentication to create game.";
+                                this.errorMessage = "You don't have the valid authentication to get the users.";
                             }
                             else if (e.response.status === 400) {
-
                                 this.errorMessage = e.response.data[0].errorMessage;
                             }
                             else {
@@ -284,104 +274,89 @@
                         })
                         .catch((e) => {
                             if (e.response.status === 401) {
-                                this.errorMessage = "You don't have the valid authentication to create game.";
+                                this.errorMessage = "You don't have the valid authentication to get the game details.";
                             }
                             else if (e.response.status === 400) {
-
-                                        this.errorMessage = e.response.data[0].errorMessage;
-                                }
+                                this.errorMessage = e.response.data[0].errorMessage;
+                            }
                             else {
                                 this.errorMessage = e.message;
                             }
                         });
-
                 },
                 createGame: async function () {
-
-
                     this.resetValidate();
-                    if (this.validateGame(this.newGame))
-                    {
+                    if (this.validateGame(this.newGame)) {
                         this.isLoading = true;
-                    await axios.post(`${baseUrl}game`, this.newGame, axiosConfig)
-                        .then((response) => {
+                        await axios.post(`${baseUrl}game`, this.newGame, axiosConfig)
+                            .then((response) => {
                                 const modalElement = document.getElementById("createGameModal");
                                 const modal = bootstrap.Modal.getInstance(modalElement);
                                 modal.hide();
-this.cancelGame();
-
-
-                        })
-                        .catch((e) => {
-                            if (e.response.status === 401) {
-                                this.errorMessage = "You don't have the valid authentication to create game.";
-                            }
-                            else if (e.response.status === 400) {
+                                this.cancelGame();
+                                this.editGameName="";
+                            })
+                            .catch((e) => {
+                                if (e.response.status === 401) {
+                                    this.errorMessage = "You don't have the valid authentication to create game.";
+                                }
+                                else if (e.response.status === 400) {
                                     if (e.response.data[0].errorMessage.toLowerCase().includes("name")) {
                                         this.errorName = "Game with name already exists";
-
                                     }
                                     else {
                                         this.errorMessage = e.response.data[0].errorMessage;
                                     }
                                 }
-                            else {
-                                this.errorMessage = e.message;
-                            }
-                        });
+                                else {
+                                    this.errorMessage = e.message;
+                                }
+                            });
                         await this.showGames();
-
                         this.isLoading = false;
-
                     }
-
-
-
                 },
                 updateGame: async function (updatedGame) {
 
                     this.resetValidate();
                     if (this.validateGame(updatedGame)) {
-                    this.isLoading = true;
-                    await axios.put(`${baseUrl}game`, updatedGame, axiosConfig)
-                        .then((response) => {
+                        this.isLoading = true;
+                        await axios.put(`${baseUrl}game`, updatedGame, axiosConfig)
+                            .then((response) => {
                                 const modalElement = document.getElementById("updateGameModal");
                                 const modal = bootstrap.Modal.getInstance(modalElement);
                                 modal.hide();
                                 this.cancelGame();
+                                                    this.editGameName = "";
 
-                        })
-                        .catch((e) => {
-                            if (e.response.status === 401) {
-                                this.errorMessage = "You don't have the valid authentication to edit game.";
-                            }
-                            else if (e.response.status === 400) {
-                                if (e.response.data[0].errorMessage.toLowerCase().includes("name"))
-                                {
-                                        this.errorName = "Game with name already exists";
-
+                            })
+                            .catch((e) => {
+                                if (e.response.status === 401) {
+                                    this.errorMessage = "You don't have the valid authentication to edit game.";
                                 }
-                                else{
-                                this.errorMessage = e.response.data[0].errorMessage;
-                            }
-                            }
-                            else {
-                                this.errorMessage = e.message;
-                            }
-                        });
-                                                    await this.showGames();
+                                else if (e.response.status === 400) {
+                                    if (e.response.data[0].errorMessage.toLowerCase().includes("name")) {
+                                        this.errorName = "Game with name already exists";
+                                    }
+                                    else {
+                                        this.errorMessage = e.response.data[0].errorMessage;
+                                    }
+                                }
+                                else {
+                                    this.errorMessage = e.message;
+                                }
+                            });
+                        await this.showGames();
 
                         this.isLoading = false;
-
-                        }
-
+                    }
                 },
                 deleteGame: async function (selectedGame) {
                     this.isLoading = true;
 
                     await axios.delete(`${baseUrl}game/${selectedGame.id}`, axiosConfig)
                         .then((response) => {
-                            var index = this.games.indexOf(selectedGame);
+                            var index = this.games.map(function (game) { return game.id; }).indexOf(selectedGame.id);
                             this.games.splice(index, 1);
                         })
                         .catch((e) => {
@@ -399,9 +374,9 @@ this.cancelGame();
                             const modalElement = document.getElementById("deleteGameModal");
                             const modal = bootstrap.Modal.getInstance(modalElement);
                             modal.hide();
-
+                            this.cancelGame();
                         });
-                            this.isLoading = false;
+                    this.isLoading = false;
                 },
                 getPublishers: async function () {
 
@@ -411,10 +386,9 @@ this.cancelGame();
                         })
                         .catch((e) => {
                             if (e.response.status === 401) {
-                                this.errorMessage = "You don't have the valid authentication to create game.";
+                                this.errorMessage = "You don't have the valid authentication to get the publishers.";
                             }
                             else if (e.response.status === 400) {
-
                                 this.errorMessage = e.response.data[0].errorMessage;
                             }
                             else {
@@ -426,15 +400,13 @@ this.cancelGame();
 
                     await axios.get(`${baseUrl}genre`, axiosConfig)
                         .then((response) => {
-
-                             this.genres = JSON.parse(JSON.stringify(response.data));
+                            this.genres = JSON.parse(JSON.stringify(response.data));
                         })
                         .catch((e) => {
                             if (e.response.status === 401) {
                                 this.errorMessage = "You don't have the valid authentication to create game.";
                             }
                             else if (e.response.status === 400) {
-
                                 this.errorMessage = e.response.data[0].errorMessage;
                             }
                             else {
@@ -447,16 +419,14 @@ this.cancelGame();
                     await this.getPublishers();
                     const modalElement = document.getElementById("createGameModal");
                     const modal = bootstrap.Modal.getInstance(modalElement);
-
                     modal.show();
                 },
                 showUpdate: async function (game) {
                     await this.getGenres();
                     await this.getPublishers();
-
                     await this.getGameDetails(game.id);
-
-                    this.dropdownUpdate.setValue( this.selectedGame.genreId);
+                    this.editGameName=game.name;
+                    this.dropdownUpdate.setValue(this.selectedGame.genreId);
 
                     const modalElement = document.getElementById("updateGameModal");
                     const modal = bootstrap.Modal.getInstance(modalElement);
@@ -464,11 +434,11 @@ this.cancelGame();
                 },
                 showDelete: function (game) {
 
-                                                this.selectedGame.id = game.id;
-                            this.selectedGame.name = game.name;
+                    this.selectedGame.id = game.id;
+                    this.selectedGame.name = game.name;
                     this.selectedGame.price = parseFloat(game.price);
                     this.selectedGame.publisherId = game.publisher.id;
-                            this.selectedGame.genreId = game.genres.map(genre => genre.id);
+                    this.selectedGame.genreId = game.genres.map(genre => genre.id);
 
                     const modalElement = document.getElementById("deleteGameModal");
                     const modal = bootstrap.Modal.getInstance(modalElement);
@@ -493,34 +463,25 @@ this.cancelGame();
 
                     this.dropdownCreate.empty();
                     this.dropdownUpdate.empty();
-
                 },
-                validateGame:function(game)
-                {
-
-                    if (game.name === "" )
-                    {
-                        this.errorName="Name must be filled in";
+                validateGame: function (game) {
+                    if (game.name === "") {
+                        this.errorName = "Name must be filled in";
                     }
-                    if(game.price ===null||game.price===0)
-                    {
-                        this.errorPrice= "Price must be filled in";
+                    if (game.price === null || game.price === 0) {
+                        this.errorPrice = "Price must be filled in";
                     }
-
-                    if(game.publisherId==="")
-                    {
-                        this.errorPublisher= "Publisher must be selected";
+                    if (game.publisherId === "") {
+                        this.errorPublisher = "Publisher must be selected";
                     }
 
-                    return (this.errorName === "" && this.errorPrice === "" && this.errorPublisher==="");
+                    return (this.errorName === "" && this.errorPrice === "" && this.errorPublisher === "");
                 },
 
-                resetValidate:function()
-                {
-                                            this.errorName="";
-                        this.errorPrice= "";
+                resetValidate: function () {
+                    this.errorName = "";
+                    this.errorPrice = "";
                     this.errorPublisher = "";
-
                 }
             }
         });

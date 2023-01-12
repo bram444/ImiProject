@@ -2,6 +2,372 @@
     ViewData["Title"] = "Genres pagina";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Genres</h1>
+<div id="app">
+    <div class="d-flex justify-content-center">
+        <div class="d-flex-column">
+            <div class="text-center">
+                <h1 class="display-4">Genres beheer</h1>
+                <button class="btn btn-outline-primary mb-4" v-on:click="showCreate" data-bs-toggle="modal" data-bs-target="#createGenreModal">Nieuwe genres</button>
+            </div>
+        </div>
+    </div>
+    <div class="row" v-if="errorMessage.length">
+        <div class="alert alert-danger">
+            {{errorMessage}}
+        </div>
+    </div>
+    <div v-else>
+        <div class="d-flex justify-content-center row">
+            <input type="text" v-model="searchGenres" class="form-control mb-4" placeholder="Zoek genres..." v-on:input="showGenres" />
+            <div v-if="isLoading">
+                <div class="d-flex justify-content-center">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Laden...</span>
+                    </div>
+                </div>
+            </div>
+            <table class="table table-bordered table-striped align-middle sortable" v-else>
+                <thead>
+                    <tr>
+                        <th>Naam</th>
+                        <th>Beschrijving</th>
+                        <th>Games</th>
+                        <th>Aanpassen/Verwijderen</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="genre in genres">
+                        <td>{{genre.name}}</td>
+                        <td>{{genre.description}}</td>
+                        <td>
+                            <ul>
+                                <li v-for="game in genre.gamesName">
+                                    {{game}}
+                                </li>
+                            </ul>
+                        </td>
+                        <td class="align-middle text-center">
+                            <button class="btn btn-warning mb-3" v-on:click="showUpdate(genre)" data-bs-toggle="modal" data-bs-target="#updateGenreModal">Bewerken</button>
+                            <button class="btn btn-danger mb-3" v-on:click="showDelete(genre)" data-bs-toggle="modal" data-bs-target="#deleteGenreModal">Verwijderen</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal fade" id="createGenreModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Nieuwe genre</h5>
+                </div>
+                <div class="modal-body">
+                    <label>Naam:</label>
+                    <input type="text" class="form-control" placeholder="Naam genre" v-model="newGenre.name" required />
+                    <div class="alert alert-danger alert alert-danger mb-0 ml-2" v-if="errorName.length">
+                        {{errorName}}
+                    </div>
+                    <label>Beschrijving:</label>
+                    <input type="text" class="form-control" placeholder="Beschrijving genre" v-model="newGenre.description" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" v-on:click="cancelGenre">Annuleren</button>
+                    <button type="button" class="btn btn-outline-primary" v-on:click="createGenre">Opslaan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="updateGenreModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Bewerken {{editGenreName}}</h5>
+                </div>
+                <div class="modal-body">
+                    <label>Naam:</label>
+                    <input type="text" class="form-control" placeholder="Naam genre" v-model="selectedGenre.name" required />
+                    <div class="alert alert-danger alert alert-danger mb-0 ml-2" v-if="errorName.length">
+                        {{errorName}}
+                    </div>
+                    <label>Beschrijving:</label>
+                    <input type="text" class="form-control" placeholder="Beschrijving genre" v-model="selectedGenre.description" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" v-on:click="cancelGenre">Annuleren</button>
+                    <button type="button" class="btn btn-outline-primary" v-on:click="updateGenre(selectedGenre)">Opslaan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteGenreModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Verwijderen {{selectedGenre.name}}?</h5>
+                </div>
+                <div class="modal-body">
+                    Weet je zeker dat je de genre {{selectedGenre.name}} wilt verwijderen?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="cancelGenre">Annuleren</button>
+                    <button type="button" class="btn btn-primary" v-on:click="deleteGenre(selectedGenre)">Verwijderen</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts{
+    <script>
+        var vue = new Vue({
+            el: "#app",
+            data: {
+                errorName: "",
+                errorMessage: "",
+                searchGenres: "",
+                isLoading: false,
+                editGenreName:"",
+                genres: [{
+                    id: "",
+                    name: "",
+                    description: "",
+                    gamesName: [""]
+                }],
+                newGenre: {
+                    name: "",
+                    description: ""
+                },
+                selectedGenre: {
+                    id: "",
+                    name: "",
+                    description: ""
+                }
+            },
+            created: async function () {
+                await this.showGenres();
+            },
+            methods: {
+                showGenres: async function () {
+                    this.isLoading = true;
+
+                    let trimmedSearch = this.searchGenres.trimEnd();
+                    trimmedSearch = trimmedSearch.trimStart();
+
+                    let searchText = `${baseUrl}genre`;
+
+                    if (trimmedSearch != "") {
+                        searchText = `${baseUrl}genre/${trimmedSearch}/genre`;
+                    }
+
+                    await axios.get(searchText, axiosConfig)
+                        .then((response) => {
+                            this.genres = JSON.parse(JSON.stringify(response.data));
+                        })
+                        .catch((e) => {
+                            this.errorMessage = e.message
+                        });
+
+                    let allGames = null;
+
+                    await axios.get(`${baseUrl}game`, axiosConfig)
+                        .then((response) => {
+                            allGames = JSON.parse(JSON.stringify(response.data));
+                        })
+                        .catch((e) => {
+                            if (e.response.status === 401) {
+                                this.errorMessage = "You don't have the valid authentication to get the games.";
+                            }
+                            else if (e.response.status === 400) {
+                                this.errorMessage = e.response.data[0].errorMessage;
+                            }
+                            else {
+                                this.errorMessage = e.message;
+                            }
+                        })
+                        .finally(() => {
+                            for (const genre of this.genres) {
+                                genre.gamesName = new Array();
+                                allGames.forEach(game => {
+                                    let gameName = "";
+                                    if (game.genres.some(gamegenre => gamegenre.id === genre.id)) {
+                                        gameName = game.name;
+                                        if (genre.gamesName.length) {
+                                            genre.gamesName.push(gameName);
+                                        }
+                                        else {
+                                            genre.gamesName = new Array(gameName);
+                                        }
+                                    }
+                                })
+                            }
+                        });
+
+                    this.isLoading = false;
+                },
+                getGenreDetails: async function (genreId) {
+
+                    await axios.get(`${baseUrl}genre/${genreId}`, axiosConfig)
+                        .then((response) => {
+                            this.selectedGenre.id = response.data.id;
+                            this.selectedGenre.name = response.data.name;
+                            this.selectedGenre.description = response.data.description;
+                        })
+                        .catch((e) => {
+                            if (e.response.status === 401) {
+                                this.errorMessage = "You don't have the valid authentication get the genre.";
+                            }
+                            else if (e.response.status === 400) {
+                                this.errorMessage = e.response.data[0].errorMessage;
+                            }
+                            else {
+                                this.errorMessage = e.message;
+                            }
+                        });
+                },
+                createGenre: async function () {
+                    this.resetValidate();
+                    if (this.validateGenre(this.newGenre)) {
+                        this.isLoading = true;
+                        await axios.post(`${baseUrl}genre`, this.newGenre, axiosConfig)
+                            .then((response) => {
+                                const modalElement = document.getElementById("createGenreModal");
+                                const modal = bootstrap.Modal.getInstance(modalElement);
+                                modal.hide();
+                                this.cancelGenre();
+                            })
+                            .catch((e) => {
+                                if (e.response.status === 401) {
+                                    this.errorMessage = "You don't have the valid authentication to create genre.";
+                                }
+                                else if (e.response.status === 400) {
+                                    if (e.response.data[0].errorMessage.toLowerCase().includes("name")) {
+                                        this.errorName = "Genre with name already exists";
+                                    }
+                                    else {
+                                        this.errorMessage = e.response.data[0].errorMessage;
+                                    }
+                                }
+                                else {
+                                    this.errorMessage = e.message;
+                                }
+                            });
+                        this.searchGenres="";
+                        await this.showGenres();
+                        this.isLoading = false;
+                    }
+                },
+                updateGenre: async function (updatedGenre) {
+
+                    this.resetValidate();
+                    if (this.validateGenre(updatedGenre)) {
+                        this.isLoading = true;
+                        await axios.put(`${baseUrl}genre`, updatedGenre, axiosConfig)
+                            .then((response) => {
+                                const modalElement = document.getElementById("updateGenreModal");
+                                const modal = bootstrap.Modal.getInstance(modalElement);
+                                modal.hide();
+                                this.cancelGenre();
+                                                        this.editGenreName="";
+                            })
+                            .catch((e) => {
+                                if (e.response.status === 401) {
+                                    this.errorMessage = "You don't have the valid authentication to edit genre.";
+                                }
+                                else if (e.response.status === 400) {
+                                    if (e.response.data[0].errorMessage.toLowerCase().includes("name")) {
+                                        this.errorName = "Genre with name already exists";
+                                    }
+                                    else {
+                                        this.errorMessage = e.response.data[0].errorMessage;
+                                    }
+                                }
+                                else {
+                                    this.errorMessage = e.message;
+                                }
+                            });
+                        await this.showGenres();
+                        this.isLoading = false;
+                    }
+                },
+                deleteGenre: async function (selectedGenre) {
+                    this.isLoading = true;
+
+                    await axios.delete(`${baseUrl}genre/${selectedGenre.id}`, axiosConfig)
+                        .then((response) => {
+                            var index = this.genres.map(function (genre) { return genre.id; }).indexOf(selectedGenre.id);
+                            this.genres.splice(index, 1);
+                        })
+                        .catch((e) => {
+                            if (e.response.status === 401) {
+                                this.errorMessage = "You don't have the valid authentication to delete the genre.";
+                            }
+                            else if (e.response.status === 400) {
+                                this.errorMessage = e.response.data[0].errorMessage;
+                            }
+                            else {
+                                this.errorMessage = e.message;
+                            }
+                        })
+                        .finally(() => {
+                            const modalElement = document.getElementById("deleteGenreModal");
+                            const modal = bootstrap.Modal.getInstance(modalElement);
+                            modal.hide();
+                            this.cancelGenre();
+                        });
+                    this.isLoading = false;
+                },
+                showCreate: async function () {
+                    const modalElement = document.getElementById("createGenreModal");
+                    const modal = bootstrap.Modal.getInstance(modalElement);
+                    modal.show();
+                },
+                showUpdate: async function (genre) {
+                    await this.getGenreDetails(genre.id);
+                    this.editGenreName = genre.name;
+
+                    const modalElement = document.getElementById("updateGenreModal");
+                    const modal = bootstrap.Modal.getInstance(modalElement);
+                    modal.show();
+                },
+                showDelete: function (genre) {
+
+                    this.selectedGenre.id = genre.id;
+                    this.selectedGenre.name = genre.name;
+                    this.selectedGenre.description = genre.description;
+
+                    const modalElement = document.getElementById("deleteGenreModal");
+                    const modal = bootstrap.Modal.getInstance(modalElement);
+                    modal.show();
+                },
+                cancelGenre: function () {
+                    this.resetValidate();
+
+                    this.newGenre = {
+                        name: "",
+                        description: ""
+                    };
+                    this.selectedGenre = {
+                        id: "",
+                        name: "",
+                        description: ""
+                    };
+                },
+                validateGenre: function (genre) {
+                    if (genre.name === "") {
+                        this.errorName = "Name must be filled in";
+                        return false;
+                    }
+
+                    return true;
+                },
+
+                resetValidate: function () {
+                    this.errorName = "";
+                }
+            }
+        });
+    </script>
+}
