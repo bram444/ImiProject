@@ -59,8 +59,13 @@ namespace Imi.Project.Api.Core.Services
                 await _userManager.AddClaimAsync(newUser, new Claim("approved", registration.ApprovedTerms.ToString()));
                 await _userManager.AddToRoleAsync(newUser, "User");
 
+                List<Claim> listClaims = await GetClaims(newUser!);
+
+                JwtSecurityToken jwtSecurityToken = _jwtService.GenerateToken(listClaims);
+
                 return new AuthenticationResult
                 {
+                    Token = _jwtService.SerializeToken(jwtSecurityToken),
                     Messages = new List<string> { "Succesfully registered" }
                 };
 

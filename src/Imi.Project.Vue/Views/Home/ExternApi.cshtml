@@ -2,217 +2,81 @@
     ViewData["Title"] = "Externe Api";
 }
 
-
-<div class="text-center">
-    <h1 class="display-4">Tourist</h1>
-
-</div>
-
-<div id="app" class="row">
-    <div class="col-md-12">
-        <div class="alert alert-info" v-if="feedback">
-            {{feedback}}
+<div id="app">
+    <div class="d-flex justify-content-center">
+        <div class="d-flex-column">
+            <div class="text-center">
+                <h1 class="display-4">Gebruikers beheer (externe API)</h1>
+            </div>
         </div>
     </div>
-    <div class="col-md-12">
-        <button class="btn btn-info" v-on:click.prevent="toEditMode(false)">New</button>
+    <div class="row" v-if="errorMessage.length">
+        <div class="alert alert-danger">
+            {{errorMessage}}
+        </div>
     </div>
-    <div class="col-md-6">
-        <ul class="list-group">
-            <li class="list-group-item" v-bind:class="getCommentCssClass()" v-for="comment in comments" v-on:click="getCommentDetails(comment)">
-                <a>{{comment.name}}</a>
-            </li>
-        </ul>
-    </div>
-    <div class="col-md-6">
-        <div v-if="currentComment">
-            <div class="form-group">
-                <label>ID</label>
-                <input class="form-control" v-model="currentComment.id" readonly="readonly" />
+    <div v-else>
+        <div class="d-flex justify-content-center row">
+            <div v-if="isLoading">
+                <div class="d-flex justify-content-center">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Laden...</span>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label>ID Post</label>
-                <input class="form-control" v-model="currentComment.post_id" readonly="readonly" />
-            </div>
-            <div class="form-group">
-                <label>Name</label>
-                <input class="form-control" v-model="currentComment.name" v-bind:readonly="isReadOnly" />
-            </div>
-            <div class="form-group">
-                <label>E-mail</label>
-                <input class="form-control" v-model="currentComment.email" v-bind:readonly="isReadOnly" />
-            </div>
-            <div class="form-group">
-                <label>Body</label>
-                <input class="form-control" v-model="currentComment.body" v-bind:readonly="isReadOnly" />
-            </div>
-            <div class="btn-group">
-                <button class="btn btn-warning" v-if="isReadOnly" v-on:click.prevent="toEditMode(true)">Edit</button>
-                <button class="btn btn-warning" v-if="!isReadOnly" v-on:click.prevent="saveComment">Save</button>
-                <button class="btn btn-primary" v-if="!isReadOnly" v-on:click.prevent="isReadOnly = true">Cancel</button>
-                <button class="btn btn-danger" v-on:click.prevent="deleteComment">Delete</button>
-            </div>
+            <table class="table table-bordered table-striped align-middle sortable" v-else>
+                <thead>
+                    <tr>
+                        <th>Voornaam</th>
+                        <th>Achternaam</th>
+                        <th>Email</th>
+                        <th>Foto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="user in users">
+                        <td>{{user.first_name}}</td>
+                        <td>{{user.last_name}}</td>
+                        <td>{{user.email}}</td>
+                        <td><img v-bind:src="user.avatar" /></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 
 @section scripts{
-    <script src="~/lib/vue/vue.js"></script>
-    <script src="~/lib/axios/axios.min.js"></script>
     <script>
         var app = new Vue({
             el: '#app',
             data: {
-                tourist: [{
+                errorMessage: "",
+                isLoading:false,
+                users: [{
                     id: "",
-                    tourist_name: "",
-                    tourist_email: "",
-                    tourist_profilepicture: "",
-                    tourist_location: "",
-                    createdat: ""
-                }],
-                getTourist: {
-                    id: "",
-                    tourist_name: "",
-                    tourist_email: "",
-                    tourist_profilepicture: "",
-                    tourist_location: "",
-                    createdat: ""
-                },
-                postTourist: {
-                    tourist_name: "",
-                    tourist_email: "",
-                    tourist_location: "",
-                },
-                putTourist: {
-                    id: "",
-                    tourist_name: "",
-                    tourist_email: "",
-                    tourist_location: "",
-                },
+                    first_name: "",
+                    email: "",
+                    last_name: "",
+                    avatar: "",
+                }]
             },
-            created: function () {
-                var self = this;
-                self.getTourists();
+            created: async function () {
+                await this.getUsers();
             },
             methods: {
-                getTourists: async function () {
-                    await axios.get(`${baseUrlExterneApi}/Tourist`)
-                        .then(response => {
-                            this.tourist=response.data;
+                getUsers: async function () {
+                    this.isLoading = true;
+                    await axios.get(`${baseUrlExterneApi}`)
+                        .then((response) => {
+                            this.users = JSON.parse(JSON.stringify(response.data.data));
                         })
-
-                        .catch(function (error) {
-                            console.error(error);
+                        .catch((error) => {
+                            this.errorMessage = error;
                         });
-                },
 
-                getTouristsId: async function (id) {
-                    await axios.get(`${baseUrlExterneApi}/Tourist/${id}`)
-                        .then(response => {
-                            this.getTourist = response.data;
-                        })
-                        .catch(function (error) {
-                            console.error(error);
-                        });
-                },
+                    this.isLoading = false;
 
-                postTourists: async function () {
-                    await axios.post(`${baseUrlExterneApi}/Tourist/`, postTourist)
-                        .then(response => {
-                            this.getTourist = response.data;
-                        })
-                        .catch(function (error) {
-                            console.error(error);
-                        });
-                },
-
-                putTourists: async function () {
-                    await axios.put(`${baseUrlExterneApi}/Tourist//${putTourist.id}`, putTourist)
-                        .then(response => {
-                            this.getTourist = response.data;
-                        })
-                        .catch(function (error) {
-                            console.error(error);
-                        });
-                },
-
-                deleteTourist:async function(){
-                    await axios.delete(`${baseUrlExterneApi}/Tourist/${putTourist.id}`)
-                        .then(response => {
-                            this.getTourist = response.data;
-                        })
-                        .catch(function (error) {
-                            console.error(error);
-                        });
-                }
-
-                toEditMode: function (isEditMode) {
-                    var self = this;
-                    self.isReadOnly = false;
-                    self.isEditMode = isEditMode;
-
-                    if (!self.isEditMode) {
-                        self.currentComment = {
-                            post_id: "",
-                            id: "",
-                            name: "",
-                            email: "",
-                            body: ""
-                        }
-                    }
-                },
-
-                saveComment: function () {
-                    var self = this;
-
-                    if (self.isEditMode) {
-
-                        var url = `${apiURL}/${self.currentComment.id}`;
-                        axios.put(url, self.currentComment, axiosConfig)
-                            .then(function (response) {
-                                self.feedback = `Comment ${self.currentComment.name} with ID ${self.currentComment.id} has been modified`;
-                            })
-                            .catch(function (error) {
-                                console.error(error);
-                            })
-                            .then(function () {
-                                self.isReadOnly = true;
-                                setTimeout(function () { self.feedback = null; }, 3000);
-                            });
-                    }
-                    else {
-                        var url = `${apiURL}`;
-                        axios.post(url, self.currentComment, axiosConfig)
-                            .then(function (response) {
-                                self.currentComment = response.data.data;
-                                self.feedback = `Comment ${self.currentComment.name} with ID ${self.currentComment.id} has been created`;
-                                self.comments.push(self.currentComment); // update Comments, no need to call API again to fetch all Comments
-                            })
-                            .catch(function (error) {
-                                console.error(error);
-                            })
-                            .then(function () {
-                                self.isReadOnly = true;
-                                setTimeout(function () { self.feedback = null; }, 3000);
-                            });
-                    }
-                },
-
-                deleteComment: function () {
-                    var self = this;
-                    var url = `${apiURL}/${self.currentComment.id}`;
-
-                    axios.delete(url, axiosConfig)
-                        .then(function (response) {
-                            self.comments.forEach(function (comment, i) {
-                                if (comment.id === self.currentComment.id) {
-                                    self.comments.splice(i, 1); // update Comments, no need to call API again to fetch all Comments
-                                }
-                            })
-                        })
-                        .catch(function (error) { console.error(error); })
-                        .then(function () { });
                 }
             }
         });

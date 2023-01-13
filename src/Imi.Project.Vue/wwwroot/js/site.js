@@ -19,12 +19,8 @@ let axiosConfig = {
     headers: {  Authorization: `Bearer ${sessionStorage.getItem("token")}` }
 };
 
-const baseUrlExterneApi = "http://restapi.adequateshop.com/api/";
+const baseUrlExterneApi = "https://reqres.in/api/users";
 
-
-let axiosConfigExternApi = {
-    headers: { Authorization: `Bearer ${sessionStorage.getItem("tokenApi")}` }
-};
 
 //Methods
 function getDecodedToken() {

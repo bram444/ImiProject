@@ -119,17 +119,10 @@
                         if (this.passwordValidator(this.newUser.password)) {
                             await axios.post(`${baseUrl}authentication/register`, this.newUser)
                                 .then((response) => {
-                                    let allInputs = document.getElementById('Registration').getElementsByTagName('input');
 
-                                    for (let i = 0; i < allInputs.length; i++) {
-                                        allInputs[i].disabled = true;
-                                    }
+                                    sessionStorage.setItem("token", response.data.token);
+                                    window.location.assign(window.location.origin + "/Home/");
 
-                                    let registerButton = document.getElementById('Register');
-                                    Register.disabled = true;
-
-                                    let registerSucces = document.getElementById('Succes');
-                                    registerSucces.hidden = false;
                                 })
                                 .catch((e) => {
                                     if (e.response.status === 400) {

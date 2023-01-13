@@ -27,7 +27,7 @@ namespace Imi.Project.Api.Controllers
 
             AuthenticationResult result = await _authenticationService.RegisterAsync(registration.MapToModel());
 
-            return !result.IsSuccess ? BadRequest(result.Messages) : Ok();
+            return !result.IsSuccess ? BadRequest(result.Messages) : Ok(result);
         }
 
         [HttpPost("login")]
