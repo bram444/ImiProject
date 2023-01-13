@@ -36,7 +36,7 @@
             </div>
             <button id="Update" class="btn btn-outline-success mb-3" type="submit">Update</button>
         </form>
-        <form class="d-flex flex-column" role="update" v-on:submit.prevent="updateUser" v-else>
+        <form class="d-flex flex-column" v-on:submit.prevent="updateUser" v-else>
             <div class="d-flex flex-row mb-3">
                 <label class="col-sm-2 d-flex align-items-center" for="username">Gebruikersnaam</label>
                 <div class="col-sm d-flex align-items-center row">
@@ -66,12 +66,13 @@
             </div>
             <button id="Update" class="btn btn-outline-success  mb-3" type="submit">Opslaan</button>
         </form>
-        <form class="d-flex flex-column" role="cancel" v-on:submit.prevent="cancelUpdate" v-if="isEditing == true">
+        <form class="d-flex flex-column" v-on:submit.prevent="cancelUpdate" v-if="isEditing == true">
             <button class="btn btn-outline-secondary mb-3" type="submit">Annuleren</button>
         </form>
-        <form class="d-flex flex-column" role="deleter" v-on:submit.prevent="deleteUser" v-if="isEditing == false">
-            <button class="btn btn-outline-danger mb-3" type="submit">Verwijderen</button>
-        </form>
+        <button v-if="isEditing == false" v-on:click="showDelete" class="d-flex flex-column btn btn-outline-danger mb-3" data-bs-toggle="modal"
+            data-bs-target="#deleteUserModal">
+        Verwijderen
+    </button>
         <hr />
         <div v-if="!playedGames.length">
             <h2> Je hebt geen games. Voeg ze toe.</h2>
@@ -87,6 +88,24 @@
                 </div>
             </div>
         </div>
+
+    <div class="modal fade" id="deleteUserModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Delete {{currentUser.userName}}</h5>
+                </div>
+                <div class="modal-body">
+                    Weet je zeker dat je {{currentUser.userName}} wilt verwijderen?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuleren</button>
+                    <button type="button" class="btn btn-primary" v-on:click="deleteUser" >Verwijderen</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 @section Scripts{
@@ -230,7 +249,9 @@
                             }
                         })
                         .finally(() => {
-
+                            const modalElement = document.getElementById("deleteUserModal");
+                            const modal = bootstrap.Modal.getInstance(modalElement);
+                            modal.hide();
                             sessionStorage.clear();
                             window.location.assign(window.location.origin + "/Home/");
                         });
@@ -249,6 +270,12 @@
 
                     var gameId = this.currentUser.gameId;
                 },
+
+                showDelete:function(){
+                    const modalElement = document.getElementById("deleteUserModal");
+                    const modal = bootstrap.Modal.getInstance(modalElement);
+                    modal.show();
+                }
             }
         });
     </script>

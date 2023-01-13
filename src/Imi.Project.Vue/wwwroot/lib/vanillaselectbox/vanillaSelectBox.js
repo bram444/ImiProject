@@ -2,9 +2,6 @@
 Copyright (C) Philippe Meyer 2019-2021
 Distributed under the MIT License 
 
-vanillaSelectBox : v1.05 : setValue() bug correction on single mode. You could not set the value
-vanillaSelectBox : v1.04 : select all issue fixed by https://github.com/arthur911016 
-vanillaSelectBox : v1.03 : getResult() an new fonction to get the selected values in an array
 vanillaSelectBox : v1.02 : Adding 2 new options "itemsSeparator" to change the default "," item separator showing in the button and translations.item to show the item in singular if there is only one.
 vanillaSelectBox : v1.01 : Removing useless code line 550,551 issue 71 by chchch
 vanillaSelectBox : v1.00 : Adding a package.json file 
@@ -113,8 +110,6 @@ function vanillaSelectBox(domSelector, options) {
         disableSelectAll: false,
         buttonItemsSeparator : ","
     }
-    this.keepInlineStyles = true;
-    this.keepInlineCaretStyles = true;
     if (options) {
         if(options.itemsSeparator!= undefined){
             this.userOptions.buttonItemsSeparator = options.itemsSeparator;
@@ -179,14 +174,6 @@ function vanillaSelectBox(domSelector, options) {
             this.ulminWidth = options.maxOptionWidth + 60;
             this.ulmaxWidth = options.maxOptionWidth + 60;
         }
-
-        if(options.keepInlineStyles != undefined ) {
-            this.keepInlineStyles = options.keepInlineStyles;
-        }
-        if(options.keepInlineCaretStyles != undefined ) {
-            this.keepInlineCaretStyles = options.keepInlineCaretStyles;
-        }
-        
     }
 
     this.closeOrder = function () {
@@ -245,18 +232,6 @@ function vanillaSelectBox(domSelector, options) {
         }
     }
 
-    this.getResult = function () {
-        let self = this;
-        let result = [];
-        let collection = self.root.querySelectorAll("option");
-        collection.forEach(function (x) {
-            if (x.selected) {
-                result.push(x.value);
-            }
-        });
-        return result;
-    }
-
     this.createTree = function () {
 
         this.rootToken = self.domSelector.replace(/[^A-Za-z0-9]+/, "")
@@ -278,10 +253,8 @@ function vanillaSelectBox(domSelector, options) {
             this.button = document.createElement("div");
         } else {
             this.button = document.createElement("button");
-            if(this.keepInlineStyles) {
-                var cssList = self.getCssArray(".vsb-main button");
-                this.button.setAttribute("style", cssList);
-            }
+            var cssList = self.getCssArray(".vsb-main button");
+            this.button.setAttribute("style", cssList);
         }
         this.button.style.maxWidth = this.userOptions.maxWidth + "px";
         if (this.userOptions.minWidth !== -1) {
@@ -296,11 +269,9 @@ function vanillaSelectBox(domSelector, options) {
         this.button.appendChild(caret);
 
         caret.classList.add("caret");
-        if(this.keepInlineCaretStyles) {
-            caret.style.position = "absolute";
-            caret.style.right = "8px";
-            caret.style.marginTop = "8px";
-        }
+        caret.style.position = "absolute";
+        caret.style.right = "8px";
+        caret.style.marginTop = "8px";
 
         if (self.userOptions.stayOpen) {
             caret.style.display = "none";
@@ -1158,7 +1129,6 @@ vanillaSelectBox.prototype.checkUncheckAll = function () {
     if (!self.isMultiple) return;
     let nrChecked = 0;
     let nrCheckable = 0;
-    let totalAvailableElements = 0;
     let checkAllElement = null;
     if (self.listElements == null) return;
     Array.prototype.slice.call(self.listElements).forEach(function (x) {
@@ -1172,19 +1142,13 @@ vanillaSelectBox.prototype.checkUncheckAll = function () {
                 nrCheckable++;
                 nrChecked += x.classList.contains('active');
             }
-            if (x.getAttribute('data-value') !== 'all'
-                && !x.classList.contains('disabled')) {
-                totalAvailableElements++;
-            }
         }
     });
 
     if (checkAllElement) {
         if (nrChecked === nrCheckable) {
             // check the checkAll checkbox
-            if (nrChecked === totalAvailableElements) {
-                self.title.textContent = self.userOptions.translations.all;
-            }
+            self.title.textContent = self.userOptions.translations.all;
             checkAllElement.classList.add("active");
             checkAllElement.innerText = self.userOptions.translations.clearAll;
             checkAllElement.setAttribute('data-selected', 'true')
@@ -1294,13 +1258,15 @@ vanillaSelectBox.prototype.setValue = function (values) {
             let text = "";
             let classNames = ""
             Array.prototype.slice.call(listElements).forEach(function (x) {
-                let liVal = x.getAttribute("data-value");
-                if (liVal == values) {
-                    x.classList.add("active");
-                    found = true;
-                    text = x.getAttribute("data-text")
-                } else {
-                    x.classList.remove("active");
+                let liVal = x.getAttribute("data-value") == values;
+                if(liVal !== "all"){
+                    if (liVal == values) {
+                        x.classList.add("active");
+                        found = true;
+                        text = x.getAttribute("data-text")
+                    } else {
+                        x.classList.remove("active");
+                    }
                 }
             });
             Array.prototype.slice.call(self.options).forEach(function (x) {
@@ -1363,10 +1329,6 @@ vanillaSelectBox.prototype.destroy = function () {
     }
 }
 vanillaSelectBox.prototype.disable = function () {
-    this.main.addEventListener("click", function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-    });
     let already = document.getElementById("btn-group-" + this.rootToken);
     if (already) {
         button = already.querySelector("button")

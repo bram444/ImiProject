@@ -1,3 +1,406 @@
 ﻿@{
-    ViewData["Title"] = "Publisher pagina";
+    ViewData["Title"] = "Publishers pagina";
+}
+
+<div id="app">
+    <div class="d-flex justify-content-center">
+        <div class="d-flex-column">
+            <div class="text-center">
+                <h1 class="display-4">Publishers beheer</h1>
+                <button class="btn btn-outline-primary mb-4" v-on:click="showCreate" data-bs-toggle="modal" data-bs-target="#createPublisherModal">Nieuwe publisher</button>
+            </div>
+        </div>
+    </div>
+    <div class="row" v-if="errorMessage.length">
+        <div class="alert alert-danger">
+            {{errorMessage}}
+        </div>
+    </div>
+    <div v-else>
+        <div class="d-flex justify-content-center row">
+            <input type="text" v-model="searchPublishers" class="form-control mb-4" placeholder="Zoek publishers..." v-on:input="showPublishers" />
+            <div v-if="isLoading">
+                <div class="d-flex justify-content-center">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Laden...</span>
+                    </div>
+                </div>
+            </div>
+            <table class="table table-bordered table-striped align-middle sortable" v-else>
+                <thead>
+                    <tr>
+                        <th>Naam</th>
+                        <th>Land</th>
+                        <th>Games</th>
+                        <th>Aanpassen/Verwijderen</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="publisher in publishers">
+                        <td>{{publisher.name}}</td>
+                        <td>{{publisher.country}}</td>
+                        <td>
+                            <ul>
+                                <li v-for="game in publisher.gamesName">
+                                    {{game}}
+                                </li>
+                            </ul>
+                        </td>
+                        <td class="align-middle text-center">
+                            <button class="btn btn-warning mb-3" v-on:click="showUpdate(publisher)" data-bs-toggle="modal" data-bs-target="#updatePublisherModal">Bewerken</button>
+                            <button class="btn btn-danger mb-3" v-on:click="showDelete(publisher)" data-bs-toggle="modal" data-bs-target="#deletePublisherModal">Verwijderen</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal fade" id="createPublisherModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Nieuwe publisher</h5>
+                </div>
+                <div class="modal-body">
+                    <label>Naam:</label>
+                    <input type="text" class="form-control" placeholder="Naam publisher" v-model="newPublisher.name" required />
+                    <div class="alert alert-danger alert alert-danger mb-0 ml-2" v-if="errorName.length">
+                        {{errorName}}
+                    </div>
+                    <label>Land:</label>
+                    <input type="text" class="form-control" placeholder="Land publisher" v-model="newPublisher.country" required />
+                    <div class="alert alert-danger alert alert-danger mb-0 ml-2" v-if="errorCountry.length">
+                        {{errorCountry}}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" v-on:click="cancelPublisher">Annuleren</button>
+                    <button type="button" class="btn btn-outline-primary" v-on:click="createPublisher">Opslaan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="updatePublisherModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Bewerken {{editPublisherName}}</h5>
+                </div>
+                <div class="modal-body">
+                    <label>Naam:</label>
+                    <input type="text" class="form-control" placeholder="Naam publisher" v-model="selectedPublisher.name" required />
+                    <div class="alert alert-danger alert alert-danger mb-0 ml-2" v-if="errorName.length">
+                        {{errorName}}
+                    </div>
+                    <label>Land:</label>
+                    <input type="text" class="form-control" placeholder="Land publisher" v-model="selectedPublisher.country" required />
+                    <div class="alert alert-danger alert alert-danger mb-0 ml-2" v-if="errorCountry.length">
+                        {{errorCountry}}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" v-on:click="cancelPublisher">Annuleren</button>
+                    <button type="button" class="btn btn-outline-primary" v-on:click="updatePublisher(selectedPublisher)">Opslaan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deletePublisherModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Verwijderen {{selectedPublisher.name}}?</h5>
+                </div>
+                <div class="modal-body">
+                    <div>
+                    Weet je zeker dat je de publisher {{selectedPublisher.name}} wilt verwijderen?
+                    </div>
+                    <div class="alert alert-danger alert alert-danger mb-0 ml-2" v-if="errorDelete.length">
+                        {{errorDelete}}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="cancelPublisher">Annuleren</button>
+                    <button type="button" class="btn btn-primary" v-on:click="deletePublisher(selectedPublisher)">Verwijderen</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        var vue = new Vue({
+            el: "#app",
+            data: {
+                errorName: "",
+                errorCountry: "",
+                errorMessage: "",
+                errorDelete:"",
+                searchPublishers: "",
+                isLoading: false,
+                editPublisherName: "",
+                publishers: [{
+                    id: "",
+                    name: "",
+                    country: "",
+                    gamesName: [""]
+                }],
+                newPublisher: {
+                    name: "",
+                    country: ""
+                },
+                selectedPublisher: {
+                    id: "",
+                    name: "",
+                    country: ""
+                }
+            },
+            created: async function () {
+                await this.showPublishers();
+            },
+            methods: {
+                showPublishers: async function () {
+                    this.isLoading = true;
+
+                    let trimmedSearch = this.searchPublishers.trimEnd();
+                    trimmedSearch = trimmedSearch.trimStart();
+
+                    let searchText = `${baseUrl}publisher`;
+
+                    if (trimmedSearch != "") {
+                        searchText = `${baseUrl}publisher/${trimmedSearch}/name`;
+                    }
+
+                    await axios.get(searchText, axiosConfig)
+                        .then((response) => {
+                            this.publishers = JSON.parse(JSON.stringify(response.data));
+                        })
+                        .catch((e) => {
+                            this.errorMessage = e.message
+                        });
+
+                    if (this.errorMessage === "") {
+
+                        for (const publisher of this.publishers) 
+                        {
+                            await axios.get(`${baseUrl}game/${publisher.id}/publishers`, axiosConfig)
+                                .then((response) => {
+                                    publisher.gamesName = response.data.map(game => game.name);
+                                })
+                                .catch((e) => {
+                                    if (e.response.status === 401) {
+                                        this.errorMessage = "You don't have the valid authentication to get the games.";
+                                    }
+                                    else if (e.response.status === 400) {
+                                        this.errorMessage = e.response.data[0].errorMessage;
+                                    }
+                                    else {
+                                        this.errorMessage = e.message;
+                                    }
+                                });
+
+                                if(this.errorMessage!="")
+                                {
+                                    break;
+                                }
+                        }
+                    }
+
+                    this.isLoading = false;
+                },
+                getPublisherDetails: async function (publisherId) {
+
+                    await axios.get(`${baseUrl}publisher/${publisherId}`, axiosConfig)
+                        .then((response) => {
+                            this.selectedPublisher.id = response.data.id;
+                            this.selectedPublisher.name = response.data.name;
+                            this.selectedPublisher.country = response.data.country;
+                        })
+                        .catch((e) => {
+                            if (e.response.status === 401) {
+                                this.errorMessage = "You don't have the valid authentication get the publisher.";
+                            }
+                            else if (e.response.status === 400) {
+                                this.errorMessage = e.response.data[0].errorMessage;
+                            }
+                            else {
+                                this.errorMessage = e.message;
+                            }
+                        });
+                },
+                createPublisher: async function () {
+                    this.resetValidate();
+                    if (this.validatePublisher(this.newPublisher)) {
+                        this.isLoading = true;
+                        await axios.post(`${baseUrl}publisher`, this.newPublisher, axiosConfig)
+                            .then((response) => {
+                                const modalElement = document.getElementById("createPublisherModal");
+                                const modal = bootstrap.Modal.getInstance(modalElement);
+                                modal.hide();
+                                this.cancelPublisher();
+                            })
+                            .catch((e) => {
+                                if (e.response.status === 401) {
+                                    this.errorMessage = "You don't have the valid authentication to create publisher.";
+                                }
+                                else if (e.response.status === 400) {
+                                    if (e.response.data[0].errorMessage.toLowerCase().includes("name")) {
+                                        this.errorName = "Publisher with name already exists";
+                                    }
+                                    else {
+                                        this.errorMessage = e.response.data[0].errorMessage;
+                                    }
+                                }
+                                else {
+                                    this.errorMessage = e.message;
+                                }
+                            });
+                        this.searchPublishers= "";
+                        await this.showPublishers();
+                        this.isLoading = false;
+                    }
+                },
+                updatePublisher: async function (updatedPublisher) {
+
+                    this.resetValidate();
+                    if (this.validatePublisher(updatedPublisher)) {
+                        this.isLoading = true;
+                        await axios.put(`${baseUrl}publisher`, updatedPublisher, axiosConfig)
+                            .then((response) => {
+                                const modalElement = document.getElementById("updatePublisherModal");
+                                const modal = bootstrap.Modal.getInstance(modalElement);
+                                modal.hide();
+                                this.cancelPublisher();
+                                this.editPublisherName = "";
+                            })
+                            .catch((e) => {
+                                if (e.response.status === 401) {
+                                    this.errorMessage = "You don't have the valid authentication to edit the publisher.";
+                                }
+                                else if (e.response.status === 400) {
+                                    if (e.response.data[0].errorMessage.toLowerCase().includes("publisher")) {
+                                        this.errorName = "Publisher with name already exists";
+                                    }
+                                    else {
+                                        this.errorMessage = e.response.data[0].errorMessage;
+                                    }
+                                }
+                                else {
+                                    this.errorMessage = e.message;
+                                }
+                            });
+                        await this.showPublishers();
+                        this.isLoading = false;
+                    }
+                },
+                deletePublisher: async function (selectedPublisher) {
+                    this.isLoading = true;
+                    this.errorDelete="";
+
+                    let hasGames = true;
+
+                        await axios.get(`${baseUrl}game/${selectedPublisher.id}/publishers`, axiosConfig)
+                            .then((response) => {
+
+                                if(response.data.length === 0){
+                                hasGames=false;
+                                }
+                            })
+                            .catch((e) => {
+                                if (e.response.status === 401) {
+                                    this.errorMessage = "You don't have the valid authentication to get the games.";
+                                }
+                                else if (e.response.status === 400) {
+                                    this.errorMessage = e.response.data[0].errorMessage;
+                                }
+                                else {
+                                    this.errorMessage = e.message;
+                                }
+                            });
+                            if(hasGames) { this.errorDelete = "Can't delete a publisher while they have games";}
+                            else{
+                    await axios.delete(`${baseUrl}publisher/${selectedPublisher.id}`, axiosConfig)
+                        .then((response) => {
+                            var index = this.publishers.map(function (publisher) { return publisher.id; }).indexOf(selectedPublisher.id);
+                            this.publishers.splice(index, 1);
+                        })
+                        .catch((e) => {
+                            if (e.response.status === 401) {
+                                this.errorMessage = "You don't have the valid authentication to delete the publisher.";
+                            }
+                            else if (e.response.status === 400) {
+                                this.errorMessage = e.response.data[0].errorMessage;
+                            }
+                            else {
+                                this.errorMessage = e.message;
+                            }
+                        })
+                        .finally(() => {
+                            const modalElement = document.getElementById("deletePublisherModal");
+                            const modal = bootstrap.Modal.getInstance(modalElement);
+                            modal.hide();
+                            this.cancelPublisher();
+                        });
+                        }
+                    this.isLoading = false;
+                },
+                showCreate: async function () {
+                    const modalElement = document.getElementById("createPublisherModal");
+                    const modal = bootstrap.Modal.getInstance(modalElement);
+                    modal.show();
+                },
+                showUpdate: async function (publisher) {
+                    await this.getPublisherDetails(publisher.id);
+                    this.editPublisherName = publisher.name;
+
+                    const modalElement = document.getElementById("updatePublisherModal");
+                    const modal = bootstrap.Modal.getInstance(modalElement);
+                    modal.show();
+                },
+                showDelete: function (publisher) {
+
+                    this.selectedPublisher.id = publisher.id;
+                    this.selectedPublisher.name = publisher.name;
+                    this.selectedPublisher.country = publisher.country;
+
+                    const modalElement = document.getElementById("deletePublisherModal");
+                    const modal = bootstrap.Modal.getInstance(modalElement);
+                    modal.show();
+                },
+                cancelPublisher: function () {
+                    this.resetValidate();
+
+                    this.newPublisher= {
+                        name: "",
+                        country: ""
+                    };
+                    this.selectedPublisher= {
+                        id: "",
+                        name: "",
+                        country: ""
+                    };
+                },
+                validatePublisher: function (publisher) {
+                    if (publisher.name === "") {
+                        this.errorName = "Name must be filled in";
+                    }
+                    if (publisher.country === "") {
+                        this.errorCountry = "Country must be filled in";
+                    }
+
+                    return (publisher.name != "" && publisher.country != "")
+                },
+
+                resetValidate: function () {
+                    this.errorName = "";
+                    this.errorDelete = "";
+                    this.errorCountry = "";
+                }
+            }
+        });
+    </script>
 }

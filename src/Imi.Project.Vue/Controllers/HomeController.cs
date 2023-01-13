@@ -28,6 +28,11 @@ namespace Imi.Project.Vue.Controllers
             return View();
         }
 
+        public IActionResult Publishers()
+        {
+            return View();
+        }
+
         public IActionResult Register()
         {
             return View();
