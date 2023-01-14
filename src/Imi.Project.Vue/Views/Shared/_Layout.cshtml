@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Imi.Project.Vue</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/lib/vanillaselectbox/vanillaSelectBox.css"/>
+    <link rel="stylesheet" href="~/lib/vanillaselectbox/vanillaSelectBox.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav id="layout" class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Imi.Project.Vue</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -31,8 +31,8 @@
                         <li class="nav-item d-flex align-items-center" v-if="userModel.isAdmin">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Publishers">Publishers</a>
                         </li>
-                        <li class="nav-item d-flex align-items-center" v-if="userIsLoggedIn">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="CurrentUser">Gebruiker profiel</a>
+                        <li class="nav-link text-dang d-flex align-items-center">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ExternApi">Extern Api</a>
                         </li>
                         <li class="nav-item d-flex align-items-center" v-if="userIsLoggedIn">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="CurrentUser">Gebruiker profiel</a>
@@ -88,7 +88,7 @@
 
     <script>
         var navbarVue = new Vue({
-            el: ".navbar",
+            el: "#layout",
             name: "navigation",
             data: {
                 loginModel: {
@@ -105,9 +105,7 @@
             },
             created: function () {
                 if (sessionStorage.getItem("token")) {
-                    this.userIsLoggedIn = true;
-                    this.userModel.name = readUserNameFromToken();
-                    this.userModel.isAdmin = hasUserAdminRole();
+                    this.setUser();
                 }
                 else {
                     this.userIsLoggedIn = false;
@@ -119,14 +117,8 @@
                         .then((response) => {
                             sessionStorage.setItem("token", response.data.token);
                             reloadAxios();
-                            this.userIsLoggedIn = true;
-                            this.userModel.name = readUserNameFromToken();
-                            this.userModel.isAdmin = hasUserAdminRole();
+                            this.setUser();
                             this.errorMessage = null;
-
-                            if (window.location.pathname == "/Home/Register" ) {
-                                window.location.assign(window.location.origin + "/Home/");
-                            }
                         }).
                         catch((e) => {
                             this.errorMessage = "Login failed!";
@@ -135,6 +127,9 @@
                         .finally(() => {
                             this.loginModel.userName = "";
                             this.loginModel.password = ""
+                            if (window.location.pathname === "/Home/Register") {
+                                window.location.assign(window.location.origin + "/Home/");
+                            }
                         });
                 },
                 submitLogout: function () {
@@ -146,10 +141,13 @@
                         isAdmin: false,
                     }
 
-                    if (window.location.pathname === "/Home/CurrentUser" || window.location.pathname === "/Home/Games" || window.location.pathname === "/Home/Genres" || window.location.pathname === "/Home/Publishers") {
+                    if (window.location.pathname === "/Home/CurrentUser")
                         window.location.assign(window.location.origin + "/Home/");
-
-                    }
+                },
+                setUser: function () {
+                    this.userIsLoggedIn = true;
+                    this.userModel.name = readUserNameFromToken();
+                    this.userModel.isAdmin = hasUserAdminRole();
                 }
             }
         });

@@ -3,7 +3,7 @@
 }
 
 <div id="app">
-    <div class="btn-group mb-4 d-flex row" role="group">
+    <div class="btn-group mb-2 d-flex row" role="group">
         <button type="button" class="btn btn-outline-primary" v-on:click="showGames">Games</button>
         <button type="button" class="btn btn-outline-primary" v-on:click="showGenres">Genres</button>
         <button type="button" class="btn btn-outline-primary" v-on:click="showPublishers">Publishers</button>
@@ -14,10 +14,8 @@
             <div>Om gebruik te maken van de hele site moet je inloggen en akkoord gaan met de service voorwaarden.</div>
         </div>
     </div>
-    <div class="row" v-else-if="showError">
-        <div class="alert alert-danger">
-            {{errorMessage}}
-        </div>
+    <div class="alert alert-danger text-center" v-else-if="errorMessage.length">
+        {{errorMessage}}
     </div>
     <div v-else>
         <div v-if="showAllGames">
@@ -37,32 +35,34 @@
                             <th>Prijs</th>
                             <th>Publisher</th>
                             <th>Genres</th>
-                            <th v-if="user.approvedTerms">Gebruikers</th>
-                            <th v-if="user.approvedTerms">Toevoegen/Verwijderen</th>
+                            <th>Gebruikers</th>
+                            <th>Aanpassen/Verwijderen</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="game in games">
-                            <td>{{game.name}}</td>
-                            <td>€ {{game.price}}</td>
-                            <td>{{game.publisher.name}}</td>
-                            <td>
-                                <ul>
+                            <td class="align-middle">{{game.name}}</td>
+                            <td class="align-middle">€ {{game.price}}</td>
+                            <td class="align-middle">{{game.publisher.name}}</td>
+                            <td class="align-middle">
+                                <ul class="m-0 pl-4">
                                     <li v-for="genre in game.genres">
                                         {{genre.name}}
                                     </li>
                                 </ul>
                             </td>
-                            <td v-if="user.approvedTerms">
-                                <ul>
+                            <td class="align-middle">
+                                <ul class="m-0 pl-4">
                                     <li v-for="user in game.users">
                                         {{user}}
                                     </li>
                                 </ul>
                             </td>
-                            <td class="align-middle text-center" v-if="user.approvedTerms">
-                                <button class="btn btn-outline-success mb-3" v-on:click="addGame(game)" v-if="!hasGame(game)">Toevoegen</button>
-                                <button class="btn btn-outline-danger mb-3" v-on:click="removeGame(game)" v-else>Verwijderen</button>
+                            <td class="align-middle text-center m-0" v-if="user.approvedTerms">
+                                <div class="btn-group-vertical btn-block">
+                                    <button class="btn btn-success mb-2" v-on:click="addGame(game)" v-if="!hasGame(game)">Toevoegen</button>
+                                    <button class="btn btn-danger mb-2" v-on:click="removeGame(game)" v-else>Verwijderen</button>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
@@ -89,14 +89,14 @@
                     </thead>
                     <tbody>
                         <tr v-for="genre in genres">
-                            <td>{{genre.name}}</td>
-                            <td>{{genre.description}}</td>
-                            <td>
-                            <ul>
-                                <li v-for="game in genre.games">
-                                    {{game}}
-                                </li>
-                            </ul>
+                            <td class="align-middle">{{genre.name}}</td>
+                            <td class="align-middle">{{genre.description}}</td>
+                            <td class="align-middle">
+                                <ul class="m-0 pl-4">
+                                    <li v-for="game in genre.games">
+                                        {{game}}
+                                    </li>
+                                </ul>
                             </td>
                         </tr>
                     </tbody>
@@ -123,10 +123,10 @@
                     </thead>
                     <tbody>
                         <tr v-for="publisher in publishers">
-                            <td>{{publisher.name}}</td>
-                            <td>{{publisher.country}}</td>
-                            <td>
-                                <ul>
+                            <td class="align-middle">{{publisher.name}}</td>
+                            <td class="align-middle">{{publisher.country}}</td>
+                            <td class="align-middle">
+                                <ul class="m-0 pl-4">
                                     <li v-for="game in publisher.games">
                                         {{game.name}}
                                     </li>
@@ -534,8 +534,7 @@
                     this.errorMessage = "You haven't approved the terms of service. To use this please approve";
                     return false;
                 },
-                sortUser:function(firstUser, secondUser)
-                {
+                sortUser: function (firstUser, secondUser) {
                     const userA = firstUser.userName.toUpperCase();
                     const userB = secondUser.userName.toUpperCase();
                     if (userA < userB) {

@@ -6,75 +6,64 @@
     <div class="text-center">
         <h1 class="display-4">Registreren</h1>
     </div>
-    <div class="alert alert-danger" v-if="unknownError.length">
+    <div class="alert alert-danger text-center" v-if="unknownError.length">
         {{unknownError}}
     </div>
-    <form class="d-flex flex-column" role="register" v-on:submit.prevent="register">
+    <form class="d-flex flex-column" role="register" v-on:submit.prevent="register" v-else>
         <div class="d-flex flex-row mb-3">
-            <label class="col-sm-2" for="username">Gebruikersnaam</label>
-            <div class="col-sm-2 d-flex align-items-center row">
-                <input name="username" v-model="newUser.userName" placeholder="Gebruikersnaam" required />
-                <div class="alert alert-danger" v-if="usernameError.length">
+            <label class="col-sm-2 d-flex align-items-center mb-0" for="username">Gebruikersnaam</label>
+            <div class="colum col pl-0 pr-0">
+                <input class="col" name="username" v-model="newUser.userName" placeholder="Gebruikersnaam" required />
+                <div class="alert alert-danger mb-1 mt-1 pt-2 pb-2 text-center" v-if="usernameError.length">
                     {{usernameError}}
                 </div>
             </div>
         </div>
         <div class="d-flex flex-row mb-3">
-            <label class="col-sm-2" for="firstName">Voornaam</label>
-            <div class="col-sm-2 d-flex align-items-center row">
-                <input name="firstName" v-model="newUser.firstName" placeholder="Voornaam" required />
-            </div>
+            <label class="col-sm-2 d-flex align-items-center mb-0" for="firstName">Voornaam</label>
+            <input class="col" name="firstName" v-model="newUser.firstName" placeholder="Voornaam" required />
         </div>
         <div class="d-flex flex-row mb-3">
-            <label class="col-sm-2" for="lastName">Achternaam</label>
-            <div class="col-sm-2 d-flex align-items-center row">
-                <input name="lastName" v-model="newUser.lastName" placeholder="Achternaam" required />
-            </div>
+            <label class="col-sm-2 d-flex align-items-center mb-0" for="lastName">Achternaam</label>
+            <input class="col" name="lastName" v-model="newUser.lastName" placeholder="Achternaam" required />
         </div>
         <div class="d-flex flex-row mb-3">
-            <label class="col-sm-2" for="email">Email</label>
-            <div class="col-sm-2 d-flex align-items-center row">
-                <input name="email" v-model="newUser.email" placeholder="Email" type="email" required />
-                <div class="alert alert-danger" v-if="emailError.length">
+            <label class="col-sm-2 d-flex align-items-center mb-0" for="email">Email</label>
+            <div class="colum col pl-0 pr-0">
+                <input class="col" name="email" v-model="newUser.email" placeholder="Email" type="email" required />
+                <div class="alert alert-danger mb-1 mt-1 pt-2 pb-2 text-center" v-if="emailError.length">
                     {{emailError}}
                 </div>
             </div>
         </div>
         <div class="d-flex flex-row mb-3">
-            <label class="col-sm-2" for="birthday">Geboortedag</label>
-            <div class="col-sm-2 d-flex align-items-center row">
-                <input id="birthday" class="birthday" name="birthDay" v-model="newUser.birthDay" type="date" min="1900-01-01" required />
-            </div>
+            <label class="col-sm-2 d-flex align-items-center mb-0" for="birthday">Geboortedag</label>
+            <input id="birthday" class="col" name="birthDay" v-model="newUser.birthDay" type="date" min="1900-01-01" required />
         </div>
         <div class="d-flex flex-row mb-3">
-            <label class="col-sm-2 d-flex align-items-center" for="password">Wachtwoord</label>
-            <div class="col-sm d-flex align-items-center row">
-                <input name="password" v-model="newUser.password" placeholder="Wachtwoord" type="password" required />
-                <div class="alert alert-danger alert alert-danger mb-0 ml-2" v-if="passwordError.length">
+            <label class="col-sm-2 d-flex align-items-center mb-0" for="password">Wachtwoord</label>
+            <div class="colum col pl-0 pr-0">
+                <input class="col" name="password" v-model="newUser.password" placeholder="Wachtwoord" type="password" required />
+                <div class="alert alert-danger mb-1 mt-1 pt-2 pb-2 text-center" v-if="passwordError.length">
                     {{passwordError}}
                 </div>
             </div>
         </div>
         <div class="d-flex flex-row mb-3">
-            <label class="col-sm-2 d-flex align-items-center" for="password">Bevestig wachtwoord</label>
-            <div class="col-sm d-flex align-items-center row">
-                <input name="confirmPassword" v-model="newUser.confirmPassword" placeholder="Wachtwoord" type="password" required>
-                <div class="alert alert-danger alert alert-danger mb-0 ml-2" v-if="confirmPasswordError.length">
+            <label class="col-sm-2 d-flex align-items-center mb-0" for="password">Bevestig wachtwoord</label>
+            <div class="colum col pl-0 pr-0">
+                <input class="col" name="confirmPassword" v-model="newUser.confirmPassword" placeholder="Wachtwoord" type="password" required>
+                <div class="alert alert-danger mb-1 mt-1 pt-2 pb-2 text-center" v-if="confirmPasswordError.length">
                     {{confirmPasswordError}}
                 </div>
             </div>
         </div>
-        <div class="d-flex flex-row">
-            <label for="approvedTerms">Ga je akkoord met onze service voorwaarden?</label>
-            <div class="col-sm-2 align-items-center">
-                <input name="approved" v-model="newUser.approvedTerms" type="checkbox">
-            </div>
+        <div class="d-flex flex-row mb-3">
+            <label class="mr-2 mb-0" for="approvedTerms">Ga je akkoord met onze service voorwaarden?</label>
+            <input id="termsId" name="approved" v-model="newUser.approvedTerms" type="checkbox">
         </div>
         <button id="Register" class="btn btn-outline-success mb-2" type="submit">Registreren</button>
     </form>
-    <div id="Succes" class="alert alert-success" hidden>
-        Succesfully registered in, please log in.
-    </div>
 </div>
 
 @section Scripts{
@@ -88,7 +77,6 @@
                 confirmPasswordError: "",
                 emailError: "",
                 unknownError: "",
-
                 newUser: {
                     password: "",
                     confirmPassword: "",
@@ -134,9 +122,7 @@
                 },
 
                 setError: function (data) {
-
-                    if (data.errorMessage.contains(`Username`))
-                    {
+                    if (data.errorMessage.contains(`Username`)) {
                         this.usernameError = data.errorMessage;
                     }
                     else if (data.errorMessage.contains(`Password`)) {
@@ -145,10 +131,10 @@
                     else if (data.errorMessage.contains(`Email`)) {
                         this.emailError = data.errorMessage;
                     }
-                    else if(data.errorMessage.contains(`Username`)) {
+                    else if (data.errorMessage.contains(`Username`)) {
                         this.usernameError = data.errorMessage;
                     }
-                    else{
+                    else {
                         this.unknownError = data.errorMessage;
                     }
                 },

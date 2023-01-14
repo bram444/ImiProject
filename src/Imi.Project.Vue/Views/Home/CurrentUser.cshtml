@@ -3,91 +3,79 @@
 }
 
 <div id="UserUpdate" class="d-flex flex-column">
-        <div class="text-center">
-            <h1 class="display-4">Gebruiker profiel</h1>
+    <div class="text-center">
+        <h1 class="display-4 mb-3">Gebruiker profiel</h1>
+    </div>
+    <div v-if="isLoading">
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border" role="status">
+                <span class="sr-only">Laden...</span>
+            </div>
         </div>
-        <div class="alert alert-danger" v-if="errorMessage.length">
-            {{errorMessage}}
+    </div>
+    <div class="alert alert-danger text-center" v-else-if="errorMessage.length">
+        {{errorMessage}}
+    </div>
+    <div class="d-flex flex-column" v-else-if="!isEditing">
+        <div class="d-flex flex-row mb-3">
+            <label class="col-sm-2 d-flex align-items-center" for="username">Gebruikersnaam</label>
+            <input type="text" name="username" v-model="currentUser.userName" placeholder="Gebruikersnaam" class="col" disabled>
         </div>
-        <form class="d-flex flex-column" v-on:submit.prevent="setUpdate" v-if="isEditing == false">
-            <div class="d-flex flex-row mb-3">
-                <label class="col-sm-2 d-flex align-items-center" for="username">Gebruikersnaam</label>
-                <div class="col-sm-2 d-flex align-items-center">
-                    <input name="username" v-model="currentUser.userName" placeholder="Gebruikersnaam" disabled>
-                </div>
-            </div>
-            <div class="d-flex flex-row mb-3">
-                <label class="col-sm-2 d-flex align-items-center" for="firstName">Voornaam</label>
-                <div class="col-sm-2 d-flex align-items-center">
-                    <input name="firstName" v-model="currentUser.firstName" placeholder="Voornaam" disabled>
-                </div>
-            </div>
-            <div class="d-flex flex-row mb-3">
-                <label class="col-sm-2 d-flex align-items-center" for="lastName">Achternaam</label>
-                <div class="col-sm-2 d-flex align-items-center">
-                    <input name="lastName" v-model="currentUser.lastName" placeholder="Achternaam" disabled>
-                </div>
-            </div>
-            <div class="d-flex flex-row mb-3">
-                <label class="col-sm-2 d-flex align-items-center" for="email">Email</label>
-                <div class="col-sm-2 align-items-center">
-                    <input name="email" v-model="currentUser.email" placeholder="Email" disabled>
-                </div>
-            </div>
-            <button id="Update" class="btn btn-outline-success mb-3" type="submit">Update</button>
-        </form>
-        <form class="d-flex flex-column" v-on:submit.prevent="updateUser" v-else>
-            <div class="d-flex flex-row mb-3">
-                <label class="col-sm-2 d-flex align-items-center" for="username">Gebruikersnaam</label>
-                <div class="col-sm d-flex align-items-center row">
-                    <input name="username" v-model="editUser.userName" placeholder="Gebruikersnaam" required>
-                    <div class="alert alert-danger alert alert-danger mb-0 ml-2" v-if="usernameError.length">
-                        {{usernameError}}
-                    </div>
-                </div>
-            </div>
-            <div class="d-flex flex-row mb-3">
-                <label class="col-sm-2 d-flex align-items-center" for="firstName">Voornaam</label>
-                <div class="col-sm d-flex align-items-center row">
-                    <input name="firstName" v-model="editUser.firstName" placeholder="Voornaam" required>
-                </div>
-            </div>
-            <div class="d-flex flex-row mb-3">
-                <label class="col-sm-2 d-flex align-items-center" for="lastName">Achternaam</label>
-                <div class="col-sm d-flex align-items-center row">
-                    <input name="lastName" v-model="editUser.lastName" placeholder="Achternaam" required>
-                </div>
-            </div>
-            <div class="d-flex flex-row  mb-3" v-if="!isApproved">
-                <label class="col-sm-auto" for="approvedTerms">Ga je akkoord met onze service voorwaarden?</label>
-                <div class="col-sm-auto d-flex align-items-center">
-                    <input id="termsId" name="approved" v-model="editUser.approvedTerms" type="checkbox">
-                </div>
-            </div>
-            <button id="Update" class="btn btn-outline-success  mb-3" type="submit">Opslaan</button>
-        </form>
-        <form class="d-flex flex-column" v-on:submit.prevent="cancelUpdate" v-if="isEditing == true">
-            <button class="btn btn-outline-secondary mb-3" type="submit">Annuleren</button>
-        </form>
-        <button v-if="isEditing == false" v-on:click="showDelete" class="d-flex flex-column btn btn-outline-danger mb-3" data-bs-toggle="modal"
-            data-bs-target="#deleteUserModal">
-        Verwijderen
-    </button>
-        <hr />
-        <div v-if="!playedGames.length">
-            <h2> Je hebt geen games. Voeg ze toe.</h2>
+        <div class="d-flex flex-row mb-3">
+            <label class="col-sm-2 d-flex align-items-center" for="firstName">Voornaam</label>
+            <input type="text" name="firstName" v-model="currentUser.firstName" placeholder="Voornaam" class="col" disabled>
         </div>
-        <div v-else>
-            <h2>Alle games die je speelt</h2>
-            <div class="row">
-                <div class="card col-md-3 p-2 m-1" v-for="playedGame in playedGames">
-                    <div class="card-body">
-                        <h5 class="card-title">{{playedGame.name}}</h5>
-                        <p class="card-text">€ {{playedGame.price}}</p>
-                    </div>
+        <div class="d-flex flex-row mb-3">
+            <label class="col-sm-2 d-flex align-items-center" for="lastName">Achternaam</label>
+            <input type="text" name="lastName" v-model="currentUser.lastName" placeholder="Achternaam" class="col" disabled>
+        </div>
+        <div class="d-flex flex-row mb-3">
+            <label class="col-sm-2 d-flex align-items-center" for="email">Email</label>
+            <input type="email" name="email" v-model="currentUser.email" placeholder="Email" class="col" disabled>
+        </div>
+        <button id="Update" class="btn btn-outline-success mb-3" v-on:click="setUpdate">Update</button>
+        <button v-on:click="showDelete" class="btn btn-outline-danger mb-3" data-bs-toggle="modal"
+                data-bs-target="#deleteUserModal">Verwijderen</button>
+    </div>
+    <div class="d-flex flex-column" v-else>
+        <div class="d-flex flex-row mb-3">
+            <label class="col-sm-2 d-flex align-items-center" for="username">Gebruikersnaam</label>
+            <div class="colum col pl-0 pr-0">
+                <input name="username" v-model="editUser.userName" placeholder="Gebruikersnaam" class="col" required>
+                <div class="alert alert-danger mb-1 mt-1 pt-2 pb-2 text-center" v-if="usernameError.length">
+                    {{usernameError}}
                 </div>
             </div>
         </div>
+        <div class="d-flex flex-row mb-3">
+            <label class="col-sm-2 d-flex align-items-center" for="firstName">Voornaam</label>
+            <input name="firstName" v-model="editUser.firstName" placeholder="Voornaam" class="col" required>
+        </div>
+        <div class="d-flex flex-row mb-3">
+            <label class="col-sm-2 d-flex align-items-center" for="lastName">Achternaam</label>
+            <input name="lastName" v-model="editUser.lastName" placeholder="Achternaam" class="col" required>
+        </div>
+        <div class="d-flex flex-row  mb-3" v-if="!isApproved">
+            <label class="mr-2 mb-0" for="approvedTerms">Ga je akkoord met onze service voorwaarden?</label>
+            <input id="termsId" name="approved" v-model="editUser.approvedTerms" type="checkbox">
+        </div>
+        <button id="Update" class="btn btn-outline-success mb-3" v-on:click="updateUser">Opslaan</button>
+        <button class="btn btn-outline-secondary mb-3" v-on:click="cancelUpdate">Annuleren</button>
+    </div>
+    <div class=" border-top border-dark" v-if="!playedGames.length && !isLoading && errorMessage.length">
+        <h2 class="mt-2 text-center"> Je hebt geen games. Voeg ze toe.</h2>
+    </div>
+    <div class=" border-top border-dark" v-else-if="!isLoading">
+        <h2 class="mt-2 text-center">Alle games die je speelt</h2>
+        <div class="row justify-content-center">
+            <div class="card col-md-2 p-2 m-1" v-for="playedGame in playedGames">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-center">{{playedGame.name}}</h5>
+                    <p class="card-text text-center mt-auto">€ {{playedGame.price}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="modal fade" id="deleteUserModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -96,11 +84,11 @@
                     <h5 class="modal-title" id="staticBackdropLabel">Delete {{currentUser.userName}}</h5>
                 </div>
                 <div class="modal-body">
-                    Weet je zeker dat je {{currentUser.userName}} wilt verwijderen?
+                    Weet je zeker dat je <strong>{{currentUser.userName}}</strong> wilt verwijderen?
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuleren</button>
-                    <button type="button" class="btn btn-primary" v-on:click="deleteUser" >Verwijderen</button>
+                    <button type="button" class="btn btn-outline-primary" v-on:click="deleteUser">Verwijderen</button>
                 </div>
             </div>
         </div>
@@ -120,7 +108,7 @@
                 isEditing: false,
                 playedGames: new Array(),
                 isApproved: false,
-
+                isLoading: false,
                 currentUser: {
                     email: "",
                     userName: "",
@@ -129,7 +117,6 @@
                     gameId: [""],
                     approvedTerms: false,
                 },
-
                 editUser: {
                     id: "",
                     userName: "",
@@ -141,6 +128,7 @@
             },
 
             created: async function () {
+                this.isLoading = true;
                 var id = readUserIdFromToken();
                 await axios.get(`${baseUrl}user/${id}`, axiosConfig)
                     .then((response) => {
@@ -172,7 +160,7 @@
                             this.errorMessage = e.message;
                         }
                     });
-
+                this.isLoading = false;
             },
             methods: {
                 setUpdate: function () {
@@ -181,29 +169,23 @@
 
                 updateUser: async function () {
                     this.editUser.id = readUserIdFromToken();
-
+                    this.isLoading = true;
                     await axios.put(`${baseUrl}User`, this.editUser, axiosConfig)
                         .then((response) => {
-
                             this.currentUser.userName = response.data.userName;
                             this.currentUser.firstName = response.data.firstName;
                             this.currentUser.lastName = response.data.lastName;
                             this.currentUser.approvedTerms = response.data.approvedTerms;
                             this.currentUser.gameId = response.data.games.map(game => game.id);
-
                         })
                         .catch((e) => {
-
                             if (e.response.status === 400) {
-                                if (e.response.data[0].errorMessage.toLowerCase().includes("username"))
-                                {
+                                if (e.response.data[0].errorMessage.toLowerCase().includes("username")) {
                                     this.usernameError = e.response.data[0].errorMessage;
                                 }
-                                else{
-
-                                this.errorMessage = e.response.data[0].errorMessage;
+                                else {
+                                    this.errorMessage = e.response.data[0].errorMessage;
                                 }
-
                             }
                             else if (e.response.status === 401) {
                                 this.errorMessage = "You don't have the valid authentication to edit this user";
@@ -213,27 +195,39 @@
                             }
                         });
 
-                    if (this.errorMessage.length === 0 && this.usernameError.length ===0)
-                    {
+                    if (this.errorMessage.length === 0 && this.usernameError.length === 0) {
 
-                    let token =sessionStorage.getItem("token");
+                        let token = sessionStorage.getItem("token");
 
-                    await axios.post(`${baseUrl}Authentication/${token}refresh`)
-                    .then((response)=>{
-                        sessionStorage.clear();
-                            sessionStorage.setItem("token", response.data);
-                            reloadAxios();
-                    });
-
-                    this.isEditing=false;
+                        await axios.post(`${baseUrl}Authentication/${token}refresh`)
+                            .then((response) => {
+                                sessionStorage.clear();
+                                sessionStorage.setItem("token", response.data);
+                                reloadAxios();
+                                this.isEditing = false;
+                                this.isLoading = false;
+                                location.reload();
+                            });
                     }
-
+                    else {
+                        this.isEditing = false;
+                        this.isLoading = false;
+                    }
                 },
                 deleteUser: async function () {
+                    this.isLoading = true;
+
                     let id = readUserIdFromToken();
 
                     await axios.delete(`${baseUrl}User/${id}`, axiosConfig)
                         .then((response) => {
+
+                            sessionStorage.clear();
+                            
+                            this.hideDelete();
+                            this.isLoading = false;
+
+                            window.location.assign(window.location.origin + "/Home/");
                         })
                         .catch((e) => {
                             this.showErrorSection = true;
@@ -242,18 +236,10 @@
                             }
                             else if (e.response.status === 400) {
                                 this.errorMessage = e.response.data[0].errorMessage;
-
                             }
                             else {
                                 this.errorMessage = e.message;
                             }
-                        })
-                        .finally(() => {
-                            const modalElement = document.getElementById("deleteUserModal");
-                            const modal = bootstrap.Modal.getInstance(modalElement);
-                            modal.hide();
-                            sessionStorage.clear();
-                            window.location.assign(window.location.origin + "/Home/");
                         });
                 },
                 cancelUpdate: function () {
@@ -271,10 +257,16 @@
                     var gameId = this.currentUser.gameId;
                 },
 
-                showDelete:function(){
+                showDelete: function () {
                     const modalElement = document.getElementById("deleteUserModal");
                     const modal = bootstrap.Modal.getInstance(modalElement);
                     modal.show();
+                },
+
+                hideDelete: function () {
+                    const modalElement = document.getElementById("deleteUserModal");
+                    const modal = bootstrap.Modal.getInstance(modalElement);
+                    modal.hide();
                 }
             }
         });

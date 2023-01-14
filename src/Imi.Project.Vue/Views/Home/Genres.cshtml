@@ -3,22 +3,14 @@
 }
 
 <div id="app">
-    <div class="d-flex justify-content-center">
-        <div class="d-flex-column">
-            <div class="text-center">
-                <h1 class="display-4">Genres beheer</h1>
-                <button class="btn btn-outline-primary mb-4" v-on:click="showCreate" data-bs-toggle="modal" data-bs-target="#createGenreModal">Nieuwe genres</button>
-            </div>
-        </div>
+    <h1 class="d-flex justify-content-center flex-column text-center display-4">Genres beheer</h1>
+    <div class="alert alert-danger text-center" v-if="errorMessage.length">
+        {{errorMessage}}
     </div>
-    <div class="row" v-if="errorMessage.length">
-        <div class="alert alert-danger">
-            {{errorMessage}}
-        </div>
-    </div>
-    <div v-else>
+    <div class="d-flex flex-column" v-else>
+        <button class="btn btn-outline-primary mb-3 row" v-on:click="showCreate" data-bs-toggle="modal" data-bs-target="#createGenreModal">Nieuwe genres</button>
         <div class="d-flex justify-content-center row">
-            <input type="text" v-model="searchGenres" class="form-control mb-4" placeholder="Zoek genres..." v-on:input="showGenres" />
+            <input type="text" v-model="searchGenres" class="form-control mb-3" placeholder="Zoek genres..." v-on:input="showGenres" />
             <div v-if="isLoading">
                 <div class="d-flex justify-content-center">
                     <div class="spinner-border" role="status">
@@ -37,18 +29,20 @@
                 </thead>
                 <tbody>
                     <tr v-for="genre in genres">
-                        <td>{{genre.name}}</td>
-                        <td>{{genre.description}}</td>
-                        <td>
-                            <ul>
+                        <td class="align-middle">{{genre.name}}</td>
+                        <td class="align-middle">{{genre.description}}</td>
+                        <td class="align-middle">
+                            <ul class="m-0 pl-4">
                                 <li v-for="game in genre.gamesName">
                                     {{game}}
                                 </li>
                             </ul>
                         </td>
-                        <td class="align-middle text-center">
-                            <button class="btn btn-warning mb-3" v-on:click="showUpdate(genre)" data-bs-toggle="modal" data-bs-target="#updateGenreModal">Bewerken</button>
-                            <button class="btn btn-danger mb-3" v-on:click="showDelete(genre)" data-bs-toggle="modal" data-bs-target="#deleteGenreModal">Verwijderen</button>
+                        <td class="align-middle text-center m-0">
+                            <div class="btn-group-vertical btn-block">
+                                <button class="btn btn-warning mb-2" v-on:click="showUpdate(genre)" data-bs-toggle="modal" data-bs-target="#updateGenreModal">Bewerken</button>
+                                <button class="btn btn-danger mb-2" v-on:click="showDelete(genre)" data-bs-toggle="modal" data-bs-target="#deleteGenreModal">Verwijderen</button>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
@@ -65,7 +59,7 @@
                 <div class="modal-body">
                     <label>Naam:</label>
                     <input type="text" class="form-control" placeholder="Naam genre" v-model="newGenre.name" required />
-                    <div class="alert alert-danger alert alert-danger mb-0 ml-2" v-if="errorName.length">
+                    <div class="alert alert-danger alert alert-danger mt-2" v-if="errorName.length">
                         {{errorName}}
                     </div>
                     <label>Beschrijving:</label>
@@ -88,7 +82,7 @@
                 <div class="modal-body">
                     <label>Naam:</label>
                     <input type="text" class="form-control" placeholder="Naam genre" v-model="selectedGenre.name" required />
-                    <div class="alert alert-danger alert alert-danger mb-0 ml-2" v-if="errorName.length">
+                    <div class="alert alert-danger alert alert-danger mt-2" v-if="errorName.length">
                         {{errorName}}
                     </div>
                     <label>Beschrijving:</label>
@@ -109,11 +103,11 @@
                     <h5 class="modal-title" id="staticBackdropLabel">Verwijderen {{selectedGenre.name}}?</h5>
                 </div>
                 <div class="modal-body">
-                    Weet je zeker dat je de genre {{selectedGenre.name}} wilt verwijderen?
+                    Weet je zeker dat je de genre <strong>{{selectedGenre.name}}</strong> wilt verwijderen?
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="cancelGenre">Annuleren</button>
-                    <button type="button" class="btn btn-primary" v-on:click="deleteGenre(selectedGenre)">Verwijderen</button>
+                    <button type="button" class="btn btnbtn-outline-secondary" data-bs-dismiss="modal" v-on:click="cancelGenre">Annuleren</button>
+                    <button type="button" class="btn btn-outline-primary" v-on:click="deleteGenre(selectedGenre)">Verwijderen</button>
                 </div>
             </div>
         </div>
@@ -129,7 +123,7 @@
                 errorMessage: "",
                 searchGenres: "",
                 isLoading: false,
-                editGenreName:"",
+                editGenreName: "",
                 genres: [{
                     id: "",
                     name: "",
@@ -254,7 +248,7 @@
                                     this.errorMessage = e.message;
                                 }
                             });
-                        this.searchGenres="";
+                        this.searchGenres = "";
                         await this.showGenres();
                         this.isLoading = false;
                     }
@@ -270,7 +264,7 @@
                                 const modal = bootstrap.Modal.getInstance(modalElement);
                                 modal.hide();
                                 this.cancelGenre();
-                                                        this.editGenreName="";
+                                this.editGenreName = "";
                             })
                             .catch((e) => {
                                 if (e.response.status === 401) {
@@ -320,27 +314,44 @@
                     this.isLoading = false;
                 },
                 showCreate: async function () {
-                    const modalElement = document.getElementById("createGenreModal");
-                    const modal = bootstrap.Modal.getInstance(modalElement);
-                    modal.show();
+                    if (hasUserAdminRole()) {
+
+                        const modalElement = document.getElementById("createGenreModal");
+                        const modal = bootstrap.Modal.getInstance(modalElement);
+                        modal.show();
+                    }
+                    else {
+                        this.errorMessage = "You don't have the valid authentication create a genre.";
+                    }
                 },
                 showUpdate: async function (genre) {
-                    await this.getGenreDetails(genre.id);
-                    this.editGenreName = genre.name;
+                    if (hasUserAdminRole()) {
+                        await this.getGenreDetails(genre.id);
+                        this.editGenreName = genre.name;
 
-                    const modalElement = document.getElementById("updateGenreModal");
-                    const modal = bootstrap.Modal.getInstance(modalElement);
-                    modal.show();
+                        const modalElement = document.getElementById("updateGenreModal");
+                        const modal = bootstrap.Modal.getInstance(modalElement);
+                        modal.show();
+
+                    }
+                    else {
+                        this.errorMessage = "You don't have the valid authentication to update a genre.";
+                    }
                 },
                 showDelete: function (genre) {
+                    if (hasUserAdminRole()) {
 
-                    this.selectedGenre.id = genre.id;
-                    this.selectedGenre.name = genre.name;
-                    this.selectedGenre.description = genre.description;
+                        this.selectedGenre.id = genre.id;
+                        this.selectedGenre.name = genre.name;
+                        this.selectedGenre.description = genre.description;
 
-                    const modalElement = document.getElementById("deleteGenreModal");
-                    const modal = bootstrap.Modal.getInstance(modalElement);
-                    modal.show();
+                        const modalElement = document.getElementById("deleteGenreModal");
+                        const modal = bootstrap.Modal.getInstance(modalElement);
+                        modal.show();
+                    }
+                    else {
+                        this.errorMessage = "You don't have the valid authentication to delete a genre.";
+                    }
                 },
                 cancelGenre: function () {
                     this.resetValidate();
