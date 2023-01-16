@@ -3,7 +3,7 @@
 }
 
 <div id="app">
-    <div class="btn-group mb-2 d-flex row" role="group">
+    <div class="btn-group mb-2 d-flex column" role="group">
         <button type="button" class="btn btn-outline-primary" v-on:click="showGames">Games</button>
         <button type="button" class="btn btn-outline-primary" v-on:click="showGenres">Genres</button>
         <button type="button" class="btn btn-outline-primary" v-on:click="showPublishers">Publishers</button>
@@ -14,7 +14,7 @@
             <div>Om gebruik te maken van de hele site moet je inloggen en akkoord gaan met de service voorwaarden.</div>
         </div>
     </div>
-    <div class="alert alert-danger text-center" v-else-if="errorMessage.length">
+    <div class="alert alert-danger text-center" v-else-if="c.length">
         {{errorMessage}}
     </div>
     <div v-else>
@@ -35,8 +35,8 @@
                             <th>Prijs</th>
                             <th>Publisher</th>
                             <th>Genres</th>
-                            <th>Gebruikers</th>
-                            <th>Aanpassen/Verwijderen</th>
+                            <th v-if="user.approvedTerms">Gebruikers</th>
+                            <th v-if="user.approvedTerms">Aanpassen/Verwijderen</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -51,7 +51,7 @@
                                     </li>
                                 </ul>
                             </td>
-                            <td class="align-middle">
+                            <td class="align-middle" v-if="user.approvedTerms">
                                 <ul class="m-0 pl-4">
                                     <li v-for="user in game.users">
                                         {{user}}
@@ -173,6 +173,7 @@
 
             methods: {
                 showGames: async function () {
+                    this.errorMessage="";
                     this.showAllGames = true;
                     this.showAllGenres = false;
                     this.showAllPublishers = false;
@@ -402,6 +403,8 @@
                     this.isLoading = false;
                 },
                 showGenres: async function () {
+                    this.errorMessage = "";
+
                     this.showAllGames = false;
                     this.showAllGenres = true;
                     this.showAllPublishers = false;
@@ -461,6 +464,7 @@
                     this.isLoading = false;
                 },
                 showPublishers: async function () {
+                    this.errorMessage = "";
                     this.showAllGames = false;
                     this.showAllGenres = false;
                     this.showAllPublishers = true;
@@ -520,9 +524,7 @@
                 },
 
                 isUserApproved: function () {
-                    userApprovedTerms() === "True" ? this.user.approvedTerms = true : this.user.approvedTerms = false;
-
-                    if (this.user.approvedTerms) {
+                    if (userApprovedTerms()) {
                         return true;
                     }
                     else if (sessionStorage.getItem("token") === null) {

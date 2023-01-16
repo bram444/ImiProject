@@ -126,7 +126,7 @@ namespace Imi.Project.Api.Core.Services
 
             string dateTimeBDString = user.BirthDay.ToString("dd/MM/yyyy");
 
-            if(user == null || user.Email != email || dateTimeBDString != birthday || user.Id.ToString() != id)
+            if(user == null || user.Email != email || user.Id.ToString() != id)
             {
                 return token;
             }
@@ -136,6 +136,21 @@ namespace Imi.Project.Api.Core.Services
             JwtSecurityToken jwtSecurityToken = _jwtService.GenerateToken(listClaims);
 
             return _jwtService.SerializeToken(jwtSecurityToken);
+        }
+
+        public async Task UpdateClaim(string id, bool approved)
+        {
+            ApplicationUser applicationUserOld = await _userManager.FindByIdAsync(id.ToString());
+
+            applicationUserOld.ApprovedTerms = approved;
+
+            IList<Claim> claims = await _userManager.GetClaimsAsync(applicationUserOld);
+
+            Claim oldClaim = claims.Where(c => c.Type == "approved").FirstOrDefault();
+
+            Claim newClaim = new("approved", applicationUserOld.ApprovedTerms.ToString());
+
+            await _userManager.ReplaceClaimAsync(applicationUserOld, oldClaim, newClaim);
         }
 
         public async Task Logout()

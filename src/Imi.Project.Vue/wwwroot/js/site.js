@@ -36,7 +36,7 @@ function getDecodedToken() {
 
 function userApprovedTerms() {
     const decodedToken = getDecodedToken();
-    return decodedToken[approveTermKey];
+        return decodedToken[approveTermKey] === "True";
 }
 
 function readUserNameFromToken() {

@@ -9,6 +9,7 @@ namespace Imi.Project.Api.Core.Interfaces.Sevices
         Task<AuthenticationResult> Login(LoginRequestModel loginUser);
         Task<AuthenticationResult> RegisterAsync(RegistrationModel registration);
         Task<string> RefreshToken(string token);
+        Task UpdateClaim(string id, bool approved);
         Task Logout();
     }
 }

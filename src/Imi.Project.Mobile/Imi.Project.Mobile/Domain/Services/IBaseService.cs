@@ -11,5 +11,7 @@ namespace Imi.Project.Mobile.Domain.Services
         Task<T> Update(T model);
         Task<T> Add(T model);
         Task<T> Delete(Guid id);
+        void SetToken(string token);
+
     }
 }

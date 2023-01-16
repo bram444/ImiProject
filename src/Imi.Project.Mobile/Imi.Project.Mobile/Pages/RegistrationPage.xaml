@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Imi.Project.Mobile.Pages.RegistrationPage">
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout Padding="10">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <StackLayout Grid.Row="0">
+                        <Label Text="Gebruikers Naam"/>
+                        <Entry Text="{Binding UserName}" Keyboard="Text"/>
+                    </StackLayout>
+                    <StackLayout Grid.Row="1">
+                        <Label Text="Voornaam"/>
+                        <Entry Text="{Binding FirstName}" Keyboard="Text"/>
+                    </StackLayout>
+                    <StackLayout Grid.Row="2">
+                        <Label Text="Achternaam"/>
+                        <Entry Text="{Binding LastName}" Keyboard="Text"/>
+                    </StackLayout>
+                    <StackLayout Grid.Row="3">
+                        <Label Text="Email"/>
+                        <Entry Text="{Binding Email}" Keyboard="Email"/>
+                    </StackLayout>
+                    <StackLayout Grid.Row="4">
+                        <Label Text="Geboortedag"/>
+                        <DatePicker Date="{Binding BirthDay}" MaximumDate="{Binding MaxDate}"/>
+                    </StackLayout>
+                    <StackLayout Grid.Row="5">
+                        <Label Text="Wachtwoord"/>
+                        <Entry Text="{Binding Password}" Keyboard="Text" IsPassword="True"/>
+                    </StackLayout>
+                    <StackLayout Grid.Row="6">
+                        <Label Text="Wachtwoord bevestigen"/>
+                        <Entry Text="{Binding PasswordConfirm}" Keyboard="Text" IsPassword="True"/>
+                    </StackLayout>
+                    <StackLayout Grid.Row="7">
+                        <Label Text="Ga je akkoord met de terms en service?"/>
+                        <CheckBox IsChecked="{Binding Terms}"/>
+                    </StackLayout>
+                    <FlexLayout Style="{StaticResource ButtonAlign}" Grid.Row="8">
+                        <Button IsEnabled="{Binding IsNotLoading}" Text="Register" HorizontalOptions="Center" Command="{Binding Register}" Style="{StaticResource Add}"/>
+                        <Label Text="{Binding RegisterError}" Style="{StaticResource ErrorLabel}"/>
+                    </FlexLayout>
+                </Grid>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

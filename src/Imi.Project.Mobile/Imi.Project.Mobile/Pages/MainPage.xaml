@@ -7,15 +7,28 @@
              Style="{StaticResource PageStyle}"
              x:Class="Imi.Project.Mobile.Pages.MainPage"
              Title="Home">
-
-    <FlexLayout Style="{StaticResource ButtonAlign}" Margin="0,0,0,0">
-        <Button Text="Games" Command="{Binding OpenGame}" Style="{StaticResource HomeButtons}"/>
-        <Button Text="Genre" Command="{Binding OpenGenre}" Style="{StaticResource HomeButtons}"/>
-        <Button Text="Publisher" Command="{Binding OpenPublisher}" Style="{StaticResource HomeButtons}"/>
-        <Button Text="User" Command="{Binding OpenUser}" Style="{StaticResource HomeButtons}"/>
-        <StackLayout>
-            <Label Text="{Binding AppName}" HorizontalOptions="Center"/>
-            <Label Text="{Binding AppVersion}" HorizontalOptions="Center"/>
-        </StackLayout>
-    </FlexLayout>
+    <NavigationPage.TitleView>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Button IsVisible="{Binding IsNotLoggedIn}" Grid.Column="1" Text="Login" Command="{Binding OpenLogin}" Background="transparent" BorderWidth="0" HorizontalOptions="End"/>
+            <Button IsVisible="{Binding IsNotLoggedIn}" Grid.Column="2" Text="Register" Command="{Binding OpenRegister}" Background="transparent" BorderWidth="0" HorizontalOptions="End"/>
+            <Button IsVisible="{Binding IsLoggedIn}" Grid.Column="2" Text="Log out" Command="{Binding LogOut}" BackgroundColor="#A93232"  HorizontalOptions="End"/>
+        </Grid>
+    </NavigationPage.TitleView>
+    <ContentPage.Content>
+        <FlexLayout Style="{StaticResource ButtonAlign}" Margin="0,0,0,0">
+            <Button Text="Games" Command="{Binding OpenGame}" Style="{StaticResource HomeButtons}"/>
+            <Button Text="Genre" Command="{Binding OpenGenre}" Style="{StaticResource HomeButtons}"/>
+            <Button Text="Publisher" Command="{Binding OpenPublisher}" Style="{StaticResource HomeButtons}"/>
+            <Button Text="User" Command="{Binding OpenUser}" Style="{StaticResource HomeButtons}"/>
+            <StackLayout>
+                <Label Text="{Binding AppName}" HorizontalOptions="Center"/>
+                <Label Text="{Binding AppVersion}" HorizontalOptions="Center"/>
+            </StackLayout>
+        </FlexLayout>
+    </ContentPage.Content>
 </ContentPage>

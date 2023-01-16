@@ -18,12 +18,13 @@ namespace Imi.Project.Api.Controllers
         protected readonly IUserService _userService;
         protected readonly IUserGameService _userGameService;
         protected readonly IGameService _gameService;
-
-        public UserController(IUserService userService, IUserGameService userGameService, IGameService gameService)
+        protected readonly IAuthenticationService _authenticationService;
+        public UserController(IUserService userService, IUserGameService userGameService, IGameService gameService, IAuthenticationService authenticationService)
         {
             _userService = userService;
             _userGameService = userGameService;
             _gameService = gameService;
+            _authenticationService = authenticationService;
         }
 
         [Authorize(Policy = "approved")]
@@ -220,8 +221,6 @@ namespace Imi.Project.Api.Controllers
 
             ServiceResultModel<ApplicationUser> result = await _userService.UpdateAsync(updateUserDto.MapToModel());
 
-            //var userGame = await _userGameService.GetByUserIdAsync(result.Data.Id);
-
             List<GameResponseDto> gameList = new();
 
             foreach(UserGame ug in resultUserGame.Data)
@@ -233,6 +232,8 @@ namespace Imi.Project.Api.Controllers
                 }
                 gameList.Add(game.Data.MapToDto());
             }
+
+            await _authenticationService.UpdateClaim(updateUserDto.Id.ToString(), updateUserDto.ApprovedTerms);
 
             return !result.IsSuccess ? BadRequest(result.ValidationErrors) : Ok(result.Data.MapToDto(gameList));
         }

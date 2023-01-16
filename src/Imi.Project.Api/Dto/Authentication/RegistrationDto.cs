@@ -6,11 +6,13 @@ namespace Imi.Project.Api.Dto.Authentication
     {
         [Required]
         [StringLength(100, MinimumLength = 6)]
-        [DataType(DataType.Password)]
+        [RegularExpression("^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\\d]){1,})(?=(.*[\\W]){1,})(?!.*\\s).{6,100}$", ErrorMessage = "Password needs a big and small letter, a number and a special character")]
         public string Password { get; set; }
 
+        [Required]
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+
         public string ConfirmPassword { get; set; }
 
         [Required]
@@ -23,7 +25,7 @@ namespace Imi.Project.Api.Dto.Authentication
         public string LastName { get; set; }
 
         [Required]
-        [DataType(DataType.EmailAddress)]
+        [RegularExpression("^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$", ErrorMessage = "Invalid email.")]
         public string Email { get; set; }
 
         [Required]

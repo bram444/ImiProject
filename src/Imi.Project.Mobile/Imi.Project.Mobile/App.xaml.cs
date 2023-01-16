@@ -17,6 +17,7 @@ namespace Imi.Project.Mobile
             FreshIOC.Container.Register<IUserService, UserInfoService>();
             FreshIOC.Container.Register<IGenreService, GenreInfoService>();
             FreshIOC.Container.Register<IPublisherService, PublisherInfoService>();
+            FreshIOC.Container.Register<IAuthenticationService, AuthenticationService>();
 
             MainPage = new FreshNavigationContainer(FreshPageModelResolver.ResolvePageModel<MainViewModel>());
             if(DeviceInfo.Platform == DevicePlatform.Android)
@@ -25,7 +26,10 @@ namespace Imi.Project.Mobile
             }
         }
 
-        private void Current_OnTokenFresh(object source, FirebasePushNotificationTokenEventArgs e) => System.Diagnostics.Debug.WriteLine($"Token: {e.Token}");
+        private void Current_OnTokenFresh(object source, FirebasePushNotificationTokenEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine($"Token: {e.Token}");
+        }
 
         protected override void OnStart()
         {

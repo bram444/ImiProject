@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:Imi.Project.Mobile.Pages"
+             xmlns:bhv="clr-namespace:Imi.Project.Mobile.Behaviors"
+             Style="{StaticResource PageStyle}"
+             x:Class="Imi.Project.Mobile.Pages.LoginPage">
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout Padding="10">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <StackLayout Grid.Row="0">
+                        <Label Text="Naam"/>
+                        <Entry Text="{Binding UserName}" Keyboard="Text"/>
+                    </StackLayout>
+                    <StackLayout Grid.Row="1">
+                        <Label Text="Wachtoord"/>
+                        <Entry Text="{Binding Password}" Keyboard="Text" IsPassword="True"/>
+                    </StackLayout>
+                    <FlexLayout Style="{StaticResource ButtonAlign}" Grid.Row="2">
+                        <Button IsEnabled="{Binding IsNotLoading}" Text="Login" HorizontalOptions="Center" Command="{Binding LogIn}" Style="{StaticResource Add}"/>
+                        <Label Text="{Binding LoginError}" Style="{StaticResource ErrorLabel}"/>
+                    </FlexLayout>
+                </Grid>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>
