@@ -6,7 +6,6 @@ using Imi.Project.Api.Core.Models;
 using Imi.Project.Api.Core.Models.GameGenre;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -58,21 +57,21 @@ namespace Imi.Project.Api.Core.Services
         {
             try
             {
-                var gameGenreIenum = await GetByGameIdAsync(updateGameGenreModel.GameId);
+                ServiceResultModel<IEnumerable<GameGenre>> gameGenreIenum = await GetByGameIdAsync(updateGameGenreModel.GameId);
 
                 if(!gameGenreIenum.IsSuccess)
                 {
                     return gameGenreIenum;
                 }
 
-                var updateGameGenre = updateGameGenreModel.GenreIds.Select(genreId =>
+                List<GameGenreModel> updateGameGenre = updateGameGenreModel.GenreIds.Select(genreId =>
                 GameGenreEntityMapper.MapToModel(genreId, updateGameGenreModel.GameId)).ToList();
 
-                var toDeleteGenre = gameGenreIenum.Data.MapToModel().Except(updateGameGenre).ToList();
+                List<GameGenreModel> toDeleteGenre = gameGenreIenum.Data.MapToModel().Except(updateGameGenre).ToList();
 
-                foreach(var deleteGenre in toDeleteGenre)
+                foreach(GameGenreModel deleteGenre in toDeleteGenre)
                 {
-                    var result = await DeleteAsync(deleteGenre);
+                    ServiceResultModel<GameGenre> result = await DeleteAsync(deleteGenre);
                     if(!result.IsSuccess)
                     {
                         return new ServiceResultModel<IEnumerable<GameGenre>>
@@ -83,11 +82,11 @@ namespace Imi.Project.Api.Core.Services
                     }
                 }
 
-                var toAddGenre = updateGameGenre.Except(gameGenreIenum.Data.MapToModel()).ToList();
+                List<GameGenreModel> toAddGenre = updateGameGenre.Except(gameGenreIenum.Data.MapToModel()).ToList();
 
-                foreach(var addGenre in toAddGenre)
+                foreach(GameGenreModel addGenre in toAddGenre)
                 {
-                    var result = await AddAsync(addGenre);
+                    ServiceResultModel<GameGenre> result = await AddAsync(addGenre);
                     if(!result.IsSuccess)
                     {
                         return new ServiceResultModel<IEnumerable<GameGenre>>
@@ -102,7 +101,7 @@ namespace Imi.Project.Api.Core.Services
                 {
                     Data = (await GetByGameIdAsync(updateGameGenreModel.GameId)).Data
                 };
-            }catch (Exception ex)
+            } catch(Exception ex)
             {
                 return SetErrorList(ex);
             }
@@ -112,7 +111,7 @@ namespace Imi.Project.Api.Core.Services
         {
             try
             {
-                var gameGenre = TModel.MapToEntity();
+                GameGenre gameGenre = TModel.MapToEntity();
 
                 await _irespository.AddAsync(gameGenre);
 
@@ -131,14 +130,14 @@ namespace Imi.Project.Api.Core.Services
         {
             try
             {
-                var gameGenre = TModel.MapToEntity();
+                GameGenre gameGenre = TModel.MapToEntity();
 
                 if(!await _irespository.DoesExistAsync(gg => gg.GameId == gameGenre.GameId && gg.GenreId == gameGenre.GenreId))
                 {
                     return new ServiceResultModel<GameGenre>
                     {
                         IsSuccess = false,
-                        ValidationErrors = new List<ValidationResult> { new ValidationResult($"A many to many relationship {nameof(GameGenre)} does not exist") }
+                        ValidationErrors = new List<string> { $"A many to many relationship {nameof(GameGenre)} does not exist" }
                     };
                 }
 

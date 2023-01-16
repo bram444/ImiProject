@@ -6,7 +6,6 @@ using Imi.Project.Api.Core.Models;
 using Imi.Project.Api.Core.Models.Game;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Services
@@ -86,7 +85,7 @@ namespace Imi.Project.Api.Core.Services
                 if(!await _genreRepository.DoesExistAsync(id))
                 {
                     result.IsSuccess = false;
-                    result.ValidationErrors.Add(new ValidationResult($"Genre {id} does not exist"));
+                    result.ValidationErrors.Add($"Genre {id} does not exist");
                 }
             }
 
@@ -105,14 +104,14 @@ namespace Imi.Project.Api.Core.Services
                 if(!await _genreRepository.DoesExistAsync(id))
                 {
                     result.IsSuccess = false;
-                    result.ValidationErrors.Add(new ValidationResult($"Genre {id} does not exist"));
+                    result.ValidationErrors.Add($"Genre {id} does not exist");
                 }
             }
 
             if(!await _itemRepository.DoesExistAsync(updateGameModel.Id))
             {
                 result.IsSuccess = false;
-                result.ValidationErrors.Add(new ValidationResult("Game does not exist"));
+                result.ValidationErrors.Add("Game does not exist");
             }
 
             return await ErrorCheck(result);
@@ -123,13 +122,13 @@ namespace Imi.Project.Api.Core.Services
             if(!await _publisherRepository.DoesExistAsync(result.Data.PublisherId))
             {
                 result.IsSuccess = false;
-                result.ValidationErrors.Add(new ValidationResult($"Publisher {result.Data.PublisherId} doesn't exist"));
+                result.ValidationErrors.Add($"Publisher {result.Data.PublisherId} doesn't exist");
             }
 
             if(await _itemRepository.DoesExistAsync(game => game.Name == result.Data.Name && game.Id != result.Data.Id))
             {
                 result.IsSuccess = false;
-                result.ValidationErrors.Add(new ValidationResult($"Game with name {result.Data.Name} already exists"));
+                result.ValidationErrors.Add($"Game with name {result.Data.Name} already exists");
             }
 
             return result;

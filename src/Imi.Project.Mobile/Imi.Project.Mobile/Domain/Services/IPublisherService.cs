@@ -2,7 +2,7 @@
 
 namespace Imi.Project.Mobile.Domain.Services
 {
-    public interface IPublisherService: IBaseService<PublisherInfo>
+    public interface IPublisherService: IBaseService<PublisherInfo, NewPublisherInfo, UpdatePublisherInfo>
     {
     }
 }

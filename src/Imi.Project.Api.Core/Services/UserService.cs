@@ -6,7 +6,6 @@ using Imi.Project.Api.Core.Models;
 using Imi.Project.Api.Core.Models.User;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Services
@@ -103,13 +102,13 @@ namespace Imi.Project.Api.Core.Services
                 if(await _userRepository.DoesExistAsync(user => user.UserName == userEntity.UserName))
                 {
                     result.IsSuccess = false;
-                    result.ValidationErrors.Add(new ValidationResult($"Username {userEntity.UserName} already exists"));
+                    result.ValidationErrors.Add($"Username {userEntity.UserName} already exists");
                 }
 
                 if(await _userRepository.DoesExistAsync(user => user.Email == userEntity.Email))
                 {
                     result.IsSuccess = false;
-                    result.ValidationErrors.Add(new ValidationResult($"User with email already exists"));
+                    result.ValidationErrors.Add($"User with email already exists");
                 }
 
                 if(!result.IsSuccess)
@@ -139,13 +138,13 @@ namespace Imi.Project.Api.Core.Services
                 if(!await _userRepository.DoesExistAsync(response.Id))
                 {
                     result.IsSuccess = false;
-                    result.ValidationErrors.Add(new ValidationResult($"User {response.Id} doesn't exists"));
+                    result.ValidationErrors.Add($"User {response.Id} doesn't exists");
                 }
 
                 if(await _userRepository.DoesExistAsync(user => (user.UserName == response.UserName) && (user.Id != response.Id)))
                 {
                     result.IsSuccess = false;
-                    result.ValidationErrors.Add(new ValidationResult($"Username {response.UserName} already exists"));
+                    result.ValidationErrors.Add($"Username {response.UserName} already exists");
                 }
 
                 foreach(Guid id in response.GameId)
@@ -153,7 +152,7 @@ namespace Imi.Project.Api.Core.Services
                     if(!await _gameRepository.DoesExistAsync(id))
                     {
                         result.IsSuccess = false;
-                        result.ValidationErrors.Add(new ValidationResult($"Game with id {id} doesn't exist"));
+                        result.ValidationErrors.Add($"Game with id {id} doesn't exist");
                     }
                 }
 
@@ -190,7 +189,7 @@ namespace Imi.Project.Api.Core.Services
                 return new ServiceResultModel<ApplicationUser>
                 {
                     IsSuccess = false,
-                    ValidationErrors = new List<ValidationResult> { new ValidationResult("User does not exist") }
+                    ValidationErrors = new List<string> { "User does not exist" }
                 };
 
             } catch(Exception ex)
@@ -217,16 +216,16 @@ namespace Imi.Project.Api.Core.Services
             };
         }
 
-        private static IList<ValidationResult> GetResult(Exception ex)
+        private static List<string> GetResult(Exception ex)
         {
-            List<ValidationResult> error = new()
+            List<string> error = new()
             {
-                new ValidationResult(ex.Message)
+                ex.Message
             };
 
             if(ex.InnerException != null)
             {
-                error.Add(new ValidationResult(ex.InnerException.Message));
+                error.Add(ex.InnerException.Message);
             }
 
             return error;

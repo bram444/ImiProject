@@ -6,12 +6,11 @@ using Imi.Project.Api.Core.Models;
 using Imi.Project.Api.Core.Models.Publisher;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Services
 {
-    public class PublisherService:BaseService<Publisher,IPublisherRepository,NewPublisherModel,UpdatePublisherModel>, IPublisherService
+    public class PublisherService: BaseService<Publisher, IPublisherRepository, NewPublisherModel, UpdatePublisherModel>, IPublisherService
     {
         private readonly IGameRepository _gameRepository;
 
@@ -44,17 +43,17 @@ namespace Imi.Project.Api.Core.Services
                     return new ServiceResultModel<Publisher>
                     {
                         IsSuccess = false,
-                        ValidationErrors = new List<ValidationResult> { new ValidationResult($"Publisher with name {response.Name} already exists") }
+                        ValidationErrors = new List<string> { $"Publisher with name {response.Name} already exists" }
                     };
                 }
 
-                Publisher publisher= response.MapToEntity();
+                Publisher publisher = response.MapToEntity();
 
                 await _itemRepository.AddAsync(publisher);
 
                 return new ServiceResultModel<Publisher>
                 {
-                     Data = publisher
+                    Data = publisher
                 };
             } catch(Exception ex)
             {
@@ -71,13 +70,13 @@ namespace Imi.Project.Api.Core.Services
                 if(!await _itemRepository.DoesExistAsync(response.Id))
                 {
                     result.IsSuccess = false;
-                    result.ValidationErrors.Add(new ValidationResult("Publisher does not exist"));
+                    result.ValidationErrors.Add("Publisher does not exist");
                 }
 
                 if(await _itemRepository.DoesExistAsync(pub => pub.Name == response.Name && (pub.Id != response.Id)))
                 {
                     result.IsSuccess = false;
-                    result.ValidationErrors.Add(new ValidationResult($"Publisher with name {response.Name} already exists"));
+                    result.ValidationErrors.Add($"Publisher with name {response.Name} already exists");
                 }
 
                 if(!result.IsSuccess)
@@ -108,13 +107,13 @@ namespace Imi.Project.Api.Core.Services
                 if(!await _itemRepository.DoesExistAsync(id))
                 {
                     result.IsSuccess = false;
-                    result.ValidationErrors.Add(new ValidationResult("Publisher does not exist"));
+                    result.ValidationErrors.Add("Publisher does not exist");
                 }
 
                 if(await _gameRepository.DoesExistAsync(game => game.PublisherId == id))
                 {
                     result.IsSuccess = false;
-                    result.ValidationErrors.Add(new ValidationResult("Please delete the games before deleting the publisher"));
+                    result.ValidationErrors.Add("Please delete the games before deleting the publisher");
                 }
 
                 if(!result.IsSuccess)

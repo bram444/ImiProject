@@ -1,7 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using Imi.Project.Mobile.Domain.Model;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Threading.Tasks;
+using Xamarin.Forms.Internals;
 
 namespace Imi.Project.Mobile.Domain.Services
 {
@@ -34,36 +39,70 @@ namespace Imi.Project.Mobile.Domain.Services
             return JsonConvert.DeserializeObject<T>(response, GetJsonFormatter().SerializerSettings);
         }
 
-        public async Task<TOut> PutCallApi<TOut, TIn>(string uri, TIn entity)
+        public async Task<ApiResponse<TOut>> PutCallApi<TOut, TIn>(string uri, TIn entity)
         {
             return await CallApi<TOut, TIn>(uri, entity, HttpMethod.Put);
         }
 
-        public async Task<TOut> PostCallApi<TOut, TIn>(string uri, TIn entity)
+        public async Task<ApiResponse<TOut>> PostCallApi<TOut, TIn>(string uri, TIn entity)
         {
             return await CallApi<TOut, TIn>(uri, entity, HttpMethod.Post);
         }
 
-        public async Task<TOut> DeleteCallApi<TOut>(string uri)
+        public async Task<ApiResponse<TOut>> DeleteCallApi<TOut>(string uri)
         {
             return await CallApi<TOut, object>(uri, null, HttpMethod.Delete);
         }
 
-        private async Task<TOut> CallApi<TOut, TIn>(string uri, TIn entity, HttpMethod httpMethod)
+        private async Task<ApiResponse<TOut>> CallApi<TOut, TIn>(string uri, TIn entity, HttpMethod httpMethod)
         {
-            HttpResponseMessage response = httpMethod == HttpMethod.Post
-                ? await this.PostAsync(uri, entity, GetJsonFormatter())
-                : httpMethod == HttpMethod.Put ? await this.PutAsync(uri, entity, GetJsonFormatter()) : await DeleteAsync(uri);
+            try
+            {
+                HttpResponseMessage responseMessage = httpMethod == HttpMethod.Post
+                    ? await this.PostAsync(uri, entity, GetJsonFormatter())
+                    : httpMethod == HttpMethod.Put ? await this.PutAsync(uri, entity, GetJsonFormatter()) : await DeleteAsync(uri);
 
-            //if(!response.IsSuccessStatusCode)
-            //{
-            //    TOut result = await response.;
+                ApiResponse<TOut> apiData = new ApiResponse<TOut>();
+                if(responseMessage.IsSuccessStatusCode)
+                {
+                    apiData.ApiResponseData = await responseMessage.Content.ReadAsAsync<TOut>();
+                }
 
-            //    return result;
-            //}
-            TOut result = await response.Content.ReadAsAsync<TOut>();
+                List<string> allErrors = new List<string>();
+                string value = await responseMessage.Content.ReadAsStringAsync();
+                if(value.Contains("errors"))
+                {
+                    var obj = new { errors = new Dictionary<string, string[]>() };
+                    var validations = JsonConvert.DeserializeAnonymousType(value, obj);
 
-            return result;
+                    List<string[]> allValidators = validations.errors.Values.ToList();
+
+                    allValidators.ForEach(stringList => stringList.ForEach(singleError => allErrors.Add(singleError)));
+
+                    return new ApiResponse<TOut>
+                    {
+                        IsSuccess = false,
+                        Messages = allErrors
+                    };
+                }
+
+                object[] allObjects = await responseMessage.Content.ReadAsAsync<object[]>();
+                string[] stringArray = Array.ConvertAll(allObjects, o => o.ToString());
+                allErrors.AddRange(stringArray);
+
+                return new ApiResponse<TOut>
+                {
+                    IsSuccess = false,
+                    Messages = allErrors
+                };
+            } catch(Exception ex)
+            {
+                return new ApiResponse<TOut>
+                {
+                    IsSuccess = false,
+                    Messages = new List<string>() { ex.Message }
+                };
+            }
         }
     }
 }

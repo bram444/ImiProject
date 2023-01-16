@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class PublisherViewModel: BaseViewModel<PublisherInfo, IPublisherService, PublisherInfoViewModel>
+    public class PublisherViewModel: BaseViewModel<PublisherInfo, IPublisherService, PublisherInfoViewModel, NewPublisherInfo, UpdatePublisherInfo>
     {
         public PublisherViewModel(IPublisherService publisherService) : base(publisherService)
         { }

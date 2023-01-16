@@ -4,7 +4,6 @@ using Imi.Project.Api.Core.Interfaces.Sevices;
 using Imi.Project.Api.Core.Models;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Services
@@ -74,9 +73,9 @@ namespace Imi.Project.Api.Core.Services
                     return new ServiceResultModel<T>
                     {
                         IsSuccess = false,
-                        ValidationErrors = new List<ValidationResult>
+                        ValidationErrors = new List<string>
                          {
-                             new ValidationResult($"{nameof(T)} does not exist")
+                             $"{nameof(T)} does not exist"
                          }
                     };
                 }
@@ -109,16 +108,16 @@ namespace Imi.Project.Api.Core.Services
             };
         }
 
-        private static IList<ValidationResult> GetResult(Exception ex)
+        private static List<string> GetResult(Exception ex)
         {
-            List<ValidationResult> error = new()
+            List<string> error = new()
             {
-                new ValidationResult(ex.Message)
+                ex.Message
             };
 
             if(ex.InnerException != null)
             {
-                error.Add(new ValidationResult(ex.InnerException.Message));
+                error.Add(ex.InnerException.Message);
             }
 
             return error;

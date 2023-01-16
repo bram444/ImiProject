@@ -2,7 +2,7 @@
 
 namespace Imi.Project.Mobile.Domain.Services
 {
-    public interface IGenreService: IBaseService<GenreInfo>
+    public interface IGenreService: IBaseService<GenreInfo, NewGenreInfo, UpdateGenreInfo>
     {
     }
 }

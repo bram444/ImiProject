@@ -1,11 +1,10 @@
 ﻿using Imi.Project.Api.Core.Entities;
-using Imi.Project.Api.Core.Models;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
-using System;
 using Imi.Project.Api.Core.Interfaces.Repository;
 using Imi.Project.Api.Core.Interfaces.Sevices;
+using Imi.Project.Api.Core.Models;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Services
 {
@@ -57,16 +56,16 @@ namespace Imi.Project.Api.Core.Services
             };
         }
 
-        private static IList<ValidationResult> GetResult(Exception ex)
+        private static List<string> GetResult(Exception ex)
         {
-            List<ValidationResult> error = new()
+            List<string> error = new()
             {
-                new ValidationResult(ex.Message)
+                 ex.Message
             };
 
             if(ex.InnerException != null)
             {
-                error.Add(new ValidationResult(ex.InnerException.Message));
+                error.Add(ex.InnerException.Message);
             }
 
             return error;

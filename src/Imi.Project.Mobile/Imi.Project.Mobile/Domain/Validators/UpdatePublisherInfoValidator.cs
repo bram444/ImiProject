@@ -3,9 +3,9 @@ using Imi.Project.Mobile.Domain.Model;
 
 namespace Imi.Project.Mobile.Domain.Validators
 {
-    public class PublisherInfoValidator: AbstractValidator<PublisherInfo>
+    public class UpdatePublisherInfoValidator: AbstractValidator<UpdatePublisherInfo>
     {
-        public PublisherInfoValidator()
+        public UpdatePublisherInfoValidator()
         {
             RuleFor(publisherInfo => publisherInfo.Name)
                  .NotEmpty()

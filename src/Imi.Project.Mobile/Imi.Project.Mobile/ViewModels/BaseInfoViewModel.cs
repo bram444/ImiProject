@@ -3,35 +3,47 @@ using FreshMvvm;
 using Imi.Project.Mobile.Domain.Model;
 using Imi.Project.Mobile.Domain.Services;
 using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public abstract class BaseInfoViewModel<C, CS, LS>: FreshBasePageModel
-                where CS : IBaseService<C>
+    public abstract class BaseInfoViewModel<C, CS, LS, N, U>: FreshBasePageModel
+                where CS : IBaseService<C, N, U>
                 where C : BaseInfo, new()
+                where N : class, new()
+                where U : BaseInfo, new()
     {
         protected CS CurrentService;
         protected LS ListService;
-        protected IValidator InfoValidator;
+        protected IValidator UpdateValidator;
+        protected IValidator NewValidator;
         protected C CurrentItem;
+        protected N NewItem;
+        protected U UpdateItem;
 
-        public BaseInfoViewModel(CS currentService, LS listService, IValidator validator)
+        public BaseInfoViewModel(CS currentService, LS listService, IValidator validatorUpdate, IValidator validatorNew)
         {
             CurrentService = currentService;
             ListService = listService;
-            InfoValidator = validator;
+            UpdateValidator = validatorUpdate;
+            NewValidator = validatorNew;
         }
 
         private string title;
         public string Title
         {
-            get => title;
+            get
+            {
+                return title;
+            }
+
             set
             {
                 title = value;
+                ErrorAPI = null;
                 RaisePropertyChanged(nameof(Title));
             }
         }
@@ -39,11 +51,16 @@ namespace Imi.Project.Mobile.ViewModels
         private string name;
         public string Name
         {
-            get => name;
+            get
+            {
+                return name;
+            }
+
             set
             {
                 name = value;
                 NameError = null;
+                ErrorAPI = null;
                 RaisePropertyChanged(nameof(Name));
             }
         }
@@ -51,10 +68,15 @@ namespace Imi.Project.Mobile.ViewModels
         private string nameError;
         public string NameError
         {
-            get => nameError;
+            get
+            {
+                return nameError;
+            }
+
             set
             {
                 nameError = value;
+                ErrorAPI = null;
                 RaisePropertyChanged(nameof(NameError));
             }
         }
@@ -62,7 +84,11 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visableAdd;
         public bool VisableAdd
         {
-            get => visableAdd;
+            get
+            {
+                return visableAdd;
+            }
+
             set
             {
                 visableAdd = value;
@@ -73,7 +99,11 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visableCancel;
         public bool VisableCancel
         {
-            get => visableCancel;
+            get
+            {
+                return visableCancel;
+            }
+
             set
             {
                 visableCancel = value;
@@ -84,7 +114,11 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visableEdit;
         public bool VisableEdit
         {
-            get => visableEdit;
+            get
+            {
+                return visableEdit;
+            }
+
             set
             {
                 visableEdit = value;
@@ -95,7 +129,11 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visableDelete;
         public bool VisableDelete
         {
-            get => visableDelete;
+            get
+            {
+                return visableDelete;
+            }
+
             set
             {
                 visableDelete = value;
@@ -106,7 +144,11 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visableSave;
         public bool VisableSave
         {
-            get => visableSave;
+            get
+            {
+                return visableSave;
+            }
+
             set
             {
                 visableSave = value;
@@ -117,7 +159,11 @@ namespace Imi.Project.Mobile.ViewModels
         private bool enableEditData;
         public bool EnableEditData
         {
-            get => enableEditData;
+            get
+            {
+                return enableEditData;
+            }
+
             set
             {
                 enableEditData = value;
@@ -125,38 +171,78 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        public virtual ICommand AddCommand => new Command(() =>
+        public virtual ICommand AddCommand
         {
-            if(Name == null)
+            get
             {
-                Name = string.Empty;
+                return new Command(() =>
+                {
+                    if(Name == null)
+                    {
+                        Name = string.Empty;
+                    }
+                });
             }
-        });
+        }
 
-        public virtual ICommand EditCommand => new Command(() =>
+        public virtual ICommand EditCommand
         {
-            SetEdit();
-        });
-
-        public virtual ICommand DeleteCommand => new Command(async () =>
-        {
-            if(DeviceInfo.Platform == DevicePlatform.Android)
+            get
             {
-                Vibration.Vibrate(TimeSpan.FromSeconds(0.5));
+                return new Command(() =>
+                {
+                    SetEdit();
+                });
             }
+        }
 
-            await CurrentService.Delete(CurrentItem.Id);
-            await CoreMethods.PopPageModel(new C(), false, true);
-        });
+        public virtual ICommand DeleteCommand
+        {
+            get
+            {
+                return new Command(async () =>
+                {
+                    if(DeviceInfo.Platform == DevicePlatform.Android)
+                    {
+                        Vibration.Vibrate(TimeSpan.FromSeconds(0.5));
+                    }
+
+                    await CurrentService.Delete(CurrentItem.Id);
+                    await CoreMethods.PopPageModel(new C(), false, true);
+                });
+            }
+        }
 
         public abstract ICommand SaveCommand { get; }
 
-        public virtual ICommand CancelCommand => new Command(() =>
+        public virtual ICommand CancelCommand
         {
-            SetRead();
-        });
+            get
+            {
+                return new Command(() =>
+                {
+                    SetRead();
+                });
+            }
+        }
 
-        public abstract bool Validate(C validate);
+        public abstract bool Validate(N validate);
+        public abstract bool Validate(U validate);
+
+        private string errorAPI;
+        public string ErrorAPI
+        {
+            get
+            {
+                return errorAPI;
+            }
+
+            set
+            {
+                errorAPI = value;
+                RaisePropertyChanged(nameof(ErrorAPI));
+            }
+        }
 
         public virtual void SetRead()
         {
@@ -191,22 +277,33 @@ namespace Imi.Project.Mobile.ViewModels
             VisableSave = true;
         }
 
-        protected async void AddItem(C item)
+        protected async Task<ApiResponse<C>> AddItem(N item)
         {
+            ApiResponse<C> apiResponse = new ApiResponse<C>() { IsSuccess = false };
             if(Validate(item))
             {
-                await CurrentService.Add(item);
-                await CoreMethods.PopPageModel(item, false, true);
+                apiResponse = await CurrentService.Add(item);
+                if(apiResponse.IsSuccess)
+                {
+                    await CoreMethods.PopPageModel(item, false, true);
+                }
             }
+            return apiResponse;
         }
 
-        protected async void SaveItem(C item)
+        protected async Task<ApiResponse<C>> SaveItem(U item)
         {
+            ApiResponse<C> apiResponse = new ApiResponse<C>() { IsSuccess = false };
             if(Validate(item))
             {
-                await CurrentService.Update(item);
-                await CoreMethods.PopPageModel(item, false, true);
+                apiResponse = await CurrentService.Update(item);
+                if(apiResponse.IsSuccess)
+                {
+                    await CoreMethods.PopPageModel(item, false, true);
+                }
             }
+
+            return apiResponse;
         }
     }
 }

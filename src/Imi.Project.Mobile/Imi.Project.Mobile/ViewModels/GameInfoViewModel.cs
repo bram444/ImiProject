@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FluentValidation.Results;
 using Imi.Project.Mobile.Domain.Model;
 using Imi.Project.Mobile.Domain.Services;
 using Imi.Project.Mobile.Domain.Validators;
@@ -12,12 +13,12 @@ using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class GameInfoViewModel: BaseEditListViewModel<GamesInfo, GenreInfo, IGameService, IGenreService>
+    public class GameInfoViewModel: BaseEditListViewModel<GamesInfo, GenreInfo, IGameService, IGenreService, NewGameInfo, UpdateGameInfo, NewGenreInfo, UpdateGenreInfo>
     {
         private readonly IPublisherService PublisherService;
 
         public GameInfoViewModel(IGameService gameService, IGenreService genreService, IPublisherService publisherService)
-            : base(gameService, genreService, new GameInfoValidator())
+            : base(gameService, genreService, new UpdateGameInfoValidator(), new NewGameInfoValidator())
         {
             PublisherService = publisherService;
         }
@@ -26,11 +27,16 @@ namespace Imi.Project.Mobile.ViewModels
         private string gamePrice;
         public string GamePrice
         {
-            get => gamePrice;
+            get
+            {
+                return gamePrice;
+            }
+
             set
             {
                 gamePrice = value;
                 GamePriceError = null;
+                ErrorAPI = null;
                 RaisePropertyChanged(nameof(GamePrice));
             }
         }
@@ -38,7 +44,11 @@ namespace Imi.Project.Mobile.ViewModels
         private string gamePriceError;
         public string GamePriceError
         {
-            get => gamePriceError;
+            get
+            {
+                return gamePriceError;
+            }
+
             set
             {
                 gamePriceError = value;
@@ -49,11 +59,16 @@ namespace Imi.Project.Mobile.ViewModels
         private PublisherInfo chosenPublisher;
         public PublisherInfo ChosenPublisher
         {
-            get => chosenPublisher;
+            get
+            {
+                return chosenPublisher;
+            }
+
             set
             {
                 chosenPublisher = value;
                 PublisherError = null;
+                ErrorAPI = null;
                 RaisePropertyChanged(nameof(ChosenPublisher));
             }
         }
@@ -61,7 +76,11 @@ namespace Imi.Project.Mobile.ViewModels
         private string publisherError;
         public string PublisherError
         {
-            get => publisherError;
+            get
+            {
+                return publisherError;
+            }
+
             set
             {
                 publisherError = value;
@@ -72,7 +91,11 @@ namespace Imi.Project.Mobile.ViewModels
         private ObservableCollection<PublisherInfo> publishers;
         public ObservableCollection<PublisherInfo> Publishers
         {
-            get => publishers;
+            get
+            {
+                return publishers;
+            }
+
             set
             {
                 publishers = value;
@@ -83,7 +106,11 @@ namespace Imi.Project.Mobile.ViewModels
         private bool enablePublisher;
         public bool EnablePublisher
         {
-            get => enablePublisher;
+            get
+            {
+                return enablePublisher;
+            }
+
             set
             {
                 enablePublisher = value;
@@ -94,7 +121,11 @@ namespace Imi.Project.Mobile.ViewModels
         private Guid publisherId;
         public Guid PublisherId
         {
-            get => publisherId;
+            get
+            {
+                return publisherId;
+            }
+
             set
             {
                 publisherId = value;
@@ -107,8 +138,9 @@ namespace Imi.Project.Mobile.ViewModels
         {
             Name = CurrentItem.Name;
             GamePrice = CurrentItem.Price.ToString();
-            PublisherId = CurrentItem.PublisherId;
-            CurrentItemIdList = new ObservableCollection<Guid>(CurrentItem.GenreId);
+            PublisherId = CurrentItem.Publisher.Id;
+
+            CurrentItemIdList = new ObservableCollection<Guid>(CurrentItem.Genres.Select(genres => genres.Id));
 
             List<PublisherInfo> selectPublisher = new List<PublisherInfo> { new PublisherInfo
                 {
@@ -139,7 +171,11 @@ namespace Imi.Project.Mobile.ViewModels
             LoadList(selectGenre);
         }
 
-        public override ICommand AddCommand => new Command(() =>
+        public override ICommand AddCommand
+        {
+            get
+            {
+                return new Command(async () =>
             {
                 base.AddCommand.Execute(null);
 
@@ -152,9 +188,8 @@ namespace Imi.Project.Mobile.ViewModels
                     gameGenreId.Add(genre.Id);
                 }
 
-                GamesInfo gameEdit = new GamesInfo
+                NewGameInfo gameEdit = new NewGameInfo
                 {
-                    Id = Guid.NewGuid(),
                     Name = Name,
                     Price = 0.0f,
                     GenreId = gameGenreId,
@@ -166,42 +201,56 @@ namespace Imi.Project.Mobile.ViewModels
                     gameEdit.Price = float.Parse(GamePrice);
                 }
 
-                AddItem(gameEdit);
+                ApiResponse<GamesInfo> apiResponse = await AddItem(gameEdit);
+                ErrorAPI = string.Join(Environment.NewLine, apiResponse.Messages);
             });
+            }
+        }
 
-        public override ICommand SaveCommand => new Command(() =>
-            {
-                ObservableCollection<GenreInfo> allGenre = CurrentItemList;
-
-                List<Guid> gameGenreId = new List<Guid>();
-
-                foreach(GenreInfo genre in allGenre.Distinct())
-                {
-                    gameGenreId.Add(genre.Id);
-                }
-
-                GamesInfo gameValidate = new GamesInfo
-                {
-                    Id = CurrentItem.Id,
-                    GenreId = gameGenreId,
-                    PublisherId = ChosenPublisher.Id,
-                    Name = Name,
-                    Price = 0
-                };
-
-                if(GamePrice != null && float.TryParse(GamePrice, out float isfloat))
-                {
-                    gameValidate.Price = float.Parse(GamePrice);
-                }
-
-                SaveItem(gameValidate);
-            });
-
-        public override ICommand AddPickerItem => new Command(() =>
+        public override ICommand SaveCommand
         {
-            TextPicker = "Add genre";
+            get
+            {
+                return new Command(async () =>
+                {
+                    ObservableCollection<GenreInfo> allGenre = CurrentItemList;
 
-            List<GenreInfo> genres = new List<GenreInfo>
+                    List<Guid> gameGenreId = new List<Guid>();
+
+                    foreach(GenreInfo genre in allGenre.Distinct())
+                    {
+                        gameGenreId.Add(genre.Id);
+                    }
+
+                    UpdateGameInfo gameValidate = new UpdateGameInfo
+                    {
+                        Id = CurrentItem.Id,
+                        GenreId = gameGenreId,
+                        PublisherId = ChosenPublisher.Id,
+                        Name = Name,
+                        Price = 0
+                    };
+
+                    if(GamePrice != null && float.TryParse(GamePrice, out float isfloat))
+                    {
+                        gameValidate.Price = float.Parse(GamePrice);
+                    }
+
+                    ApiResponse<GamesInfo> apiResponse = await SaveItem(gameValidate);
+                    ErrorAPI = string.Join(Environment.NewLine, apiResponse.Messages);
+                });
+            }
+        }
+
+        public override ICommand AddPickerItem
+        {
+            get
+            {
+                return new Command(() =>
+                {
+                    TextPicker = "Add genre";
+
+                    List<GenreInfo> genres = new List<GenreInfo>
             {
                 new GenreInfo
                 {
@@ -210,14 +259,20 @@ namespace Imi.Project.Mobile.ViewModels
                 }
             };
 
-            base.AddPickerItem.Execute(genres);
-        });
+                    base.AddPickerItem.Execute(genres);
+                });
+            }
+        }
 
-        public override ICommand DeletePickerItem => new Command(() =>
+        public override ICommand DeletePickerItem
         {
-            TextPicker = "Delete genre";
+            get
+            {
+                return new Command(() =>
+                {
+                    TextPicker = "Delete genre";
 
-            List<GenreInfo> genres = new List<GenreInfo>
+                    List<GenreInfo> genres = new List<GenreInfo>
                 {
                     new GenreInfo
                     {
@@ -226,15 +281,49 @@ namespace Imi.Project.Mobile.ViewModels
                     }
                 };
 
-            base.DeletePickerItem.Execute(genres);
-        });
+                    base.DeletePickerItem.Execute(genres);
+                });
+            }
+        }
 
-        public override bool Validate(GamesInfo gamesInfo)
+        public override bool Validate(NewGameInfo gamesInfo)
         {
-            ValidationContext<GamesInfo> validationContext = new ValidationContext<GamesInfo>(gamesInfo);
-            FluentValidation.Results.ValidationResult validationResult = InfoValidator.Validate(validationContext);
+            ValidationContext<NewGameInfo> validationContext = new ValidationContext<NewGameInfo>(gamesInfo);
+            ValidationResult validationResult = NewValidator.Validate(validationContext);
 
-            foreach(FluentValidation.Results.ValidationFailure error in validationResult.Errors)
+            foreach(ValidationFailure error in validationResult.Errors)
+            {
+                switch(error.PropertyName)
+                {
+                    case nameof(gamesInfo.Name):
+                        NameError = error.ErrorMessage;
+                        break;
+
+                    case nameof(gamesInfo.PublisherId):
+                        PublisherError = error.ErrorMessage;
+                        break;
+
+                    case nameof(gamesInfo.Price):
+                        GamePriceError = error.ErrorMessage;
+                        break;
+
+                    default:
+                        NameError = "Unknown Error";
+                        PublisherError = "Unknown Error";
+                        GamePriceError = "Unknown Error";
+                        break;
+                }
+            }
+
+            return validationResult.IsValid;
+        }
+
+        public override bool Validate(UpdateGameInfo gamesInfo)
+        {
+            ValidationContext<UpdateGameInfo> validationContext = new ValidationContext<UpdateGameInfo>(gamesInfo);
+            ValidationResult validationResult = UpdateValidator.Validate(validationContext);
+
+            foreach(ValidationFailure error in validationResult.Errors)
             {
                 switch(error.PropertyName)
                 {
@@ -284,9 +373,11 @@ namespace Imi.Project.Mobile.ViewModels
 
             PublisherId = Guid.Empty;
 
-            CurrentItem = new GamesInfo
+            NewItem = new NewGameInfo
             {
-                Id = Guid.Empty,
+                Name = "",
+                Price = 0,
+                PublisherId = Guid.Empty,
                 GenreId = new List<Guid>()
             };
 

@@ -3,9 +3,9 @@ using Imi.Project.Mobile.Domain.Model;
 
 namespace Imi.Project.Mobile.Domain.Validators
 {
-    public class UserInfoValidator: AbstractValidator<UserInfo>
+    public class RegistrationValidator: AbstractValidator<RegistrationInfo>
     {
-        public UserInfoValidator()
+        public RegistrationValidator()
         {
             RuleFor(userInfo => userInfo.Email)
                 .NotEmpty()

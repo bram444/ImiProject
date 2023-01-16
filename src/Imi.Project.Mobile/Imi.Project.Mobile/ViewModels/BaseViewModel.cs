@@ -7,22 +7,50 @@ using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public abstract class BaseViewModel<C, I, VM>: FreshBasePageModel
-        where I : IBaseService<C>
+    public abstract class BaseViewModel<C, I, VM, N, U>: FreshBasePageModel
+        where I : IBaseService<C, N, U>
         where VM : FreshBasePageModel
         //class, interface, ViewModel
     {
         public I Service;
-
+        public ITokenService _tokenService = new TokenService();
         public BaseViewModel(I service)
         {
             Service = service;
         }
 
+        private string token = null;
+        public string Token
+        {
+            get
+            {
+                return token;
+            }
+
+            set
+            {
+                token = value;
+                RaisePropertyChanged(nameof(Token));
+                RaisePropertyChanged(nameof(IsAdmin));
+            }
+        }
+
+        public bool IsAdmin
+        {
+            get
+            {
+                return _tokenService.IsAdmin(Token);
+            }
+        }
+
         private ObservableCollection<C> collection;
         public ObservableCollection<C> Collection
         {
-            get => collection;
+            get
+            {
+                return collection;
+            }
+
             set
             {
                 collection = value;
@@ -33,7 +61,11 @@ namespace Imi.Project.Mobile.ViewModels
         private string title;
         public string Title
         {
-            get => title;
+            get
+            {
+                return title;
+            }
+
             set
             {
                 title = value;
@@ -41,20 +73,33 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        private bool visableAdd;
-        public bool VisableAdd
+        private bool displayList;
+        public bool DisplayList
         {
-            get => visableAdd;
+            get
+            {
+                return displayList;
+            }
+
             set
             {
-                visableAdd = value;
-                RaisePropertyChanged(nameof(VisableAdd));
+                displayList = value;
+                RaisePropertyChanged(nameof(DisplayList));
             }
         }
 
         public override async void Init(object initData)
         {
-            base.Init(initData);
+            if(initData is string)
+            {
+                Token = initData.ToString();
+                Service.SetToken(Token);
+
+                base.Init(true);
+            } else
+            {
+                base.Init(initData);
+            }
 
             await Refresh();
         }
@@ -70,18 +115,27 @@ namespace Imi.Project.Mobile.ViewModels
         {
             Collection = null;
 
-            VisableAdd = false;
+            DisplayList = false;
 
             Title = "Loading";
 
             Collection = new ObservableCollection<C>(await Service.GetAll());
 
-            VisableAdd = true;
+            DisplayList = true;
         }
 
-        public virtual ICommand AddItem => new Command<C>(async (C item) =>
+        public virtual ICommand AddItem
         {
-            await CoreMethods.PushPageModel<VM>(item);
-        });
+            get
+            {
+                return new Command<C>(async (C item) =>
+                {
+                    if(IsAdmin)
+                    {
+                        await CoreMethods.PushPageModel<VM>(item);
+                    }
+                });
+            }
+        }
     }
 }

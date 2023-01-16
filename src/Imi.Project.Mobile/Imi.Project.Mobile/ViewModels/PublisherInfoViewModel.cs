@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FluentValidation.Results;
 using Imi.Project.Mobile.Domain.Model;
 using Imi.Project.Mobile.Domain.Services;
 using Imi.Project.Mobile.Domain.Validators;
@@ -10,17 +11,21 @@ using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class PublisherInfoViewModel: BaseListInfoViewModel<PublisherInfo, IPublisherService, IGameService>
+    public class PublisherInfoViewModel: BaseListInfoViewModel<PublisherInfo, IPublisherService, IGameService, NewPublisherInfo, UpdatePublisherInfo>
     {
         public PublisherInfoViewModel(IPublisherService publisherService, IGameService gameService)
-            : base(publisherService, gameService, new PublisherInfoValidator())
+            : base(publisherService, gameService, new UpdatePublisherInfoValidator(), new NewPublisherInfoValidator())
         { }
 
         #region Properties
         private string publisherCountry;
         public string PublisherCountry
         {
-            get => publisherCountry;
+            get
+            {
+                return publisherCountry;
+            }
+
             set
             {
                 publisherCountry = value;
@@ -32,7 +37,11 @@ namespace Imi.Project.Mobile.ViewModels
         private string publisherDeleteError;
         public string PublisherDeleteError
         {
-            get => publisherDeleteError;
+            get
+            {
+                return publisherDeleteError;
+            }
+
             set
             {
                 publisherDeleteError = value;
@@ -43,7 +52,11 @@ namespace Imi.Project.Mobile.ViewModels
         private string publisherCounryError;
         public string PublisherCountryError
         {
-            get => publisherCounryError;
+            get
+            {
+                return publisherCounryError;
+            }
+
             set
             {
                 publisherCounryError = value;
@@ -52,7 +65,11 @@ namespace Imi.Project.Mobile.ViewModels
         }
         #endregion
 
-        public override ICommand AddCommand => new Command(() =>
+        public override ICommand AddCommand
+        {
+            get
+            {
+                return new Command(async () =>
             {
                 base.AddCommand.Execute(null);
 
@@ -61,17 +78,23 @@ namespace Imi.Project.Mobile.ViewModels
                     PublisherCountry = string.Empty;
                 }
 
-                PublisherInfo publisherEdit = new PublisherInfo
+                NewPublisherInfo publisherEdit = new NewPublisherInfo
                 {
-                    Id = Guid.NewGuid(),
                     Name = Name,
                     Country = PublisherCountry,
                 };
 
-                AddItem(publisherEdit);
+                ApiResponse<PublisherInfo> apiResponse = await AddItem(publisherEdit);
+                ErrorAPI = string.Join(Environment.NewLine, apiResponse.Messages);
             });
+            }
+        }
 
-        public override ICommand DeleteCommand => new Command(() =>
+        public override ICommand DeleteCommand
+        {
+            get
+            {
+                return new Command(() =>
         {
             if(Games.Count() > 0)
             {
@@ -81,25 +104,60 @@ namespace Imi.Project.Mobile.ViewModels
                 base.DeleteCommand.Execute(null);
             }
         });
+            }
+        }
 
-        public override ICommand SaveCommand => new Command(() =>
+        public override ICommand SaveCommand
+        {
+            get
             {
-                PublisherInfo validatePublisher = new PublisherInfo
+                return new Command(async () =>
+            {
+                UpdatePublisherInfo validatePublisher = new UpdatePublisherInfo
                 {
                     Id = CurrentItem.Id,
                     Country = PublisherCountry,
                     Name = Name
                 };
-
-                SaveItem(validatePublisher);
+                ApiResponse<PublisherInfo> apiResponse = await SaveItem(validatePublisher);
+                ErrorAPI = string.Join(Environment.NewLine, apiResponse.Messages);
             });
+            }
+        }
 
-        public override bool Validate(PublisherInfo publisherInfo)
+        public override bool Validate(NewPublisherInfo publisherInfo)
         {
-            ValidationContext<PublisherInfo> validationContext = new ValidationContext<PublisherInfo>(publisherInfo);
-            FluentValidation.Results.ValidationResult validationResult = InfoValidator.Validate(validationContext);
+            ValidationContext<NewPublisherInfo> validationContext = new ValidationContext<NewPublisherInfo>(publisherInfo);
+            ValidationResult validationResult = NewValidator.Validate(validationContext);
 
-            foreach(FluentValidation.Results.ValidationFailure error in validationResult.Errors)
+            foreach(ValidationFailure error in validationResult.Errors)
+            {
+                switch(error.PropertyName)
+                {
+                    case nameof(publisherInfo.Name):
+                        NameError = error.ErrorMessage;
+                        break;
+
+                    case nameof(publisherInfo.Country):
+                        PublisherCountryError = error.ErrorMessage;
+                        break;
+
+                    default:
+                        PublisherCountryError = "Unknown error";
+                        NameError = "Unknown error";
+                        break;
+                }
+            }
+
+            return validationResult.IsValid;
+        }
+
+        public override bool Validate(UpdatePublisherInfo publisherInfo)
+        {
+            ValidationContext<UpdatePublisherInfo> validationContext = new ValidationContext<UpdatePublisherInfo>(publisherInfo);
+            ValidationResult validationResult = UpdateValidator.Validate(validationContext);
+
+            foreach(ValidationFailure error in validationResult.Errors)
             {
                 switch(error.PropertyName)
                 {
@@ -136,7 +194,7 @@ namespace Imi.Project.Mobile.ViewModels
 
             IEnumerable<GamesInfo> allGames = await ListService.GetAll();
 
-            Games = allGames.Where(gamess => gamess.PublisherId == CurrentItem.Id).ToList();
+            Games = allGames.Where(gamess => gamess.Publisher.Id == CurrentItem.Id).ToList();
 
             base.SetRead();
         }

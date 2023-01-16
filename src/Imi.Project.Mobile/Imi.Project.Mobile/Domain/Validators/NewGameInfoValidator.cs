@@ -3,9 +3,9 @@ using Imi.Project.Mobile.Domain.Model;
 
 namespace Imi.Project.Mobile.Domain.Validators
 {
-    public class GameInfoValidator: AbstractValidator<GamesInfo>
+    public class NewGameInfoValidator: AbstractValidator<NewGameInfo>
     {
-        public GameInfoValidator()
+        public NewGameInfoValidator()
         {
             RuleFor(gameinfo => gameinfo.Name)
                 .NotEmpty()

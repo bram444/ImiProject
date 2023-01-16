@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class GameViewModel: BaseViewModel<GamesInfo, IGameService, GameInfoViewModel>
+    public class GameViewModel: BaseViewModel<GamesInfo, IGameService, GameInfoViewModel, NewGameInfo, UpdateGameInfo>
     {
         public GameViewModel(IGameService gameService) : base(gameService)
         { }

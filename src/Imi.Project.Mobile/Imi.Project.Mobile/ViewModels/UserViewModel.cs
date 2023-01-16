@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class UserViewModel: BaseViewModel<UserInfo, IUserService, UserInfoViewModel>
+    public class UserViewModel: BaseViewModel<UserInfo, IUserService, UserInfoViewModel, RegistrationInfo, UpdateUserInfo>
     {
         public UserViewModel(IUserService userService) : base(userService)
         { }

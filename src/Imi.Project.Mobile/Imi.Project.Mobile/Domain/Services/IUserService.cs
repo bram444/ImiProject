@@ -2,7 +2,7 @@
 
 namespace Imi.Project.Mobile.Domain.Services
 {
-    public interface IUserService: IBaseService<UserInfo>
+    public interface IUserService: IBaseService<UserInfo, RegistrationInfo, UpdateUserInfo>
     {
     }
 }

@@ -6,7 +6,6 @@ using Imi.Project.Api.Core.Models;
 using Imi.Project.Api.Core.Models.UserGame;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,7 +13,7 @@ namespace Imi.Project.Api.Core.Services
 {
     public class UserGameService: BaseGameMTMService<IUserGameRepository, UserGame, UserGameModel>, IUserGameService
     {
-        public UserGameService(IUserGameRepository userGameRepository):base(userGameRepository)
+        public UserGameService(IUserGameRepository userGameRepository) : base(userGameRepository)
         {
         }
 
@@ -56,7 +55,7 @@ namespace Imi.Project.Api.Core.Services
         {
             try
             {
-                var resultUserGame = await GetByUserIdAsync(model.UserId);
+                ServiceResultModel<IEnumerable<UserGame>> resultUserGame = await GetByUserIdAsync(model.UserId);
 
                 if(!resultUserGame.IsSuccess)
                 {
@@ -66,11 +65,11 @@ namespace Imi.Project.Api.Core.Services
                 List<UserGameModel> updateUserGame = model.GameIds.Select(gameId =>
                 UserGameEntityMapper.MapToModel(model.UserId, gameId)).ToList();
 
-                var oldUserGame = resultUserGame.Data.MapToModel();
+                IEnumerable<UserGameModel> oldUserGame = resultUserGame.Data.MapToModel();
 
-                var toDelete = oldUserGame.Except(updateUserGame).ToList();
+                List<UserGameModel> toDelete = oldUserGame.Except(updateUserGame).ToList();
 
-                foreach(var delete in toDelete)
+                foreach(UserGameModel delete in toDelete)
                 {
                     ServiceResultModel<UserGame> resultDelete = await DeleteAsync(delete);
                     if(!resultDelete.IsSuccess)
@@ -83,9 +82,9 @@ namespace Imi.Project.Api.Core.Services
                     }
                 }
 
-                var toAdd = updateUserGame.Except(oldUserGame).ToList();
+                List<UserGameModel> toAdd = updateUserGame.Except(oldUserGame).ToList();
 
-                foreach(var add in toAdd)
+                foreach(UserGameModel add in toAdd)
                 {
                     ServiceResultModel<UserGame> resultAdd = await AddAsync(add);
                     if(!resultAdd.IsSuccess)
@@ -102,7 +101,7 @@ namespace Imi.Project.Api.Core.Services
                 {
                     Data = (await GetByUserIdAsync(model.UserId)).Data
                 };
-            }catch(Exception ex)
+            } catch(Exception ex)
             {
                 return SetErrorList(ex);
             }
@@ -112,13 +111,13 @@ namespace Imi.Project.Api.Core.Services
         {
             try
             {
-                var userGame = TModel.MapToEntity();
-                
+                UserGame userGame = TModel.MapToEntity();
+
                 await _irespository.AddAsync(userGame);
 
-                return  new ServiceResultModel<UserGame>
+                return new ServiceResultModel<UserGame>
                 {
-                     Data= userGame
+                    Data = userGame
                 };
             } catch(Exception ex)
             {
@@ -135,11 +134,11 @@ namespace Imi.Project.Api.Core.Services
                     return new ServiceResultModel<UserGame>
                     {
                         IsSuccess = false,
-                        ValidationErrors = new List<ValidationResult> { new ValidationResult($"A many to many relationship {nameof(UserGame)} does not exist") }
+                        ValidationErrors = new List<string> { $"A many to many relationship {nameof(UserGame)} does not exist" }
                     };
                 }
 
-                var userGame = TModel.MapToEntity();
+                UserGame userGame = TModel.MapToEntity();
 
                 await _irespository.DeleteAsync(userGame);
 

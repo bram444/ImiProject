@@ -11,21 +11,29 @@ using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public abstract class BaseEditListViewModel<C, LI, CS, LS>: BaseInfoViewModel<C, CS, LS>
+    public abstract class BaseEditListViewModel<C, LI, CS, LS, N, U, LIN, LIU>: BaseInfoViewModel<C, CS, LS, N, U>
         where C : BaseInfo, new()
+        where N : class, new()
+        where U : BaseInfo, new()
         where LI : BaseInfo, new()
-        where CS : IBaseService<C>
-        where LS : IBaseService<LI>
+        where LIN : class, new()
+        where LIU : BaseInfo, new()
+        where CS : IBaseService<C, N, U>
+        where LS : IBaseService<LI, LIN, LIU>
     {
-        public BaseEditListViewModel(CS currentService, LS listService, IValidator validator)
-            : base(currentService, listService, validator)
+        public BaseEditListViewModel(CS currentService, LS listService, IValidator validatorUpdate, IValidator validationNew)
+            : base(currentService, listService, validatorUpdate, validationNew)
         { }
 
         #region Properties
         private string textPicker;
         public string TextPicker
         {
-            get => textPicker;
+            get
+            {
+                return textPicker;
+            }
+
             set
             {
                 textPicker = value;
@@ -36,7 +44,11 @@ namespace Imi.Project.Mobile.ViewModels
         private string listError;
         public string ListError
         {
-            get => listError;
+            get
+            {
+                return listError;
+            }
+
             set
             {
                 listError = value;
@@ -47,7 +59,11 @@ namespace Imi.Project.Mobile.ViewModels
         private bool createItem;
         public bool CreateItem
         {
-            get => createItem;
+            get
+            {
+                return createItem;
+            }
+
             set
             {
                 createItem = value;
@@ -58,7 +74,11 @@ namespace Imi.Project.Mobile.ViewModels
         private bool addListItem;
         public bool AddListItem
         {
-            get => addListItem;
+            get
+            {
+                return addListItem;
+            }
+
             set
             {
                 addListItem = value;
@@ -69,7 +89,11 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visibleList;
         public bool VisibleList
         {
-            get => visibleList;
+            get
+            {
+                return visibleList;
+            }
+
             set
             {
                 visibleList = value;
@@ -80,7 +104,11 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visibleAddList;
         public bool VisibleAddList
         {
-            get => visibleAddList;
+            get
+            {
+                return visibleAddList;
+            }
+
             set
             {
                 visibleAddList = value;
@@ -93,7 +121,11 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visibleDeleteList;
         public bool VisibleDeleteList
         {
-            get => visibleDeleteList;
+            get
+            {
+                return visibleDeleteList;
+            }
+
             set
             {
                 visibleDeleteList = value;
@@ -105,7 +137,11 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visibleSaveList;
         public bool VisibleSaveList
         {
-            get => visibleSaveList;
+            get
+            {
+                return visibleSaveList;
+            }
+
             set
             {
                 visibleSaveList = value;
@@ -116,7 +152,11 @@ namespace Imi.Project.Mobile.ViewModels
         private int columnSpanAdd;
         public int ColumnSpanAdd
         {
-            get => columnSpanAdd;
+            get
+            {
+                return columnSpanAdd;
+            }
+
             set
             {
                 columnSpanAdd = value;
@@ -127,7 +167,11 @@ namespace Imi.Project.Mobile.ViewModels
         private int columnDelete;
         public int ColumnDelete
         {
-            get => columnDelete;
+            get
+            {
+                return columnDelete;
+            }
+
             set
             {
                 columnDelete = value;
@@ -138,7 +182,11 @@ namespace Imi.Project.Mobile.ViewModels
         private int columnSpanDelete;
         public int ColumnSpanDelete
         {
-            get => columnSpanDelete;
+            get
+            {
+                return columnSpanDelete;
+            }
+
             set
             {
                 columnSpanDelete = value;
@@ -149,7 +197,11 @@ namespace Imi.Project.Mobile.ViewModels
         private ObservableCollection<Guid> currentItemIdList;
         public ObservableCollection<Guid> CurrentItemIdList
         {
-            get => currentItemIdList;
+            get
+            {
+                return currentItemIdList;
+            }
+
             set
             {
                 currentItemIdList = value;
@@ -160,7 +212,11 @@ namespace Imi.Project.Mobile.ViewModels
         private ObservableCollection<LI> currentItemList;
         public ObservableCollection<LI> CurrentItemList
         {
-            get => currentItemList;
+            get
+            {
+                return currentItemList;
+            }
+
             set
             {
                 currentItemList = value;
@@ -173,7 +229,11 @@ namespace Imi.Project.Mobile.ViewModels
         private ObservableCollection<LI> pickListItem;
         public ObservableCollection<LI> PickListItem
         {
-            get => pickListItem;
+            get
+            {
+                return pickListItem;
+            }
+
             set
             {
                 pickListItem = new ObservableCollection<LI>(value);
@@ -184,7 +244,11 @@ namespace Imi.Project.Mobile.ViewModels
         private LI chosenListItem;
         public LI ChosenListItem
         {
-            get => chosenListItem;
+            get
+            {
+                return chosenListItem;
+            }
+
             set
             {
                 chosenListItem = value;
@@ -196,7 +260,11 @@ namespace Imi.Project.Mobile.ViewModels
         private int heightList;
         public int HeightList
         {
-            get => heightList;
+            get
+            {
+                return heightList;
+            }
+
             set
             {
                 heightList = value;
@@ -204,9 +272,21 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        public bool EnableList => CurrentItemList.Any();
+        public bool EnableList
+        {
+            get
+            {
+                return CurrentItemList.Any();
+            }
+        }
 
-        public bool EnableAddListItem => Task.Run(async () => await ListService.GetAll()).Result.Count() != CurrentItemIdList.Count();
+        public bool EnableAddListItem
+        {
+            get
+            {
+                return Task.Run(async () => await ListService.GetAll()).Result.Count() != CurrentItemIdList.Count();
+            }
+        }
         #endregion
 
         public override void Init(object initData)
@@ -237,118 +317,148 @@ namespace Imi.Project.Mobile.ViewModels
             CurrentItemList = new ObservableCollection<LI>(listItems.Where(item => CurrentItemIdList.Contains(item.Id)));
         }
 
-        public override ICommand CancelCommand => new Command(() =>
+        public override ICommand CancelCommand
         {
-            LoadState();
-
-            base.CancelCommand.Execute(null);
-        });
-
-        public virtual ICommand AddPickerItem => new Command((object item) =>
-        {
-            List<LI> list = item as List<LI>;
-
-            foreach(LI listItem in Task.Run(async () => await ListService.GetAll()).Result)
+            get
             {
-                if(!CurrentItemIdList.Contains(listItem.Id))
+                return new Command(() =>
                 {
-                    list.Add(listItem);
-                }
+                    LoadState();
+
+                    base.CancelCommand.Execute(null);
+                });
             }
+        }
 
-            PickListItem = new ObservableCollection<LI>(list);
-
-            ChosenListItem = list.First();
-
-            AddListItem = true;
-            VisibleList = true;
-            VisableAdd = false;
-            VisableSave = false;
-            VisableCancel = false;
-            VisibleAddList = false;
-            VisibleDeleteList = false;
-            VisibleSaveList = true;
-        });
-
-        public virtual ICommand DeletePickerItem => new Command((object item) =>
+        public virtual ICommand AddPickerItem
         {
-            List<LI> list = item as List<LI>;
-
-            foreach(LI listItem in Task.Run(async () => await ListService.GetAll()).Result)
+            get
             {
-                if(CurrentItemIdList.Contains(listItem.Id))
+                return new Command((object item) =>
                 {
-                    list.Add(listItem);
-                }
+                    List<LI> list = item as List<LI>;
+
+                    foreach(LI listItem in Task.Run(async () => await ListService.GetAll()).Result)
+                    {
+                        if(!CurrentItemIdList.Contains(listItem.Id))
+                        {
+                            list.Add(listItem);
+                        }
+                    }
+
+                    PickListItem = new ObservableCollection<LI>(list);
+
+                    ChosenListItem = list.First();
+
+                    AddListItem = true;
+                    VisibleList = true;
+                    VisableAdd = false;
+                    VisableSave = false;
+                    VisableCancel = false;
+                    VisibleAddList = false;
+                    VisibleDeleteList = false;
+                    VisibleSaveList = true;
+                });
             }
+        }
 
-            PickListItem = new ObservableCollection<LI>(list);
-
-            ChosenListItem = list.First();
-
-            AddListItem = false;
-            VisibleList = true;
-            VisableAdd = false;
-            VisableSave = false;
-            VisableCancel = false;
-            VisibleAddList = false;
-            VisibleDeleteList = false;
-            VisibleSaveList = true;
-        });
-
-        public ICommand SavePickerItem => new Command(() =>
+        public virtual ICommand DeletePickerItem
         {
-            if(ChosenListItem.Id != Guid.Empty)
+            get
             {
-                ObservableCollection<LI> listItems = CurrentItemList;
-                if(AddListItem)
+                return new Command((object item) =>
                 {
-                    listItems.Add(ChosenListItem);
-                    CurrentItemIdList.Add(ChosenListItem.Id);
+                    List<LI> list = item as List<LI>;
 
-                } else
-                {
-                    listItems.Remove(listItems.Where(item => item.Id == ChosenListItem.Id).Single());
-                    CurrentItemIdList.Remove(ChosenListItem.Id);
-                }
+                    foreach(LI listItem in Task.Run(async () => await ListService.GetAll()).Result)
+                    {
+                        if(CurrentItemIdList.Contains(listItem.Id))
+                        {
+                            list.Add(listItem);
+                        }
+                    }
 
-                CurrentItemList = new ObservableCollection<LI>(listItems.OrderBy(item => item.Id));
+                    PickListItem = new ObservableCollection<LI>(list);
 
-                if(CreateItem)
-                {
-                    VisableAdd = true;
-                } else
-                {
-                    VisableCancel = true;
-                    VisableSave = true;
-                }
+                    ChosenListItem = list.First();
 
-                VisibleList = false;
-                VisibleSaveList = false;
-                VisibleAddList = EnableAddListItem;
-                VisibleDeleteList = EnableList;
-            } else
-            {
-                ListError = "Pick a valid item";
+                    AddListItem = false;
+                    VisibleList = true;
+                    VisableAdd = false;
+                    VisableSave = false;
+                    VisableCancel = false;
+                    VisibleAddList = false;
+                    VisibleDeleteList = false;
+                    VisibleSaveList = true;
+                });
             }
-        });
+        }
 
-        public ICommand CancelPickerItem => new Command(() =>
+        public ICommand SavePickerItem
         {
-            VisibleList = false;
-            VisibleSaveList = false;
-            VisibleAddList = EnableAddListItem;
-            VisibleDeleteList = EnableList;
+            get
+            {
+                return new Command(() =>
+                {
+                    if(ChosenListItem.Id != Guid.Empty)
+                    {
+                        ObservableCollection<LI> listItems = CurrentItemList;
+                        if(AddListItem)
+                        {
+                            listItems.Add(ChosenListItem);
+                            CurrentItemIdList.Add(ChosenListItem.Id);
 
-            if(CreateItem)
-            {
-                VisableAdd = true;
-            } else
-            {
-                VisableCancel = true;
-                VisableSave = true;
+                        } else
+                        {
+                            listItems.Remove(listItems.Where(item => item.Id == ChosenListItem.Id).Single());
+                            CurrentItemIdList.Remove(ChosenListItem.Id);
+                        }
+
+                        CurrentItemList = new ObservableCollection<LI>(listItems.OrderBy(item => item.Id));
+
+                        if(CreateItem)
+                        {
+                            VisableAdd = true;
+                        } else
+                        {
+                            VisableCancel = true;
+                            VisableSave = true;
+                        }
+
+                        VisibleList = false;
+                        VisibleSaveList = false;
+                        VisibleAddList = EnableAddListItem;
+                        VisibleDeleteList = EnableList;
+                    } else
+                    {
+                        ListError = "Pick a valid item";
+                    }
+                });
             }
-        });
+        }
+
+        public ICommand CancelPickerItem
+        {
+            get
+            {
+                return new Command(() =>
+                {
+                    VisibleList = false;
+                    VisibleSaveList = false;
+                    VisibleAddList = EnableAddListItem;
+                    VisibleDeleteList = EnableList;
+
+                    if(CreateItem)
+                    {
+                        VisableAdd = true;
+                    } else
+                    {
+                        VisableCancel = true;
+                        VisableSave = true;
+                    }
+                });
+            }
+        }
 
         public override void SetAdd()
         {

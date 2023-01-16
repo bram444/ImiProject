@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Imi.Project.Mobile.Domain.Model;
+using System;
 using System.Collections.Generic;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace Imi.Project.Mobile.Domain.Services
 {
-    public class BaseService<T>: IBaseService<T>
+    public class BaseService<T, N, U>: IBaseService<T, N, U>
     {
         private readonly string baseUrl = Constants.baseUrl;
         private readonly CustomHttpClient _httpClient = new CustomHttpClient();
@@ -26,21 +27,24 @@ namespace Imi.Project.Mobile.Domain.Services
             return await _httpClient.GetApiResult<IEnumerable<T>>($"{baseUrl}{Api}/");
         }
 
-        //public async Task<T> GetById(Guid id) => await _httpClient.GetApiResult<T>($"{baseUrl}{Api}/{id}");
-
-        public async Task<T> Update(T game)
+        public async Task<T> GetById(Guid id)
         {
-            return await _httpClient.PutCallApi<T, T>($"{baseUrl}{Api}/", game);
+            return await _httpClient.GetApiResult<T>($"{baseUrl}{Api}/{id}");
         }
 
-        public async Task<T> Delete(Guid id)
+        public async Task<ApiResponse<T>> Update(U game)
+        {
+            return await _httpClient.PutCallApi<T, U>($"{baseUrl}{Api}/", game);
+        }
+
+        public async Task<ApiResponse<T>> Delete(Guid id)
         {
             return await _httpClient.DeleteCallApi<T>($"{baseUrl}{Api}/{id}");
         }
 
-        public async Task<T> Add(T game)
+        public virtual async Task<ApiResponse<T>> Add(N game)
         {
-            return await _httpClient.PostCallApi<T, T>($"{baseUrl}{Api}", game);
+            return await _httpClient.PostCallApi<T, N>($"{baseUrl}{Api}", game);
         }
     }
 }

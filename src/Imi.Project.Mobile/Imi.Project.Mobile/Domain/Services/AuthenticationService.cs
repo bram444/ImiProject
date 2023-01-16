@@ -15,20 +15,6 @@ namespace Imi.Project.Mobile.Domain.Services
         private readonly HttpClient _httpClient = new HttpClient();
         private readonly string _api;
 
-        public class Rootobject
-        {
-            public Errors errors { get; set; }
-            public string type { get; set; }
-            public string title { get; set; }
-            public int status { get; set; }
-            public string traceId { get; set; }
-        }
-
-        public class Errors
-        {
-            public string[] _ { get; set; }
-        }
-
         public AuthenticationService()
         {
             _api = "/api/Authentication";
@@ -44,14 +30,14 @@ namespace Imi.Project.Mobile.Domain.Services
                 {
                     return await responseMessage.Content.ReadAsAsync<TokenResponse>();
                 }
-
-                string value = await responseMessage.Content.ReadAsStringAsync();
-                var obj = new { errors = new Dictionary<string, string[]>() };
-                var validations = JsonConvert.DeserializeAnonymousType(value, obj);
                 List<string> allErrors = new List<string>();
 
-                if(validations != null)
+                string value = await responseMessage.Content.ReadAsStringAsync();
+                if(value.Contains("errors"))
                 {
+                    var obj = new { errors = new Dictionary<string, string[]>() };
+                    var validations = JsonConvert.DeserializeAnonymousType(value, obj);
+
                     List<string[]> allValidators = validations.errors.Values.ToList();
 
                     allValidators.ForEach(stringList => stringList.ForEach(singleError => allErrors.Add(singleError)));
@@ -62,6 +48,7 @@ namespace Imi.Project.Mobile.Domain.Services
                         Messages = allErrors
                     };
                 }
+
                 object[] allObjects = await responseMessage.Content.ReadAsAsync<object[]>();
                 string[] stringArray = Array.ConvertAll(allObjects, o => o.ToString());
                 allErrors.AddRange(stringArray);
@@ -83,39 +70,49 @@ namespace Imi.Project.Mobile.Domain.Services
 
         public async Task<TokenResponse> Registration(RegistrationInfo registration)
         {
-            HttpResponseMessage responseMessage = await _httpClient.PostAsJsonAsync($"{baseUrl}{_api}/register", registration);
-
-            if(responseMessage.IsSuccessStatusCode)
+            try
             {
-                return await responseMessage.Content.ReadAsAsync<TokenResponse>();
-            }
+                HttpResponseMessage responseMessage = await _httpClient.PostAsJsonAsync($"{baseUrl}{_api}/register", registration);
 
-            List<string> allErrors = new List<string>();
-            string value = await responseMessage.Content.ReadAsStringAsync();
-            if(value.Contains("errors"))
-            {
-                var obj = new { errors = new Dictionary<string, string[]>() };
-                var validations = JsonConvert.DeserializeAnonymousType(value, obj);
+                if(responseMessage.IsSuccessStatusCode)
+                {
+                    return await responseMessage.Content.ReadAsAsync<TokenResponse>();
+                }
 
-                List<string[]> allValidators = validations.errors.Values.ToList();
+                List<string> allErrors = new List<string>();
+                string value = await responseMessage.Content.ReadAsStringAsync();
+                if(value.Contains("errors"))
+                {
+                    var obj = new { errors = new Dictionary<string, string[]>() };
+                    var validations = JsonConvert.DeserializeAnonymousType(value, obj);
 
-                allValidators.ForEach(stringList => stringList.ForEach(singleError => allErrors.Add(singleError)));
+                    List<string[]> allValidators = validations.errors.Values.ToList();
 
+                    allValidators.ForEach(stringList => stringList.ForEach(singleError => allErrors.Add(singleError)));
+
+                    return new TokenResponse
+                    {
+                        IsSuccess = false,
+                        Messages = allErrors
+                    };
+                }
+
+                object[] allObjects = await responseMessage.Content.ReadAsAsync<object[]>();
+                string[] stringArray = Array.ConvertAll(allObjects, o => o.ToString());
+                allErrors.AddRange(stringArray);
                 return new TokenResponse
                 {
                     IsSuccess = false,
                     Messages = allErrors
                 };
-            }
-
-            object[] allObjects = await responseMessage.Content.ReadAsAsync<object[]>();
-            string[] stringArray = Array.ConvertAll(allObjects, o => o.ToString());
-            allErrors.AddRange(stringArray);
-            return new TokenResponse
+            } catch(Exception ex)
             {
-                IsSuccess = false,
-                Messages = allErrors
-            };
+                return new TokenResponse
+                {
+                    IsSuccess = false,
+                    Messages = new List<string>() { ex.Message }
+                };
+            }
         }
     }
 }

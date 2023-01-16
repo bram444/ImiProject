@@ -6,14 +6,13 @@ using Imi.Project.Api.Core.Models;
 using Imi.Project.Api.Core.Models.Genre;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Services
 {
-    public class GenreService:BaseService<Genre,IGenreRepository, NewGenreModel,UpdateGenreModel>, IGenreService
+    public class GenreService: BaseService<Genre, IGenreRepository, NewGenreModel, UpdateGenreModel>, IGenreService
     {
-        public GenreService(IGenreRepository genreRepository):base(genreRepository)
+        public GenreService(IGenreRepository genreRepository) : base(genreRepository)
         {
         }
 
@@ -26,9 +25,9 @@ namespace Imi.Project.Api.Core.Services
                     return new ServiceResultModel<Genre>
                     {
                         IsSuccess = false,
-                        ValidationErrors = new List<ValidationResult>
+                        ValidationErrors = new List<string>
                         {
-                            new ValidationResult($"Genre with name {entity.Name} already exists")
+                           $"Genre with name {entity.Name} already exists"
                         }
                     };
                 }
@@ -56,13 +55,13 @@ namespace Imi.Project.Api.Core.Services
                 if(!await _itemRepository.DoesExistAsync(entity.Id))
                 {
                     result.IsSuccess = false;
-                    result.ValidationErrors.Add(new ValidationResult("Genre does not exist"));
+                    result.ValidationErrors.Add("Genre does not exist");
                 }
 
                 if(await _itemRepository.DoesExistAsync(genre => genre.Name == entity.Name && (genre.Id != entity.Id)))
                 {
                     result.IsSuccess = false;
-                    result.ValidationErrors.Add(new ValidationResult($"Genre with name {entity.Name} already exists"));
+                    result.ValidationErrors.Add($"Genre with name {entity.Name} already exists");
                 }
 
                 if(!result.IsSuccess)

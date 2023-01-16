@@ -18,6 +18,7 @@ namespace Imi.Project.Mobile
             FreshIOC.Container.Register<IGenreService, GenreInfoService>();
             FreshIOC.Container.Register<IPublisherService, PublisherInfoService>();
             FreshIOC.Container.Register<IAuthenticationService, AuthenticationService>();
+            FreshIOC.Container.Register<ITokenService, TokenService>();
 
             MainPage = new FreshNavigationContainer(FreshPageModelResolver.ResolvePageModel<MainViewModel>());
             if(DeviceInfo.Platform == DevicePlatform.Android)

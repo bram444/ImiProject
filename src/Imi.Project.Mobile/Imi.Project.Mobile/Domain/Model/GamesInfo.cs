@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Imi.Project.Mobile.Domain.Model
 {
@@ -7,7 +6,7 @@ namespace Imi.Project.Mobile.Domain.Model
     {
         public string Name { get; set; }
         public float Price { get; set; }
-        public Guid PublisherId { get; set; }
-        public ICollection<Guid> GenreId { get; set; }
+        public PublisherInfo Publisher { get; set; }
+        public ICollection<GenreInfo> Genres { get; set; }
     }
 }

@@ -24,7 +24,7 @@
             <Button Text="Games" Command="{Binding OpenGame}" Style="{StaticResource HomeButtons}"/>
             <Button Text="Genre" Command="{Binding OpenGenre}" Style="{StaticResource HomeButtons}"/>
             <Button Text="Publisher" Command="{Binding OpenPublisher}" Style="{StaticResource HomeButtons}"/>
-            <Button Text="User" Command="{Binding OpenUser}" Style="{StaticResource HomeButtons}"/>
+            <Button Text="User" IsVisible="{Binding ShowUsers}" Command="{Binding OpenUser}" Style="{StaticResource HomeButtons}"/>
             <StackLayout>
                 <Label Text="{Binding AppName}" HorizontalOptions="Center"/>
                 <Label Text="{Binding AppVersion}" HorizontalOptions="Center"/>

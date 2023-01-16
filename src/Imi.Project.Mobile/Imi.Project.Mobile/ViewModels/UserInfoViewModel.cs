@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FluentValidation.Results;
 using Imi.Project.Mobile.Domain.Model;
 using Imi.Project.Mobile.Domain.Services;
 using Imi.Project.Mobile.Domain.Validators;
@@ -11,17 +12,21 @@ using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public class UserInfoViewModel: BaseEditListViewModel<UserInfo, GamesInfo, IUserService, IGameService>
+    public class UserInfoViewModel: BaseEditListViewModel<UserInfo, GamesInfo, IUserService, IGameService, RegistrationInfo, UpdateUserInfo, NewGameInfo, UpdateGameInfo>
     {
         public UserInfoViewModel(IUserService userService, IGameService gameService)
-            : base(userService, gameService, new UserInfoValidator())
+            : base(userService, gameService, new UpdateUserInfoValidator(), new RegistrationValidator())
         { }
 
         #region Properties
         private string firstName;
         public string FirstName
         {
-            get => firstName;
+            get
+            {
+                return firstName;
+            }
+
             set
             {
                 firstName = value;
@@ -33,7 +38,11 @@ namespace Imi.Project.Mobile.ViewModels
         private string lastName;
         public string LastName
         {
-            get => lastName;
+            get
+            {
+                return lastName;
+            }
+
             set
             {
                 lastName = value;
@@ -45,7 +54,11 @@ namespace Imi.Project.Mobile.ViewModels
         private string email;
         public string Email
         {
-            get => email;
+            get
+            {
+                return email;
+            }
+
             set
             {
                 email = value;
@@ -57,7 +70,11 @@ namespace Imi.Project.Mobile.ViewModels
         private string userEmailError;
         public string UserEmailError
         {
-            get => userEmailError;
+            get
+            {
+                return userEmailError;
+            }
+
             set
             {
                 userEmailError = value;
@@ -68,7 +85,11 @@ namespace Imi.Project.Mobile.ViewModels
         private string password;
         public string Password
         {
-            get => password;
+            get
+            {
+                return password;
+            }
+
             set
             {
                 password = value;
@@ -80,7 +101,11 @@ namespace Imi.Project.Mobile.ViewModels
         private string userPasswordError;
         public string UserPasswordError
         {
-            get => userPasswordError;
+            get
+            {
+                return userPasswordError;
+            }
+
             set
             {
                 userPasswordError = value;
@@ -92,7 +117,11 @@ namespace Imi.Project.Mobile.ViewModels
         private string passwordConfirm;
         public string PasswordConfirm
         {
-            get => passwordConfirm;
+            get
+            {
+                return passwordConfirm;
+            }
+
             set
             {
                 passwordConfirm = value;
@@ -104,7 +133,11 @@ namespace Imi.Project.Mobile.ViewModels
         private string userPasswordConfirmError;
         public string UserPasswordConfirmError
         {
-            get => userPasswordConfirmError;
+            get
+            {
+                return userPasswordConfirmError;
+            }
+
             set
             {
                 userPasswordConfirmError = value;
@@ -116,7 +149,11 @@ namespace Imi.Project.Mobile.ViewModels
         private string userFirstNameError;
         public string UserFirstNameError
         {
-            get => userFirstNameError;
+            get
+            {
+                return userFirstNameError;
+            }
+
             set
             {
                 userFirstNameError = value;
@@ -127,7 +164,11 @@ namespace Imi.Project.Mobile.ViewModels
         private string userLastNameError;
         public string UserLastNameError
         {
-            get => userLastNameError;
+            get
+            {
+                return userLastNameError;
+            }
+
             set
             {
                 userLastNameError = value;
@@ -138,7 +179,11 @@ namespace Imi.Project.Mobile.ViewModels
         private bool visablePassword;
         public bool VisablePassword
         {
-            get => visablePassword;
+            get
+            {
+                return visablePassword;
+            }
+
             set
             {
                 visablePassword = value;
@@ -166,7 +211,11 @@ namespace Imi.Project.Mobile.ViewModels
             LoadList(selectGame);
         }
 
-        public override ICommand AddCommand => new Command(() =>
+        public override ICommand AddCommand
+        {
+            get
+            {
+                return new Command(async () =>
             {
                 base.AddCommand.Execute(null);
 
@@ -204,24 +253,28 @@ namespace Imi.Project.Mobile.ViewModels
                     gameId.Add(game.Id);
                 }
 
-                UserInfo userEdit = new UserInfo
+                RegistrationInfo userEdit = new RegistrationInfo
                 {
-                    Id = Guid.NewGuid(),
                     FirstName = FirstName,
                     LastName = LastName,
                     UserName = Name,
                     Email = Email,
-                    GameId = gameId,
                     Password = Password,
                     ConfirmPassword = PasswordConfirm,
                     ApprovedTerms = true,
                     BirthDay = DateTime.Now
                 };
 
-                AddItem(userEdit);
+                await AddItem(userEdit);
             });
+            }
+        }
 
-        public override ICommand SaveCommand => new Command(() =>
+        public override ICommand SaveCommand
+        {
+            get
+            {
+                return new Command(() =>
             {
                 ObservableCollection<GamesInfo> allGames = CurrentItemList;
 
@@ -232,25 +285,26 @@ namespace Imi.Project.Mobile.ViewModels
                     gameId.Add(game.Id);
                 }
 
-                UserInfo userValidate = new UserInfo
+                UpdateUserInfo userValidate = new UpdateUserInfo
                 {
                     Id = CurrentItem.Id,
                     FirstName = FirstName,
                     LastName = LastName,
                     UserName = Name,
-                    Email = Email,
                     GameId = gameId,
-                    Password = Password,
-                    ConfirmPassword = PasswordConfirm,
                     ApprovedTerms = true,
-                    BirthDay = DateTime.Now
-
                 };
 
                 SaveItem(userValidate);
             });
+            }
+        }
 
-        public override ICommand AddPickerItem => new Command(() =>
+        public override ICommand AddPickerItem
+        {
+            get
+            {
+                return new Command(() =>
         {
             TextPicker = "Add game";
 
@@ -265,8 +319,14 @@ namespace Imi.Project.Mobile.ViewModels
 
             base.AddPickerItem.Execute(games);
         });
+            }
+        }
 
-        public override ICommand DeletePickerItem => new Command(() =>
+        public override ICommand DeletePickerItem
+        {
+            get
+            {
+                return new Command(() =>
         {
             TextPicker = "Delete game";
 
@@ -281,13 +341,15 @@ namespace Imi.Project.Mobile.ViewModels
 
             base.DeletePickerItem.Execute(games);
         });
+            }
+        }
 
-        public override bool Validate(UserInfo userInfo)
+        public override bool Validate(RegistrationInfo userInfo)
         {
-            ValidationContext<UserInfo> validationContext = new ValidationContext<UserInfo>(userInfo);
-            FluentValidation.Results.ValidationResult validationResult = InfoValidator.Validate(validationContext);
+            ValidationContext<RegistrationInfo> validationContext = new ValidationContext<RegistrationInfo>(userInfo);
+            ValidationResult validationResult = NewValidator.Validate(validationContext);
 
-            foreach(FluentValidation.Results.ValidationFailure error in validationResult.Errors)
+            foreach(ValidationFailure error in validationResult.Errors)
             {
                 switch(error.PropertyName)
                 {
@@ -313,6 +375,39 @@ namespace Imi.Project.Mobile.ViewModels
 
                     case nameof(userInfo.ConfirmPassword):
                         UserPasswordConfirmError = error.ErrorMessage;
+                        break;
+
+                    default:
+                        NameError = "Unknown Error";
+                        UserFirstNameError = "Unknown Error";
+                        UserLastNameError = "Unknown Error";
+                        UserEmailError = "Unknown Error";
+                        break;
+                }
+            }
+
+            return validationResult.IsValid;
+        }
+
+        public override bool Validate(UpdateUserInfo userInfo)
+        {
+            ValidationContext<UpdateUserInfo> validationContext = new ValidationContext<UpdateUserInfo>(userInfo);
+            ValidationResult validationResult = UpdateValidator.Validate(validationContext);
+
+            foreach(ValidationFailure error in validationResult.Errors)
+            {
+                switch(error.PropertyName)
+                {
+                    case nameof(userInfo.FirstName):
+                        UserFirstNameError = error.ErrorMessage;
+                        break;
+
+                    case nameof(userInfo.LastName):
+                        UserLastNameError = error.ErrorMessage;
+                        break;
+
+                    case nameof(userInfo.UserName):
+                        NameError = error.ErrorMessage;
                         break;
 
                     default:

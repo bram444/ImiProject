@@ -6,19 +6,25 @@ using System.Linq;
 
 namespace Imi.Project.Mobile.ViewModels
 {
-    public abstract class BaseListInfoViewModel<C, CS, LS>: BaseInfoViewModel<C, CS, LS>
+    public abstract class BaseListInfoViewModel<C, CS, LS, N, U>: BaseInfoViewModel<C, CS, LS, N, U>
         where C : BaseInfo, new()
-        where CS : IBaseService<C>
+        where CS : IBaseService<C, N, U>
+        where N : class, new()
+        where U : BaseInfo, new()
     {
-        public BaseListInfoViewModel(CS currentService, LS gameService, IValidator validator)
-            : base(currentService, gameService, validator)
+        public BaseListInfoViewModel(CS currentService, LS gameService, IValidator updateValidator, IValidator newValidator)
+            : base(currentService, gameService, updateValidator, newValidator)
         { }
 
         #region Properties
         private bool enableGameList;
         public bool EnableGameList
         {
-            get => enableGameList;
+            get
+            {
+                return enableGameList;
+            }
+
             set
             {
                 enableGameList = value;
@@ -29,7 +35,11 @@ namespace Imi.Project.Mobile.ViewModels
         private IEnumerable<GamesInfo> games;
         public IEnumerable<GamesInfo> Games
         {
-            get => games;
+            get
+            {
+                return games;
+            }
+
             set
             {
                 games = value;

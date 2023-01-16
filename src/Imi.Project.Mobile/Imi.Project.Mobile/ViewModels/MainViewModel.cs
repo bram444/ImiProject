@@ -1,4 +1,5 @@
 ﻿using FreshMvvm;
+using Imi.Project.Mobile.Domain.Services;
 using System.Windows.Input;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -7,11 +8,12 @@ namespace Imi.Project.Mobile.ViewModels
 {
     public class MainViewModel: FreshBasePageModel
     {
-
-        public MainViewModel()
+        private readonly ITokenService _tokenService;
+        public MainViewModel(ITokenService tokenService)
         {
             AppName = AppInfo.Name;
             AppVersion = AppInfo.VersionString;
+            _tokenService = tokenService;
         }
 
         public override void ReverseInit(object returnedData)
@@ -34,7 +36,9 @@ namespace Imi.Project.Mobile.ViewModels
             {
                 token = value;
                 IsLoggedIn = token != null;
+                RaisePropertyChanged(nameof(ShowUsers));
                 RaisePropertyChanged(nameof(Token));
+
             }
         }
 
@@ -89,6 +93,13 @@ namespace Imi.Project.Mobile.ViewModels
                 RaisePropertyChanged(nameof(AppVersion));
             }
         }
+        public bool ShowUsers
+        {
+            get
+            {
+                return Token != null && _tokenService.IsAdmin(Token);
+            }
+        }
 
         public ICommand OpenGame
         {
@@ -96,7 +107,13 @@ namespace Imi.Project.Mobile.ViewModels
             {
                 return new Command(async () =>
                 {
-                    await CoreMethods.PushPageModel<GameViewModel>(true);
+                    if(IsLoggedIn)
+                    {
+                        await CoreMethods.PushPageModel<GameViewModel>(Token);
+                    } else
+                    {
+                        await CoreMethods.PushPageModel<GameViewModel>(true);
+                    }
                 });
             }
         }
@@ -107,7 +124,13 @@ namespace Imi.Project.Mobile.ViewModels
             {
                 return new Command(async () =>
                 {
-                    await CoreMethods.PushPageModel<UserViewModel>(true);
+                    if(IsLoggedIn)
+                    {
+                        await CoreMethods.PushPageModel<UserViewModel>(Token);
+                    } else
+                    {
+                        await CoreMethods.PushPageModel<UserViewModel>(true);
+                    }
                 });
             }
         }
@@ -118,7 +141,13 @@ namespace Imi.Project.Mobile.ViewModels
             {
                 return new Command(async () =>
                 {
-                    await CoreMethods.PushPageModel<PublisherViewModel>(true);
+                    if(IsLoggedIn)
+                    {
+                        await CoreMethods.PushPageModel<PublisherViewModel>(Token);
+                    } else
+                    {
+                        await CoreMethods.PushPageModel<PublisherViewModel>(true);
+                    }
                 });
             }
         }
@@ -157,7 +186,13 @@ namespace Imi.Project.Mobile.ViewModels
             {
                 return new Command(async () =>
                 {
-                    await CoreMethods.PushPageModel<RegistrationViewModel>(true);
+                    if(IsLoggedIn)
+                    {
+                        await CoreMethods.PushPageModel<RegistrationViewModel>(Token);
+                    } else
+                    {
+                        await CoreMethods.PushPageModel<RegistrationViewModel>(true);
+                    }
                 });
             }
         }

@@ -7,8 +7,8 @@
              Title="{Binding Title}">
 
     <ContentPage.Content>
-        <StackLayout IsVisible="{Binding VisableAdd}">
-            <Button Text="Add" Command="{Binding AddItem}" HorizontalOptions="FillAndExpand" Style="{StaticResource Add}"/>
+        <StackLayout IsVisible="{Binding DisplayList}">
+            <Button Text="Add" Command="{Binding AddItem}" HorizontalOptions="FillAndExpand" Style="{StaticResource Add}" IsVisible="{Binding IsAdmin}"/>
             <ListView ItemsSource="{Binding Collection}" HeightRequest="-1" RowHeight="100">
                 <ListView.Behaviors>
                     <bhv:EventToCommandBehavior

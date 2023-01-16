@@ -66,6 +66,7 @@
                     <Button Grid.Row="6" Grid.Column="1" Text="Cancel" Command="{Binding CancelPickerItem}" IsVisible="{Binding VisibleSaveList}" Style="{StaticResource Cancel}"/>
                     
                     <FlexLayout Style="{StaticResource ButtonAlign}" Grid.Row="7" Grid.ColumnSpan="2">
+                        <Label Text="{Binding ErrorAPI}" Style="{StaticResource ErrorLabel}"/>
                         <Button Text="Add" HorizontalOptions="Center" Command="{Binding AddCommand}" IsVisible="{Binding VisableAdd}" Style="{StaticResource Add}"/>
                         <Button Text="Edit" HorizontalOptions="Center" Command="{Binding EditCommand}" IsVisible="{Binding VisableEdit}" Style="{StaticResource Edit}"/>
                         <Button Text="Save" HorizontalOptions="Center" Command="{Binding SaveCommand}" IsVisible="{Binding VisableSave}" Style="{StaticResource Save}"/>
