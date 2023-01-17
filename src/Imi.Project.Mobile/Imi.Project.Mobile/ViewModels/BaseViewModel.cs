@@ -89,7 +89,7 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        public override async void InitAsync(object initData)
+        public async void InitAsync(object initData)
         {
             if(initData is string)
             {
