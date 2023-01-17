@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Interfaces.Sevices
 {
-    public interface IUserGameService:IBaseGameMTMService<UserGame,UserGameModel>
+    public interface IUserGameService: IBaseGameMTMService<UserGame, UserGameModel>
     {
         Task<ServiceResultModel<IEnumerable<UserGame>>> GetByUserIdAsync(Guid id);
         Task<ServiceResultModel<IEnumerable<UserGame>>> EditUserGameAsync(UpdateUserGameModel model);

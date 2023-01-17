@@ -74,7 +74,6 @@ namespace Imi.Project.Mobile.ViewModels
                 ApiResponse<GenreInfo> apiResponse = await SaveItem(validateGenre);
                 ErrorAPI = string.Join(Environment.NewLine, apiResponse.Messages);
 
-
             });
             }
         }

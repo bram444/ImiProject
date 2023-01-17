@@ -22,7 +22,7 @@ namespace Imi.Project.Api.Core.Mapper
             return new UserGameModel
             {
                 GameId = userGame.GameId,
-                 UserId=userGame.UserId
+                UserId = userGame.UserId
             };
         }
 

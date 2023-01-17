@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace Imi.Project.Mobile.Behaviors
 {
-    public class EventToCommandBehavior : BindableBehavior<View>
+    public class EventToCommandBehavior: BindableBehavior<View>
     {
         public static BindableProperty EventNameProperty =
             BindableProperty.CreateAttached("EventName", typeof(string), typeof(EventToCommandBehavior), null,
@@ -68,33 +66,39 @@ namespace Imi.Project.Mobile.Behaviors
         protected override void OnAttachedTo(View visualElement)
         {
             base.OnAttachedTo(visualElement);
-            var events = AssociatedObject.GetType().GetRuntimeEvents().ToArray();
-            if (events.Any())
+            EventInfo[] events = AssociatedObject.GetType().GetRuntimeEvents().ToArray();
+            if(events.Any())
             {
                 _eventInfo = events.FirstOrDefault(e => e.Name == EventName);
-                if (_eventInfo == null)
+                if(_eventInfo == null)
+                {
                     throw new ArgumentException(
                         $"EventToCommand: Can't find any event named '{EventName}' on attached type");
+                }
+
                 AddEventHandler(_eventInfo, AssociatedObject, OnFired);
             }
         }
 
         protected override void OnDetachingFrom(View view)
         {
-            if (_handler != null)
+            if(_handler != null)
+            {
                 _eventInfo.RemoveEventHandler(AssociatedObject, _handler);
+            }
+
             base.OnDetachingFrom(view);
         }
 
         private void AddEventHandler(EventInfo eventInfo, object item, Action<object, EventArgs> action)
         {
-            var eventParameters = eventInfo.EventHandlerType
+            ParameterExpression[] eventParameters = eventInfo.EventHandlerType
                 .GetRuntimeMethods().First(m => m.Name == "Invoke")
                 .GetParameters()
                 .Select(p => Expression.Parameter(p.ParameterType))
                 .ToArray();
 
-            var actionInvoke = action.GetType()
+            MethodInfo actionInvoke = action.GetType()
                 .GetRuntimeMethods().First(m => m.Name == "Invoke");
 
             _handler = Expression.Lambda(
@@ -109,22 +113,24 @@ namespace Imi.Project.Mobile.Behaviors
 
         private void OnFired(object sender, EventArgs eventArgs)
         {
-            if (Command == null)
+            if(Command == null)
+            {
                 return;
+            }
 
-            var parameter = CommandParameter;
+            object parameter = CommandParameter;
 
-            if (eventArgs != null && eventArgs != EventArgs.Empty)
+            if(eventArgs != null && eventArgs != EventArgs.Empty)
             {
                 parameter = eventArgs;
 
-                if (EventArgsConverter != null)
+                if(EventArgsConverter != null)
                 {
                     parameter = EventArgsConverter.Convert(eventArgs, typeof(object), EventArgsConverterParameter, CultureInfo.CurrentUICulture);
                 }
             }
 
-            if (Command.CanExecute(parameter))
+            if(Command.CanExecute(parameter))
             {
                 Command.Execute(parameter);
             }

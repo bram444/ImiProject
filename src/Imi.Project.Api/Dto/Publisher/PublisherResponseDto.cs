@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Imi.Project.Api.Dto.Publisher
+﻿namespace Imi.Project.Api.Dto.Publisher
 {
     public class PublisherResponseDto: BaseDto
     {

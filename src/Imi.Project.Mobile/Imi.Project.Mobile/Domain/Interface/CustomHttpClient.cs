@@ -8,7 +8,7 @@ using System.Net.Http.Formatting;
 using System.Threading.Tasks;
 using Xamarin.Forms.Internals;
 
-namespace Imi.Project.Mobile.Domain.Services
+namespace Imi.Project.Mobile.Domain.Interface
 {
     public class CustomHttpClient: HttpClient
     {
@@ -65,7 +65,11 @@ namespace Imi.Project.Mobile.Domain.Services
                 ApiResponse<TOut> apiData = new ApiResponse<TOut>();
                 if(responseMessage.IsSuccessStatusCode)
                 {
-                    apiData.ApiResponseData = await responseMessage.Content.ReadAsAsync<TOut>();
+                    return new ApiResponse<TOut>
+                    {
+                        IsSuccess = true,
+                        ApiResponseData = await responseMessage.Content.ReadAsAsync<TOut>()
+                    };
                 }
 
                 List<string> allErrors = new List<string>();

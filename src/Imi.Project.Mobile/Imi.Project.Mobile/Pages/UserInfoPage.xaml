@@ -42,22 +42,10 @@
                     <Entry Text="{Binding LastName}" IsEnabled="{Binding EnableEditData}" Keyboard="Text"/>
                     <Label Text="{Binding UserLastNameError}" Style="{StaticResource ErrorLabel}"/>
                 </StackLayout>
-                <StackLayout  Grid.Row="1" Grid.Column="1">
-                    <Label Text="E-mail"/>
-                    <Entry Text="{Binding Email}" IsEnabled="{Binding EnableEditData}" Keyboard="Email"/>
-                    <Label Text="{Binding UserEmailError}" Style="{StaticResource ErrorLabel}"/>
+                <StackLayout Grid.Row="2" IsVisible="{Binding ShowButton}">
+                    <Label Text="Ga je akkoord met de terms en service?"/>
+                    <CheckBox IsChecked="{Binding Terms}"/>
                 </StackLayout>
-                <StackLayout  Grid.Row="2" Grid.Column="0" IsVisible="{Binding VisablePassword}">
-                    <Label Text="Password"/>
-                    <Entry Text="{Binding Password}" Keyboard="Text" IsPassword="True"/>
-                    <Label Text="{Binding UserPasswordError}" Style="{StaticResource ErrorLabel}"/>
-                </StackLayout>
-                <StackLayout  Grid.Row="2" Grid.Column="1" IsVisible="{Binding VisablePassword}">
-                    <Label Text="Password confirm"/>
-                    <Entry Text="{Binding PasswordConfirm}" Keyboard="Text" IsPassword="True"/>
-                    <Label Text="{Binding UserPasswordConfirmError}" Style="{StaticResource ErrorLabel}"/>
-                </StackLayout>
-                
                 <StackLayout Grid.Row="3" Grid.ColumnSpan="2" IsVisible="{Binding EnableList}" VerticalOptions="EndAndExpand">
                     <Label Text="All the games of the user:"/>
                     <ListView ItemsSource="{Binding CurrentItemList}" HeightRequest="{Binding HeightList}" RowHeight="20">

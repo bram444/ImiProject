@@ -12,8 +12,8 @@ namespace Imi.Project.Api.Core.Mapper
         {
             return new GameGenre
             {
-                 GameId = gameGenreModel.GameId,
-                  GenreId = gameGenreModel.GenreId,
+                GameId = gameGenreModel.GameId,
+                GenreId = gameGenreModel.GenreId,
             };
         }
 

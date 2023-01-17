@@ -11,7 +11,7 @@ namespace Imi.Project.Mobile.Domain.Model
         public string Email { get; set; }
         public string Password { get; set; }
         public string ConfirmPassword { get; set; }
-        public ICollection<Guid> GameId { get; set; }
+        public ICollection<GamesInfo> Games { get; set; }
         public bool ApprovedTerms { get; set; }
         public DateTime BirthDay { get; set; }
     }

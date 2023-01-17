@@ -1,19 +1,13 @@
 ﻿using Android.App;
-using Android.Content;
 using Android.OS;
 using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Plugin.FirebasePushNotification;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Imi.Project.Mobile.Droid
 {
     [Application]
-    public class MainApplication : Application
+    public class MainApplication: Application
     {
         public MainApplication(IntPtr handler, JniHandleOwnership transfer) : base(handler, transfer)
         {
@@ -23,7 +17,7 @@ namespace Imi.Project.Mobile.Droid
         {
             base.OnCreate();
 
-            if (Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.O)
+            if(Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.O)
             {
                 FirebasePushNotificationManager.DefaultNotificationChannelId =
                     "FirebasePushNotificationChannel";

@@ -1,4 +1,5 @@
 ﻿using FreshMvvm;
+using Imi.Project.Mobile.Domain.Interface;
 using Imi.Project.Mobile.Domain.Services;
 using Imi.Project.Mobile.ViewModels;
 using Plugin.FirebasePushNotification;

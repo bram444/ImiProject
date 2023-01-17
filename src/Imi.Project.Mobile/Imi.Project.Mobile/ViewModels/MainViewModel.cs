@@ -37,6 +37,7 @@ namespace Imi.Project.Mobile.ViewModels
                 token = value;
                 IsLoggedIn = token != null;
                 RaisePropertyChanged(nameof(ShowUsers));
+                RaisePropertyChanged(nameof(ShowCurrent));
                 RaisePropertyChanged(nameof(Token));
 
             }
@@ -98,6 +99,14 @@ namespace Imi.Project.Mobile.ViewModels
             get
             {
                 return Token != null && _tokenService.IsAdmin(Token);
+            }
+        }
+
+        public bool ShowCurrent
+        {
+            get
+            {
+                return Token != null;
             }
         }
 
@@ -164,6 +173,22 @@ namespace Imi.Project.Mobile.ViewModels
                     } else
                     {
                         await CoreMethods.PushPageModel<GenreViewModel>(true);
+                    }
+                });
+            }
+        }
+
+        public ICommand CurrentUser
+        {
+            get
+            {
+                return new Command(async () =>
+                {
+                    if(IsLoggedIn)
+                    {
+                        object obj = Token;
+
+                        await CoreMethods.PushPageModel<UserInfoViewModel>(Token);
                     }
                 });
             }

@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Imi.Project.Mobile.Domain.Services;
+using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 
-namespace Imi.Project.Mobile.Domain.Services
+namespace Imi.Project.Mobile.Domain.Interface
 {
     public class TokenService: ITokenService
     {

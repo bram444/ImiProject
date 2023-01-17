@@ -14,6 +14,7 @@ namespace Imi.Project.Mobile.ViewModels
 {
     public class UserInfoViewModel: BaseEditListViewModel<UserInfo, GamesInfo, IUserService, IGameService, RegistrationInfo, UpdateUserInfo, NewGameInfo, UpdateGameInfo>
     {
+
         public UserInfoViewModel(IUserService userService, IGameService gameService)
             : base(userService, gameService, new UpdateUserInfoValidator(), new RegistrationValidator())
         { }
@@ -190,6 +191,28 @@ namespace Imi.Project.Mobile.ViewModels
                 RaisePropertyChanged(nameof(VisablePassword));
             }
         }
+        public bool ShowButton
+        {
+            get
+            {
+                return !CurrentItem.ApprovedTerms;
+            }
+        }
+
+        private bool terms;
+        public bool Terms
+        {
+            get
+            {
+                return terms;
+            }
+
+            set
+            {
+                terms = value;
+                RaisePropertyChanged(nameof(Terms));
+            }
+        }
         #endregion
 
         public override void LoadState()
@@ -200,8 +223,8 @@ namespace Imi.Project.Mobile.ViewModels
             Email = CurrentItem.Email;
             Password = CurrentItem.Password;
             PasswordConfirm = CurrentItem.ConfirmPassword;
-            CurrentItemIdList = new ObservableCollection<Guid>(CurrentItem.GameId);
-
+            CurrentItemIdList = new ObservableCollection<Guid>(CurrentItem.Games.Select(game => game.Id));
+            Terms = CurrentItem.ApprovedTerms;
             List<GamesInfo> selectGame = new List<GamesInfo> { new GamesInfo
                 {
                     Id = Guid.Empty,
@@ -264,8 +287,8 @@ namespace Imi.Project.Mobile.ViewModels
                     ApprovedTerms = true,
                     BirthDay = DateTime.Now
                 };
-
-                await AddItem(userEdit);
+                ApiResponse<UserInfo> apiResponse = await AddItem(userEdit);
+                ErrorAPI = string.Join(Environment.NewLine, apiResponse.Messages);
             });
             }
         }
@@ -274,29 +297,30 @@ namespace Imi.Project.Mobile.ViewModels
         {
             get
             {
-                return new Command(() =>
-            {
-                ObservableCollection<GamesInfo> allGames = CurrentItemList;
-
-                List<Guid> gameId = new List<Guid>();
-
-                foreach(GamesInfo game in allGames.Distinct())
+                return new Command(async () =>
                 {
-                    gameId.Add(game.Id);
-                }
+                    ObservableCollection<GamesInfo> allGames = CurrentItemList;
 
-                UpdateUserInfo userValidate = new UpdateUserInfo
-                {
-                    Id = CurrentItem.Id,
-                    FirstName = FirstName,
-                    LastName = LastName,
-                    UserName = Name,
-                    GameId = gameId,
-                    ApprovedTerms = true,
-                };
+                    List<Guid> gameId = new List<Guid>();
 
-                SaveItem(userValidate);
-            });
+                    foreach(GamesInfo game in allGames.Distinct())
+                    {
+                        gameId.Add(game.Id);
+                    }
+
+                    UpdateUserInfo userValidate = new UpdateUserInfo
+                    {
+                        Id = CurrentItem.Id,
+                        FirstName = FirstName,
+                        LastName = LastName,
+                        UserName = Name,
+                        GameId = gameId,
+                        ApprovedTerms = Terms,
+                    };
+
+                    ApiResponse<UserInfo> apiResponse = await SaveItem(userValidate);
+                    ErrorAPI = string.Join(Environment.NewLine, apiResponse.Messages);
+                });
             }
         }
 
@@ -430,7 +454,7 @@ namespace Imi.Project.Mobile.ViewModels
             CurrentItem = new UserInfo
             {
                 Id = Guid.Empty,
-                GameId = new List<Guid>(),
+                Games = new List<GamesInfo>(),
             };
 
             base.SetAdd();

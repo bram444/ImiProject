@@ -1,4 +1,5 @@
 ﻿using FreshMvvm;
+using Imi.Project.Mobile.Domain.Interface;
 using Imi.Project.Mobile.Domain.Services;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -88,7 +89,7 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
-        public override async void Init(object initData)
+        public override async void InitAsync(object initData)
         {
             if(initData is string)
             {

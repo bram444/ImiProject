@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Imi.Project.Api.Core.Entities
+﻿namespace Imi.Project.Api.Core.Entities
 {
     public class Genre: BaseEntity
     {

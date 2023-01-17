@@ -251,13 +251,13 @@ namespace Imi.Project.Mobile.ViewModels
                     TextPicker = "Add genre";
 
                     List<GenreInfo> genres = new List<GenreInfo>
-            {
-                new GenreInfo
-                {
-                    Id = Guid.Empty,
-                    Name="Select a genre"
-                }
-            };
+                    {
+                        new GenreInfo
+                        {
+                            Id = Guid.Empty,
+                            Name="Select a genre"
+                        }
+                    };
 
                     base.AddPickerItem.Execute(genres);
                 });

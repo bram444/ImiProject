@@ -1,4 +1,5 @@
 ﻿using Imi.Project.Mobile.Domain.Model;
+using Imi.Project.Mobile.Domain.Services;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Xamarin.Forms.Internals;
 
-namespace Imi.Project.Mobile.Domain.Services
+namespace Imi.Project.Mobile.Domain.Interface
 {
     public class AuthenticationService: IAuthenticationService
     {

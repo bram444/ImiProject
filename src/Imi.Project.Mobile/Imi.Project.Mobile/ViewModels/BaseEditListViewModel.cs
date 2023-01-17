@@ -289,7 +289,7 @@ namespace Imi.Project.Mobile.ViewModels
         }
         #endregion
 
-        public override void Init(object initData)
+        public override void InitAsync(object initData)
         {
             if(initData != null)
             {

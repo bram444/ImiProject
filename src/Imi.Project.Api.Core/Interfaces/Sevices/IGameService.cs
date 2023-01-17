@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Imi.Project.Api.Core.Interfaces.Sevices
 {
-    public interface IGameService:IBaseService<Game, NewGameModel, UpdateGameModel>
+    public interface IGameService: IBaseService<Game, NewGameModel, UpdateGameModel>
     {
         Task<ServiceResultModel<IEnumerable<Game>>> GetByPublisherIdAsync(Guid id);
     }

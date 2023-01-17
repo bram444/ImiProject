@@ -1,10 +1,11 @@
 ﻿using Imi.Project.Mobile.Domain.Model;
+using Imi.Project.Mobile.Domain.Services;
 using System;
 using System.Collections.Generic;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
-namespace Imi.Project.Mobile.Domain.Services
+namespace Imi.Project.Mobile.Domain.Interface
 {
     public class BaseService<T, N, U>: IBaseService<T, N, U>
     {
