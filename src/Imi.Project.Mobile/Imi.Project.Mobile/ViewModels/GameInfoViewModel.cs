@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
+using Imi.Project.Mobile.Domain.Interface;
 using Imi.Project.Mobile.Domain.Model;
-using Imi.Project.Mobile.Domain.Services;
 using Imi.Project.Mobile.Domain.Validators;
 using System;
 using System.Collections.Generic;

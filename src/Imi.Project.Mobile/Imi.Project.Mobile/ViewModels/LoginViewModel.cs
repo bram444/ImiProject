@@ -1,6 +1,6 @@
 ﻿using FreshMvvm;
+using Imi.Project.Mobile.Domain.Interface;
 using Imi.Project.Mobile.Domain.Model;
-using Imi.Project.Mobile.Domain.Services;
 using System.Windows.Input;
 using Xamarin.Forms;
 

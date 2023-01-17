@@ -1,5 +1,5 @@
-﻿using Imi.Project.Mobile.Domain.Model;
-using Imi.Project.Mobile.Domain.Services;
+﻿using Imi.Project.Mobile.Domain.Interface;
+using Imi.Project.Mobile.Domain.Model;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -8,24 +8,33 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Xamarin.Forms.Internals;
 
-namespace Imi.Project.Mobile.Domain.Interface
+namespace Imi.Project.Mobile.Domain.Services
 {
-    public class AuthenticationService: IAuthenticationService
+    public class AuthenticationService: HttpClient, IAuthenticationService
     {
         private readonly string baseUrl = Constants.baseUrl;
-        private readonly HttpClient _httpClient = new HttpClient();
         private readonly string _api;
 
-        public AuthenticationService()
+        public AuthenticationService() : base(CreateClientHandler())
         {
             _api = "/api/Authentication";
+        }
+
+        private static HttpClientHandler CreateClientHandler()
+        {
+            HttpClientHandler httpClientHandler = new HttpClientHandler();
+#if DEBUG
+            httpClientHandler.ServerCertificateCustomValidationCallback =
+                (message, cert, chain, errors) => { return true; };
+#endif
+            return httpClientHandler;
         }
 
         public async Task<TokenResponse> Login(LogInInfo login)
         {
             try
             {
-                HttpResponseMessage responseMessage = await _httpClient.PostAsJsonAsync($"{baseUrl}{_api}/login", login);
+                HttpResponseMessage responseMessage = await this.PostAsJsonAsync($"{baseUrl}{_api}/login", login);
 
                 if(responseMessage.IsSuccessStatusCode)
                 {
@@ -73,7 +82,7 @@ namespace Imi.Project.Mobile.Domain.Interface
         {
             try
             {
-                HttpResponseMessage responseMessage = await _httpClient.PostAsJsonAsync($"{baseUrl}{_api}/register", registration);
+                HttpResponseMessage responseMessage = await this.PostAsJsonAsync($"{baseUrl}{_api}/register", registration);
 
                 if(responseMessage.IsSuccessStatusCode)
                 {

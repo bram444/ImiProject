@@ -14,7 +14,7 @@
             <div>Om gebruik te maken van de hele site moet je inloggen en akkoord gaan met de service voorwaarden.</div>
         </div>
     </div>
-    <div class="alert alert-danger text-center" v-else-if="c.length">
+    <div class="alert alert-danger text-center" v-else-if="errorMessage.length">
         {{errorMessage}}
     </div>
     <div v-else>
@@ -200,7 +200,7 @@
                         })
                         .catch((e) => {
                             this.showError = true;
-                            this.errorMessage = e.message
+                            this.errorMessage = e.message;
                         });
 
                     if (userApprovedTerms()) {

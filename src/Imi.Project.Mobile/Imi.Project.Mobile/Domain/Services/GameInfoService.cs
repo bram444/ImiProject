@@ -1,7 +1,7 @@
-﻿using Imi.Project.Mobile.Domain.Model;
-using Imi.Project.Mobile.Domain.Services;
+﻿using Imi.Project.Mobile.Domain.Interface;
+using Imi.Project.Mobile.Domain.Model;
 
-namespace Imi.Project.Mobile.Domain.Interface
+namespace Imi.Project.Mobile.Domain.Services
 {
     public class GameInfoService: BaseService<GamesInfo, NewGameInfo, UpdateGameInfo>, IGameService
     {

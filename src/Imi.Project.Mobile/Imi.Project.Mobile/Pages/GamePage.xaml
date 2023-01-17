@@ -22,7 +22,7 @@
                             <StackLayout>
                                 <FlexLayout Style="{StaticResource AlignItems}">
                                     <Label Text="{Binding Name}" Style="{StaticResource Title}"/>
-                                    <Label Text="{Binding Price}"/>
+                                    <Label Text="{Binding Price,StringFormat ='€ {0}'}"/>
                                 </FlexLayout>
                             </StackLayout>
                         </ViewCell>

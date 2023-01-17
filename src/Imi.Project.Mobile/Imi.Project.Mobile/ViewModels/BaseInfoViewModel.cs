@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using FreshMvvm;
+using Imi.Project.Mobile.Domain.Interface;
 using Imi.Project.Mobile.Domain.Model;
-using Imi.Project.Mobile.Domain.Services;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -206,9 +206,9 @@ namespace Imi.Project.Mobile.ViewModels
                     {
                         Vibration.Vibrate(TimeSpan.FromSeconds(0.5));
                     }
-
-                    await CurrentService.Delete(CurrentItem.Id);
-                    await CoreMethods.PopPageModel(new C(), false, true);
+                    Guid id = CurrentItem.Id;
+                    await CurrentService.Delete(id);
+                    await CoreMethods.PopPageModel(id);
                 });
             }
         }

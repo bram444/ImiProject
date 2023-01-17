@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Security.Claims;
 
-namespace Imi.Project.Mobile.Domain.Services
+namespace Imi.Project.Mobile.Domain.Interface
 {
     public interface ITokenService
     {

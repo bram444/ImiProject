@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Imi.Project.Mobile.Domain.Services
+namespace Imi.Project.Mobile.Domain.Interface
 {
     public interface IBaseService<T, N, U>
     {

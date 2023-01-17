@@ -1,5 +1,5 @@
-﻿using Imi.Project.Mobile.Domain.Model;
-using Imi.Project.Mobile.Domain.Services;
+﻿using Imi.Project.Mobile.Domain.Interface;
+using Imi.Project.Mobile.Domain.Model;
 using System.Threading.Tasks;
 
 namespace Imi.Project.Mobile.ViewModels

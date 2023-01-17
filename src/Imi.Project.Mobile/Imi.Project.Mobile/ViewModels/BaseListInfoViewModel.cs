@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
+using Imi.Project.Mobile.Domain.Interface;
 using Imi.Project.Mobile.Domain.Model;
-using Imi.Project.Mobile.Domain.Services;
 using System.Collections.Generic;
 using System.Linq;
 

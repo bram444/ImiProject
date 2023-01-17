@@ -25,6 +25,7 @@
             <Button Text="Genre" Command="{Binding OpenGenre}" Style="{StaticResource HomeButtons}"/>
             <Button Text="Publisher" Command="{Binding OpenPublisher}" Style="{StaticResource HomeButtons}"/>
             <Button Text="User" IsVisible="{Binding ShowUsers}" Command="{Binding OpenUser}" Style="{StaticResource HomeButtons}"/>
+            <Button Text="Current user" IsVisible="{Binding IsLoggedIn}" Command="{Binding OpenCurrentUser}" Style="{StaticResource HomeButtons}"/>
             <StackLayout>
                 <Label Text="{Binding AppName}" HorizontalOptions="Center"/>
                 <Label Text="{Binding AppVersion}" HorizontalOptions="Center"/>

@@ -1,10 +1,10 @@
-﻿using Imi.Project.Mobile.Domain.Model;
-using Imi.Project.Mobile.Domain.Services;
+﻿using Imi.Project.Mobile.Domain.Interface;
+using Imi.Project.Mobile.Domain.Model;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Imi.Project.Mobile.Domain.Interface
+namespace Imi.Project.Mobile.Domain.Services
 {
     public class UserInfoService: BaseService<UserInfo, RegistrationInfo, UpdateUserInfo>, IUserService
     {

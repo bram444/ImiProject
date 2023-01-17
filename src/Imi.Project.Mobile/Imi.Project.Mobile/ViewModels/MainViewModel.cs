@@ -1,5 +1,7 @@
 ﻿using FreshMvvm;
-using Imi.Project.Mobile.Domain.Services;
+using Imi.Project.Mobile.Domain.Interface;
+using Imi.Project.Mobile.Domain.Model;
+using System;
 using System.Windows.Input;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -9,11 +11,14 @@ namespace Imi.Project.Mobile.ViewModels
     public class MainViewModel: FreshBasePageModel
     {
         private readonly ITokenService _tokenService;
-        public MainViewModel(ITokenService tokenService)
+        private readonly IUserService _userService;
+
+        public MainViewModel(ITokenService tokenService, IUserService userService)
         {
             AppName = AppInfo.Name;
             AppVersion = AppInfo.VersionString;
             _tokenService = tokenService;
+            _userService = userService;
         }
 
         public override void ReverseInit(object returnedData)
@@ -21,6 +26,15 @@ namespace Imi.Project.Mobile.ViewModels
             if(returnedData.GetType() == typeof(string))
             {
                 Token = returnedData.ToString();
+                _userService.SetToken(Token);
+            } else if(returnedData.GetType() == typeof(Guid))
+            {
+                Guid id = Guid.Parse(returnedData.ToString());
+                if(_tokenService.GetId(Token) == id)
+                {
+                    Token = null;
+                    _userService.SetToken(null);
+                }
             }
         }
 
@@ -144,6 +158,24 @@ namespace Imi.Project.Mobile.ViewModels
             }
         }
 
+        public ICommand OpenCurrentUser
+        {
+            get
+            {
+                return new Command(async () =>
+                {
+
+                    UserInfo user = await _userService.GetById(_tokenService.GetId(Token));
+
+                    if(IsLoggedIn)
+                    {
+
+                        await CoreMethods.PushPageModel<UserInfoViewModel>(user);
+                    }
+                });
+            }
+        }
+
         public ICommand OpenPublisher
         {
             get
@@ -228,6 +260,7 @@ namespace Imi.Project.Mobile.ViewModels
                 return new Command(() =>
                 {
                     Token = null;
+                    _userService.SetToken(null);
                 });
             }
         }

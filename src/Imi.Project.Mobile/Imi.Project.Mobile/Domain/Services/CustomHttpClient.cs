@@ -8,7 +8,7 @@ using System.Net.Http.Formatting;
 using System.Threading.Tasks;
 using Xamarin.Forms.Internals;
 
-namespace Imi.Project.Mobile.Domain.Interface
+namespace Imi.Project.Mobile.Domain.Services
 {
     public class CustomHttpClient: HttpClient
     {

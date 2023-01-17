@@ -1,13 +1,13 @@
-﻿using Imi.Project.Mobile.Domain.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using Imi.Project.Mobile.Domain.Interface;
 
-namespace Imi.Project.Mobile.Domain.Interface
+namespace Imi.Project.Mobile.Domain.Services
 {
-    public class TokenService: ITokenService
+    public class TokenService : ITokenService
     {
         public IEnumerable<Claim> GetClaims(string Token)
         {
@@ -18,7 +18,7 @@ namespace Imi.Project.Mobile.Domain.Interface
 
         public bool IsAdmin(string Token)
         {
-            if(Token == null)
+            if (Token == null)
             {
                 return false;
             }
@@ -29,7 +29,7 @@ namespace Imi.Project.Mobile.Domain.Interface
 
         public Guid GetId(string Token)
         {
-            if(Token == null)
+            if (Token == null)
             {
                 return Guid.Empty;
             }
